@@ -6,7 +6,10 @@ using Microsoft.OpenApi.Models;
 using MinhasFinancas.API.Extensions;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Application.Services;
+using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra;
+using MinhasFinancas.Infra.Data.Interfaces;
+using MinhasFinancas.Infra.Data.Repositories;
 using Scalar.AspNetCore;
 
 namespace minhas_financas_back_end
@@ -26,12 +29,17 @@ namespace minhas_financas_back_end
 
             // Add services to the container.
 
+            //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            //                    .AddEntityFrameworkStores<ApplicationDbContext>()
+            //                    .AddDefaultTokenProviders();
+
             builder.Services.AddDefaultIdentity<IdentityUser>()
                   .AddRoles<IdentityRole>()
                   .AddEntityFrameworkStores<ApplicationDbContext>()
                   .AddDefaultTokenProviders();
 
             builder.Services.AddScoped<IAutenticacaoAppService, AutenticacaoAppService>();
+            builder.Services.AddScoped<IAutenticacaoRepository, AutenticacaoRepository>();
 
             // Add authentication services
             AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);
