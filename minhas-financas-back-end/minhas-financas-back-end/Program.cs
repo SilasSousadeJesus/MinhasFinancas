@@ -25,56 +25,18 @@ namespace minhas_financas_back_end
 
 
             //builder.Services.AddScoped<IAutenticacaoAppService, AutenticacaoAppService>();
+            //builder.Services.AddTransient<CustomJwtBearerHandler>();
 
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddSwaggerGen(c =>
-            {
-                //c.SwaggerDoc("v1", new OpenApiInfo { Title = "API - Minhas Finanças", Version = "v1" });
-
-                // Adicione as configurações do JWT aqui
-                //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                //{
-                //    In = ParameterLocation.Header,
-                //    Description = "Insira o token JWT desta maneira: Bearer {seu_token}",
-                //    Name = "Authorization",
-                //    Type = SecuritySchemeType.ApiKey,
-                //    Scheme = "Bearer"
-                //});
-
-            //    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            //{
-            //    {
-            //        new OpenApiSecurityScheme
-            //        {
-            //            Reference = new OpenApiReference
-            //            {
-            //                Type = ReferenceType.SecurityScheme,
-            //                Id = "Bearer"
-            //            }
-            //        },
-            //        new string[] { }
-            //    }
-            //});
-            });
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                /// SWEGGAE
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minhas Finanças - V1");
-                    c.RoutePrefix = "swagger";
-                });
-
-
                 /// SCALAR
                 app.MapScalarApiReference();
 

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinhasFinancas.API", "MinhasFinancas.API.csproj", "{C628147F-B541-44F5-8793-5BF34A7F3A95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinhasFinancas.API", "MinhasFinancas.API.csproj", "{C628147F-B541-44F5-8793-5BF34A7F3A95}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1-Application", "1-Application", "{0ED49C5F-7656-4885-A1A7-E959D1642A2C}"
 EndProject
@@ -15,13 +15,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Infra", "3-Infra", "{E0DC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4-CrossCutting", "4-CrossCutting", "{FDA83E27-7442-473A-9029-507F50DE2BC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinhasFinancas.Application", "..\MinhasFinancas.Application\MinhasFinancas.Application.csproj", "{775F0312-EF7D-4BC9-BD66-EF1812CA2FB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinhasFinancas.Application", "..\MinhasFinancas.Application\MinhasFinancas.Application.csproj", "{775F0312-EF7D-4BC9-BD66-EF1812CA2FB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinhasFinancas.Domain", "..\MinhasFinancas.Domain\MinhasFinancas.Domain.csproj", "{E8D83CAB-1BD6-4278-BB73-433ECF1ADE24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinhasFinancas.Domain", "..\MinhasFinancas.Domain\MinhasFinancas.Domain.csproj", "{E8D83CAB-1BD6-4278-BB73-433ECF1ADE24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinhasFinancas.Infra", "..\MinhasFinancas.Infra\MinhasFinancas.Infra.csproj", "{587A6DDC-A1B6-4210-924C-7B10C03F5E07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinhasFinancas.Infra", "..\MinhasFinancas.Infra\MinhasFinancas.Infra.csproj", "{587A6DDC-A1B6-4210-924C-7B10C03F5E07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinhasFinancas.CrossCutting", "..\MinhasFinancas.CrossCutting\MinhasFinancas.CrossCutting.csproj", "{B8E0F57E-939A-4799-BFBA-CF584ADF84CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinhasFinancas.CrossCutting", "..\MinhasFinancas.CrossCutting\MinhasFinancas.CrossCutting.csproj", "{B8E0F57E-939A-4799-BFBA-CF584ADF84CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5-Tests", "5-Tests", "{8F572379-DCE5-418B-A002-CF54015AE833}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
