@@ -1,6 +1,8 @@
 
 using AspNetCore.Scalar;
 using Microsoft.EntityFrameworkCore;
+using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.Application.Services;
 using MinhasFinancas.Infra;
 using Scalar.AspNetCore;
 
@@ -20,6 +22,10 @@ namespace minhas_financas_back_end
             });
 
             // Add services to the container.
+
+
+            //builder.Services.AddScoped<IAutenticacaoAppService, AutenticacaoAppService>();
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -61,12 +67,12 @@ namespace minhas_financas_back_end
             if (app.Environment.IsDevelopment())
             {
                 /// SWEGGAE
-                //app.UseSwagger();
-                //app.UseSwaggerUI(c =>
-                //{
-                //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minhas Finanças - V1");
-                //    c.RoutePrefix = "swagger";
-                //});
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minhas Finanças - V1");
+                    c.RoutePrefix = "swagger";
+                });
 
 
                 /// SCALAR
@@ -76,7 +82,6 @@ namespace minhas_financas_back_end
                 {
                     options.UseTheme(Theme.Default);
                     options.RoutePrefix = "api-docs";
-                    options.DocumentTitle = "Minhas Finanças";
                 });
             }
 
