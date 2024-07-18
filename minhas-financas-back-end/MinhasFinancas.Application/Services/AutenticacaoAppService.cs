@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using MinhasFinancas.Application.DTOs;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.Application.ViewModel;
+using MinhasFinancas.Domain.Entities;
+using MinhasFinancas.Infra.Data.Interfaces;
+using MinhasFinancas.Infra.Data.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using static MinhasFinancas.Application.Configurations.Configurations;
-using MinhasFinancas.Application.ViewModel;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -68,6 +68,7 @@ namespace MinhasFinancas.Application.Services
 
         private async Task<Tuple<string, string>> GerarCredenciais(string email)
         {
+
             var user = await _userManager.FindByEmailAsync(email);
             var accessTokenClaims = await ObterClaims(user, adicionarClaimsUsuario: true);
             var refreshTokenClaims = await ObterClaims(user, adicionarClaimsUsuario: false);

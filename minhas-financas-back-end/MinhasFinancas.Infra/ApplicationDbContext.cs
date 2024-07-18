@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MinhasFinancas.Domain.Entities;
 
 namespace MinhasFinancas.Infra
 {
@@ -11,8 +12,6 @@ namespace MinhasFinancas.Infra
         {
 
         }
-
-        //public DbSet<Nutricionista> Nutricionista { get; set; }
 
     }
 }
