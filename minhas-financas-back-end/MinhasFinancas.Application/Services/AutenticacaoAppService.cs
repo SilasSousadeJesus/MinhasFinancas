@@ -1,7 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using MinhasFinancas.Application.DTOs;
 using MinhasFinancas.Application.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using static MinhasFinancas.Application.Configurations.Configurations;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -10,7 +16,7 @@ namespace MinhasFinancas.Application.Services
 
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser>   _userManager;
-        //private readonly JwtOptions _jwtOptions; 
+        private readonly JwtOptions _jwtOptions;
 
         public AutenticacaoAppService(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager) {
             _signInManager = signInManager;
@@ -46,8 +52,7 @@ namespace MinhasFinancas.Application.Services
                            resultado.RequiresTwoFactor ? "É necessário confirmar o login no seu email" :
                            "Erro ao tentar efetuar o login";
 
-            //var token = resultado.Succeeded ? await GerarRoken(loginDTO.Email) : null;
-            string token =  null;
+            var credenciais = resultado.Succeeded ? await GerarCredenciais(loginDTO.Email) : null;
 
             return new RetornoGenerico
             {
@@ -55,8 +60,61 @@ namespace MinhasFinancas.Application.Services
                 HttpStatusCode = resultado.Succeeded ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.Unauthorized,
                 MensagemSistema = mensagem,
                 MensagemUsuario = mensagem,
-                Dados = token
+                Dados = credenciais
             };
+        }
+
+
+        private string GerarToken(IEnumerable<Claim> claims, DateTime dataExpiracao)
+        {
+            var jwt = new JwtSecurityToken(
+                issuer: _jwtOptions.Issuer,
+                audience: _jwtOptions.Audience,
+                claims: claims,
+                notBefore: DateTime.Now,
+                expires: dataExpiracao,
+                signingCredentials: _jwtOptions.SigningCredentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
+        }
+
+        private async Task<Tuple<string, string>> GerarCredenciais(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            var accessTokenClaims = await ObterClaims(user, adicionarClaimsUsuario: true);
+            var refreshTokenClaims = await ObterClaims(user, adicionarClaimsUsuario: false);
+
+            var dataExpiracaoAccessToken = DateTime.Now.AddSeconds(_jwtOptions.AccessTokenExpiration);
+            var dataExpiracaoRefreshToken = DateTime.Now.AddSeconds(_jwtOptions.RefreshTokenExpiration);
+
+            var accessToken = GerarToken(accessTokenClaims, dataExpiracaoAccessToken);
+            var refreshToken = GerarToken(refreshTokenClaims, dataExpiracaoRefreshToken);
+
+            return Tuple.Create(accessToken, refreshToken);
+        }
+
+        private async Task<IList<Claim>> ObterClaims(IdentityUser user, bool adicionarClaimsUsuario)
+        {
+            var claims = new List<Claim>();
+
+            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, DateTime.Now.ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));
+
+            if (adicionarClaimsUsuario)
+            {
+                var userClaims = await _userManager.GetClaimsAsync(user);
+                var roles = await _userManager.GetRolesAsync(user);
+
+                claims.AddRange(userClaims);
+
+                foreach (var role in roles)
+                    claims.Add(new Claim("role", role));
+            }
+
+            return claims;
         }
 
     }
