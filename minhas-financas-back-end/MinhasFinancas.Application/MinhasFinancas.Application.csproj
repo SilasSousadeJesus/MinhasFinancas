@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="Services\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MinhasFinancas.CrossCutting\MinhasFinancas.CrossCutting.csproj" />
+    <ProjectReference Include="..\MinhasFinancas.Domain\MinhasFinancas.Domain.csproj" />
+    <ProjectReference Include="..\MinhasFinancas.Infra\MinhasFinancas.Infra.csproj" />
+  </ItemGroup>
+
+</Project>
