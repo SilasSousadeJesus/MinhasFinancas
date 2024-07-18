@@ -8,6 +8,7 @@ using MinhasFinancas.Application.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using static MinhasFinancas.Application.Configurations.Configurations;
+using MinhasFinancas.Application.ViewModel;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -60,22 +61,8 @@ namespace MinhasFinancas.Application.Services
                 HttpStatusCode = resultado.Succeeded ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.Unauthorized,
                 MensagemSistema = mensagem,
                 MensagemUsuario = mensagem,
-                Dados = credenciais
+                Dados = new TokenViewModel(credenciais.Item1, credenciais.Item2)
             };
-        }
-
-
-        private string GerarToken(IEnumerable<Claim> claims, DateTime dataExpiracao)
-        {
-            var jwt = new JwtSecurityToken(
-                issuer: _jwtOptions.Issuer,
-                audience: _jwtOptions.Audience,
-                claims: claims,
-                notBefore: DateTime.Now,
-                expires: dataExpiracao,
-                signingCredentials: _jwtOptions.SigningCredentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
         private async Task<Tuple<string, string>> GerarCredenciais(string email)
@@ -91,6 +78,19 @@ namespace MinhasFinancas.Application.Services
             var refreshToken = GerarToken(refreshTokenClaims, dataExpiracaoRefreshToken);
 
             return Tuple.Create(accessToken, refreshToken);
+        }
+
+        private string GerarToken(IEnumerable<Claim> claims, DateTime dataExpiracao)
+        {
+            var jwt = new JwtSecurityToken(
+                issuer: _jwtOptions.Issuer,
+                audience: _jwtOptions.Audience,
+                claims: claims,
+                notBefore: DateTime.Now,
+                expires: dataExpiracao,
+                signingCredentials: _jwtOptions.SigningCredentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
         private async Task<IList<Claim>> ObterClaims(IdentityUser user, bool adicionarClaimsUsuario)
