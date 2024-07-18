@@ -1,5 +1,6 @@
 
 using AspNetCore.Scalar;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MinhasFinancas.Application.Interfaces;
@@ -24,10 +25,12 @@ namespace minhas_financas_back_end
 
             // Add services to the container.
 
+            builder.Services.AddDefaultIdentity<IdentityUser>()
+                  .AddRoles<IdentityRole>()
+                  .AddEntityFrameworkStores<ApplicationDbContext>()
+                  .AddDefaultTokenProviders();
 
-            //builder.Services.AddScoped<IAutenticacaoAppService, AutenticacaoAppService>();
-            //builder.Services.AddTransient<CustomJwtBearerHandler>();
-
+            builder.Services.AddScoped<IAutenticacaoAppService, AutenticacaoAppService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
