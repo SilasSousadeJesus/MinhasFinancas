@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MinhasFinancas.Application\MinhasFinancas.Application.csproj" />
     <ProjectReference Include="..\MinhasFinancas.CrossCutting\MinhasFinancas.CrossCutting.csproj" />
     <ProjectReference Include="..\MinhasFinancas.Infra\MinhasFinancas.Infra.csproj" />
