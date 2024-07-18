@@ -17,6 +17,8 @@ namespace MinhasFinancas.API.Controllers
         [HttpPost("Cadastrar")]
         public async Task<IActionResult> CadastrarUsuario(CadastroUsuarioDTO cadastroUsuarioDTO)
         {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
             var dados = await _appService.Cadastrar(cadastroUsuarioDTO);
 
             if (!dados.Sucesso)
@@ -37,6 +39,8 @@ namespace MinhasFinancas.API.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> LoginUsuario(LoginDTO loginDTO)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var dados = await _appService.Login(loginDTO);
 
             if (!dados.Sucesso)

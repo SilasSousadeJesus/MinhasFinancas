@@ -3,6 +3,7 @@ using AspNetCore.Scalar;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MinhasFinancas.API.Extensions;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Application.Services;
 using MinhasFinancas.Infra;
@@ -31,6 +32,9 @@ namespace minhas_financas_back_end
                   .AddDefaultTokenProviders();
 
             builder.Services.AddScoped<IAutenticacaoAppService, AutenticacaoAppService>();
+
+            // Add authentication services
+            AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -90,6 +94,7 @@ namespace minhas_financas_back_end
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

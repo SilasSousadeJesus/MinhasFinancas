@@ -19,9 +19,10 @@ namespace MinhasFinancas.Application.Services
         private readonly UserManager<IdentityUser>   _userManager;
         private readonly JwtOptions _jwtOptions;
 
-        public AutenticacaoAppService(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager) {
+        public AutenticacaoAppService(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IOptions<JwtOptions> jwtOptions) {
             _signInManager = signInManager;
-            _userManager = userManager;    
+            _userManager = userManager;
+            _jwtOptions = jwtOptions.Value;
         }
 
         public async Task<RetornoGenerico> Cadastrar(CadastroUsuarioDTO cadastroUsuarioDTO)
@@ -70,6 +71,8 @@ namespace MinhasFinancas.Application.Services
             var user = await _userManager.FindByEmailAsync(email);
             var accessTokenClaims = await ObterClaims(user, adicionarClaimsUsuario: true);
             var refreshTokenClaims = await ObterClaims(user, adicionarClaimsUsuario: false);
+
+            var teste = _jwtOptions.AccessTokenExpiration;
 
             var dataExpiracaoAccessToken = DateTime.Now.AddSeconds(_jwtOptions.AccessTokenExpiration);
             var dataExpiracaoRefreshToken = DateTime.Now.AddSeconds(_jwtOptions.RefreshTokenExpiration);
