@@ -13,7 +13,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
             _context = context;
         }
 
-        public Task<ApplicationUser?> BuscarUsuarioPorEmail(string email)
+        public Task<Usuario?> BuscarUsuarioPorEmail(string email)
         {
             throw new NotImplementedException();
         }

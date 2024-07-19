@@ -4,7 +4,7 @@ using MinhasFinancas.Domain.Entities;
 
 namespace MinhasFinancas.Infra
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<Usuario>
     {
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

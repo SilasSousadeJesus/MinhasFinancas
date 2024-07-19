@@ -60,15 +60,5 @@ namespace MinhasFinancas.API.Extensions
                 options.TokenValidationParameters = tokenValidationParameters;
             });
         }
-
-        //public static void AddAuthorizationPolicies(this IServiceCollection services)
-        //{
-        //    services.AddSingleton<IAuthorizationHandler, HorarioComercialHandler>();
-        //    services.AddAuthorization(options =>
-        //    {
-        //        options.AddPolicy(Policies.HorarioComercial, policy =>
-        //            policy.Requirements.Add(new HorarioComercialRequirement()));
-        //    });
-        //}
     }
 }

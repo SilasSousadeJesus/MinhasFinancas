@@ -12,8 +12,8 @@ using MinhasFinancas.Infra;
 namespace MinhasFinancas.Infra.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240718211935_adicionandoNomeParaUsuario")]
-    partial class adicionandoNomeParaUsuario
+    [Migration("20240719125732_migracaoInicial")]
+    partial class migracaoInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,12 +105,10 @@ namespace MinhasFinancas.Infra.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -147,12 +145,10 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -162,7 +158,7 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MinhasFinancas.Domain.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.Usuario", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -187,8 +183,7 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("NomeProprio")
-                        .IsRequired()
+                    b.Property<string>("Nome")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
@@ -242,7 +237,7 @@ namespace MinhasFinancas.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MinhasFinancas.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -251,7 +246,7 @@ namespace MinhasFinancas.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MinhasFinancas.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -266,7 +261,7 @@ namespace MinhasFinancas.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MinhasFinancas.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -275,7 +270,7 @@ namespace MinhasFinancas.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MinhasFinancas.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

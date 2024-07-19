@@ -9,6 +9,6 @@ namespace MinhasFinancas.Infra.Data.Interfaces
 {
     public interface IAutenticacaoRepository
     {
-        Task<ApplicationUser?> BuscarUsuarioPorEmail(string email);
+        Task<Usuario?> BuscarUsuarioPorEmail(string email);
     }
 }

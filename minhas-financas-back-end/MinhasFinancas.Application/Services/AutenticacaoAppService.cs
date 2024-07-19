@@ -14,12 +14,13 @@ namespace MinhasFinancas.Application.Services
 {
     public class AutenticacaoAppService : IAutenticacaoAppService
     {
-
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser>   _userManager;
+        //MinhasFinancas
+        private readonly SignInManager<Usuario> _signInManager;
+        private readonly UserManager<Usuario> _userManager;
         private readonly JwtOptions _jwtOptions;
 
-        public AutenticacaoAppService(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IOptions<JwtOptions> jwtOptions) {
+        public AutenticacaoAppService(SignInManager<Usuario> signInManager, UserManager<Usuario> userManager, IOptions<JwtOptions> jwtOptions)
+        {
             _signInManager = signInManager;
             _userManager = userManager;
             _jwtOptions = jwtOptions.Value;
@@ -28,8 +29,9 @@ namespace MinhasFinancas.Application.Services
         public async Task<RetornoGenerico> Cadastrar(CadastroUsuarioDTO cadastroUsuarioDTO)
         {
 
-            var identityUser = new IdentityUser
+            var identityUser = new Usuario
             {
+                Nome = cadastroUsuarioDTO.Nome,
                 UserName = cadastroUsuarioDTO.Email,
                 Email = cadastroUsuarioDTO.Email,
                 EmailConfirmed = true
@@ -97,12 +99,13 @@ namespace MinhasFinancas.Application.Services
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
-        private async Task<IList<Claim>> ObterClaims(IdentityUser user, bool adicionarClaimsUsuario)
+        private async Task<IList<Claim>> ObterClaims(Usuario user, bool adicionarClaimsUsuario)
         {
             var claims = new List<Claim>();
 
             claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Name, user.Nome));
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
             claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, DateTime.Now.ToString()));
             claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));
@@ -120,6 +123,5 @@ namespace MinhasFinancas.Application.Services
 
             return claims;
         }
-
     }
 }

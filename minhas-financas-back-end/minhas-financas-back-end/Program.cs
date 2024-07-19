@@ -27,16 +27,12 @@ namespace minhas_financas_back_end
                 options.UseSqlServer(connectionString);
             });
 
+
             // Add services to the container.
 
-            //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-            //                    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //                    .AddDefaultTokenProviders();
-
-            builder.Services.AddDefaultIdentity<IdentityUser>()
-                  .AddRoles<IdentityRole>()
-                  .AddEntityFrameworkStores<ApplicationDbContext>()
-                  .AddDefaultTokenProviders();
+            builder.Services.AddIdentity<Usuario, IdentityRole>()
+                                .AddEntityFrameworkStores<ApplicationDbContext>()
+                                .AddDefaultTokenProviders();
 
             builder.Services.AddScoped<IAutenticacaoAppService, AutenticacaoAppService>();
             builder.Services.AddScoped<IAutenticacaoRepository, AutenticacaoRepository>();
@@ -103,10 +99,7 @@ namespace minhas_financas_back_end
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();
