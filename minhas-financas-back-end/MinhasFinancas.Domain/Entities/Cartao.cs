@@ -21,10 +21,8 @@ namespace MinhasFinancas.Domain.Entities
         public string Instituicao { get; set; } = string.Empty;
         public EnumTipoCartao Tipo { get; set; }
 
-
-
         [ForeignKey("UsuarioId")]
         public Guid UsuarioId { get; set; }
-        public virtual Usuario Refeicao { get; set; }
+        public virtual Usuario Usuario { get; set; }
     }
 }

@@ -16,12 +16,9 @@ namespace MinhasFinancas.Domain.Entities
         public string Instituicao { get; set; } = string.Empty;
         public EnumTipoConta Tipo { get; set; }
 
-
-
         [ForeignKey("UsuarioId")]
         public Guid UsuarioId { get; set; }
-        public virtual Usuario Refeicao { get; set; }
+        public virtual Usuario Usuario { get; set; }
 
-        //public virtual List<AlimentoSubstituto> AlimentoSubstitutos { get; set; } = new List<AlimentoSubstituto>();
     }
 }

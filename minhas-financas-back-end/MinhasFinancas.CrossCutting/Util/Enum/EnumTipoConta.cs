@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace MinhasFinancas.CrossCutting.Util.Enum
+﻿namespace MinhasFinancas.CrossCutting.Util.Enum
 {
     public enum EnumTipoConta
     {
