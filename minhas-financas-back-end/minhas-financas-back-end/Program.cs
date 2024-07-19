@@ -29,7 +29,7 @@ namespace minhas_financas_back_end
 
             // Add services to the container.
 
-            builder.Services.AddIdentity<Usuario, IdentityRole>()
+            builder.Services.AddIdentity<Usuario, IdentityRole<Guid>>()
                                 .AddEntityFrameworkStores<ApplicationDbContext>()
                                 .AddDefaultTokenProviders();
 
