@@ -12,6 +12,6 @@ namespace MinhasFinancas.Infra
         {
 
         }
-
+        public DbSet<Banco> Banco { get; set; }
     }
 }

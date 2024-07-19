@@ -27,7 +27,6 @@ namespace minhas_financas_back_end
                 options.UseSqlServer(connectionString);
             });
 
-
             // Add services to the container.
 
             builder.Services.AddIdentity<Usuario, IdentityRole>()

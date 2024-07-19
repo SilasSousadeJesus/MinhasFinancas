@@ -1,0 +1,27 @@
+﻿using MinhasFinancas.CrossCutting.Util.Enum;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MinhasFinancas.Domain.Entities
+{
+    public class Banco
+    {
+        public Banco() { }
+
+        [Key]
+        public Guid Id { get; set; }
+        public string NomeConta { get; set; } = string.Empty;
+        public string Saldo { get; set; } = string.Empty;
+        public string Descricao { get; set; } = string.Empty;
+        public string Instituicao { get; set; } = string.Empty;
+        public EnumTipoConta Tipo { get; set; }
+
+
+
+        [ForeignKey("UsuarioId")]
+        public Guid UsuarioId { get; set; }
+        public virtual Usuario Refeicao { get; set; }
+
+        //public virtual List<AlimentoSubstituto> AlimentoSubstitutos { get; set; } = new List<AlimentoSubstituto>();
+    }
+}
