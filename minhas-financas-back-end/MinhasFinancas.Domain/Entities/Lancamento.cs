@@ -27,7 +27,7 @@ namespace MinhasFinancas.Domain.Entities
 
         // RELACIONAMENTO
         [ForeignKey("UsuarioId")]
-        public Guid UsuarioId { get; set; }
+        public Guid? UsuarioId { get; set; }
         public virtual Usuario Usuario { get; set; }
 
         [ForeignKey("CategoriaId")]
