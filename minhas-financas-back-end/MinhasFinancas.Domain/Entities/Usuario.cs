@@ -1,11 +1,10 @@
 ﻿
 
 using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
 
 namespace MinhasFinancas.Domain.Entities
 {
-    public class Usuario : IdentityUser<Guid>
+    public class Usuario : IdentityUser
     {
         public string? Nome  { get; set; }
 

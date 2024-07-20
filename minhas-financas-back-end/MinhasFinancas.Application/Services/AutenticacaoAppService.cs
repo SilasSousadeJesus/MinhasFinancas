@@ -4,8 +4,6 @@ using MinhasFinancas.Application.DTOs;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Application.ViewModel;
 using MinhasFinancas.Domain.Entities;
-using MinhasFinancas.Infra.Data.Interfaces;
-using MinhasFinancas.Infra.Data.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using static MinhasFinancas.Application.Configurations.Configurations;
@@ -14,7 +12,6 @@ namespace MinhasFinancas.Application.Services
 {
     public class AutenticacaoAppService : IAutenticacaoAppService
     {
-        //MinhasFinancas
         private readonly SignInManager<Usuario> _signInManager;
         private readonly UserManager<Usuario> _userManager;
         private readonly JwtOptions _jwtOptions;
@@ -24,26 +21,6 @@ namespace MinhasFinancas.Application.Services
             _signInManager = signInManager;
             _userManager = userManager;
             _jwtOptions = jwtOptions.Value;
-        }
-
-        public async Task<RetornoGenerico> Cadastrar(CadastroUsuarioDTO cadastroUsuarioDTO)
-        {
-
-            var identityUser = new Usuario
-            {
-                Nome = cadastroUsuarioDTO.Nome,
-                UserName = cadastroUsuarioDTO.Email,
-                Email = cadastroUsuarioDTO.Email,
-                EmailConfirmed = true
-            };
-
-            var result = await _userManager.CreateAsync(identityUser, cadastroUsuarioDTO.Senha);
-            if (result.Succeeded) await _userManager.SetLockoutEnabledAsync(identityUser, false);
-
-            var mensagem = result.Succeeded ? "Usuario criado com sucesso" : "Usuario não pode ser criado";
-            var statusCode = result.Succeeded ? System.Net.HttpStatusCode.Created : System.Net.HttpStatusCode.BadRequest;
-
-            return new RetornoGenerico(result.Succeeded, mensagem, mensagem, statusCode);
         }
 
         public async Task<RetornoGenerico> Login(LoginDTO loginDTO)

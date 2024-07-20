@@ -22,7 +22,7 @@ namespace MinhasFinancas.Domain.Entities
         public EnumTipoCartao Tipo { get; set; }
 
         [ForeignKey("UsuarioId")]
-        public Guid? UsuarioId { get; set; }
+        public string? UsuarioId { get; set; }
         public virtual Usuario Usuario { get; set; }
     }
 }
