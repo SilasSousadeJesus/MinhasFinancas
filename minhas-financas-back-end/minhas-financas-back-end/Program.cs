@@ -8,8 +8,6 @@ using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Application.Services;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra;
-using MinhasFinancas.Infra.Data.Interfaces;
-using MinhasFinancas.Infra.Data.Repositories;
 using Scalar.AspNetCore;
 
 namespace minhas_financas_back_end
@@ -34,7 +32,6 @@ namespace minhas_financas_back_end
                                 .AddDefaultTokenProviders();
 
             builder.Services.AddScoped<IAutenticacaoAppService, AutenticacaoAppService>();
-            builder.Services.AddScoped<IAutenticacaoRepository, AutenticacaoRepository>();
             builder.Services.AddScoped<IUsuarioAppService, UsuarioAppService>();
 
             // Add authentication services
