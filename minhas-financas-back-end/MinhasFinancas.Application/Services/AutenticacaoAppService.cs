@@ -25,9 +25,24 @@ namespace MinhasFinancas.Application.Services
 
         public async Task<RetornoGenerico> Login(LoginDTO loginDTO)
         {
+            var mensagem = string.Empty;
+
+            var user = await _userManager.FindByEmailAsync(loginDTO.Email);
+
+            if (user is null) {
+                return new RetornoGenerico
+                {
+                    Sucesso = false,
+                    HttpStatusCode = System.Net.HttpStatusCode.NotFound,
+                    MensagemSistema = "Usuario não encontrado",
+                    MensagemUsuario = "Usuario não encontrado",
+                    Dados = null
+                };
+            }
+
             var resultado = await _signInManager.PasswordSignInAsync(loginDTO.Email, loginDTO.Senha, false, true);
 
-            var mensagem = resultado.Succeeded ? "Login efetuado com sucesso" :
+            mensagem = resultado.Succeeded ? "Login efetuado com sucesso" :
                            resultado.IsLockedOut ? "Esta Conta está bloqueada" :
                            resultado.IsNotAllowed ? "Esta Conta não tem permissão para fazer login" :
                            resultado.RequiresTwoFactor ? "É necessário confirmar o login no seu email" :
