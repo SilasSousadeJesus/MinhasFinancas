@@ -1,4 +1,4 @@
-﻿using MinhasFinancas.Application.DTOs;
+﻿using MinhasFinancas.Application.DTOs.Usuario;
 
 namespace MinhasFinancas.Application.Interfaces
 {

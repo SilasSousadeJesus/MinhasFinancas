@@ -1,4 +1,4 @@
-﻿namespace MinhasFinancas.Application.DTOs
+﻿namespace MinhasFinancas.Application.DTOs.Usuario
 {
     public class EditarUsuarioDTO
     {

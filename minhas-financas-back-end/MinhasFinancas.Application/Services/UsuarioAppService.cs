@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MinhasFinancas.Application.DTOs;
+using MinhasFinancas.Application.DTOs.Usuario;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Domain.Entities;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MinhasFinancas.Application.DTOs;
+using MinhasFinancas.Application.DTOs.Usuario;
 using MinhasFinancas.Application.Interfaces;
 
 namespace MinhasFinancas.API.Controllers

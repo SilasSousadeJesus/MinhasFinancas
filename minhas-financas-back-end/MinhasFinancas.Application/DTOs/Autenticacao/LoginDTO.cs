@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MinhasFinancas.Application.DTOs
+namespace MinhasFinancas.Application.DTOs.Autenticacao
 {
     public class LoginDTO
     {

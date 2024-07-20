@@ -11,7 +11,9 @@ namespace MinhasFinancas.Domain.Entities
         [Key]
         public Guid Id { get; set; }
         public string NomeCartao { get; set; } = string.Empty;
-        public string Limite { get; set; } = string.Empty;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Saldo { get; set; } = decimal.Zero;
         public string Bandeira { get; set; } = string.Empty;
         public string Ultimos4Digitos { get; set; } = string.Empty;
         public string DiaFechamento { get; set; } = string.Empty;

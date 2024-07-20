@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MinhasFinancas.Application.DTOs;
+using MinhasFinancas.Application.DTOs.Autenticacao;
 using MinhasFinancas.Application.Interfaces;
 
 namespace MinhasFinancas.API.Controllers

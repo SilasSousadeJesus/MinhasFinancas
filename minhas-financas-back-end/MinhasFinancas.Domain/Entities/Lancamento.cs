@@ -8,7 +8,9 @@ namespace MinhasFinancas.Domain.Entities
     {
         [Key]
         public Guid Id { get; set; }
-        public string Valor { get; set; } = string.Empty;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Saldo { get; set; } = decimal.Zero;
         public string Descricao { get; set; } = string.Empty;
         public string Observacao { get; set; } = string.Empty;
         public DateTime DataPagamento { get; set; }
