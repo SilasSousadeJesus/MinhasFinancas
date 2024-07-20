@@ -15,6 +15,5 @@ namespace MinhasFinancas.Domain.Entities
 
         [ForeignKey("LancamentoId")]
         public Guid LancamentoId { get; set; }
-        public virtual Lancamento? Lancamento { get; set; }
     }
 }

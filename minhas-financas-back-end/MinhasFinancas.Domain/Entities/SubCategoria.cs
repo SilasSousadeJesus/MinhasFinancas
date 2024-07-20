@@ -13,6 +13,5 @@ namespace MinhasFinancas.Domain.Entities
 
         [ForeignKey("CategoriaId")]
         public Guid CategoriaId { get; set; }
-        public virtual Categoria Categoria { get; set; }
     }
 }

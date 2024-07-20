@@ -9,6 +9,7 @@ namespace MinhasFinancas.Application.Configurations
         public MappingProfile()
         {
             CreateMap<CadastroBancoDTO, Banco>();
+            CreateMap<EditarBancoDTO, Banco>();
         }
     }
 }

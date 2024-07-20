@@ -13,14 +13,16 @@ namespace MinhasFinancas.Infra.Data.Repositories
             _context = context;
         }
 
-        public async Task<List<Banco>> BuscarTodosOsElementosAsync()
+        public async Task<List<Banco>> BuscarTodosOsElementosAsync(string id)
         {
-            return await _context.Set<Banco>().ToListAsync();
+            return await _context.Set<Banco>()
+                        .Where(b => b.UsuarioId == id)
+                        .ToListAsync();
         }
 
-        public async Task<Banco> BuscarUmElementoAsync(int id)
+        public async Task<Banco> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
-            return await _context.Set<Banco>().FindAsync(id);
+            return await _context.Set<Banco>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstAsync();
         }
 
         public async Task CadastrarElementoAsync(Banco elemento)
@@ -43,6 +45,12 @@ namespace MinhasFinancas.Infra.Data.Repositories
 
         public async Task EditarElementoAsync(Banco elemento)
         {
+            var existingEntity = _context.Set<Banco>().Local.FirstOrDefault(b => b.Id == elemento.Id);
+            if (existingEntity != null)
+            {
+                _context.Entry(existingEntity).State = EntityState.Detached;
+            }
+
             _context.Set<Banco>().Update(elemento);
             await _context.SaveChangesAsync();
         }
