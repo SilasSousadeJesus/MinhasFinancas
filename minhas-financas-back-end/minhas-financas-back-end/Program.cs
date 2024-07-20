@@ -4,10 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MinhasFinancas.API.Extensions;
+using MinhasFinancas.Application.Configurations;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Application.Services;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra;
+using MinhasFinancas.Infra.Data.Interfaces;
+using MinhasFinancas.Infra.Data.Repositories;
 using Scalar.AspNetCore;
 
 namespace minhas_financas_back_end
@@ -17,6 +20,9 @@ namespace minhas_financas_back_end
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Configuração do AutoMapper
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             var connectionString = builder.Configuration.GetConnectionString("ConnectionMinhasFinancas");
 
@@ -33,6 +39,9 @@ namespace minhas_financas_back_end
 
             builder.Services.AddScoped<IAutenticacaoAppService, AutenticacaoAppService>();
             builder.Services.AddScoped<IUsuarioAppService, UsuarioAppService>();
+
+            builder.Services.AddScoped<IBancoAppService, BancoAppService>();
+            builder.Services.AddScoped<IBancoRepository, BancoRepository>();
 
             // Add authentication services
             AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);

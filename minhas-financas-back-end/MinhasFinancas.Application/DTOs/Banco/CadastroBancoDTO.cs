@@ -18,7 +18,7 @@ namespace MinhasFinancas.Application.DTOs.Banco
         [Required(ErrorMessage = "0 Campo {0} é Obrigatorio")]
         public EnumTipoConta Tipo { get; set; }
 
-        [Required(ErrorMessage = "0 Campo {0} é Obrigatorio")]
+        [Required(ErrorMessage = "0 Campo {0} é Obrigatorio, o banco precisa esta associado a um usuario")]
         public string? UsuarioId { get; set; }
     }
 }
