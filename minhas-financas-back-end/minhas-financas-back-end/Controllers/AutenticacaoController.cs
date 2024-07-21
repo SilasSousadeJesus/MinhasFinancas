@@ -14,28 +14,6 @@ namespace MinhasFinancas.API.Controllers
             _appService = autenticacaoAppService;
         }
 
-        //[HttpPost("Cadastrar")]
-        //public async Task<IActionResult> CadastrarUsuario(CadastroUsuarioDTO cadastroUsuarioDTO)
-        //{
-        //    if(!ModelState.IsValid) return BadRequest(ModelState);
-
-        //    var dados = await _appService.Cadastrar(cadastroUsuarioDTO);
-
-        //    if (!dados.Sucesso)
-        //    {
-        //        return dados.HttpStatusCode switch
-        //        {
-        //            System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
-        //            System.Net.HttpStatusCode.NotFound => NotFound(dados),
-        //            System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
-        //            System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
-        //            _ => BadRequest(dados)
-        //        };
-        //    }
-
-        //    return Ok(dados);
-        //}
-
         [HttpPost("Login")]
         public async Task<IActionResult> LoginUsuario(LoginDTO loginDTO)
         {

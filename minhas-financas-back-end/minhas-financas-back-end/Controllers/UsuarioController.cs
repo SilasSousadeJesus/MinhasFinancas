@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Usuario;
 using MinhasFinancas.Application.Interfaces;
 
@@ -16,7 +15,7 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [HttpPost("Cadastrar")]
-        public async Task<IActionResult> CadastrarUsuario(CadastrarUsuarioDTO cadastroUsuarioDTO)
+        public async Task<IActionResult> CadastrarUsuario([FromBody] CadastrarUsuarioDTO cadastroUsuarioDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -37,11 +36,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarUmUsuario")]
-        public async Task<IActionResult> BuscarUmUsuario(string UsuarioId)
+        [HttpGet("BuscarUmUsuario/{usuarioId}")]
+        public async Task<IActionResult> BuscarUmUsuario([FromRoute] string usuarioId)
         {
 
-            var dados = await _appService.BuscarUmUsuario(UsuarioId);
+            var dados = await _appService.BuscarUmUsuario(usuarioId);
 
             if (!dados.Sucesso)
             {
@@ -80,8 +79,8 @@ namespace MinhasFinancas.API.Controllers
         }
 
 
-        [HttpPatch("EditarUsuario")]
-        public async Task<IActionResult> EditarUsuario(string usuarioId, EditarUsuarioDTO editarUsuarioDTO)
+        [HttpPatch("EditarUsuario/{usuarioId}")]
+        public async Task<IActionResult> EditarUsuario([FromRoute] string usuarioId, [FromBody] EditarUsuarioDTO editarUsuarioDTO)
         {
 
             var dados = await _appService.EditarUsuario(usuarioId, editarUsuarioDTO);
@@ -101,11 +100,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpDelete("DeletarUsuario")]
-        public async Task<IActionResult> DeletarUsuario(string UsuarioId)
+        [HttpDelete("DeletarUsuario/{usuarioId}")]
+        public async Task<IActionResult> DeletarUsuario([FromRoute] string usuarioId)
         {
 
-            var dados = await _appService.DeletarUsuario(UsuarioId);
+            var dados = await _appService.DeletarUsuario(usuarioId);
 
             if (!dados.Sucesso)
             {

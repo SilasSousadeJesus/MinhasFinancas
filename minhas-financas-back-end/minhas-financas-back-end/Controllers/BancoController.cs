@@ -38,8 +38,8 @@ namespace MinhasFinancas.API.Controllers
         }
 
 
-        [HttpGet("BuscarTodosOsBancos")]
-        public async Task<IActionResult> BuscarTodosOsBancos(string usuarioId)
+        [HttpGet("BuscarTodosOsBancos/{usuarioId}")]
+        public async Task<IActionResult> BuscarTodosOsBancos([FromRoute] string usuarioId)
         {
 
             var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId);
@@ -59,11 +59,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarUmBanco")]
-        public async Task<IActionResult> BuscarUmBanco(string UsuarioId, Guid bancoId)
+        [HttpGet("BuscarUmBanco/{usuarioId}/{bancoId}")]
+        public async Task<IActionResult> BuscarUmBanco([FromRoute] string usuarioId, [FromRoute] Guid bancoId)
         {
 
-            var dados = await _appService.BuscarUmElementoAsync(UsuarioId, bancoId);
+            var dados = await _appService.BuscarUmElementoAsync(usuarioId, bancoId);
 
             if (!dados.Sucesso)
             {
@@ -80,12 +80,12 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpPut("EditarBanco")]
-        public async Task<IActionResult> EditarBanco(string UsuarioId, Guid bancoId, EditarBancoDTO editarBancoDTO)
+        [HttpPut("EditarBanco/{usuarioId}/{bancoId}")]
+        public async Task<IActionResult> EditarBanco([FromRoute] string usuarioId, [FromRoute] Guid bancoId, [FromBody] EditarBancoDTO editarBancoDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var dados = await _appService.EditarElementoAsync(UsuarioId, bancoId, editarBancoDTO);
+            var dados = await _appService.EditarElementoAsync(usuarioId, bancoId, editarBancoDTO);
 
             if (!dados.Sucesso)
             {
@@ -102,11 +102,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpDelete("DeletarBanco")]
-        public async Task<IActionResult> DeletarBanco(string UsuarioId, Guid bancoId)
+        [HttpDelete("DeletarBanco/{usuarioId}/{bancoId}")]
+        public async Task<IActionResult> DeletarBanco(string usuarioId, Guid bancoId)
         {
 
-            var dados = await _appService.DeletarElementoAsync(UsuarioId, bancoId);
+            var dados = await _appService.DeletarElementoAsync(usuarioId, bancoId);
 
             if (!dados.Sucesso)
             {

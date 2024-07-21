@@ -16,7 +16,7 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [HttpPost("CadastrarCartao")]
-        public async Task<IActionResult> CadastrarCartao(CadastrarCartaoDTO cadastroCartaoDTO)
+        public async Task<IActionResult> CadastrarCartao([FromBody] CadastrarCartaoDTO cadastroCartaoDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -37,8 +37,8 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarTodosOsCartoes")]
-        public async Task<IActionResult> BuscarTodosOsCartoes(string usuarioId)
+        [HttpGet("BuscarTodosOsCartoes/{usuarioId}")]
+        public async Task<IActionResult> BuscarTodosOsCartoes([FromRoute] string usuarioId)
         {
 
             var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId);
@@ -58,11 +58,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarUmCartao")]
-        public async Task<IActionResult> BuscarUmCartao(string UsuarioId, Guid cartaoId)
+        [HttpGet("BuscarUmCartao/{usuarioId}/{cartaoId}")]
+        public async Task<IActionResult> BuscarUmCartao([FromRoute] string usuarioId, [FromRoute] Guid cartaoId)
         {
 
-            var dados = await _appService.BuscarUmElementoAsync(UsuarioId, cartaoId);
+            var dados = await _appService.BuscarUmElementoAsync(usuarioId, cartaoId);
 
             if (!dados.Sucesso)
             {
@@ -79,12 +79,12 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpPut("EditarCartao")]
-        public async Task<IActionResult> EditarCartao(string UsuarioId, Guid cartaoId, EditarCartaoDTO editarCartaoDTO)
+        [HttpPut("EditarCartao/{usuarioId}/{cartaoId}")]
+        public async Task<IActionResult> EditarCartao([FromRoute] string usuarioId, [FromRoute] Guid cartaoId, [FromBody] EditarCartaoDTO editarCartaoDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var dados = await _appService.EditarElementoAsync(UsuarioId, cartaoId, editarCartaoDTO);
+            var dados = await _appService.EditarElementoAsync(usuarioId, cartaoId, editarCartaoDTO);
 
             if (!dados.Sucesso)
             {
@@ -101,11 +101,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpDelete("DeletarCartao")]
-        public async Task<IActionResult> DeletarCartao(string UsuarioId, Guid cartaoId)
+        [HttpDelete("DeletarCartao/{usuarioId}/{cartaoId}")]
+        public async Task<IActionResult> DeletarCartao([FromRoute] string usuarioId, [FromRoute] Guid cartaoId)
         {
 
-            var dados = await _appService.DeletarElementoAsync(UsuarioId, cartaoId);
+            var dados = await _appService.DeletarElementoAsync(usuarioId, cartaoId);
 
             if (!dados.Sucesso)
             {

@@ -64,7 +64,7 @@ namespace minhas_financas_back_end
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API - GestaoDieta", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API - Minhas Finanças", Version = "v1" });
 
                 // Adicione as configurações do JWT aqui
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -101,7 +101,7 @@ namespace minhas_financas_back_end
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "GestaoDieta - V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minhas Finanças - V1");
                     c.RoutePrefix = "swagger";
                 });
 

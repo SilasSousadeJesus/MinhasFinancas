@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Categoria;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.Domain.Entities;
 
 namespace MinhasFinancas.API.Controllers
 {
@@ -15,8 +16,9 @@ namespace MinhasFinancas.API.Controllers
             _appService = categoriaAppService;
         }
 
+        // CATEGORIA
         [HttpPost("CadastrarCategoria")]
-        public async Task<IActionResult> CadastrarCategoria(CadastrarCategoriaDTO cadastrarCategoria)
+        public async Task<IActionResult> CadastrarCategoria([FromBody] CadastrarCategoriaDTO cadastrarCategoria)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -37,8 +39,8 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarTodosAsCategorias")]
-        public async Task<IActionResult> BuscarTodosAsCategorias(string usuarioId)
+        [HttpGet("BuscarTodosAsCategorias/{usuarioId}")]
+        public async Task<IActionResult> BuscarTodosAsCategorias([FromRoute] string usuarioId)
         {
 
             var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId);
@@ -58,11 +60,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarUmaCategoria")]
-        public async Task<IActionResult> BuscarUmaCategoria(string UsuarioId, Guid categoriaId)
+        [HttpGet("BuscarUmaCategoria/{usuarioId}/{categoriaId}")]
+        public async Task<IActionResult> BuscarUmaCategoria([FromRoute] string usuarioId, [FromRoute] Guid categoriaId)
         {
 
-            var dados = await _appService.BuscarUmElementoAsync(UsuarioId, categoriaId);
+            var dados = await _appService.BuscarUmElementoAsync(usuarioId, categoriaId);
 
             if (!dados.Sucesso)
             {
@@ -79,12 +81,12 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpPut("EditarCategoria")]
-        public async Task<IActionResult> EditarCategoria(string UsuarioId, Guid categoriaId, EditarCategoriaDTO editarCategoria)
+        [HttpPut("EditarCategoria/{usuarioId}/{categoriaId}")]
+        public async Task<IActionResult> EditarCategoria([FromRoute] string usuarioId, [FromRoute] Guid categoriaId, [FromBody] EditarCategoriaDTO editarCategoria)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var dados = await _appService.EditarElementoAsync(UsuarioId, categoriaId, editarCategoria);
+            var dados = await _appService.EditarElementoAsync(usuarioId, categoriaId, editarCategoria);
 
             if (!dados.Sucesso)
             {
@@ -101,11 +103,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpDelete("DeletarCategoria")]
-        public async Task<IActionResult> DeletarCategoria(string UsuarioId, Guid categoriaId)
+        [HttpDelete("DeletarCategoria/{usuarioId}/{categoriaId}")]
+        public async Task<IActionResult> DeletarCategoria([FromRoute] string usuarioId, [FromRoute] Guid categoriaId)
         {
 
-            var dados = await _appService.DeletarElementoAsync(UsuarioId, categoriaId);
+            var dados = await _appService.DeletarElementoAsync(usuarioId, categoriaId);
 
             if (!dados.Sucesso)
             {
@@ -123,14 +125,13 @@ namespace MinhasFinancas.API.Controllers
         }
 
 
-
-
-        [HttpPost("CadastrarSubCategoria")]
-        public async Task<IActionResult> CadastrarSubCategoria(CadastrarSubCategoriaDTO cadastrarCategoria)
+        // SUBCATEGORIA
+        [HttpPost("CadastrarSubCategoria/{usuarioId}/{categoriaId}")]
+        public async Task<IActionResult> CadastrarSubCategoria([FromRoute] string usuarioId,[FromRoute] Guid categoriaId, [FromBody] CadastrarSubCategoriaDTO cadastrarCategoria)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             
-            var dados = await _appService.CadastrarSubCategoriaAsync(cadastrarCategoria);
+            var dados = await _appService.CadastrarSubCategoriaAsync(usuarioId, categoriaId, cadastrarCategoria);
 
             if (!dados.Sucesso)
             {
@@ -148,11 +149,76 @@ namespace MinhasFinancas.API.Controllers
         }
 
 
-        [HttpGet("BuscarTodosAsSubCategorias")]
+        [HttpGet("BuscarTodosAsSubCategorias/{usuarioId}/{categoriaId}")]
         public async Task<IActionResult> BuscarTodosAsSubCategorias(string usuarioId, Guid categoriaId)
         {
 
-            var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId);
+            var dados = await _appService.BuscarTodosAsSubCategoriaAsync(usuarioId, categoriaId);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+
+
+        [HttpGet("BuscarUmaSubCategoria/{categoriaId}/{subCategoriaId}")]
+        public async Task<IActionResult> BuscarUmaSubCategoria([FromRoute] Guid categoriaId, [FromRoute] Guid subCategoriaId)
+        {
+
+            var dados = await _appService.BuscarUmaSubCategoriaAsync(categoriaId, subCategoriaId);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+
+        [HttpPut("EditarSubCategoria/{usuarioId}/{categoriaId}/{subCategoriaId}")]
+        public async Task<IActionResult> EditarSubCategoria([FromRoute] string usuarioId, [FromRoute] Guid categoriaId, [FromRoute] Guid subCategoriaId, [FromBody] EditarSubCategoriaDTO  editarSubCategoriaDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var dados = await _appService.EditarSubCategoriaAsync(usuarioId, categoriaId, subCategoriaId, editarSubCategoriaDTO);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+
+        [HttpDelete("DeletarSubCategoria/{usuarioId}/{categoriaId}/{subCategoriaId}")]
+        public async Task<IActionResult> DeletarCategoria([FromRoute] string UsuarioId, [FromRoute] Guid categoriaId, [FromRoute] Guid subCategoriaId)
+        {
+
+            var dados = await _appService.DeletarSubCategoriaAsync(UsuarioId, categoriaId, subCategoriaId);
 
             if (!dados.Sucesso)
             {
