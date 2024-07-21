@@ -1,10 +1,23 @@
-﻿using MinhasFinancas.Application.DTOs.Lancamento;
+﻿using AutoMapper;
+using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.Infra.Data.Interfaces;
 
 namespace MinhasFinancas.Application.Services
 {
     public class LancamentoAppService : ILancamentoAppService
     {
+
+        private readonly IMapper _mapper;
+        private readonly ILancamentoRepository _lancamentoRepository;
+        private readonly IUsuarioAppService _usuarioAppService;
+        public LancamentoAppService(IMapper mapper, ILancamentoRepository lancamentoRepository, IUsuarioAppService usuarioAppService)
+        {
+            _mapper = mapper;
+            _lancamentoRepository = lancamentoRepository;
+            _usuarioAppService = usuarioAppService;
+        }
+
         public Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id)
         {
             throw new NotImplementedException();
