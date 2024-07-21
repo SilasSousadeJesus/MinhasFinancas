@@ -53,7 +53,10 @@ namespace minhas_financas_back_end
 
             builder.Services.AddScoped<ICategoriaAppService, CategoriaAppService>();
             builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
-        
+
+            builder.Services.AddScoped<ILancamentoAppService, LancamentoAppService>();
+            builder.Services.AddScoped<ILancamentoRepository, LancamentoRepository>();
+
 
             // Add authentication services
             AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);

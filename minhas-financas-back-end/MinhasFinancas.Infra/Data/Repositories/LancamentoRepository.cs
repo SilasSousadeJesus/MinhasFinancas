@@ -1,4 +1,5 @@
-﻿using MinhasFinancas.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
 
 namespace MinhasFinancas.Infra.Data.Repositories
@@ -12,9 +13,11 @@ namespace MinhasFinancas.Infra.Data.Repositories
         {
             _context = context;
         }
-        public Task<List<Lancamento>> BuscarTodosOsElementosAsync(string id)
+        public async Task<List<Lancamento>> BuscarTodosOsElementosAsync(string id)
         {
-            throw new NotImplementedException();
+            return await _context.Set<Lancamento>()
+               .Where(b => b.UsuarioId == id)
+               .ToListAsync();
         }
 
         public Task<Lancamento> BuscarUmElementoAsync(string idPatrono, Guid id)

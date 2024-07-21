@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.Domain.Services.DashBoard;
 using MinhasFinancas.Infra.Data.Interfaces;
+using System.Net;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -18,9 +20,44 @@ namespace MinhasFinancas.Application.Services
             _usuarioAppService = usuarioAppService;
         }
 
-        public Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id)
+        public async Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id)
         {
-            throw new NotImplementedException();
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorusuario = await _usuarioAppService.BuscarUmUsuario(id);
+
+                if (!buscaPorusuario.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorusuario.Sucesso;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = buscaPorusuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorusuario.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var lista = await _lancamentoRepository.BuscarTodosOsElementosAsync(id);
+
+                var dashboard = new Dashboard(lista);
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = $"{lista.Count} elemento(s) encontrado(s)";
+                retorno.MensagemUsuario = $"{lista.Count} elemento(s)  encontrado(s)";
+                retorno.Dados = dashboard;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possivel buscar a lista de cartões";
+                retorno.Dados = null;
+                return retorno;
+            }
         }
 
         public Task<RetornoGenerico> BuscarUmElementoAsync(string usuarioId, Guid BancoId)
