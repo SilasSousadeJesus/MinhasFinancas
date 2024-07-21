@@ -16,7 +16,7 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [HttpPost("Cadastrar")]
-        public async Task<IActionResult> CadastrarUsuario(CadastroUsuarioDTO cadastroUsuarioDTO)
+        public async Task<IActionResult> CadastrarUsuario(CadastrarUsuarioDTO cadastroUsuarioDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

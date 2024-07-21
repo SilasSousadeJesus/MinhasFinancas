@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MinhasFinancas.Application.DTOs.Banco;
+using MinhasFinancas.Application.DTOs.Categoria;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
@@ -7,69 +7,26 @@ using System.Net;
 
 namespace MinhasFinancas.Application.Services
 {
-
-
-    public class BancoAppService : IBancoAppService
+    public class CategoriaAppService : ICategoriaAppService
     {
         private readonly IMapper _mapper;
-        private readonly IBancoRepository _bancoRepository;
+        private readonly ICategoriaRepository _categoriaRepository;
         private readonly IUsuarioAppService _usuarioAppService;
-        public BancoAppService(IMapper mapper, IBancoRepository bancoRepository, IUsuarioAppService usuarioAppService)
+
+        public CategoriaAppService(IMapper mapper, ICategoriaRepository categoriaRepository, IUsuarioAppService usuarioAppService)
         {
             _mapper = mapper;
-            _bancoRepository = bancoRepository;
+            _categoriaRepository = categoriaRepository;
             _usuarioAppService = usuarioAppService;
         }
 
-        public async Task<RetornoGenerico> CadastrarElementoAsync(CadastrarBancoDTO cadastroBancoDTO)
+        public async Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id)
         {
             var retorno = new RetornoGenerico();
 
             try
             {
-                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(cadastroBancoDTO.UsuarioId);
-
-                if (!buscaPorUsuario.Sucesso)
-                {
-                    retorno.Sucesso = buscaPorUsuario.Sucesso;
-                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
-                    retorno.MensagemSistema = buscaPorUsuario.MensagemSistema;
-                    retorno.MensagemUsuario = buscaPorUsuario.MensagemUsuario;
-                    retorno.Dados = null;
-
-                    return retorno;
-                }
-
-                var banco = _mapper.Map<Banco>(cadastroBancoDTO);
-
-                await _bancoRepository.CadastrarElementoAsync(banco);
-
-                retorno.Sucesso = true;
-                retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Banco cadastrado com sucesso";
-                retorno.MensagemUsuario = "Banco cadastrado";
-                retorno.Dados = null;
-                return retorno;
-            }
-            catch (Exception ex)
-            {
-                retorno.Sucesso = false;
-                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
-                retorno.MensagemSistema = $"{ex}";
-                retorno.MensagemUsuario = "Não foi possivel criar o banco";
-                retorno.Dados = null;
-                return retorno;
-            }
-        }
-
-        public async Task<RetornoGenerico> BuscarTodosOsElementosAsync(string usuarioId)
-        {
-       
-            var retorno = new RetornoGenerico();
-
-            try
-            {
-                var buscaPorusuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+                var buscaPorusuario = await _usuarioAppService.BuscarUmUsuario(id);
 
                 if (!buscaPorusuario.Sucesso)
                 {
@@ -78,17 +35,16 @@ namespace MinhasFinancas.Application.Services
                     retorno.MensagemSistema = buscaPorusuario.MensagemSistema;
                     retorno.MensagemUsuario = buscaPorusuario.MensagemUsuario;
                     retorno.Dados = null;
-
                     return retorno;
                 }
 
-                var listaBancos = await _bancoRepository.BuscarTodosOsElementosAsync(usuarioId);
+                var lista = await _categoriaRepository.BuscarTodosOsElementosAsync(id);
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = $"{listaBancos.Count} Banco(s) encontrado(s)";
-                retorno.MensagemUsuario = $"{listaBancos.Count} Banco(s) encontrado(s)";
-                retorno.Dados = listaBancos;
+                retorno.MensagemSistema = $"{lista.Count} elemento(s) encontrado(s)";
+                retorno.MensagemUsuario = $"{lista.Count} elemento(s)  encontrado(s)";
+                retorno.Dados = lista;
                 return retorno;
             }
             catch (Exception ex)
@@ -96,7 +52,7 @@ namespace MinhasFinancas.Application.Services
                 retorno.Sucesso = false;
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
-                retorno.MensagemUsuario = "Não foi possivel buscar a lista de bancos";
+                retorno.MensagemUsuario = "Não foi possivel buscar a lista de elementos";
                 retorno.Dados = null;
                 return retorno;
             }
@@ -121,13 +77,13 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var banco = await _bancoRepository.BuscarUmElementoAsync(usuarioId, BancoId);
+                var categoria = await _categoriaRepository.BuscarUmElementoAsync(usuarioId, BancoId);
 
-                retorno.Sucesso = banco != null ? true : false;
-                retorno.HttpStatusCode = banco != null ? HttpStatusCode.OK : HttpStatusCode.NotFound;
-                retorno.MensagemSistema = banco != null ? "Banco Encontrado" : "Banco não encontrado";
-                retorno.MensagemUsuario = banco != null ? "Banco Encontrado" : "Banco não encontrado";
-                retorno.Dados = banco;
+                retorno.Sucesso = categoria != null ? true : false;
+                retorno.HttpStatusCode = categoria != null ? HttpStatusCode.OK : HttpStatusCode.NotFound;
+                retorno.MensagemSistema = categoria != null ? "Categoria Encontrada" : "Categoria não Encontrada";
+                retorno.MensagemUsuario = categoria != null ? "Categoria Encontrada" : "Categoria não Encontrada";
+                retorno.Dados = categoria;
                 return retorno;
             }
             catch (Exception ex)
@@ -135,19 +91,99 @@ namespace MinhasFinancas.Application.Services
                 retorno.Sucesso = false;
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
-                retorno.MensagemUsuario = "Não foi possivel encontrar o banco";
+                retorno.MensagemUsuario = "Não foi possivel encontrar a categoria";
                 retorno.Dados = null;
                 return retorno;
             }
         }
 
-        public async Task<RetornoGenerico> DeletarElementoAsync(string usuarioId, Guid BancoId)
+        public async Task<RetornoGenerico> CadastrarElementoAsync(CadastrarCategoria elementoDTO)
         {
             var retorno = new RetornoGenerico();
 
             try
             {
-                var buscaPorBanco = await BuscarUmElementoAsync(usuarioId, BancoId);
+                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(elementoDTO.UsuarioId);
+
+                if (!buscaPorUsuario.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorUsuario.Sucesso;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = buscaPorUsuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorUsuario.MensagemUsuario;
+                    retorno.Dados = null;
+
+                    return retorno;
+                }
+
+                var categoria = _mapper.Map<Categoria>(elementoDTO);
+
+                await _categoriaRepository.CadastrarElementoAsync(categoria);
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = "Categoria cadastrada com sucesso";
+                retorno.MensagemUsuario = "Categoria cadastrada";
+                retorno.Dados = null;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possivel criar a Categoria";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
+        public async Task<RetornoGenerico> DeletarElementoAsync(string idPatrono, Guid idElemento)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorCartao = await BuscarUmElementoAsync(idPatrono, idElemento);
+
+                if (!buscaPorCartao.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorCartao.Sucesso;
+                    retorno.HttpStatusCode = buscaPorCartao.HttpStatusCode;
+                    retorno.MensagemSistema = buscaPorCartao.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorCartao.MensagemUsuario;
+                    retorno.Dados = null;
+
+                    return retorno;
+                }
+
+                await _categoriaRepository.DeletarElementoAsync(buscaPorCartao.Dados);
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = "categoria deletada com sucesso";
+                retorno.MensagemUsuario = "categoria Deletada";
+                retorno.Dados = null;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possivel Deletada a categoria";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
+        public async Task<RetornoGenerico> EditarElementoAsync(string idPatrono, Guid elementoId, EditarCategoria elementoDTO)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorBanco = await BuscarUmElementoAsync(idPatrono, elementoId);
 
                 if (!buscaPorBanco.Sucesso)
                 {
@@ -160,12 +196,16 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                await _bancoRepository.DeletarElementoAsync(buscaPorBanco.Dados);
+                var categoria = _mapper.Map<Categoria>(elementoDTO);
+                categoria.Id = elementoId;
+                categoria.UsuarioId = idPatrono;
+
+                await _categoriaRepository.EditarElementoAsync(categoria);
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Banco Deletado com sucesso";
-                retorno.MensagemUsuario = "Banco Deletado";
+                retorno.MensagemSistema = "categoria Editada com sucesso";
+                retorno.MensagemUsuario = "categoria Editada";
                 retorno.Dados = null;
                 return retorno;
             }
@@ -174,50 +214,7 @@ namespace MinhasFinancas.Application.Services
                 retorno.Sucesso = false;
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
-                retorno.MensagemUsuario = "Não foi possivel Deletado o banco";
-                retorno.Dados = null;
-                return retorno;
-            }
-        }
-
-        public async Task<RetornoGenerico> EditarElementoAsync(string usuarioId, Guid BancoId, EditarBancoDTO EditarBancoDTO)
-        {
-            var retorno = new RetornoGenerico();
-
-            try
-            {
-                var buscaPorBanco = await BuscarUmElementoAsync(usuarioId, BancoId);
-
-                if (!buscaPorBanco.Sucesso)
-                {
-                    retorno.Sucesso = buscaPorBanco.Sucesso;
-                    retorno.HttpStatusCode = buscaPorBanco.HttpStatusCode;
-                    retorno.MensagemSistema = buscaPorBanco.MensagemSistema;
-                    retorno.MensagemUsuario = buscaPorBanco.MensagemUsuario;
-                    retorno.Dados = null;
-
-                    return retorno;
-                }
-
-                var banco = _mapper.Map<Banco>(EditarBancoDTO);
-                banco.Id = BancoId;
-                banco.UsuarioId = usuarioId;
-
-                await _bancoRepository.EditarElementoAsync(banco);
-
-                retorno.Sucesso = true;
-                retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Banco Editado com sucesso";
-                retorno.MensagemUsuario = "Banco Editado";
-                retorno.Dados = null;
-                return retorno;
-            }
-            catch (Exception ex)
-            {
-                retorno.Sucesso = false;
-                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
-                retorno.MensagemSistema = $"{ex}";
-                retorno.MensagemUsuario = "Não foi possivel Editar o banco";
+                retorno.MensagemUsuario = "Não foi possivel Editar a categoria";
                 retorno.Dados = null;
                 return retorno;
             }

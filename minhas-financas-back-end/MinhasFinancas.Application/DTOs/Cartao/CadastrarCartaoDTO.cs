@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MinhasFinancas.Application.DTOs.Cartao
 {
-    public class CadastroCartaoDTO
+    public class CadastrarCartaoDTO
     {
 
         [Required(ErrorMessage = "0 Campo {0} é Obrigatorio")]

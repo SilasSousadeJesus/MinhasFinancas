@@ -96,7 +96,7 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
-        public async Task<RetornoGenerico> CadastrarElementoAsync(CadastroCartaoDTO elementoDTO)
+        public async Task<RetornoGenerico> CadastrarElementoAsync(CadastrarCartaoDTO elementoDTO)
         {
             var retorno = new RetornoGenerico();
 

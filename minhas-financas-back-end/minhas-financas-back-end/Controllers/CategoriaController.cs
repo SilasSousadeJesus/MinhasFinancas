@@ -1,26 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MinhasFinancas.Application.DTOs.Cartao;
+using MinhasFinancas.Application.DTOs.Categoria;
 using MinhasFinancas.Application.Interfaces;
 
 namespace MinhasFinancas.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CartaoController : ControllerBase
+    public class CategoriaController : ControllerBase
     {
-        private readonly ICartaoAppService _appService;
+        private readonly ICategoriaAppService _appService;
 
-        public CartaoController(ICartaoAppService cartaoAppService)
+        public CategoriaController(ICategoriaAppService categoriaAppService)
         {
-            _appService = cartaoAppService;
+            _appService = categoriaAppService;
         }
 
-        [HttpPost("CadastrarCartao")]
-        public async Task<IActionResult> CadastrarCartao(CadastrarCartaoDTO cadastroCartaoDTO)
+        [HttpPost("CadastrarCategoria")]
+        public async Task<IActionResult> CadastrarCategoria(CadastrarCategoria cadastrarCategoria)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var dados = await _appService.CadastrarElementoAsync(cadastroCartaoDTO);
+            var dados = await _appService.CadastrarElementoAsync(cadastrarCategoria);
 
             if (!dados.Sucesso)
             {
@@ -37,8 +37,8 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarTodosOsCartoes")]
-        public async Task<IActionResult> BuscarTodosOsCartoes(string usuarioId)
+        [HttpGet("BuscarTodosAsCategorias")]
+        public async Task<IActionResult> BuscarTodosAsCategorias(string usuarioId)
         {
 
             var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId);
@@ -58,11 +58,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarUmCartao")]
-        public async Task<IActionResult> BuscarUmCartao(string UsuarioId, Guid cartaoId)
+        [HttpGet("BuscarUmaCategoria")]
+        public async Task<IActionResult> BuscarUmaCategoria(string UsuarioId, Guid categoriaId)
         {
 
-            var dados = await _appService.BuscarUmElementoAsync(UsuarioId, cartaoId);
+            var dados = await _appService.BuscarUmElementoAsync(UsuarioId, categoriaId);
 
             if (!dados.Sucesso)
             {
@@ -79,12 +79,12 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpPut("EditarCartao")]
-        public async Task<IActionResult> EditarCartao(string UsuarioId, Guid cartaoId, EditarCartaoDTO editarCartaoDTO)
+        [HttpPut("EditarCategoria")]
+        public async Task<IActionResult> EditarCategoria(string UsuarioId, Guid categoriaId, EditarCategoria editarCategoria)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var dados = await _appService.EditarElementoAsync(UsuarioId, cartaoId, editarCartaoDTO);
+            var dados = await _appService.EditarElementoAsync(UsuarioId, categoriaId, editarCategoria);
 
             if (!dados.Sucesso)
             {
@@ -101,11 +101,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpDelete("DeletarCartao")]
-        public async Task<IActionResult> DeletarCartao(string UsuarioId, Guid cartaoId)
+        [HttpDelete("DeletarCategoria")]
+        public async Task<IActionResult> DeletarCategoria(string UsuarioId, Guid categoriaId)
         {
 
-            var dados = await _appService.DeletarElementoAsync(UsuarioId, cartaoId);
+            var dados = await _appService.DeletarElementoAsync(UsuarioId, categoriaId);
 
             if (!dados.Sucesso)
             {

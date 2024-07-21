@@ -2,7 +2,7 @@
 
 namespace MinhasFinancas.Application.DTOs.Usuario
 {
-    public class CadastroUsuarioDTO
+    public class CadastrarUsuarioDTO
     {
         [Required(ErrorMessage = "0 Campo {0} é Obrigatorio")]
         [StringLength(20, ErrorMessage = "O Campo {0} deve ter até 20 caracteres", MinimumLength = 2)]

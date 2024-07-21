@@ -21,7 +21,7 @@ namespace MinhasFinancas.Application.Services
         }
 
 
-        public async Task<RetornoGenerico> Cadastrar(CadastroUsuarioDTO cadastroUsuarioDTO)
+        public async Task<RetornoGenerico> Cadastrar(CadastrarUsuarioDTO cadastroUsuarioDTO)
         {
 
             var identityUser = new Usuario
