@@ -1,26 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MinhasFinancas.Application.DTOs.Banco;
+using MinhasFinancas.Application.DTOs.Cartao;
 using MinhasFinancas.Application.Interfaces;
 
 namespace MinhasFinancas.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BancoController : ControllerBase
+    public class CartaoController : ControllerBase
     {
-        private readonly IBancoAppService _appService;
+        private readonly ICartaoAppService _appService;
 
-        public BancoController(IBancoAppService bancoAppService) 
+        public CartaoController(ICartaoAppService cartaoAppService)
         {
-            _appService = bancoAppService;  
+            _appService = cartaoAppService;
         }
 
-        [HttpPost("Cadastrar")]
-        public async Task<IActionResult> CadastrarUsuario(CadastroBancoDTO cadastroBancoDTO)
+        [HttpPost("CadastrarCartao")]
+        public async Task<IActionResult> CadastrarCartao(CadastroCartaoDTO cadastroCartaoDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var dados = await _appService.CadastrarElementoAsync(cadastroBancoDTO);
+            var dados = await _appService.CadastrarElementoAsync(cadastroCartaoDTO);
 
             if (!dados.Sucesso)
             {
@@ -37,9 +37,8 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-
-        [HttpGet("BuscarTodosOsBancos")]
-        public async Task<IActionResult> BuscarTodosOsBancos(string usuarioId)
+        [HttpGet("BuscarTodosOsCartoes")]
+        public async Task<IActionResult> BuscarTodosOsCartoes(string usuarioId)
         {
 
             var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId);
@@ -59,11 +58,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarUmBanco")]
-        public async Task<IActionResult> BuscarUmBanco(string UsuarioId, Guid bancoId)
+        [HttpGet("BuscarUmCartao")]
+        public async Task<IActionResult> BuscarUmCartao(string UsuarioId, Guid cartaoId)
         {
 
-            var dados = await _appService.BuscarUmElementoAsync(UsuarioId, bancoId);
+            var dados = await _appService.BuscarUmElementoAsync(UsuarioId, cartaoId);
 
             if (!dados.Sucesso)
             {
@@ -80,12 +79,12 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpPut("EditarBanco")]
-        public async Task<IActionResult> EditarBanco(string UsuarioId, Guid bancoId, EditarBancoDTO editarBancoDTO)
+        [HttpPut("EditarCartao")]
+        public async Task<IActionResult> EditarCartao(string UsuarioId, Guid cartaoId, EditarCartaoDTO editarCartaoDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var dados = await _appService.EditarElementoAsync(UsuarioId, bancoId, editarBancoDTO);
+            var dados = await _appService.EditarElementoAsync(UsuarioId, cartaoId, editarCartaoDTO);
 
             if (!dados.Sucesso)
             {
@@ -102,11 +101,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpDelete("DeletarBanco")]
-        public async Task<IActionResult> DeletarBanco(string UsuarioId, Guid bancoId)
+        [HttpDelete("DeletarCartao")]
+        public async Task<IActionResult> DeletarCartao(string UsuarioId, Guid cartaoId)
         {
 
-            var dados = await _appService.DeletarElementoAsync(UsuarioId, bancoId);
+            var dados = await _appService.DeletarElementoAsync(UsuarioId, cartaoId);
 
             if (!dados.Sucesso)
             {
@@ -122,7 +121,5 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
     }
-
 }

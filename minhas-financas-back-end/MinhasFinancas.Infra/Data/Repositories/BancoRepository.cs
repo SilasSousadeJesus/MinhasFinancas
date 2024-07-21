@@ -31,12 +31,6 @@ namespace MinhasFinancas.Infra.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task AtualizarElementoAsync(Banco elemento)
-        {
-            _context.Set<Banco>().Update(elemento);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task DeletarElementoAsync(Banco elemento)
         {
             _context.Set<Banco>().Remove(elemento);
