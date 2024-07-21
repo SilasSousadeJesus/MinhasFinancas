@@ -19,15 +19,13 @@ namespace MinhasFinancas.Domain.Services.DashBoard
             Calcular(listaLancamentos);
         }
 
-
         public ReceitaDashBoard Receita { get; set; }
         public DespesaDashBoard Despesa { get; set; }
         public InvestimentoDashBoard Investimento { get; set; }
         public ResultadoDashBoard Resultado { get; set; }
+        public ContasApagarDashboard ContasApagarDashboard { get; set; }
         public List<ReceitaDespesaMensal> ReceitasDespesasMensais { get; set; }
-
-
-
+        public List<InvestimentoMensal> InvestimentoMensal { get; set; }
 
 
         private void Calcular(List<Lancamento> listaLancamentos)
@@ -37,6 +35,8 @@ namespace MinhasFinancas.Domain.Services.DashBoard
             Investimento = CalcularInvestimentos(listaLancamentos);
             Resultado = CalcularResultados(listaLancamentos);
             ReceitasDespesasMensais = CalcularReceitasDespesasMensais(listaLancamentos);
+            ContasApagarDashboard = CalcularContasApagar(listaLancamentos);
+            InvestimentoMensal = CalcularAcumuloInvestimento(listaLancamentos);
         }
 
         private ReceitaDashBoard CalcularReceitas(List<Lancamento> listaLancamentos)
@@ -107,27 +107,68 @@ namespace MinhasFinancas.Domain.Services.DashBoard
 
         private ResultadoDashBoard CalcularResultados(List<Lancamento> listaLancamentos)
         {
-            var ResultadoAnoCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Investimento)
+            var receitaAnoCorrente = listaLancamentos
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Receita)
                 .Sum(x => x.Valor);
 
-            var ResultadoMesCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Investimento)
+            var despesaAnoCorrente = listaLancamentos
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Despesa)
                 .Sum(x => x.Valor);
 
-            var ResultadoMesAnterior = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Investimento)
+
+            var receitaMesCorrente = listaLancamentos
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Receita)
                 .Sum(x => x.Valor);
+
+            var despesaMesCorrente = listaLancamentos
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Despesa)
+                .Sum(x => x.Valor);
+
+
+            var receitaMesAnterior = listaLancamentos
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Receita)
+                .Sum(x => x.Valor);
+
+            var despesaMesAnterior = listaLancamentos
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Despesa)
+                .Sum(x => x.Valor);
+
+
+            var ano = Math.Round((despesaAnoCorrente / receitaAnoCorrente) * 100, 1);
+            var mesAtual = Math.Round((despesaMesCorrente / receitaMesCorrente) * 100, 1);
+            var mesPassado = Math.Round((despesaMesAnterior / receitaMesAnterior) * 100, 1);
 
             return new ResultadoDashBoard
             {
-                ResultadoAnoCorrente = ResultadoAnoCorrente.ToString("C", new CultureInfo("pt-BR")),
-                ResultadoMesCorrente = ResultadoMesCorrente.ToString("C", new CultureInfo("pt-BR")),
-                ResultadoMesPassado = ResultadoMesAnterior.ToString("C", new CultureInfo("pt-BR"))
+                ResultadoAnoCorrente = $"{ano}",
+                ResultadoMesCorrente = $"{mesAtual}",
+                ResultadoMesPassado = $"{mesPassado}"
             };
         }
 
-        public List<ReceitaDespesaMensal> CalcularReceitasDespesasMensais(List<Lancamento> listaLancamentos)
+        private ContasApagarDashboard CalcularContasApagar(List<Lancamento> listaLancamentos)
+        {
+            var ContasApagarAnoCorrente = listaLancamentos
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Despesa && !x.Realizado)
+                .Sum(x => x.Valor);
+
+            var ContasApagarMesCorrente = listaLancamentos
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Despesa && !x.Realizado)
+                .Sum(x => x.Valor);
+
+            var ContasApagarMesAnterior = listaLancamentos
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Despesa && !x.Realizado)
+                .Sum(x => x.Valor);
+
+            return new ContasApagarDashboard
+            {
+                ContasApagarAnoCorrente = ContasApagarAnoCorrente.ToString("C", new CultureInfo("pt-BR")),
+                ContasApagarMesCorrente = ContasApagarMesCorrente.ToString("C", new CultureInfo("pt-BR")),
+                ContasApagarMesPassado = ContasApagarMesAnterior.ToString("C", new CultureInfo("pt-BR"))
+            };
+        }
+
+        private List<ReceitaDespesaMensal> CalcularReceitasDespesasMensais(List<Lancamento> listaLancamentos)
         {
             var receitasDespesasMensais = new Dictionary<string, (decimal Receita, decimal Despesa)>();
 
@@ -156,6 +197,40 @@ namespace MinhasFinancas.Domain.Services.DashBoard
                 Receita = kvp.Value.Receita.ToString("C", new CultureInfo("pt-BR")),
                 Despesa = kvp.Value.Despesa.ToString("C", new CultureInfo("pt-BR"))
             }).ToList();
+        }
+
+        private List<InvestimentoMensal> CalcularAcumuloInvestimento(List<Lancamento> listaLancamentos)
+        {
+            var investimentosMensais = new Dictionary<string, decimal>();
+            var acumulado = 0m;
+
+            foreach (var lancamento in listaLancamentos
+                .Where(x => x.Tipo == EnumTipoLancamento.Investimento)
+                .OrderBy(x => x.DataPagamento))
+            {
+                var key = $"{lancamento.DataPagamento.Year}-{lancamento.DataPagamento.Month:00}";
+
+                if (!investimentosMensais.ContainsKey(key))
+                {
+                    investimentosMensais[key] = 0;
+                }
+
+                investimentosMensais[key] += lancamento.Valor;
+            }
+
+            var resultado = new List<InvestimentoMensal>();
+
+            foreach (var key in investimentosMensais.Keys.OrderBy(k => k))
+            {
+                acumulado += investimentosMensais[key];
+                resultado.Add(new InvestimentoMensal
+                {
+                    Chave = key,
+                    Valor = acumulado.ToString("C", new CultureInfo("pt-BR")),
+                });
+            }
+
+            return resultado;
         }
     }
 
