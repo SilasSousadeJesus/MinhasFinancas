@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MinhasFinancas.Application.DTOs.Categoria
 {
-    public class CadastrarCategoria
+    public class EditarCategoriaDTO
     {
         [Required(ErrorMessage = "0 Campo {0} é Obrigatorio")]
         [StringLength(20, ErrorMessage = "O Campo {0} deve ter até 20 caracteres", MinimumLength = 2)]

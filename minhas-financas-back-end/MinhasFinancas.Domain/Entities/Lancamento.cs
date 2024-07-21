@@ -46,6 +46,3 @@ namespace MinhasFinancas.Domain.Entities
 
     }
 }
-
-
-// criar logicar para desativar os lançamentos fixos e parcelados caso o cara tente realizar o lancamento

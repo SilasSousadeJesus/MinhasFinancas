@@ -19,6 +19,10 @@ namespace minhas_financas_back_end
     {
         public static void Main(string[] args)
         {
+            // criar logicar para desativar os lançamentos fixos e parcelados caso o cara tente realizar o lancamento
+            // criar logica para ter registros de saque e deposito (movimentação)
+
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Configuração do AutoMapper

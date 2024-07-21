@@ -16,7 +16,7 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [HttpPost("CadastrarCategoria")]
-        public async Task<IActionResult> CadastrarCategoria(CadastrarCategoria cadastrarCategoria)
+        public async Task<IActionResult> CadastrarCategoria(CadastrarCategoriaDTO cadastrarCategoria)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -80,7 +80,7 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [HttpPut("EditarCategoria")]
-        public async Task<IActionResult> EditarCategoria(string UsuarioId, Guid categoriaId, EditarCategoria editarCategoria)
+        public async Task<IActionResult> EditarCategoria(string UsuarioId, Guid categoriaId, EditarCategoriaDTO editarCategoria)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -121,5 +121,53 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
+
+
+
+
+        [HttpPost("CadastrarSubCategoria")]
+        public async Task<IActionResult> CadastrarSubCategoria(CadastrarSubCategoriaDTO cadastrarCategoria)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
+            var dados = await _appService.CadastrarSubCategoriaAsync(cadastrarCategoria);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+
+
+        [HttpGet("BuscarTodosAsSubCategorias")]
+        public async Task<IActionResult> BuscarTodosAsSubCategorias(string usuarioId, Guid categoriaId)
+        {
+
+            var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+
     }
 }

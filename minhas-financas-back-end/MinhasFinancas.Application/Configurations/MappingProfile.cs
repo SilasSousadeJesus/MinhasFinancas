@@ -16,8 +16,8 @@ namespace MinhasFinancas.Application.Configurations
             CreateMap<CadastrarCartaoDTO, Cartao>();
             CreateMap<EditarCartaoDTO, Cartao>();
 
-            CreateMap<CadastrarCategoria, Categoria>();
-            CreateMap<EditarCategoria, Categoria>();
+            CreateMap<CadastrarCategoriaDTO, Categoria>();
+            CreateMap<EditarCategoriaDTO, Categoria>();
         }
     }
 }

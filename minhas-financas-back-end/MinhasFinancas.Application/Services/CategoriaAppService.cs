@@ -20,6 +20,8 @@ namespace MinhasFinancas.Application.Services
             _usuarioAppService = usuarioAppService;
         }
 
+
+        // categoria
         public async Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id)
         {
             var retorno = new RetornoGenerico();
@@ -97,7 +99,7 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
-        public async Task<RetornoGenerico> CadastrarElementoAsync(CadastrarCategoria elementoDTO)
+        public async Task<RetornoGenerico> CadastrarElementoAsync(CadastrarCategoriaDTO elementoDTO)
         {
             var retorno = new RetornoGenerico();
 
@@ -177,7 +179,7 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
-        public async Task<RetornoGenerico> EditarElementoAsync(string idPatrono, Guid elementoId, EditarCategoria elementoDTO)
+        public async Task<RetornoGenerico> EditarElementoAsync(string idPatrono, Guid elementoId, EditarCategoriaDTO elementoDTO)
         {
             var retorno = new RetornoGenerico();
 
@@ -219,5 +221,34 @@ namespace MinhasFinancas.Application.Services
                 return retorno;
             }
         }
+
+
+        // subcategoria
+        public Task<RetornoGenerico> BuscarTodosAsSubCategoriaAsync(string usuarioId, Guid categoriaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RetornoGenerico> EditarSubCategoriaAsync(string usuarioId, Guid categoriaId, Guid subCategoriaId, EditarSubCategoriaDTO editarSubCategoriaDTO)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RetornoGenerico> DeletarSubCategoriaAsync(string usuarioId, Guid categoriaId, Guid subCategoriaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RetornoGenerico> CadastrarSubCategoriaAsync(string usuarioId, Guid categoriaId, CadastrarSubCategoriaDTO cadastrarSubCategoriaDTO)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RetornoGenerico> BuscarUmaSubCategoriaAsync(Guid categoriaId, Guid subCategoriaId)
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }
