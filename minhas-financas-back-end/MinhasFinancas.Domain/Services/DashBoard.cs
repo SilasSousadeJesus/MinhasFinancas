@@ -8,7 +8,7 @@ namespace MinhasFinancas.Domain.Services
 
         public Dashboard(List<Lancamento> listaLancamentos)
         {
-            CalcularReceitas(listaLancamentos);
+            Calcular(listaLancamentos);
         }
 
         public string ReceitaAnoCorrente { get; set; } = string.Empty;
@@ -16,38 +16,36 @@ namespace MinhasFinancas.Domain.Services
         public string ReceitaMesPassado { get; set; } = string.Empty;
 
 
+        public string DespesasAnoCorrente { get; set; } = string.Empty;
+        public string DespesasMesCorrente { get; set; } = string.Empty;
+        public string DespesasMesPassado { get; set; } = string.Empty;
+
+
+        public string InvestimentoAnoCorrente { get; set; } = string.Empty;
+        public string InvestimentoMesCorrente { get; set; } = string.Empty;
+        public string InvestimentoMesPassado { get; set; } = string.Empty;
+
+
+
+
+        public string ResultadoAnoCorrente { get; set; } = string.Empty;
+        public string ResultadoMesCorrente { get; set; } = string.Empty;
+        public string ResultadoMesPassado { get; set; } = string.Empty;
 
 
 
 
 
-
-
-
-        public void CalcularReceitas(List<Lancamento> listaLancamentos)
+        public void Calcular(List<Lancamento> listaLancamentos)
         {
             // Implementar a lógica de cálculo aqui
-            ReceitaAnoCorrente = CalcularReceitaAnoCorrente(listaLancamentos);
-            ReceitaMesCorrente = CalcularReceitaMesCorrente(listaLancamentos);
-            ReceitaMesPassado = CalcularReceitaMesPassado(listaLancamentos);
+            ReceitaAnoCorrente = CalcularReceitas(listaLancamentos);
         }
 
-        private string CalcularReceitaAnoCorrente(List<Lancamento> listaLancamentos)
+        private string CalcularReceitas(List<Lancamento> listaLancamentos)
         {
-            // Lógica para calcular a receita do ano corrente
-            return "Resultado do Ano Corrente";
-        }
-
-        private string CalcularReceitaMesCorrente(List<Lancamento> listaLancamentos)
-        {
-            // Lógica para calcular a receita do mês corrente
-            return "Resultado do Mês Corrente";
-        }
-
-        private string CalcularReceitaMesPassado(List<Lancamento> listaLancamentos)
-        {
-            // Lógica para calcular a receita do mês passado
-            return "Resultado do Mês Passado";
+            // Lógica para calcular a receita do mes passado, mes correte e ano corrente
+            return "Resultado";
         }
     }
 }
