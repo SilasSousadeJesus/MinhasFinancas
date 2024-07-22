@@ -121,5 +121,27 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
+
+        [HttpGet("BuscarLancamentosPorCategoria/{usuarioId}")]
+        public async Task<IActionResult> BuscarLancamentosPorCategoria([FromRoute] string usuarioId)
+        {
+
+            var dados = await _appService.BuscarLancamentosPorCategoriaAsync(usuarioId);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+
     }
 }

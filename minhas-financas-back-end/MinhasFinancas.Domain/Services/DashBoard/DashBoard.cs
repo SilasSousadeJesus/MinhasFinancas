@@ -26,7 +26,7 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         public ContasApagarDashboard ContasApagarDashboard { get; set; }
         public List<ReceitaDespesaMensal> ReceitasDespesasMensais { get; set; }
         public List<InvestimentoMensal> InvestimentoMensal { get; set; }
-
+        public List<LancamentosPorCategoriaDashboard> LancamentosPorCategoriaDashboard { get; set; }
 
         private void Calcular(List<Lancamento> listaLancamentos)
         {
@@ -37,6 +37,7 @@ namespace MinhasFinancas.Domain.Services.DashBoard
             ReceitasDespesasMensais = CalcularReceitasDespesasMensais(listaLancamentos);
             ContasApagarDashboard = CalcularContasApagar(listaLancamentos);
             InvestimentoMensal = CalcularAcumuloInvestimento(listaLancamentos);
+            LancamentosPorCategoriaDashboard = AgruparLancamentosPorCategoria(listaLancamentos);
         }
 
         private ReceitaDashBoard CalcularReceitas(List<Lancamento> listaLancamentos)
@@ -232,6 +233,27 @@ namespace MinhasFinancas.Domain.Services.DashBoard
 
             return resultado;
         }
+
+        public List<LancamentosPorCategoriaDashboard> AgruparLancamentosPorCategoria(List<Lancamento> lancamentos)
+        {
+            var agrupados = lancamentos
+                .GroupBy(l => l.Categoria)
+                .Select(g => new LancamentosPorCategoriaDashboard
+                {
+                    Id = g.Key.Id,
+                    Nome = g.Key.NomeCategoria,
+                    Icone = g.Key.Icone,
+                    Lancamentos = g.Select(l =>
+                    {
+                        l.Categoria = null;
+                        return l;
+                    }).ToList()
+                })
+                .ToList();
+
+            return agrupados;
+        }
+
     }
 
 }

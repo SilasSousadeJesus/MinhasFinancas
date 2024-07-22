@@ -222,7 +222,6 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
-
         // subcategoria
         public Task<RetornoGenerico> BuscarTodosAsSubCategoriaAsync(string usuarioId, Guid categoriaId)
         {

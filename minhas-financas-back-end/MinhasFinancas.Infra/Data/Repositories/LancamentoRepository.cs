@@ -13,10 +13,20 @@ namespace MinhasFinancas.Infra.Data.Repositories
         {
             _context = context;
         }
+
+        public async Task<List<Lancamento>> BuscarLancamentosPorCategoriaAsync(string usuarioId)
+        {
+            return await _context.Set<Lancamento>()
+                                           .Where(b => b.UsuarioId == usuarioId)
+                                           .Include(l => l.Categoria)
+                                           .ToListAsync();
+        }
+
         public async Task<List<Lancamento>> BuscarTodosOsElementosAsync(string id)
         {
             return await _context.Set<Lancamento>()
                .Where(b => b.UsuarioId == id)
+                .Include(l => l.Categoria)
                .ToListAsync();
         }
 

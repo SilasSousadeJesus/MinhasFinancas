@@ -218,5 +218,44 @@ namespace MinhasFinancas.Application.Services
                 return retorno;
             }
         }
+
+        public async Task<RetornoGenerico> BuscarLancamentosPorCategoriaAsync(string usuarioId)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorusuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+
+                if (!buscaPorusuario.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorusuario.Sucesso;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = buscaPorusuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorusuario.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var lista = await _lancamentoRepository.BuscarLancamentosPorCategoriaAsync(usuarioId);
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = $"{lista.Count} elemento(s) encontrado(s)";
+                retorno.MensagemUsuario = $"{lista.Count} elemento(s)  encontrado(s)";
+                retorno.Dados = lista;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possivel buscar a lista de elementos";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
     }
 }

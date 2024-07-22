@@ -14,11 +14,10 @@ namespace MinhasFinancas.Domain.Entities
         public string Icone { get; set; } = string.Empty;
         public EnumTipoCategoria Tipo { get; set; }
 
-
-
         [ForeignKey("UsuarioId")]
         public string? UsuarioId { get; set; }
 
         public virtual List<SubCategoria>? SubCategorias { get; set; }
+        //public virtual List<Lancamento>? Lancamentos { get; set; }
     }
 }
