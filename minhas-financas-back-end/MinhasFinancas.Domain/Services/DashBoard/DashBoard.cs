@@ -26,7 +26,7 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         public ContasApagarDashboard ContasApagarDashboard { get; set; }
         public List<ReceitaDespesaMensal> ReceitasDespesasMensais { get; set; }
         public List<InvestimentoMensal> InvestimentoMensal { get; set; }
-        public List<LancamentosPorCategoriaDashboard> LancamentosPorCategoriaDashboard { get; set; }
+        public List<LancamentosPorCategoriaDashboard> LancamentosPorCategoriaDeDespesaDashboard { get; set; }
 
         private void Calcular(List<Lancamento> listaLancamentos)
         {
@@ -37,7 +37,7 @@ namespace MinhasFinancas.Domain.Services.DashBoard
             ReceitasDespesasMensais = CalcularReceitasDespesasMensais(listaLancamentos);
             ContasApagarDashboard = CalcularContasApagar(listaLancamentos);
             InvestimentoMensal = CalcularAcumuloInvestimento(listaLancamentos);
-            LancamentosPorCategoriaDashboard = AgruparLancamentosPorCategoria(listaLancamentos);
+            LancamentosPorCategoriaDeDespesaDashboard = AgruparLancamentosPorCategoriaDespesa(listaLancamentos);
         }
 
         private ReceitaDashBoard CalcularReceitas(List<Lancamento> listaLancamentos)
@@ -234,9 +234,11 @@ namespace MinhasFinancas.Domain.Services.DashBoard
             return resultado;
         }
 
-        public List<LancamentosPorCategoriaDashboard> AgruparLancamentosPorCategoria(List<Lancamento> lancamentos)
+        public List<LancamentosPorCategoriaDashboard> AgruparLancamentosPorCategoriaDespesa(List<Lancamento> lancamentos)
         {
-            var agrupados = lancamentos
+            var lancamentosFiltrados = lancamentos.Where(x=> x.Tipo == EnumTipoLancamento.Despesa).ToList();
+
+            var agrupados = lancamentosFiltrados
                 .GroupBy(l => l.Categoria)
                 .Select(g => new LancamentosPorCategoriaDashboard
                 {

@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MinhasFinancas.Application.DTOs.Categoria;
 using MinhasFinancas.Application.DTOs.Usuario;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.Application.Resources;
+using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
+using MinhasFinancas.Infra.Data.Interfaces;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -12,12 +17,16 @@ namespace MinhasFinancas.Application.Services
         private string mensagemSistema = string.Empty;
         private string mensagemUsuario = string.Empty;
 
+        private readonly IMapper _mapper;
         private readonly UserManager<Usuario> _userManager;
+        private readonly ICategoriaRepository _categoriaRepository;
 
 
-        public UsuarioAppService(UserManager<Usuario> userManager)
+        public UsuarioAppService(UserManager<Usuario> userManager, ICategoriaRepository categoriaRepository, IMapper mapper)
         {
             _userManager = userManager;
+            _categoriaRepository = categoriaRepository;
+            _mapper = mapper;   
         }
 
 
@@ -33,7 +42,10 @@ namespace MinhasFinancas.Application.Services
             };
 
             var result = await _userManager.CreateAsync(identityUser, cadastroUsuarioDTO.Senha);
-            if (result.Succeeded) await _userManager.SetLockoutEnabledAsync(identityUser, false);
+            if (result.Succeeded) {
+                await _userManager.SetLockoutEnabledAsync(identityUser, false);
+                await InformacoesComplementares(identityUser.Id);
+            }
 
             string mensagem = result.Succeeded ? "Usuario criado com sucesso" : "Usuario não pode ser criado";
             mensagemSistema = mensagem;
@@ -140,5 +152,14 @@ namespace MinhasFinancas.Application.Services
                 Dados = user
             };
         }
+
+        private async Task InformacoesComplementares(string UsuarioId) 
+        {
+            var listaCategorias = CategoriasSubCategorias.ConstrutorCategoriasSubCategorias(UsuarioId);
+
+            await _categoriaRepository.CadastrarListaDeCategoriasAsync(listaCategorias);
+        }
+
+
     }
 }

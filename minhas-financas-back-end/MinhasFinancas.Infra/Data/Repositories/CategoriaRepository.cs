@@ -47,5 +47,11 @@ namespace MinhasFinancas.Infra.Data.Repositories
             _context.Set<Categoria>().Update(elemento);
             await _context.SaveChangesAsync();
         }
+
+        public async Task CadastrarListaDeCategoriasAsync(List<Categoria> listaCategoria)
+        {
+            await _context.Set<Categoria>().AddRangeAsync(listaCategoria);
+            await _context.SaveChangesAsync();
+        }
     }
 }
