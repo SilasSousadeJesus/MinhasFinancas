@@ -40,13 +40,11 @@ namespace MinhasFinancas.Application.Services
 
                 var lista = await _lancamentoRepository.BuscarTodosOsElementosAsync(id);
 
-                var dashboard = new Dashboard(lista);
-
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
                 retorno.MensagemSistema = $"{lista.Count} elemento(s) encontrado(s)";
                 retorno.MensagemUsuario = $"{lista.Count} elemento(s)  encontrado(s)";
-                retorno.Dados = dashboard;
+                retorno.Dados = lista;
                 return retorno;
             }
             catch (Exception ex)

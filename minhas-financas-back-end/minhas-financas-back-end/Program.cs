@@ -57,6 +57,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<ILancamentoAppService, LancamentoAppService>();
             builder.Services.AddScoped<ILancamentoRepository, LancamentoRepository>();
 
+            builder.Services.AddScoped<IDashboardAppService, DashboardAppService>();
 
             // Add authentication services
             AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);
