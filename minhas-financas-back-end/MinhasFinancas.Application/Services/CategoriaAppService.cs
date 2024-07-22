@@ -173,7 +173,7 @@ namespace MinhasFinancas.Application.Services
                 retorno.Sucesso = false;
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
-                retorno.MensagemUsuario = "Não foi possivel Deletada a categoria";
+                retorno.MensagemUsuario = "Não foi possivel deletar a categoria";
                 retorno.Dados = null;
                 return retorno;
             }

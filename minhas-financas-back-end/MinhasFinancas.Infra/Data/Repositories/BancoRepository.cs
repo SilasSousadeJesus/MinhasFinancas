@@ -22,7 +22,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
 
         public async Task<Banco> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
-            return await _context.Set<Banco>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstAsync();
+            return await _context.Set<Banco>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task CadastrarElementoAsync(Banco elemento)

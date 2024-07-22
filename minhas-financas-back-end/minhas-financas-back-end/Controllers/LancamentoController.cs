@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MinhasFinancas.Application.DTOs.Cartao;
 using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces;
 
@@ -60,10 +59,10 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [HttpGet("BuscarUmLancamento/{usuarioId}/{faturamentoId}")]
-        public async Task<IActionResult> BuscarUmCartao([FromRoute] string usuarioId, [FromRoute] Guid cartaoId)
+        public async Task<IActionResult> BuscarUmCartao([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId)
         {
 
-            var dados = await _appService.BuscarUmElementoAsync(usuarioId, cartaoId);
+            var dados = await _appService.BuscarUmElementoAsync(usuarioId, faturamentoId);
 
             if (!dados.Sucesso)
             {

@@ -20,24 +20,33 @@ namespace MinhasFinancas.Infra.Data.Repositories
                .ToListAsync();
         }
 
-        public Task<Lancamento> BuscarUmElementoAsync(string idPatrono, Guid id)
+        public async Task<Lancamento> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Set<Lancamento>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
         }
 
-        public Task CadastrarElementoAsync(Lancamento elemento)
+        public async Task CadastrarElementoAsync(Lancamento elemento)
         {
-            throw new NotImplementedException();
+            await _context.Set<Lancamento>().AddAsync(elemento);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeletarElementoAsync(Lancamento elemento)
+        public async Task DeletarElementoAsync(Lancamento elemento)
         {
-            throw new NotImplementedException();
+            _context.Set<Lancamento>().Remove(elemento);
+            await _context.SaveChangesAsync();
         }
 
-        public Task EditarElementoAsync(Lancamento elemento)
+        public async Task EditarElementoAsync(Lancamento elemento)
         {
-            throw new NotImplementedException();
+            var existingEntity = _context.Set<Lancamento>().Local.FirstOrDefault(b => b.Id == elemento.Id);
+            if (existingEntity != null)
+            {
+                _context.Entry(existingEntity).State = EntityState.Detached;
+            }
+
+            _context.Set<Lancamento>().Update(elemento);
+            await _context.SaveChangesAsync();
         }
     }
 }

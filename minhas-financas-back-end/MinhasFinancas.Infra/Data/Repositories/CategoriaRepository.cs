@@ -21,7 +21,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         }
         public async Task<Categoria> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
-            return await _context.Set<Categoria>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstAsync();
+            return await _context.Set<Categoria>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task CadastrarElementoAsync(Categoria elemento)
