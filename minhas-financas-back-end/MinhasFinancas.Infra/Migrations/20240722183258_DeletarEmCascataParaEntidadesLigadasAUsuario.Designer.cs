@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MinhasFinancas.Infra;
 
@@ -11,9 +12,11 @@ using MinhasFinancas.Infra;
 namespace MinhasFinancas.Infra.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240722183258_DeletarEmCascataParaEntidadesLigadasAUsuario")]
+    partial class DeletarEmCascataParaEntidadesLigadasAUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,9 +166,15 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Property<string>("UsuarioId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UsuarioId1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UsuarioId");
+
+                    b.HasIndex("UsuarioId1");
 
                     b.ToTable("Banco");
                 });
@@ -436,9 +445,16 @@ namespace MinhasFinancas.Infra.Migrations
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Banco", b =>
                 {
-                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
                         .WithMany("Bancos")
-                        .HasForeignKey("UsuarioId");
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Usuario");
                 });
@@ -447,16 +463,20 @@ namespace MinhasFinancas.Infra.Migrations
                 {
                     b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Cartoes")
-                        .HasForeignKey("UsuarioId");
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Categoria", b =>
                 {
-                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Categorias")
-                        .HasForeignKey("UsuarioId");
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Lancamento", b =>
@@ -473,13 +493,16 @@ namespace MinhasFinancas.Infra.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Lancamentos")
-                        .HasForeignKey("UsuarioId");
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Categoria");
 
                     b.Navigation("SubCategoria");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.LancamentoFixo", b =>

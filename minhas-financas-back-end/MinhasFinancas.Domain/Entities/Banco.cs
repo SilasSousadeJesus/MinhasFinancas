@@ -21,6 +21,7 @@ namespace MinhasFinancas.Domain.Entities
 
         [ForeignKey("UsuarioId")]
         public string? UsuarioId { get; set; }
+        public virtual Usuario Usuario { get; set; }
 
         [NotMapped]
         public string SaldoFormatado => Saldo.ToString("C", new CultureInfo("pt-BR"));

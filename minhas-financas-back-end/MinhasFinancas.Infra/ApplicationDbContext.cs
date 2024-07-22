@@ -37,19 +37,13 @@ namespace MinhasFinancas.Infra
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-            modelBuilder.Entity<Categoria>()
-                .HasOne(c => c.Usuario)
-                .WithMany(u => u.Categorias)
-                .HasForeignKey(c => c.UsuarioId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+            // deletes em cascata
 
                 modelBuilder.Entity<SubCategoria>()
                     .HasOne<Categoria>()
                     .WithMany(c => c.SubCategorias)
                     .HasForeignKey(sc => sc.CategoriaId)
                     .OnDelete(DeleteBehavior.Cascade);
-
 
             // Configuração das chaves primárias para as entidades do Identity
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(x => new { x.LoginProvider, x.ProviderKey });

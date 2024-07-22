@@ -20,13 +20,15 @@ namespace MinhasFinancas.Application.Services
         private readonly IMapper _mapper;
         private readonly UserManager<Usuario> _userManager;
         private readonly ICategoriaRepository _categoriaRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
 
 
-        public UsuarioAppService(UserManager<Usuario> userManager, ICategoriaRepository categoriaRepository, IMapper mapper)
+        public UsuarioAppService(UserManager<Usuario> userManager, ICategoriaRepository categoriaRepository, IMapper mapper, IUsuarioRepository usuarioRepository)
         {
             _userManager = userManager;
             _categoriaRepository = categoriaRepository;
-            _mapper = mapper;   
+            _mapper = mapper;
+            _usuarioRepository = usuarioRepository;
         }
 
 
@@ -99,7 +101,7 @@ namespace MinhasFinancas.Application.Services
 
             if (sucesso)
             {
-                await _userManager.DeleteAsync(user);
+                await _usuarioRepository.DeletarUsuarioESeusDados(user);
             }
 
             return new RetornoGenerico
