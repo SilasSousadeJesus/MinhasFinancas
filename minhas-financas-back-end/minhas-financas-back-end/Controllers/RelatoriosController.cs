@@ -1,24 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.Interfaces;
 
 namespace MinhasFinancas.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DashboardController : ControllerBase
+    public class RelatoriosController : ControllerBase
     {
-        private readonly IDashboardAppService _appService;
+        private readonly IRelatoriosAppService _appService;
 
-        public DashboardController(IDashboardAppService  dashboardAppService)
+        public RelatoriosController(IRelatoriosAppService relatoriosAppService)
         {
-            _appService = dashboardAppService;
+            _appService = relatoriosAppService;
         }
 
         [HttpGet("{usuarioId}")]
-        public async Task<IActionResult> BuscarInformacoesDashboard([FromRoute] string usuarioId)
+        public async Task<IActionResult> RelatoriosPorCategoria([FromRoute] string usuarioId)
         {
 
-            var dados = await _appService.BuscarInformacoesDashboard(usuarioId);
+            var dados = await _appService.RelatoriosPorCategoriaLancamento(usuarioId);
 
             if (!dados.Sucesso)
             {
