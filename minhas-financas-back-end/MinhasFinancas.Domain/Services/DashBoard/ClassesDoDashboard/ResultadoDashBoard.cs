@@ -1,4 +1,4 @@
-﻿namespace MinhasFinancas.Domain.Services.DashBoard
+﻿namespace MinhasFinancas.Domain.Services.DashBoard.ClassesDoDashboard
 {
     public class ResultadoDashBoard
     {

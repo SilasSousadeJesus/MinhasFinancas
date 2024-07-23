@@ -1,4 +1,4 @@
-﻿namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
+﻿namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria.ClassesDoRelatorio
 {
     public class CategoriaDetalhamentoRelatorio
     {

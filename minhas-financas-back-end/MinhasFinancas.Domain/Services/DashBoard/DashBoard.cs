@@ -1,5 +1,6 @@
 ﻿using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
+using MinhasFinancas.Domain.Services.DashBoard.ClassesDoDashboard;
 using System.Globalization;
 
 namespace MinhasFinancas.Domain.Services.DashBoard

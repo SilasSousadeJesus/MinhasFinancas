@@ -1,6 +1,6 @@
 ﻿using MinhasFinancas.Domain.Entities;
 
-namespace MinhasFinancas.Domain.Services.DashBoard
+namespace MinhasFinancas.Domain.Services.DashBoard.ClassesDoDashboard
 {
     public class LancamentosPorCategoriaDashboard
     {

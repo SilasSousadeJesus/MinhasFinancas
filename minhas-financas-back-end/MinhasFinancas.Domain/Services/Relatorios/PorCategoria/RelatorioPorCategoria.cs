@@ -1,5 +1,6 @@
 ﻿using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
+using MinhasFinancas.Domain.Services.Relatorios.PorCategoria.ClassesDoRelatorio;
 
 namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
 {
