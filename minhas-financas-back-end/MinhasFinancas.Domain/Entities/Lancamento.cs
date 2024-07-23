@@ -33,11 +33,11 @@ namespace MinhasFinancas.Domain.Entities
         public string? UsuarioId { get; set; }
 
         [ForeignKey("CategoriaId")]
-        public Guid CategoriaId { get; set; }
+        public Guid? CategoriaId { get; set; }
         public virtual Categoria? Categoria { get; set; }
 
         [ForeignKey("SubCategoriaId")]
-        public Guid SubCategoriaId { get; set; }
+        public Guid? SubCategoriaId { get; set; }
         public virtual SubCategoria? SubCategoria { get; set; }
 
 

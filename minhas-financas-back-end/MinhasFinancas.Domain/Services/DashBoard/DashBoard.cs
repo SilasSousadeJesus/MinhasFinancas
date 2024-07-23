@@ -25,7 +25,7 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         public ResultadoDashBoard Resultado { get; set; }
         public ContasApagarDashboard ContasApagarDashboard { get; set; }
         public List<ReceitaDespesaMensal> ReceitasDespesasMensais { get; set; }
-        public List<InvestimentoMensal> InvestimentoMensal { get; set; }
+        public List<InvestimentoMensal> AcumuloInvestimentoMensal { get; set; }
         public List<LancamentosPorCategoriaDashboard> LancamentosPorCategoriaDeDespesaDashboard { get; set; }
 
         private void Calcular(List<Lancamento> listaLancamentos)
@@ -36,7 +36,7 @@ namespace MinhasFinancas.Domain.Services.DashBoard
             Resultado = CalcularResultados(listaLancamentos);
             ReceitasDespesasMensais = CalcularReceitasDespesasMensais(listaLancamentos);
             ContasApagarDashboard = CalcularContasApagar(listaLancamentos);
-            InvestimentoMensal = CalcularAcumuloInvestimento(listaLancamentos);
+            AcumuloInvestimentoMensal = CalcularAcumuloInvestimento(listaLancamentos);
             LancamentosPorCategoriaDeDespesaDashboard = AgruparLancamentosPorCategoriaDespesa(listaLancamentos);
         }
 

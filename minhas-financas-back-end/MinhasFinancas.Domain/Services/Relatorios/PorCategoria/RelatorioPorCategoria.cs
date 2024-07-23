@@ -35,16 +35,15 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
             DespesasPorcentagemCategoriaAnoAtual = CalcularDespesasPorcentagemCategoriaAnoAtual();
             DespesasPorcentagemCategoriaAnoPassado = CalcularDespesasPorcentagemCategoriaAnoPassado();
 
-
-            DespesasCategoriaDetalhamentoRelatorioAnoCorrente = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Despesa, false);
-            DespesasCategoriaDetalhamentoRelatorioAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Despesa, false);
-            DespesasCategoriaDetalhamentoRelatorioMesCorrente = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Despesa, true);
-            DespesasCategoriaDetalhamentoRelatorioMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Despesa, true);
+            DespesasCategoriaDetalhamentoRelatorioAnoCorrente = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa, false);
+            DespesasCategoriaDetalhamentoRelatorioAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa, false);
+            DespesasCategoriaDetalhamentoRelatorioMesCorrente = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa, true);
+            DespesasCategoriaDetalhamentoRelatorioMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa, true);
         }
 
 
         // Porcentagem da categoria no valor total;
-        private List<CategoriaPorcentagemRelatorio> CalcularPorcentagemPorCategoria(int ano, int mes, EnumTipoLancamento tipoLancamento)
+        private List<CategoriaPorcentagemRelatorio> CalcularPorcentagemPorCategoria(int ano, int mes, EnumTipoLancamento tipoLancamento, EnumTipoCategoria tipoCategoria)
         {
             var lancamentosFiltrados = lancamentos
                 .Where(l => l.DataPagamento.Year == ano && (mes == 0 || l.DataPagamento.Month == mes) && l.Tipo == tipoLancamento)
@@ -52,7 +51,9 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
 
             var totalDespesas = lancamentosFiltrados.Sum(l => l.Valor);
 
-            var porcentagemPorCategoria = categorias
+            var categoriasFiltradasPorTipo = categorias.Where(x => x.Tipo == tipoCategoria);
+
+            var porcentagemPorCategoria = categoriasFiltradasPorTipo
                 .Select(c => new CategoriaPorcentagemRelatorio
                 {
                     NomeCategoria = c.NomeCategoria,
@@ -65,32 +66,34 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
 
         public List<CategoriaPorcentagemRelatorio> CalcularDespesasPorcentagemCategoriaAnoAtual()
         {
-            return CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Despesa);
+            return CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
         }
 
         public List<CategoriaPorcentagemRelatorio> CalcularDespesasPorcentagemCategoriaAnoPassado()
         {
-            return CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Despesa);
+            return CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
         }
         public List<CategoriaPorcentagemRelatorio> CalcularDespesasPorcentagemCategoriaMesAtual()
         {
-            return CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Despesa);
+            return CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
         }
 
         public List<CategoriaPorcentagemRelatorio> CalcularDespesasPorcentagemCategoriaMesPassado()
         {
-            return CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Despesa);
+            return CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
         }
 
 
         // Detalhamento
-        private List<CategoriaDetalhamentoRelatorio> CalcularPorcentagemPorCategoria(int ano, int mes, EnumTipoLancamento tipoLancamento, bool isMensal)
+        private List<CategoriaDetalhamentoRelatorio> CalcularPorcentagemPorCategoria(int ano, int mes, EnumTipoLancamento tipoLancamento, EnumTipoCategoria tipoCategoria, bool isMensal)
         {
             var lancamentosFiltrados = lancamentos
                 .Where(l => l.DataPagamento.Year == ano && (mes == 0 || l.DataPagamento.Month == mes) && l.Tipo == tipoLancamento)
                 .ToList();
 
-            var detalhamentoPorCategoria = categorias
+            var categoriasFiltradasPorTipo = categorias.Where(x => x.Tipo == tipoCategoria);
+
+            var detalhamentoPorCategoria = categoriasFiltradasPorTipo
                 .Select(c => new CategoriaDetalhamentoRelatorio
                 {
                     NomeCategoria = c.NomeCategoria,
