@@ -1,6 +1,7 @@
 ﻿using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Domain.Services.DashBoard;
 using MinhasFinancas.Domain.Services.Relatorios;
+using MinhasFinancas.Domain.Services.Relatorios.PorCategoria;
 using System.Net;
 
 namespace MinhasFinancas.Application.Services

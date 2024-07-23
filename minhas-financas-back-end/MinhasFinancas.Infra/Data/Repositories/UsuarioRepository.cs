@@ -26,10 +26,10 @@ namespace MinhasFinancas.Infra.Data.Repositories
                
             if (usuario != null)
             {
+                _context.Lancamento.RemoveRange(lancamentos);
                 _context.Categoria.RemoveRange(categorias);
                 _context.Cartao.RemoveRange(cartoes);
                 _context.Banco.RemoveRange(bancos);
-                _context.Lancamento.RemoveRange(lancamentos);
                 _context.Users.Remove(usuario);
 
                 await _context.SaveChangesAsync();

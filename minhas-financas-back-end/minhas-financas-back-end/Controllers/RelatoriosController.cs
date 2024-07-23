@@ -15,7 +15,7 @@ namespace MinhasFinancas.API.Controllers
             _appService = relatoriosAppService;
         }
 
-        [HttpGet("{usuarioId}")]
+        [HttpGet("PorCategoria/{usuarioId}")]
         public async Task<IActionResult> RelatoriosPorCategoria([FromRoute] string usuarioId)
         {
 
