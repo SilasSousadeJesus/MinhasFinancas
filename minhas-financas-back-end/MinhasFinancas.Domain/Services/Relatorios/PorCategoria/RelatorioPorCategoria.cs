@@ -21,6 +21,26 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
         public List<CategoriaDetalhamentoRelatorio> DespesasCategoriaDetalhamentoRelatorioMesCorrente { get; set; }
         public List<CategoriaDetalhamentoRelatorio> DespesasCategoriaDetalhamentoRelatorioMesPassado { get; set; }
 
+
+        public List<CategoriaPorcentagemRelatorio> ReceitasPorcentagemCategoriaMesAtual { get; set; }
+        public List<CategoriaPorcentagemRelatorio> ReceitasPorcentagemCategoriaMesPassado { get; set; }
+        public List<CategoriaPorcentagemRelatorio> ReceitasPorcentagemCategoriaAnoAtual { get; set; }
+        public List<CategoriaPorcentagemRelatorio> ReceitasPorcentagemCategoriaAnoPassado { get; set; }
+        public List<CategoriaDetalhamentoRelatorio> ReceitasCategoriaDetalhamentoRelatorioAnoCorrente { get; set; }
+        public List<CategoriaDetalhamentoRelatorio> ReceitasCategoriaDetalhamentoRelatorioAnoPassado { get; set; }
+        public List<CategoriaDetalhamentoRelatorio> ReceitasCategoriaDetalhamentoRelatorioMesCorrente { get; set; }
+        public List<CategoriaDetalhamentoRelatorio> ReceitasCategoriaDetalhamentoRelatorioMesPassado { get; set; }
+
+
+        public List<CategoriaPorcentagemRelatorio> InvestimentosPorcentagemCategoriaMesAtual { get; set; }
+        public List<CategoriaPorcentagemRelatorio> InvestimentosPorcentagemCategoriaMesPassado { get; set; }
+        public List<CategoriaPorcentagemRelatorio> InvestimentosPorcentagemCategoriaAnoAtual { get; set; }
+        public List<CategoriaPorcentagemRelatorio> InvestimentosPorcentagemCategoriaAnoPassado { get; set; }
+        public List<CategoriaDetalhamentoRelatorio> InvestimentosCategoriaDetalhamentoRelatorioAnoCorrente { get; set; }
+        public List<CategoriaDetalhamentoRelatorio> InvestimentosCategoriaDetalhamentoRelatorioAnoPassado { get; set; }
+        public List<CategoriaDetalhamentoRelatorio> InvestimentosCategoriaDetalhamentoRelatorioMesCorrente { get; set; }
+        public List<CategoriaDetalhamentoRelatorio> InvestimentosCategoriaDetalhamentoRelatorioMesPassado { get; set; }
+
         public RelatorioPorCategoria(List<Lancamento> listaLancamentos, List<Categoria> listaCategoria)
         {
             anoCorrente = DateTime.Now.Year;
@@ -30,15 +50,37 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
             lancamentos = listaLancamentos;
             categorias = listaCategoria;
 
-            DespesasPorcentagemCategoriaMesAtual = CalcularDespesasPorcentagemCategoriaMesAtual();
-            DespesasPorcentagemCategoriaMesPassado = CalcularDespesasPorcentagemCategoriaMesPassado();
-            DespesasPorcentagemCategoriaAnoAtual = CalcularDespesasPorcentagemCategoriaAnoAtual();
-            DespesasPorcentagemCategoriaAnoPassado = CalcularDespesasPorcentagemCategoriaAnoPassado();
+            DespesasPorcentagemCategoriaMesAtual = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
+            DespesasPorcentagemCategoriaMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
+            DespesasPorcentagemCategoriaAnoAtual = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
+            DespesasPorcentagemCategoriaAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
+
+            ReceitasPorcentagemCategoriaMesAtual = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita);
+            ReceitasPorcentagemCategoriaMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita);
+            ReceitasPorcentagemCategoriaAnoAtual = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita);
+            ReceitasPorcentagemCategoriaAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita);
+
+            InvestimentosPorcentagemCategoriaMesAtual = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento);
+            InvestimentosPorcentagemCategoriaMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento);
+            InvestimentosPorcentagemCategoriaAnoAtual = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento);
+            InvestimentosPorcentagemCategoriaAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento);
+
+
 
             DespesasCategoriaDetalhamentoRelatorioAnoCorrente = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa, false);
             DespesasCategoriaDetalhamentoRelatorioAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa, false);
             DespesasCategoriaDetalhamentoRelatorioMesCorrente = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa, true);
             DespesasCategoriaDetalhamentoRelatorioMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa, true);
+
+            ReceitasCategoriaDetalhamentoRelatorioAnoCorrente = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita, false);
+            ReceitasCategoriaDetalhamentoRelatorioAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita, false);
+            ReceitasCategoriaDetalhamentoRelatorioMesCorrente = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita, true);
+            ReceitasCategoriaDetalhamentoRelatorioMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita, true);
+
+            InvestimentosCategoriaDetalhamentoRelatorioAnoCorrente = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento, false);
+            InvestimentosCategoriaDetalhamentoRelatorioAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento, false);
+            InvestimentosCategoriaDetalhamentoRelatorioMesCorrente = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento, true);
+            InvestimentosCategoriaDetalhamentoRelatorioMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento, true);
         }
 
 
@@ -62,25 +104,6 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
                 .ToList();
 
             return porcentagemPorCategoria;
-        }
-
-        public List<CategoriaPorcentagemRelatorio> CalcularDespesasPorcentagemCategoriaAnoAtual()
-        {
-            return CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
-        }
-
-        public List<CategoriaPorcentagemRelatorio> CalcularDespesasPorcentagemCategoriaAnoPassado()
-        {
-            return CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
-        }
-        public List<CategoriaPorcentagemRelatorio> CalcularDespesasPorcentagemCategoriaMesAtual()
-        {
-            return CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
-        }
-
-        public List<CategoriaPorcentagemRelatorio> CalcularDespesasPorcentagemCategoriaMesPassado()
-        {
-            return CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Despesa, EnumTipoCategoria.Despesa);
         }
 
 
