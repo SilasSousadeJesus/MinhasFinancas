@@ -21,7 +21,7 @@ namespace minhas_financas_back_end
         {
             // criar logicar para desativar os lançamentos fixos e parcelados caso o cara tente realizar o lancamento
             // criar logica para ter registros de saque e deposito (movimentação)
-
+            // criar sistema de metas/sonhos/objetivos estilo caixinha do nubank
 
             var builder = WebApplication.CreateBuilder(args);
 
