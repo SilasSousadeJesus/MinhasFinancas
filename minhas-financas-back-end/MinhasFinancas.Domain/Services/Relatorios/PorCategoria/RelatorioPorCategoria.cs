@@ -84,7 +84,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
         }
 
 
-        // Porcentagem da categoria no valor total;
+        // Porcentagem de cada categoria no valor total;
         private List<CategoriaPorcentagemRelatorio> CalcularPorcentagemPorCategoria(int ano, int mes, EnumTipoLancamento tipoLancamento, EnumTipoCategoria tipoCategoria)
         {
             var lancamentosFiltrados = lancamentos
@@ -107,7 +107,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
         }
 
 
-        // Detalhamento
+        // Detalhamento dos valores por categorio
         private List<CategoriaDetalhamentoRelatorio> CalcularPorcentagemPorCategoria(int ano, int mes, EnumTipoLancamento tipoLancamento, EnumTipoCategoria tipoCategoria, bool isMensal)
         {
             var lancamentosFiltrados = lancamentos
