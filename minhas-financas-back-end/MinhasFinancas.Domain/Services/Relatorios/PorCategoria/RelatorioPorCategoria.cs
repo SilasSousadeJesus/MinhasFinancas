@@ -21,8 +21,6 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
         public List<CategoriaDetalhamentoRelatorio> DespesasCategoriaDetalhamentoRelatorioMesCorrente { get; set; }
         public List<CategoriaDetalhamentoRelatorio> DespesasCategoriaDetalhamentoRelatorioMesPassado { get; set; }
 
-
-
         public RelatorioPorCategoria(List<Lancamento> listaLancamentos, List<Categoria> listaCategoria)
         {
             anoCorrente = DateTime.Now.Year;
@@ -43,8 +41,6 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
             DespesasCategoriaDetalhamentoRelatorioMesCorrente = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Despesa, true);
             DespesasCategoriaDetalhamentoRelatorioMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Despesa, true);
         }
-
-
 
 
         // Porcentagem da categoria no valor total;
@@ -85,7 +81,6 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
         {
             return CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Despesa);
         }
-
 
 
         // Detalhamento
