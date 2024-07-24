@@ -2,9 +2,8 @@
 
 namespace MinhasFinancas.Application.DTOs.Lancamento
 {
-    public class EditarLancamento
+    public class CadastrarLancamentoDTO
     {
-        public Guid Id { get; set; }
         public decimal Valor { get; set; } = decimal.Zero;
         public string Descricao { get; set; } = string.Empty;
         public string Observacao { get; set; } = string.Empty;

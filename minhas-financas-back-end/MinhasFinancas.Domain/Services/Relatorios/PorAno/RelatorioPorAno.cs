@@ -20,9 +20,9 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
         public List<ValorPorAno> DespesaPorAno { get; set; }
         public List<ValorPorAno> ReceitaPorAno { get; set; }
         public List<ValorPorAno> InvestimentoPorAno { get; set; }
-        public List<ValorPorAno> PorcentagemDespesasDaReceitaAnoPorAno { get; set; }
-        public List<ValorPorAno> PorcentagemInvestimentoDaReceitaAnoPorAno { get; set; }
-
+        public List<ValorPorAno> PorcentagemDespesasDaReceitaPorAno { get; set; }
+        public List<ValorPorAno> PorcentagemInvestimentoDaReceitaPorAno { get; set; }
+        public List<ValorPatrimonio> PatrimonioPorAno { get; set; }
 
 
         public RelatorioPorAno(List<Lancamento> listaLancamentos, List<Categoria> listaCategorias)
@@ -37,16 +37,18 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
             mesCorrente = DateTime.Now.Month;
             mesAnterior = mesCorrente == 1 ? 12 : mesCorrente - 1;
 
-            DespesaPorAno = ComparacaoValorAnoPorAno(listaLancamentos, EnumTipoLancamento.Despesa);
-            ReceitaPorAno = ComparacaoValorAnoPorAno(listaLancamentos, EnumTipoLancamento.Receita);
-            InvestimentoPorAno = ComparacaoValorAnoPorAno(listaLancamentos, EnumTipoLancamento.Investimento);
+            DespesaPorAno = ComparacaoValorPorAno(listaLancamentos, EnumTipoLancamento.Despesa);
+            ReceitaPorAno = ComparacaoValorPorAno(listaLancamentos, EnumTipoLancamento.Receita);
+            InvestimentoPorAno = ComparacaoValorPorAno(listaLancamentos, EnumTipoLancamento.Investimento);
 
-            PorcentagemDespesasDaReceitaAnoPorAno = ComparacaoPorcentagemDaReceitaAnoPorAno(listaLancamentos, EnumTipoLancamento.Despesa);
-            PorcentagemInvestimentoDaReceitaAnoPorAno = ComparacaoPorcentagemDaReceitaAnoPorAno(listaLancamentos, EnumTipoLancamento.Investimento);
+            PorcentagemDespesasDaReceitaPorAno = ComparacaoPorcentagemDaReceitaPorAno(listaLancamentos, EnumTipoLancamento.Despesa);
+            PorcentagemInvestimentoDaReceitaPorAno = ComparacaoPorcentagemDaReceitaPorAno(listaLancamentos, EnumTipoLancamento.Investimento);
+
+            PatrimonioPorAno = ValorPatrimonialPorAno(listaLancamentos);
 
         }
 
-        private List<ValorPorAno> ComparacaoValorAnoPorAno(List<Lancamento> listaLancamentos, EnumTipoLancamento tipoLancamento) {
+        private List<ValorPorAno> ComparacaoValorPorAno(List<Lancamento> listaLancamentos, EnumTipoLancamento tipoLancamento) {
 
             var  listaValorPorAno = new List<ValorPorAno>();
 
@@ -67,9 +69,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
             return lista;
         }
 
-
-
-        private List<ValorPorAno> ComparacaoPorcentagemDaReceitaAnoPorAno(List<Lancamento> listaLancamentos, EnumTipoLancamento tipoLancamento)
+        private List<ValorPorAno> ComparacaoPorcentagemDaReceitaPorAno(List<Lancamento> listaLancamentos, EnumTipoLancamento tipoLancamento)
         {
             var listaValorPorAno = new List<ValorPorAno>();
 
@@ -95,7 +95,11 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
             return listaValorPorAno;
         }
 
-
+        public List<ValorPatrimonio> ValorPatrimonialPorAno(List<Lancamento> listaLancamentos)
+        {
+            var listaValorPorAno = new List<ValorPatrimonio>();
+            return listaValorPorAno;
+        }
 
         //public List<ValorPorAno> ComparacaoValorMesAMesAnoPassadoECorrente(EnumTipoLancamento tipoLancamento)
         //{

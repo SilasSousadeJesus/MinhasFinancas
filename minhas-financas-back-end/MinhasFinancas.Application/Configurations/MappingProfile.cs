@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MinhasFinancas.Application.DTOs.Banco;
+using MinhasFinancas.Application.DTOs.BemPatrimonial;
 using MinhasFinancas.Application.DTOs.Cartao;
 using MinhasFinancas.Application.DTOs.Categoria;
 using MinhasFinancas.Application.DTOs.Lancamento;
@@ -20,8 +21,14 @@ namespace MinhasFinancas.Application.Configurations
             CreateMap<CadastrarCategoriaDTO, Categoria>();
             CreateMap<EditarCategoriaDTO, Categoria>();
 
-            CreateMap<CadastrarLancamento, Lancamento>();
-            CreateMap<EditarLancamento, Lancamento>();
+            CreateMap<CadastrarLancamentoDTO, Lancamento>();
+            CreateMap<EditarLancamentoDTO, Lancamento>();
+
+
+            CreateMap<CriarBemPatrimonialDTO, BemPatrimonial>();
+            CreateMap<EditarBemPatrimonialDTO, BemPatrimonial>();
+
+
         }
     }
 }

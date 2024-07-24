@@ -96,7 +96,7 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
-        public async Task<RetornoGenerico> CadastrarElementoAsync(CadastrarLancamento elementoDTO)
+        public async Task<RetornoGenerico> CadastrarElementoAsync(CadastrarLancamentoDTO elementoDTO)
         {
             var retorno = new RetornoGenerico();
 
@@ -176,7 +176,7 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
-        public async Task<RetornoGenerico> EditarElementoAsync(string idPatrono, Guid elementoId, EditarLancamento elementoDTO)
+        public async Task<RetornoGenerico> EditarElementoAsync(string idPatrono, Guid elementoId, EditarLancamentoDTO elementoDTO)
         {
             var retorno = new RetornoGenerico();
 

@@ -3,7 +3,7 @@ using MinhasFinancas.Application.Interfaces.baseInterface;
 
 namespace MinhasFinancas.Application.Interfaces
 {
-    public interface ILancamentoAppService : IAppService<CadastrarLancamento, EditarLancamento>
+    public interface ILancamentoAppService : IAppService<CadastrarLancamentoDTO, EditarLancamentoDTO>
     {
         Task<RetornoGenerico> BuscarLancamentosPorCategoriaAsync(string usuarioId);
     }

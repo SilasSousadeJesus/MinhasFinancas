@@ -16,7 +16,7 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [HttpPost("CadastrarLancamento")]
-        public async Task<IActionResult> CadastrarCartao([FromBody] CadastrarLancamento cadastrarLancamento)
+        public async Task<IActionResult> CadastrarCartao([FromBody] CadastrarLancamentoDTO cadastrarLancamento)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -80,7 +80,7 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [HttpPut("EditarLancamento/{usuarioId}/{faturamentoId}")]
-        public async Task<IActionResult> EditarCartao([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId, [FromBody] EditarLancamento editarLancamento)
+        public async Task<IActionResult> EditarCartao([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId, [FromBody] EditarLancamentoDTO editarLancamento)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

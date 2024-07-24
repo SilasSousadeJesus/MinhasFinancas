@@ -20,6 +20,7 @@ namespace MinhasFinancas.Infra
         public DbSet<Lancamento> Lancamento { get; set; }
         public DbSet<LancamentoFixo> LancamentoFixo { get; set; }
         public DbSet<LancamentoParcelado> LancamentoParcelado { get; set; }
+        public DbSet<BemPatrimonial> BemPatrimonial { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
