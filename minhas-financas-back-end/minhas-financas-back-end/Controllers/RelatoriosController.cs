@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.Interfaces;
+using Newtonsoft.Json;
 
 namespace MinhasFinancas.API.Controllers
 {
@@ -32,6 +33,29 @@ namespace MinhasFinancas.API.Controllers
                     _ => BadRequest(dados)
                 };
             }
+
+            return Ok(dados);
+        }
+
+
+        [HttpGet("PorAno/{usuarioId}")]
+        public async Task<IActionResult> RelatoriosPorAno([FromRoute] string usuarioId)
+        {
+
+            var dados = await _appService.RelatoriosValoresAnoPorAno(usuarioId);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
 
             return Ok(dados);
         }
