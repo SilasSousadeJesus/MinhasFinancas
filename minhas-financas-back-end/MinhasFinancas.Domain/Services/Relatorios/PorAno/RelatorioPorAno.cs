@@ -20,6 +20,10 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
         public List<ValorPorAno> DespesaPorAno { get; set; }
         public List<ValorPorAno> ReceitaPorAno { get; set; }
         public List<ValorPorAno> InvestimentoPorAno { get; set; }
+        public List<ValorPorAno> PorcentagemDespesasDaReceitaAnoPorAno { get; set; }
+        public List<ValorPorAno> PorcentagemInvestimentoDaReceitaAnoPorAno { get; set; }
+
+
 
         public RelatorioPorAno(List<Lancamento> listaLancamentos, List<Categoria> listaCategorias)
         {
@@ -36,6 +40,9 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
             DespesaPorAno = ComparacaoValorAnoPorAno(listaLancamentos, EnumTipoLancamento.Despesa);
             ReceitaPorAno = ComparacaoValorAnoPorAno(listaLancamentos, EnumTipoLancamento.Receita);
             InvestimentoPorAno = ComparacaoValorAnoPorAno(listaLancamentos, EnumTipoLancamento.Investimento);
+
+            PorcentagemDespesasDaReceitaAnoPorAno = ComparacaoPorcentagemDaReceitaAnoPorAno(listaLancamentos, EnumTipoLancamento.Despesa);
+            PorcentagemInvestimentoDaReceitaAnoPorAno = ComparacaoPorcentagemDaReceitaAnoPorAno(listaLancamentos, EnumTipoLancamento.Investimento);
 
         }
 
@@ -59,6 +66,35 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
 
             return lista;
         }
+
+
+
+        private List<ValorPorAno> ComparacaoPorcentagemDaReceitaAnoPorAno(List<Lancamento> listaLancamentos, EnumTipoLancamento tipoLancamento)
+        {
+            var listaValorPorAno = new List<ValorPorAno>();
+
+            var lancamentosPorAno = listaLancamentos
+                .Where(l => l.Tipo == EnumTipoLancamento.Receita || l.Tipo == tipoLancamento)
+                .GroupBy(l => l.DataPagamento.Year)
+                .OrderBy(g => g.Key)
+                .ToList();
+
+            foreach (var ano in lancamentosPorAno)
+            {
+                var despesa = ano.Where(x => x.Tipo == tipoLancamento).Select(x => x.Valor).Sum();
+                var receita = ano.Where(x => x.Tipo == EnumTipoLancamento.Receita).Select(x => x.Valor).Sum();
+
+                var resultado = new ValorPorAno()
+                {
+                    Ano = ano.Key.ToString(),
+                    Valor = receita > 0 ? Math.Round((despesa / receita) * 100, 2) : 0,
+                };
+
+                listaValorPorAno.Add(resultado);
+            }
+            return listaValorPorAno;
+        }
+
 
 
         //public List<ValorPorAno> ComparacaoValorMesAMesAnoPassadoECorrente(EnumTipoLancamento tipoLancamento)
