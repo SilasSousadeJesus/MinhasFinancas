@@ -23,9 +23,11 @@ namespace MinhasFinancas.Infra.Data.Repositories
             var cartoes = await _context.Cartao.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
             var bancos = await _context.Banco.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
             var lancamentos = await _context.Lancamento.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
+            var bemPatrimonial = await _context.BemPatrimonial.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
                
             if (usuario != null)
             {
+                _context.BemPatrimonial.RemoveRange(bemPatrimonial);
                 _context.Lancamento.RemoveRange(lancamentos);
                 _context.Categoria.RemoveRange(categorias);
                 _context.Cartao.RemoveRange(cartoes);

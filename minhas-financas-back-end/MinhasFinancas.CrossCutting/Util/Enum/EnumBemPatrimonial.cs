@@ -3,9 +3,8 @@
     public enum EnumBemPatrimonial
     {
         Imovel = 0,
-        Carro = 1,
-        Moto = 2,
-        Terreno = 3,
-        Investimento = 4,
+        Automovel = 1,
+        Investimento = 2,
+        DinheiroEmConta = 2
     }
 }

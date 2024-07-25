@@ -25,7 +25,7 @@ namespace MinhasFinancas.Application.Configurations
             CreateMap<EditarLancamentoDTO, Lancamento>();
 
 
-            CreateMap<CriarBemPatrimonialDTO, BemPatrimonial>();
+            CreateMap<CadastrarBemPatrimonialDTO, BemPatrimonial>();
             CreateMap<EditarBemPatrimonialDTO, BemPatrimonial>();
 
 

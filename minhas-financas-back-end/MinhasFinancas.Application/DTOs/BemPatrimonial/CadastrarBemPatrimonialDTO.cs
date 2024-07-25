@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MinhasFinancas.Application.DTOs.BemPatrimonial
 {
-    public class CriarBemPatrimonialDTO
+    public class CadastrarBemPatrimonialDTO
     {
         public string NomeBemPatrimonial { get; set; } = string.Empty;
         public string Descricao { get; set; } = string.Empty;
