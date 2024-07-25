@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
 
@@ -16,9 +17,12 @@ namespace MinhasFinancas.Infra.Data.Repositories
 
         public async Task<List<BemPatrimonial>> BuscarTodosOsElementosAsync(string id)
         {
-            return await _context.Set<BemPatrimonial>()
+            var listaDeBens =await _context.Set<BemPatrimonial>()
+                .Include(x => x.DataPermanencia)
                  .Where(b => b.UsuarioId == id)
                  .ToListAsync();
+
+            return listaDeBens;
         }
 
         public async Task<BemPatrimonial> BuscarUmElementoAsync(string idPatrono, Guid id)
@@ -49,5 +53,12 @@ namespace MinhasFinancas.Infra.Data.Repositories
             _context.Set<BemPatrimonial>().Update(elemento);
             await _context.SaveChangesAsync();
         }
+
+        public async Task CadastrarElementoAsync(List<BemPatrimonial> listaElemento)
+        {
+            await _context.Set<BemPatrimonial>().AddRangeAsync(listaElemento);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MinhasFinancas.Infra.Data.Interfaces
 {
-    public interface IBancoRepository : IRepository<Banco>
+    public interface IBancoRepository : IRepository<Conta>
     {
     }
 }

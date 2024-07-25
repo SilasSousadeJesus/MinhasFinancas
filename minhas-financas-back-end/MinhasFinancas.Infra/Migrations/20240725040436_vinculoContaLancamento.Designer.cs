@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MinhasFinancas.Infra;
 
@@ -11,9 +12,11 @@ using MinhasFinancas.Infra;
 namespace MinhasFinancas.Infra.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240725040436_vinculoContaLancamento")]
+    partial class vinculoContaLancamento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,9 +145,6 @@ namespace MinhasFinancas.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -153,14 +153,14 @@ namespace MinhasFinancas.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Permanencia")
-                        .HasColumnType("bit");
-
                     b.Property<int>("Tipo")
                         .HasColumnType("int");
 
                     b.Property<string>("UsuarioId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -400,28 +400,6 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("LancamentoParcelado");
                 });
 
-            modelBuilder.Entity("MinhasFinancas.Domain.Entities.PermanenciaBemMaterial", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BemPatrimonialId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DataPermanencia")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BemPatrimonialId");
-
-                    b.ToTable("PermanenciaBemMaterial");
-                });
-
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.SubCategoria", b =>
                 {
                     b.Property<Guid>("Id")
@@ -574,15 +552,6 @@ namespace MinhasFinancas.Infra.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MinhasFinancas.Domain.Entities.PermanenciaBemMaterial", b =>
-                {
-                    b.HasOne("MinhasFinancas.Domain.Entities.BemPatrimonial", null)
-                        .WithMany("DataPermanencia")
-                        .HasForeignKey("BemPatrimonialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.SubCategoria", b =>
                 {
                     b.HasOne("MinhasFinancas.Domain.Entities.Categoria", null)
@@ -590,11 +559,6 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("MinhasFinancas.Domain.Entities.BemPatrimonial", b =>
-                {
-                    b.Navigation("DataPermanencia");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Categoria", b =>

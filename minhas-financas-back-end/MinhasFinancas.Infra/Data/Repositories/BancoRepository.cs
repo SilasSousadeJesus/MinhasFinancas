@@ -13,39 +13,39 @@ namespace MinhasFinancas.Infra.Data.Repositories
             _context = context;
         }
 
-        public async Task<List<Banco>> BuscarTodosOsElementosAsync(string id)
+        public async Task<List<Conta>> BuscarTodosOsElementosAsync(string id)
         {
-            return await _context.Set<Banco>()
+            return await _context.Set<Conta>()
                         .Where(b => b.UsuarioId == id)
                         .ToListAsync();
         }
 
-        public async Task<Banco> BuscarUmElementoAsync(string idPatrono, Guid id)
+        public async Task<Conta> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
-            return await _context.Set<Banco>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
+            return await _context.Set<Conta>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task CadastrarElementoAsync(Banco elemento)
+        public async Task CadastrarElementoAsync(Conta elemento)
         {
-            await _context.Set<Banco>().AddAsync(elemento);
+            await _context.Set<Conta>().AddAsync(elemento);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeletarElementoAsync(Banco elemento)
+        public async Task DeletarElementoAsync(Conta elemento)
         {
-            _context.Set<Banco>().Remove(elemento);
+            _context.Set<Conta>().Remove(elemento);
             await _context.SaveChangesAsync();
         }
 
-        public async Task EditarElementoAsync(Banco elemento)
+        public async Task EditarElementoAsync(Conta elemento)
         {
-            var existingEntity = _context.Set<Banco>().Local.FirstOrDefault(b => b.Id == elemento.Id);
+            var existingEntity = _context.Set<Conta>().Local.FirstOrDefault(b => b.Id == elemento.Id);
             if (existingEntity != null)
             {
                 _context.Entry(existingEntity).State = EntityState.Detached;
             }
 
-            _context.Set<Banco>().Update(elemento);
+            _context.Set<Conta>().Update(elemento);
             await _context.SaveChangesAsync();
         }
     }

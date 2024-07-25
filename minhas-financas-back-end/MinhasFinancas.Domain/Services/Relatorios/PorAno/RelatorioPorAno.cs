@@ -1,4 +1,5 @@
-﻿using MinhasFinancas.CrossCutting.Util.Enum;
+﻿using MinhasFinancas.CrossCutting.Util.Dicionary;
+using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Domain.Services.Relatorios.PorAno.ClassesDoRelatorio;
 
@@ -22,10 +23,10 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
         public List<ValorPorAno> InvestimentoPorAno { get; set; }
         public List<ValorPorAno> PorcentagemDespesasDaReceitaPorAno { get; set; }
         public List<ValorPorAno> PorcentagemInvestimentoDaReceitaPorAno { get; set; }
-        public List<ValorPatrimonio> PatrimonioPorAno { get; set; }
+        public List<ValorPatrimonioPorAno> PatrimonioPorAno { get; set; }
 
 
-        public RelatorioPorAno(List<Lancamento> listaLancamentos, List<Categoria> listaCategorias)
+        public RelatorioPorAno(List<Lancamento> listaLancamentos, List<Categoria> listaCategorias, List<BemPatrimonial> bemPatrimonials)
         {
             anoCorrente = DateTime.Now.Year;
             UmAnoAtras = DateTime.Now.Year - 1;
@@ -44,7 +45,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
             PorcentagemDespesasDaReceitaPorAno = ComparacaoPorcentagemDaReceitaPorAno(listaLancamentos, EnumTipoLancamento.Despesa);
             PorcentagemInvestimentoDaReceitaPorAno = ComparacaoPorcentagemDaReceitaPorAno(listaLancamentos, EnumTipoLancamento.Investimento);
 
-            PatrimonioPorAno = ValorPatrimonialPorAno(listaLancamentos);
+            PatrimonioPorAno = ValorPatrimonialPorAno(bemPatrimonials);
 
         }
 
@@ -95,10 +96,40 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
             return listaValorPorAno;
         }
 
-        public List<ValorPatrimonio> ValorPatrimonialPorAno(List<Lancamento> listaLancamentos)
+        public List<ValorPatrimonioPorAno> ValorPatrimonialPorAno(List<BemPatrimonial> listaBemPatrimonials)
         {
-            var listaValorPorAno = new List<ValorPatrimonio>();
-            return listaValorPorAno;
+            List<ValorPatrimonio> bemPatrimonialsPorAno = new List<ValorPatrimonio>();
+
+            var dicionary = new DicionarybemPatrimonial();
+
+            foreach (var bem in listaBemPatrimonials)
+            {
+                foreach (var item in bem.DataPermanencia)
+                {
+                    var valorPatrimonio = new ValorPatrimonio() { 
+                         Ano = item.DataPermanencia.Year,
+                         ValorAtivo = item.Valor,
+                         TipoPatrimonio = dicionary.GetBemPatrimonialName(bem.Tipo),
+                    };
+
+                    bemPatrimonialsPorAno.Add(valorPatrimonio);
+                }
+            }
+
+            var divisaoPorData = bemPatrimonialsPorAno
+                .GroupBy(l => l.Ano)
+                .OrderBy(g => g.Key)
+                .ToList();
+
+            var lista = divisaoPorData
+                     .Select(g => new ValorPatrimonioPorAno
+                     {
+                         Ano = g.Key.ToString(),
+                         Valor = g.Sum(l => l.ValorAtivo)
+                     })
+                     .ToList();
+
+            return lista;
         }
 
         //public List<ValorPorAno> ComparacaoValorMesAMesAnoPassadoECorrente(EnumTipoLancamento tipoLancamento)

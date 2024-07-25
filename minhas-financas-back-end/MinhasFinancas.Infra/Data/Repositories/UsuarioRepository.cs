@@ -21,7 +21,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         {
             var categorias = await _context.Categoria.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
             var cartoes = await _context.Cartao.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
-            var bancos = await _context.Banco.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
+            var contas = await _context.Conta.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
             var lancamentos = await _context.Lancamento.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
             var bemPatrimonial = await _context.BemPatrimonial.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
                
@@ -31,7 +31,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
                 _context.Lancamento.RemoveRange(lancamentos);
                 _context.Categoria.RemoveRange(categorias);
                 _context.Cartao.RemoveRange(cartoes);
-                _context.Banco.RemoveRange(bancos);
+                _context.Conta.RemoveRange(contas);
                 _context.Users.Remove(usuario);
 
                 await _context.SaveChangesAsync();

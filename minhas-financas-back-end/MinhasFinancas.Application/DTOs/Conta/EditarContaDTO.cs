@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MinhasFinancas.Application.DTOs.Banco
 {
-    public class CadastrarBancoDTO
+    public class EditarContaDTO
     {
         [Required(ErrorMessage = "0 Campo {0} é Obrigatorio")]
         [StringLength(20, ErrorMessage = "O Campo {0} deve ter até 20 caracteres", MinimumLength = 2)]
@@ -17,8 +17,5 @@ namespace MinhasFinancas.Application.DTOs.Banco
 
         [Required(ErrorMessage = "0 Campo {0} é Obrigatorio")]
         public EnumTipoConta Tipo { get; set; }
-
-        [Required(ErrorMessage = "0 Campo {0} é Obrigatorio, o banco precisa esta associado a um usuario")]
-        public string? UsuarioId { get; set; }
     }
 }

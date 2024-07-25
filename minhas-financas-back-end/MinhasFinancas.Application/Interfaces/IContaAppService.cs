@@ -3,7 +3,7 @@ using MinhasFinancas.Application.Interfaces.baseInterface;
 
 namespace MinhasFinancas.Application.Interfaces
 {
-    public interface IBancoAppService : IAppService<CadastrarBancoDTO, EditarBancoDTO>
+    public interface IContaAppService : IAppService<CadastrarContaDTO, EditarContaDTO>
     {
     }
 }

@@ -40,6 +40,9 @@ namespace MinhasFinancas.Domain.Entities
         public Guid? SubCategoriaId { get; set; }
         public virtual SubCategoria? SubCategoria { get; set; }
 
+        [ForeignKey("ContaId")]
+        public Guid? ContaId { get; set; }
+        public virtual Conta? Conta { get; set; }
 
         public virtual List<LancamentoFixo>? LancamentosFixo { get; set; }
         public virtual List<LancamentoParcelado>? LancamentoParcelado { get; set; }

@@ -9,14 +9,16 @@ namespace MinhasFinancas.Application.Services
     {
         private readonly IUsuarioAppService _usuarioAppService;
         private readonly ILancamentoAppService _lancamentoAppService;
+        private readonly IBemPatrimonialAppService _bemPatrimonialAppService;
         private readonly ICategoriaAppService _categoriaAppService;
 
 
-        public RelatoriosAppService(IUsuarioAppService usuarioAppService, ILancamentoAppService lancamentoAppService, ICategoriaAppService categoriaAppService)
+        public RelatoriosAppService(IUsuarioAppService usuarioAppService, ILancamentoAppService lancamentoAppService, ICategoriaAppService categoriaAppService, IBemPatrimonialAppService bemPatrimonialAppService)
         {
             _usuarioAppService = usuarioAppService;
             _lancamentoAppService = lancamentoAppService;
             _categoriaAppService = categoriaAppService;
+            _bemPatrimonialAppService = bemPatrimonialAppService;
         }
 
         public async Task<RetornoGenerico> RelatoriosPorCategoriaLancamento(string usuarioId)
@@ -80,8 +82,6 @@ namespace MinhasFinancas.Application.Services
                 return retorno;
             }
         }
-
-
         public async Task<RetornoGenerico> RelatoriosValoresAnoPorAno(string usuarioId)
         {
             var retorno = new RetornoGenerico();
@@ -110,6 +110,7 @@ namespace MinhasFinancas.Application.Services
                     retorno.MensagemSistema = listaLancamentos.MensagemSistema;
                     retorno.MensagemUsuario = listaLancamentos.MensagemUsuario;
                     retorno.Dados = null;
+                    return retorno;
                 }
 
                 var listaCategorias = await _categoriaAppService.BuscarTodosOsElementosAsync(usuarioId);
@@ -122,9 +123,23 @@ namespace MinhasFinancas.Application.Services
                     retorno.MensagemSistema = listaCategorias.MensagemSistema;
                     retorno.MensagemUsuario = listaCategorias.MensagemUsuario;
                     retorno.Dados = null;
+                    return retorno;
                 }
 
-                var relatorio = new RelatorioPorAno(listaLancamentos.Dados, listaCategorias.Dados);
+                var listaPatrimonio = await _bemPatrimonialAppService.BuscarTodosOsElementosAsync(usuarioId);
+
+                if (!listaPatrimonio.Sucesso)
+                {
+
+                    retorno.Sucesso = listaPatrimonio.Sucesso;
+                    retorno.HttpStatusCode = listaPatrimonio.HttpStatusCode;
+                    retorno.MensagemSistema = listaPatrimonio.MensagemSistema;
+                    retorno.MensagemUsuario = listaPatrimonio.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var relatorio = new RelatorioPorAno(listaLancamentos.Dados, listaCategorias.Dados, listaPatrimonio.Dados);
 
                 retorno.Sucesso = relatorio != null ? true : false;
                 retorno.HttpStatusCode = relatorio != null ? HttpStatusCode.OK : HttpStatusCode.NotFound;
@@ -143,5 +158,6 @@ namespace MinhasFinancas.Application.Services
                 return retorno;
             }
         }
+      
     }
 }

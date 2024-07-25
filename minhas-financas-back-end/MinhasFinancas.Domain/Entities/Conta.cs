@@ -5,9 +5,9 @@ using System.Globalization;
 
 namespace MinhasFinancas.Domain.Entities
 {
-    public class Banco
+    public class Conta
     {
-        public Banco() { }
+        public Conta() { }
 
         [Key]
         public Guid Id { get; set; }
@@ -15,6 +15,9 @@ namespace MinhasFinancas.Domain.Entities
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Saldo { get; set; } = decimal.Zero;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal SaldoInvestimento { get; set; } = decimal.Zero;
         public string Descricao { get; set; } = string.Empty;
         public string Instituicao { get; set; } = string.Empty;
         public EnumTipoConta Tipo { get; set; }
@@ -23,7 +26,7 @@ namespace MinhasFinancas.Domain.Entities
         public string? UsuarioId { get; set; }
         public virtual Usuario Usuario { get; set; }
 
-        [NotMapped]
-        public string SaldoFormatado => Saldo.ToString("C", new CultureInfo("pt-BR"));
+        public virtual List<Lancamento>? BensPatrimoniais { get; set; }
+
     }
 }

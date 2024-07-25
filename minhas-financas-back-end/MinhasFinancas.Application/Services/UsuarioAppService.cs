@@ -8,6 +8,7 @@ using MinhasFinancas.Application.Resources;
 using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
+using System.Drawing;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -20,15 +21,17 @@ namespace MinhasFinancas.Application.Services
         private readonly IMapper _mapper;
         private readonly UserManager<Usuario> _userManager;
         private readonly ICategoriaRepository _categoriaRepository;
+        private readonly IBemMaterialRepository _bemMaterialRepository;
         private readonly IUsuarioRepository _usuarioRepository;
 
 
-        public UsuarioAppService(UserManager<Usuario> userManager, ICategoriaRepository categoriaRepository, IMapper mapper, IUsuarioRepository usuarioRepository)
+        public UsuarioAppService(UserManager<Usuario> userManager, ICategoriaRepository categoriaRepository, IMapper mapper, IUsuarioRepository usuarioRepository, IBemMaterialRepository bemMaterialRepository)
         {
             _userManager = userManager;
             _categoriaRepository = categoriaRepository;
             _mapper = mapper;
             _usuarioRepository = usuarioRepository;
+            _bemMaterialRepository = bemMaterialRepository;
         }
 
 
@@ -160,8 +163,67 @@ namespace MinhasFinancas.Application.Services
             var listaCategorias = CategoriasSubCategorias.ConstrutorCategoriasSubCategorias(UsuarioId);
 
             await _categoriaRepository.CadastrarListaDeCategoriasAsync(listaCategorias);
+
+            var bensPatrimoniais = new List<BemPatrimonial>() {
+                new BemPatrimonial()
+                {
+                    Id =   Guid.NewGuid(),
+                    Descricao = "Soma de todos os saldos nas contas",
+                    Tipo = EnumBemPatrimonial.DinheiroEmConta,
+                    NomeBemPatrimonial = "Dinheiro em Conta",
+                    UsuarioId = UsuarioId,
+                    DataCadastro = DateTime.Now,
+                    DataPermanencia = new List<PermanenciaBemMaterial>(){
+                        new PermanenciaBemMaterial (){
+                        BemPatrimonialId = Guid.Empty,
+                        Valor = 0,
+                        DataPermanencia = DateTime.Now,
+                         Id =   Guid.NewGuid(),
+                        }
+                    },
+                    Permanencia = true,
+                },
+                new BemPatrimonial()
+                {
+                    Id =  Guid.NewGuid(),
+                    Descricao = "Soma de todos os saldos de investimentos nas contas",
+                    Tipo = EnumBemPatrimonial.Investimento,
+                    NomeBemPatrimonial = "Investimento em Conta",
+                    UsuarioId = UsuarioId,
+                    DataCadastro = DateTime.Now,
+                    DataPermanencia = new List<PermanenciaBemMaterial>(){
+                        new PermanenciaBemMaterial (){
+                        BemPatrimonialId = Guid.Empty,
+                        DataPermanencia = DateTime.Now,
+                        Valor = 1000,
+                        Id =   Guid.NewGuid(),
+                        },
+                        new PermanenciaBemMaterial (){
+                        BemPatrimonialId = Guid.Empty,
+                        DataPermanencia = DateTime.Now,
+                        Valor = 2000,
+                        Id =   Guid.NewGuid(),
+                        },
+                       new PermanenciaBemMaterial (){
+                        BemPatrimonialId = Guid.Empty,
+                        DataPermanencia = DateTime.Now,
+                        Valor = 3000,
+                        Id =   Guid.NewGuid(),
+                        }
+                    },
+                    Permanencia = true,
+                },
+            };
+
+            foreach (var bem in bensPatrimoniais)
+            {
+                foreach (var dataPermanencia in bem.DataPermanencia)
+                {
+                    dataPermanencia.BemPatrimonialId = bem.Id;
+                }
+            }          
+            
+            await _bemMaterialRepository.CadastrarElementoAsync(bensPatrimoniais);
         }
-
-
     }
 }

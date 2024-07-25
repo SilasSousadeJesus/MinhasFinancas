@@ -5,6 +5,6 @@
         Imovel = 0,
         Automovel = 1,
         Investimento = 2,
-        DinheiroEmConta = 2
+        DinheiroEmConta = 3
     }
 }

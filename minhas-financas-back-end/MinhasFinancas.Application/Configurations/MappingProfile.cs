@@ -12,8 +12,8 @@ namespace MinhasFinancas.Application.Configurations
     {
         public MappingProfile()
         {
-            CreateMap<CadastrarBancoDTO, Banco>();
-            CreateMap<EditarBancoDTO, Banco>();
+            CreateMap<CadastrarContaDTO, Conta>();
+            CreateMap<EditarContaDTO, Conta>();
 
             CreateMap<CadastrarCartaoDTO, Cartao>();
             CreateMap<EditarCartaoDTO, Cartao>();

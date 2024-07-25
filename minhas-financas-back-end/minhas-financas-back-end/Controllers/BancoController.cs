@@ -8,15 +8,15 @@ namespace MinhasFinancas.API.Controllers
     [ApiController]
     public class BancoController : ControllerBase
     {
-        private readonly IBancoAppService _appService;
+        private readonly IContaAppService _appService;
 
-        public BancoController(IBancoAppService bancoAppService) 
+        public BancoController(IContaAppService bancoAppService) 
         {
             _appService = bancoAppService;  
         }
 
         [HttpPost("Cadastrar")]
-        public async Task<IActionResult> CadastrarUsuario(CadastrarBancoDTO cadastroBancoDTO)
+        public async Task<IActionResult> CadastrarConta(CadastrarContaDTO cadastroBancoDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -38,8 +38,8 @@ namespace MinhasFinancas.API.Controllers
         }
 
 
-        [HttpGet("BuscarTodosOsBancos/{usuarioId}")]
-        public async Task<IActionResult> BuscarTodosOsBancos([FromRoute] string usuarioId)
+        [HttpGet("BuscarTodosAsContas/{usuarioId}")]
+        public async Task<IActionResult> BuscarTodosAsContas([FromRoute] string usuarioId)
         {
 
             var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId);
@@ -59,11 +59,11 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpGet("BuscarUmBanco/{usuarioId}/{bancoId}")]
-        public async Task<IActionResult> BuscarUmBanco([FromRoute] string usuarioId, [FromRoute] Guid bancoId)
+        [HttpGet("BuscarUmaConta/{usuarioId}/{bancoId}")]
+        public async Task<IActionResult> BuscarUmaConta([FromRoute] string usuarioId, [FromRoute] Guid contaId)
         {
 
-            var dados = await _appService.BuscarUmElementoAsync(usuarioId, bancoId);
+            var dados = await _appService.BuscarUmElementoAsync(usuarioId, contaId);
 
             if (!dados.Sucesso)
             {
@@ -80,8 +80,8 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpPut("EditarBanco/{usuarioId}/{bancoId}")]
-        public async Task<IActionResult> EditarBanco([FromRoute] string usuarioId, [FromRoute] Guid bancoId, [FromBody] EditarBancoDTO editarBancoDTO)
+        [HttpPut("EditarConta/{usuarioId}/{bancoId}")]
+        public async Task<IActionResult> EditarConta([FromRoute] string usuarioId, [FromRoute] Guid bancoId, [FromBody] EditarContaDTO editarBancoDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -102,8 +102,8 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-        [HttpDelete("DeletarBanco/{usuarioId}/{bancoId}")]
-        public async Task<IActionResult> DeletarBanco(string usuarioId, Guid bancoId)
+        [HttpDelete("DeletarConta/{usuarioId}/{bancoId}")]
+        public async Task<IActionResult> DeletarConta(string usuarioId, Guid bancoId)
         {
 
             var dados = await _appService.DeletarElementoAsync(usuarioId, bancoId);
