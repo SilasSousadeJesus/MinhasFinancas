@@ -9,6 +9,8 @@ namespace MinhasFinancas.Application.DTOs.Banco
         [StringLength(20, ErrorMessage = "O Campo {0} deve ter até 20 caracteres", MinimumLength = 2)]
         public string NomeConta { get; set; } = string.Empty;
         public decimal Saldo { get; set; } = decimal.Zero;
+
+        public decimal SaldoInvestimento { get; set; } = decimal.Zero;
         public string Descricao { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "0 Campo {0} é Obrigatorio")]

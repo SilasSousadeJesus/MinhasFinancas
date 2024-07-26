@@ -4,11 +4,11 @@ using MinhasFinancas.Infra.Data.Interfaces;
 
 namespace MinhasFinancas.Infra.Data.Repositories
 {
-    public class BancoRepository : IBancoRepository
+    public class ContaRepository : IContaRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public BancoRepository(ApplicationDbContext context)
+        public ContaRepository(ApplicationDbContext context)
         {
             _context = context;
         }

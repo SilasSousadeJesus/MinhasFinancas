@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using MinhasFinancas.Application.DTOs.Banco;
 using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
 using System.Net;
@@ -12,12 +14,16 @@ namespace MinhasFinancas.Application.Services
 
         private readonly IMapper _mapper;
         private readonly ILancamentoRepository _lancamentoRepository;
+        private readonly IContaAppService _contaAppService;
         private readonly IUsuarioAppService _usuarioAppService;
-        public LancamentoAppService(IMapper mapper, ILancamentoRepository lancamentoRepository, IUsuarioAppService usuarioAppService)
+        private readonly IBemPatrimonialAppService  _bemPatrimonialAppService;
+        public LancamentoAppService(IMapper mapper, ILancamentoRepository lancamentoRepository, IUsuarioAppService usuarioAppService, IContaAppService contaAppService, IBemPatrimonialAppService bemPatrimonialAppService)
         {
             _mapper = mapper;
             _lancamentoRepository = lancamentoRepository;
             _usuarioAppService = usuarioAppService;
+            _contaAppService = contaAppService;
+            _bemPatrimonialAppService = bemPatrimonialAppService;   
         }
 
         public async Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id)
@@ -115,14 +121,66 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var categoria = _mapper.Map<Lancamento>(elementoDTO);
+                var lancamento = _mapper.Map<Lancamento>(elementoDTO);
 
-                await _lancamentoRepository.CadastrarElementoAsync(categoria);
+                if (lancamento.ContaId != null)
+                {
+                    var buscarContaVinculada = await _contaAppService.BuscarUmElementoAsync(lancamento.UsuarioId, (Guid)lancamento.ContaId);
+                    List<BemPatrimonial> buscarBensMateriais =  _bemPatrimonialAppService.BuscarTodosOsElementosAsync(lancamento.UsuarioId).Result.Dados;
+                    var investimentos = buscarBensMateriais.Where(x => x.Tipo == EnumBemPatrimonial.Investimento).FirstOrDefault();
+                    var dinheiroEmConta = buscarBensMateriais.Where(x => x.Tipo == EnumBemPatrimonial.DinheiroEmConta).FirstOrDefault();
+
+                    PermanenciaBemMaterial permancenciaInvestimento =  _bemPatrimonialAppService.BuscarUltimaDataPermanencia(investimentos.Id).Result.Dados;
+                    PermanenciaBemMaterial permancenciaDinheiroEmConta =  _bemPatrimonialAppService.BuscarUltimaDataPermanencia(dinheiroEmConta.Id).Result.Dados;
+
+                    var contaDTO = new EditarContaDTO()
+                    {
+                        Descricao = buscarContaVinculada.Dados.Descricao,
+                        Instituicao = buscarContaVinculada.Dados.Instituicao,
+                        NomeConta = buscarContaVinculada.Dados.NomeConta,
+                        Saldo = buscarContaVinculada.Dados.Saldo,
+                        Tipo = buscarContaVinculada.Dados.Tipo,
+                        SaldoInvestimento = buscarContaVinculada.Dados.SaldoInvestimento
+                    };
+
+                    switch (lancamento.Tipo)
+                    {
+                        case EnumTipoLancamento.InvestimentoDeposito:
+                            permancenciaInvestimento.Valor += lancamento.Valor;
+                            contaDTO.SaldoInvestimento += lancamento.Valor;
+                            await _contaAppService.EditarElementoAsync(elementoDTO.UsuarioId, (Guid)lancamento.ContaId, contaDTO);                         
+                            await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
+                            break;
+
+                        case EnumTipoLancamento.InvestimentoSaque:
+                            permancenciaInvestimento.Valor -= lancamento.Valor;
+                            contaDTO.SaldoInvestimento -= lancamento.Valor;
+                            await _contaAppService.EditarElementoAsync(elementoDTO.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
+                            await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
+                            break;
+
+                        case EnumTipoLancamento.Saque:
+                            contaDTO.Saldo -= lancamento.Valor;
+                            permancenciaDinheiroEmConta.Valor -= lancamento.Valor;
+                            await _contaAppService.EditarElementoAsync(elementoDTO.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
+                            await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
+                            break;
+
+                        case EnumTipoLancamento.Deposito:
+                            contaDTO.Saldo += lancamento.Valor;
+                            permancenciaDinheiroEmConta.Valor += lancamento.Valor;
+                            await _contaAppService.EditarElementoAsync(elementoDTO.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
+                            await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
+                            break;
+                    }
+                }
+
+                await _lancamentoRepository.CadastrarElementoAsync(lancamento);
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Lancamento cadastrada com sucesso";
-                retorno.MensagemUsuario = "Lancamento cadastrada";
+                retorno.MensagemSistema = "Lançamento cadastrado com sucesso";
+                retorno.MensagemUsuario = "Lançamento cadastrado";
                 retorno.Dados = null;
                 return retorno;
             }
@@ -131,7 +189,7 @@ namespace MinhasFinancas.Application.Services
                 retorno.Sucesso = false;
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
-                retorno.MensagemUsuario = "Não foi possivel criar o Lancamento";
+                retorno.MensagemUsuario = "Não foi possivel criar o Lançamento";
                 retorno.Dados = null;
                 return retorno;
             }

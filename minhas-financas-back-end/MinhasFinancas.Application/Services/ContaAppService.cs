@@ -12,9 +12,9 @@ namespace MinhasFinancas.Application.Services
     public class ContaAppService : IContaAppService
     {
         private readonly IMapper _mapper;
-        private readonly IBancoRepository _bancoRepository;
+        private readonly IContaRepository _bancoRepository;
         private readonly IUsuarioAppService _usuarioAppService;
-        public ContaAppService(IMapper mapper, IBancoRepository bancoRepository, IUsuarioAppService usuarioAppService)
+        public ContaAppService(IMapper mapper, IContaRepository bancoRepository, IUsuarioAppService usuarioAppService)
         {
             _mapper = mapper;
             _bancoRepository = bancoRepository;

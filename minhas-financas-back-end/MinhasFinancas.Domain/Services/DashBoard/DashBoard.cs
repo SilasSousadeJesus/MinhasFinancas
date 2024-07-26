@@ -88,15 +88,15 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         private InvestimentoDashBoard CalcularInvestimentos(List<Lancamento> listaLancamentos)
         {
             var InvestimentoAnoCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Investimento)
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.InvestimentoDeposito)
                 .Sum(x => x.Valor);
 
             var InvestimentoMesCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Investimento)
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.InvestimentoDeposito)
                 .Sum(x => x.Valor);
 
             var InvestimentoMesAnterior = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Investimento)
+                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.InvestimentoDeposito)
                 .Sum(x => x.Valor);
 
             return new InvestimentoDashBoard
@@ -207,7 +207,7 @@ namespace MinhasFinancas.Domain.Services.DashBoard
             var acumulado = 0m;
 
             foreach (var lancamento in listaLancamentos
-                .Where(x => x.Tipo == EnumTipoLancamento.Investimento)
+                .Where(x => x.Tipo == EnumTipoLancamento.InvestimentoDeposito)
                 .OrderBy(x => x.DataPagamento))
             {
                 var key = $"{lancamento.DataPagamento.Year}-{lancamento.DataPagamento.Month:00}";

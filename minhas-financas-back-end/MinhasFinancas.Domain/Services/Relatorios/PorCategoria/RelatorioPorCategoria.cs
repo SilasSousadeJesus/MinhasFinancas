@@ -61,10 +61,10 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
             ReceitasPorcentagemCategoriaAnoAtual = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita);
             ReceitasPorcentagemCategoriaAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita);
 
-            InvestimentosPorcentagemCategoriaMesAtual = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento);
-            InvestimentosPorcentagemCategoriaMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento);
-            InvestimentosPorcentagemCategoriaAnoAtual = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento);
-            InvestimentosPorcentagemCategoriaAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento);
+            InvestimentosPorcentagemCategoriaMesAtual = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.InvestimentoDeposito, EnumTipoCategoria.Investimento);
+            InvestimentosPorcentagemCategoriaMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.InvestimentoDeposito, EnumTipoCategoria.Investimento);
+            InvestimentosPorcentagemCategoriaAnoAtual = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.InvestimentoDeposito, EnumTipoCategoria.Investimento);
+            InvestimentosPorcentagemCategoriaAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.InvestimentoDeposito, EnumTipoCategoria.Investimento);
 
 
 
@@ -78,10 +78,10 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
             ReceitasCategoriaDetalhamentoRelatorioMesCorrente = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita, true);
             ReceitasCategoriaDetalhamentoRelatorioMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Receita, EnumTipoCategoria.Receita, true);
 
-            InvestimentosCategoriaDetalhamentoRelatorioAnoCorrente = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento, false);
-            InvestimentosCategoriaDetalhamentoRelatorioAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento, false);
-            InvestimentosCategoriaDetalhamentoRelatorioMesCorrente = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento, true);
-            InvestimentosCategoriaDetalhamentoRelatorioMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.Investimento, EnumTipoCategoria.Investimento, true);
+            InvestimentosCategoriaDetalhamentoRelatorioAnoCorrente = CalcularPorcentagemPorCategoria(anoCorrente, 0, EnumTipoLancamento.InvestimentoDeposito, EnumTipoCategoria.Investimento, false);
+            InvestimentosCategoriaDetalhamentoRelatorioAnoPassado = CalcularPorcentagemPorCategoria(anoPassado, 0, EnumTipoLancamento.InvestimentoDeposito, EnumTipoCategoria.Investimento, false);
+            InvestimentosCategoriaDetalhamentoRelatorioMesCorrente = CalcularPorcentagemPorCategoria(anoCorrente, mesCorrente, EnumTipoLancamento.InvestimentoDeposito, EnumTipoCategoria.Investimento, true);
+            InvestimentosCategoriaDetalhamentoRelatorioMesPassado = CalcularPorcentagemPorCategoria(anoCorrente, mesAnterior, EnumTipoLancamento.InvestimentoDeposito, EnumTipoCategoria.Investimento, true);
         }
 
 

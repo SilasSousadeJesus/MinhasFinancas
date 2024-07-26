@@ -1,4 +1,5 @@
 ﻿using MinhasFinancas.CrossCutting.Util.Enum;
+using MinhasFinancas.Domain.Entities;
 
 namespace MinhasFinancas.Application.DTOs.Lancamento
 {
@@ -9,13 +10,16 @@ namespace MinhasFinancas.Application.DTOs.Lancamento
         public string Descricao { get; set; } = string.Empty;
         public string Observacao { get; set; } = string.Empty;
         public DateTime DataPagamento { get; set; }
+        public DateTime DataLancamento { get; set; }
         public bool Realizado { get; set; }
         public EnumTipoFrequenciaLancamento FrequenciaLancamento { get; set; }
         public EnumTipoLancamento Tipo { get; set; }
-        public EnumOrigemLancamento Origem { get; set; }
-        public Guid IdentificaoOrigem { get; set; }
+        public EnumVinculoLancamento Vinculo { get; set; }
+        public Guid? ContaId { get; set; }
+        public virtual Conta? Conta { get; set; }
+        public Guid? CartaoId { get; set; }
         public string? UsuarioId { get; set; }
-        public Guid CategoriaId { get; set; }
-        public Guid SubCategoriaId { get; set; }
+        public Guid? CategoriaId { get; set; }
+        public Guid? SubCategoriaId { get; set; }
     }
 }

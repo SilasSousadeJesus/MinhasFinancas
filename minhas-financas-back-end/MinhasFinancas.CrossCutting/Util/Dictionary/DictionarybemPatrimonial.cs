@@ -17,7 +17,7 @@ namespace MinhasFinancas.CrossCutting.Util.Dicionary
         };
         }
 
-        public string GetBemPatrimonialName(EnumBemPatrimonial key)
+        public string PegarBemPatrimonialName(EnumBemPatrimonial key)
         {
             if (bemPatrimonialDict.TryGetValue(key, out string value))
             {

@@ -1,9 +1,11 @@
 ﻿namespace MinhasFinancas.CrossCutting.Util.Enum
 {
-    public enum EnumOrigemLancamento
+    public enum EnumVinculoLancamento
     {
         CartaoCredito = 0,
         CartaoDebito = 1,
-        Avulso = 2,
+        ContaInvestimento = 2,
+        Conta = 3,
+        Avulso = 4,
     }
 }

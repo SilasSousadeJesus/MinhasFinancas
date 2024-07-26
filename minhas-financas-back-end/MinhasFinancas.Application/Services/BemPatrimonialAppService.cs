@@ -219,5 +219,51 @@ namespace MinhasFinancas.Application.Services
                 return retorno;
             }
         }
+
+        public async Task<RetornoGenerico> BuscarUltimaDataPermanencia(Guid ultimaDataPermanente)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var ultimaDataPermanencia = await _bemMaterialRepository.BuscarUltimaDataPermanencia(ultimaDataPermanente);
+
+                retorno.Sucesso = ultimaDataPermanencia != null ? true : false;
+                retorno.HttpStatusCode = ultimaDataPermanencia != null ? HttpStatusCode.OK : HttpStatusCode.NotFound;
+                retorno.MensagemSistema = ultimaDataPermanencia != null ? "ultima data do bem patrimonial encontrado" : "ultima data não encontrada";
+                retorno.MensagemUsuario = ultimaDataPermanencia != null ? "ultima data do bem patrimonial encontrado" : "ultima data não encontrada";
+                retorno.Dados = ultimaDataPermanencia;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possivel encontrar a ultima data";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
+        public async Task EditarUltimaDataPermanencia(PermanenciaBemMaterial permanencia)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                await _bemMaterialRepository.EditarUltimaDataPermanencia(permanencia);
+
+                Task.CompletedTask.Wait();
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possivel encontrar a ultima data";
+                retorno.Dados = null;
+            }
+        }
     }
 }

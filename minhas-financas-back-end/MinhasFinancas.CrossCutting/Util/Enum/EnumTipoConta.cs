@@ -6,5 +6,6 @@
         Corrente = 0,
         //[Description("Outros")]
         Poupanca = 1,
+        Investimento = 2,
     }
 }

@@ -22,10 +22,17 @@ namespace MinhasFinancas.Domain.Entities
         // ENUM
         public EnumTipoFrequenciaLancamento FrequenciaLancamento { get; set; }
         public EnumTipoLancamento Tipo { get; set; }
-        public EnumOrigemLancamento Origem { get; set; }
 
-        // Identificação
-        public Guid IdentificaoOrigem { get; set; }
+        // Vinculos funcionais a que o lançamento esta relacionado
+        public EnumVinculoLancamento Vinculo { get; set; }
+
+        [ForeignKey("ContaId")]
+        public Guid? ContaId { get; set; }
+        public virtual Conta? Conta { get; set; }
+
+        [ForeignKey("CartaoId")]
+        public Guid? CartaoId { get; set; }
+        public virtual Cartao? Cartao { get; set; }
 
 
         // RELACIONAMENTO
@@ -39,10 +46,6 @@ namespace MinhasFinancas.Domain.Entities
         [ForeignKey("SubCategoriaId")]
         public Guid? SubCategoriaId { get; set; }
         public virtual SubCategoria? SubCategoria { get; set; }
-
-        [ForeignKey("ContaId")]
-        public Guid? ContaId { get; set; }
-        public virtual Conta? Conta { get; set; }
 
         public virtual List<LancamentoFixo>? LancamentosFixo { get; set; }
         public virtual List<LancamentoParcelado>? LancamentoParcelado { get; set; }

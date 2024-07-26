@@ -40,10 +40,10 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
 
             DespesaPorAno = ComparacaoValorPorAno(listaLancamentos, EnumTipoLancamento.Despesa);
             ReceitaPorAno = ComparacaoValorPorAno(listaLancamentos, EnumTipoLancamento.Receita);
-            InvestimentoPorAno = ComparacaoValorPorAno(listaLancamentos, EnumTipoLancamento.Investimento);
+            InvestimentoPorAno = ComparacaoValorPorAno(listaLancamentos, EnumTipoLancamento.InvestimentoDeposito);
 
             PorcentagemDespesasDaReceitaPorAno = ComparacaoPorcentagemDaReceitaPorAno(listaLancamentos, EnumTipoLancamento.Despesa);
-            PorcentagemInvestimentoDaReceitaPorAno = ComparacaoPorcentagemDaReceitaPorAno(listaLancamentos, EnumTipoLancamento.Investimento);
+            PorcentagemInvestimentoDaReceitaPorAno = ComparacaoPorcentagemDaReceitaPorAno(listaLancamentos, EnumTipoLancamento.InvestimentoDeposito);
 
             PatrimonioPorAno = ValorPatrimonialPorAno(bemPatrimonials);
 
@@ -109,7 +109,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
                     var valorPatrimonio = new ValorPatrimonio() { 
                          Ano = item.DataPermanencia.Year,
                          ValorAtivo = item.Valor,
-                         TipoPatrimonio = dicionary.GetBemPatrimonialName(bem.Tipo),
+                         TipoPatrimonio = dicionary.PegarBemPatrimonialName(bem.Tipo),
                     };
 
                     bemPatrimonialsPorAno.Add(valorPatrimonio);

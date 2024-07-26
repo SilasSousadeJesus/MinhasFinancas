@@ -6,21 +6,21 @@ namespace MinhasFinancas.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BancoController : ControllerBase
+    public class ContaController : ControllerBase
     {
         private readonly IContaAppService _appService;
 
-        public BancoController(IContaAppService bancoAppService) 
+        public ContaController(IContaAppService bancoAppService) 
         {
             _appService = bancoAppService;  
         }
 
         [HttpPost("Cadastrar")]
-        public async Task<IActionResult> CadastrarConta(CadastrarContaDTO cadastroBancoDTO)
+        public async Task<IActionResult> CadastrarConta(CadastrarContaDTO cadastroContaDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var dados = await _appService.CadastrarElementoAsync(cadastroBancoDTO);
+            var dados = await _appService.CadastrarElementoAsync(cadastroContaDTO);
 
             if (!dados.Sucesso)
             {

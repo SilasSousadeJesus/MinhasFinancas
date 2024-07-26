@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
+using System.Xml.Linq;
 
 namespace MinhasFinancas.Infra.Data.Repositories
 {
@@ -24,10 +24,11 @@ namespace MinhasFinancas.Infra.Data.Repositories
 
             return listaDeBens;
         }
-
         public async Task<BemPatrimonial> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
-            return await _context.Set<BemPatrimonial>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
+            return await _context.Set<BemPatrimonial>()
+                .Include(x => x.DataPermanencia)
+                .Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task CadastrarElementoAsync(BemPatrimonial elemento)
@@ -60,5 +61,25 @@ namespace MinhasFinancas.Infra.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<PermanenciaBemMaterial> BuscarUltimaDataPermanencia(Guid bemMaterialId)
+        {
+            var listaPermanenciaBemMaterial = await _context.Set<PermanenciaBemMaterial>().Where(b => b.BemPatrimonialId == bemMaterialId).OrderByDescending(x => x.DataPermanencia).ToListAsync();
+
+            var ultimaPermanencia = listaPermanenciaBemMaterial[0];
+
+            return ultimaPermanencia;
+        }
+
+        public async Task EditarUltimaDataPermanencia(PermanenciaBemMaterial ultimaDataPermanencia)
+        {
+            var existingEntity = _context.Set<PermanenciaBemMaterial>().Local.FirstOrDefault(b => b.Id == ultimaDataPermanencia.Id);
+            if (existingEntity != null)
+            {
+                _context.Entry(existingEntity).State = EntityState.Detached;
+            }
+
+            _context.Set<PermanenciaBemMaterial>().Update(ultimaDataPermanencia);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -197,18 +197,6 @@ namespace MinhasFinancas.Application.Services
                         DataPermanencia = DateTime.Now,
                         Valor = 1000,
                         Id =   Guid.NewGuid(),
-                        },
-                        new PermanenciaBemMaterial (){
-                        BemPatrimonialId = Guid.Empty,
-                        DataPermanencia = DateTime.Now,
-                        Valor = 2000,
-                        Id =   Guid.NewGuid(),
-                        },
-                       new PermanenciaBemMaterial (){
-                        BemPatrimonialId = Guid.Empty,
-                        DataPermanencia = DateTime.Now,
-                        Valor = 3000,
-                        Id =   Guid.NewGuid(),
                         }
                     },
                     Permanencia = true,

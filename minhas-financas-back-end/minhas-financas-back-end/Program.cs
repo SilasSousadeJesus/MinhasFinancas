@@ -47,7 +47,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
             builder.Services.AddScoped<IContaAppService, ContaAppService>();
-            builder.Services.AddScoped<IBancoRepository, BancoRepository>();
+            builder.Services.AddScoped<IContaRepository, ContaRepository>();
 
 
             builder.Services.AddScoped<ICartaoAppService, CartaoAppService>();
