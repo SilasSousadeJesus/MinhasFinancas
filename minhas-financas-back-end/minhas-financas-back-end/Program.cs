@@ -22,6 +22,7 @@ namespace minhas_financas_back_end
             // criar logicar para desativar os lançamentos fixos e parcelados caso o cara tente realizar o lancamento
             // criar logica para ter registros de saque e deposito (movimentação)
             // criar sistema de metas/sonhos/objetivos estilo caixinha do nubank;
+            // continua criando logica para passivo e relacionar com ativos no relatorios
 
             var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +65,8 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IBemPatrimonialAppService, BemPatrimonialAppService>();
             builder.Services.AddScoped<IBemMaterialRepository, BemMaterialRepository>();
 
+            builder.Services.AddScoped<IPassivoAppService, PassivoAppService>();
+            builder.Services.AddScoped<IPassivoRepository, PassivoRepository>();
 
             // Add authentication services
             AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);

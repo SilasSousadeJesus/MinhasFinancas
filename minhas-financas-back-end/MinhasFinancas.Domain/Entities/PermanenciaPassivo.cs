@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace MinhasFinancas.Domain.Entities
 {
-    public class PermanenciaBemMaterial
+    public class PermanenciaPassivo
     {
         [Key]
         public Guid Id { get; set; }
@@ -12,8 +12,7 @@ namespace MinhasFinancas.Domain.Entities
         [Column(TypeName = "decimal(18,2)")]
         public decimal Valor { get; set; }
 
-        [ForeignKey("BemPatrimonialId")]
-        public Guid BemPatrimonialId { get; set; }
-
+        [ForeignKey("PassivoId")]
+        public Guid PassivoId { get; set; }
     }
 }

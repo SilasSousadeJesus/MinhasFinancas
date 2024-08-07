@@ -4,6 +4,7 @@ using MinhasFinancas.Application.DTOs.BemPatrimonial;
 using MinhasFinancas.Application.DTOs.Cartao;
 using MinhasFinancas.Application.DTOs.Categoria;
 using MinhasFinancas.Application.DTOs.Lancamento;
+using MinhasFinancas.Application.DTOs.Passivo;
 using MinhasFinancas.Domain.Entities;
 
 namespace MinhasFinancas.Application.Configurations
@@ -24,11 +25,11 @@ namespace MinhasFinancas.Application.Configurations
             CreateMap<CadastrarLancamentoDTO, Lancamento>();
             CreateMap<EditarLancamentoDTO, Lancamento>();
 
-
             CreateMap<CadastrarBemPatrimonialDTO, BemPatrimonial>();
             CreateMap<EditarBemPatrimonialDTO, BemPatrimonial>();
 
-
+            CreateMap<CadastrarPassivoDTO, Passivo>();
+            CreateMap<EditarPassivoDTO, Passivo>();
         }
     }
 }

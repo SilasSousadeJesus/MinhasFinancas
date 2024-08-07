@@ -1,13 +1,12 @@
 ﻿using MinhasFinancas.CrossCutting.Util.Enum;
 
-namespace MinhasFinancas.Application.DTOs.BemPatrimonial
+namespace MinhasFinancas.Application.DTOs.Passivo
 {
-    public class EditarBemPatrimonialDTO
+    public class CadastrarPassivoDTO
     {
-        public Guid Id { get; set; }
         public string NomeBemPatrimonial { get; set; } = string.Empty;
         public string Descricao { get; set; } = string.Empty;
-        public EnumBemPatrimonial Tipo { get; set; }
+        public EnumPassivo Tipo { get; set; }
         public string? UsuarioId { get; set; }
     }
 }

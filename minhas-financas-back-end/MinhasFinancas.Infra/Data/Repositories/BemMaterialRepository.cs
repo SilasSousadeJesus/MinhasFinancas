@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
-using System.Xml.Linq;
 
 namespace MinhasFinancas.Infra.Data.Repositories
 {
