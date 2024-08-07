@@ -52,8 +52,6 @@ namespace MinhasFinancas.Infra
             modelBuilder.Entity<IdentityUserToken<string>>().HasKey(x => new { x.UserId, x.LoginProvider, x.Name });
 
         }
-
-
     }
 }
 

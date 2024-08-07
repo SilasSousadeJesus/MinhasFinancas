@@ -49,6 +49,8 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
 
         }
 
+        // REVISAR
+
         private List<ValorPorAno> ComparacaoValorPorAno(List<Lancamento> listaLancamentos, EnumTipoLancamento tipoLancamento) {
 
             var  listaValorPorAno = new List<ValorPorAno>();
@@ -69,7 +71,8 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
 
             return lista;
         }
-
+        
+        // REVISAR
         private List<ValorPorAno> ComparacaoPorcentagemDaReceitaPorAno(List<Lancamento> listaLancamentos, EnumTipoLancamento tipoLancamento)
         {
             var listaValorPorAno = new List<ValorPorAno>();
@@ -95,7 +98,8 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
             }
             return listaValorPorAno;
         }
-
+        
+        // REVISAR
         public List<ValorPatrimonioPorAno> ValorPatrimonialPorAno(List<BemPatrimonial> listaBemPatrimonials)
         {
             List<ValorPatrimonio> bemPatrimonialsPorAno = new List<ValorPatrimonio>();
@@ -132,13 +136,12 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
             return lista;
         }
 
-        //public List<ValorPorAno> ComparacaoValorMesAMesAnoPassadoECorrente(EnumTipoLancamento tipoLancamento)
-        //{
+        // Criar, o objetivo é  mostrar a divisao em porcentagem do patrimonio em categoiras por ano.
+        //public List<ValorPatrimonioPorAno> PorcentagemCategoriaPorAno(List<BemPatrimonial> listaBemPatrimonials) {
+        
+        
         //}
 
-        //public List<ValorPorAno> ComparacaoValorCategoriaAnoPorAno(EnumTipoLancamento tipoLancamento, EnumTipoCategoria tipoCategoria)
-        //{
-        //}
     }
 }
 
