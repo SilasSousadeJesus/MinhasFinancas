@@ -2,6 +2,7 @@
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Minhas_Financas_Hangfire.Interfaces;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra;
 
@@ -60,7 +61,8 @@ namespace Minhas_Financas_Hangfire
 
             app.UseHangfireDashboard("/backgroundJobs");
 
-            //RecurringJob.AddOrUpdate<IBackgroundJobsGestaoAlimentarAppService>(x => x.FilaJobs(), "0 0 * * *");
+            //0 0 1 1 * significa que a tarefa será executada à meia-noite, no dia 1º de janeiro, independentemente do dia da semana.
+            RecurringJob.AddOrUpdate<IBemPatrimonialJobs>(x => x.FilaJobs(), "0 0 1 1 *");
 
             app.Run();
         }
