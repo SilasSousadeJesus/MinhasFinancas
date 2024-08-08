@@ -1,8 +1,5 @@
-import { BotaoTrocaTema } from "@/components/BotaoTrocaTema/BotaoTrocaTema";
-import Image from "next/image";
+import Login from "@/pages/login/Login";
 
 export default function Home() {
-  return (
-    <BotaoTrocaTema></BotaoTrocaTema>
-  );
+  return <Login />;
 }
