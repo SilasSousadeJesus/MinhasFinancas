@@ -1,3 +1,9 @@
+import { FormularioCadastro } from "@/components/formularios/formularioCadastro";
+
 export default function PaginaCadastro() {
-  return <div>CADASTRO</div>;
+  return (
+    <>
+       <FormularioCadastro/>
+    </>
+  );
 }

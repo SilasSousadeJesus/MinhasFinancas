@@ -18,6 +18,6 @@ namespace MinhasFinancas.Application.DTOs.Usuario
 
         [Required(ErrorMessage = "0 Campo {0} é Obrigatorio")]
         [Compare(nameof(Senha), ErrorMessage = "As senhas devems ser iguais")]
-        public string SenhaConfirmacao { get; set; } = string.Empty;
+        public string ConfirmacaoSenha { get; set; } = string.Empty;
     }
 }
