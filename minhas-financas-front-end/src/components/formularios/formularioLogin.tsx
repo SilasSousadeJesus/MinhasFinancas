@@ -26,6 +26,7 @@ import {
 import { BotaoTrocaTema } from "../BotaoTrocaTema/botaoTrocaTema";
 import { Separator } from "../ui/separator";
 import Image from "next/image";
+import Link from "next/link";
 
 const FormSchema = z.object({
   email: z.string().email("Digite seu email de login."),
@@ -46,9 +47,16 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
   }
 
   return (
-    <Card className={`${cardWidth} flex flex-col justify-center`}>
+    <Card className={`${cardWidth} flex flex-col justify-center `}>
       <CardHeader className="flex justify-center">
-        <BotaoTrocaTema />
+        <div className="flex mb-5 justify-end">
+          {/* <BotaoTrocaTema /> */}
+          <Link href="/cadastro" passHref>
+            <Button variant="link" className="">
+              Cadastro
+            </Button>
+          </Link>
+        </div>
         <Image
           src="/assets/img/logo/logo02.webp"
           alt=""

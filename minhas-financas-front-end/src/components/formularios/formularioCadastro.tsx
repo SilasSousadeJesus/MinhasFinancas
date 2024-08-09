@@ -15,6 +15,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "../ui/card";
+import { BotaoTrocaTema } from "../BotaoTrocaTema/botaoTrocaTema";
+import { Separator } from "../ui/separator";
+import Image from "next/image";
+import Link from "next/link";
 
 const FormSchema = z
   .object({
@@ -28,7 +40,7 @@ const FormSchema = z
     path: ["confirmacaoSenha"], // Define o campo onde o erro será mostrado
   });
 
-export function FormularioCadastro() {
+export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -44,66 +56,76 @@ export function FormularioCadastro() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-
-      <FormField
-          control={form.control}
-          name="nome"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input placeholder="nome" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="email" {...field} type="email" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="senha"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Senha</FormLabel>
-              <FormControl>
-                <Input placeholder="Senha" {...field} type="password" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="confirmacaoSenha"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirmaçao Senha</FormLabel>
-              <FormControl>
-                <Input placeholder="confirmaçao Senha" {...field} type="password" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+    <Card className={`${cardWidth} flex flex-col justify-center `}>
+      <CardHeader className="flex justify-center">
+        <div className="flex justify-end">
+          <Link href="/" passHref>
+            <Button variant="link" className="">
+              Login
+            </Button>
+          </Link>
+        </div>
+        <CardTitle className="text-center">Cadastre-se</CardTitle>
+        <CardDescription className="text-center">
+          Cuide bem das suas finanças.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full space-y-6"
+          >
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="nome@exemplo.com"
+                      {...field}
+                      type="email"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="senha"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input placeholder="*********" {...field} type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmacaoSenha"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmação da Senha</FormLabel>
+                  <FormControl>
+                    <Input placeholder="*********" {...field} type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full">
+              Cadastrar
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+      <CardFooter className="flex flex-row"></CardFooter>
+    </Card>
   );
 }
