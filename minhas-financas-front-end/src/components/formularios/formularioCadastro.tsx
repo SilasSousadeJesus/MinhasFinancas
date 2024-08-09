@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,9 +22,6 @@ import {
   CardContent,
   CardFooter,
 } from "../ui/card";
-import { BotaoTrocaTema } from "../BotaoTrocaTema/botaoTrocaTema";
-import { Separator } from "../ui/separator";
-import Image from "next/image";
 import Link from "next/link";
 
 const FormSchema = z
@@ -56,15 +52,8 @@ export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
   }
 
   return (
-    <Card className={`${cardWidth} flex flex-col justify-center `}>
+    <div className={`${cardWidth} flex flex-col justify-center  border-white`}>
       <CardHeader className="flex justify-center">
-        <div className="flex justify-end">
-          <Link href="/" passHref>
-            <Button variant="link" className="">
-              Login
-            </Button>
-          </Link>
-        </div>
         <CardTitle className="text-center">Cadastre-se</CardTitle>
         <CardDescription className="text-center">
           Cuide bem das suas finanças.
@@ -124,8 +113,16 @@ export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
             </Button>
           </form>
         </Form>
+        <div className="flex flex-col justify-center mt-5">
+          <span className="text-center mx-2 text-gray-500 text-sm whitespace-nowrap">
+           Já tem conta?{" "}
+            <Link href="/" passHref>
+              <Button variant="link">Click aqui e faça o login</Button>
+            </Link>
+          </span>
+        </div>
       </CardContent>
       <CardFooter className="flex flex-row"></CardFooter>
-    </Card>
+    </div>
   );
 }
