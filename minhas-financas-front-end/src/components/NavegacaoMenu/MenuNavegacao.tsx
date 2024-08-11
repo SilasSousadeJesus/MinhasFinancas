@@ -20,6 +20,7 @@ import {
   LayoutDashboardIcon,
   SettingsIcon,
 } from "../Icons/Icons";
+import { useEffect, useState } from "react";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -60,31 +61,25 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export function MenuNavegacao() {
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setIsSidebarExpanded(window.innerWidth >= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <NavigationMenu className="">
-      <NavigationMenuList className="flex flex-col">
-        {/* <NavigationMenuItem className="w-full">
-          <NavigationMenuTrigger className=" justify-center space-x-2 text-lg">
-            {" "}
-            <LayoutDashboardIcon className="w-5 h-5 " />
-            <span className="">em tente</span>
-          </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-              <ListItem href="/docs" title="Introduction">
-                Re-usable components built using Radix UI and Tailwind CSS.
-              </ListItem>
-              <ListItem href="/docs/installation" title="Installation">
-                How to install dependencies and structure your app.
-              </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography">
-                Styles for headings, paragraphs, lists...etc
-              </ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem> */}
-
-        <NavigationMenuItem className="w-full">
+      <NavigationMenuList className="flex flex-col ">
+        <NavigationMenuItem className="w-full ">
           <Link href="/docs" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
@@ -92,13 +87,15 @@ export function MenuNavegacao() {
                 navigationMenuTriggerStyle()
               )}
             >
-              <LayoutDashboardIcon className="w-5 h-5 " />
-              <span className="space-x-2 text-lg">Dashboard</span>
+              <LayoutDashboardIcon
+                className={`w-5 h-5 `}
+              />
+              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Dashboard</span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className="w-full">
+        <NavigationMenuItem className="w-full" >
           <Link href="/docs" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
@@ -107,7 +104,7 @@ export function MenuNavegacao() {
               )}
             >
               <CreditCardIcon className="w-5 h-5" />
-              <span className="space-x-2 text-lg">Contas e Cartões</span>
+              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Contas e Cartões</span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -121,7 +118,7 @@ export function MenuNavegacao() {
               )}
             >
               <DownloadIcon className="w-5 h-5" />
-              <span className="space-x-2 text-lg">Lançamentos</span>
+              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Lançamentos</span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -129,8 +126,8 @@ export function MenuNavegacao() {
         <NavigationMenuItem className="w-full">
           <NavigationMenuTrigger className=" justify-center space-x-2 text-lg ">
             {" "}
-            <FilesIcon className="w-5 h-5" /> 
-            <span className="">Relatórios</span>
+            <FilesIcon className="w-5 h-5" />
+            <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Relatórios</span>
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
@@ -156,7 +153,7 @@ export function MenuNavegacao() {
               )}
             >
               <SettingsIcon className="w-5 h-5" />
-              <span className="space-x-2 text-lg">Configurações</span>
+              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Configurações</span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

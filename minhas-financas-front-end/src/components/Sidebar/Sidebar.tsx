@@ -20,6 +20,13 @@ import { Pie, PieChart, CartesianGrid, XAxis, Line, LineChart } from "recharts";
 import { MenuNavegacao } from "../NavegacaoMenu/MenuNavegacao";
 import { PowerIcon } from "../Icons/Icons";
 import { BotaoTrocaTema } from "../BotaoTrocaTema/botaoTrocaTema";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 
 export function Sidebar() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -39,7 +46,7 @@ export function Sidebar() {
     <div className="flex min-h-screen ">
       <aside
         className={`border-r transition-all duration-300 ${
-          isSidebarExpanded ? "w-64" : "w-16"
+          isSidebarExpanded ? "w-64" : "w-24"
         }`}
       >
         <div className="flex items-center justify-between h-16 border-b px-4">
@@ -47,7 +54,7 @@ export function Sidebar() {
             {/* // LOGO DA EMPRESA */}
             <LogInIcon className="w-8 h-8" />
             <span
-              className={`ml-2 text-xl font-bold bg-primary${
+              className={`ml-2 text-xl font-bold ${
                 !isSidebarExpanded && "hidden"
               }`}
             >
@@ -63,7 +70,7 @@ export function Sidebar() {
             <span className="sr-only">Toggle sidebar</span>
           </Button>
         </div>
-        <nav className="flex flex-col p-4 space-y-4">
+        <nav className="flex flex-col content-center items-center justify-center p-4 space-y-4">
           <MenuNavegacao />
         </nav>
         <BotaoTrocaTema />
@@ -102,20 +109,12 @@ export function Sidebar() {
             className={`rounded-full ${!isSidebarExpanded && "w-8 h-8"}`}
           >
             <PowerIcon
-              className={`w-5 h-5 ${
-                !isSidebarExpanded && "sr-only"
-              }`}
+              className={`w-5 h-5 ${!isSidebarExpanded && "sr-only"}`}
             />
           </Button>
         </div>
-      </aside>  
-    </div>
-  );
-}
-
-
-
-  {/* <main className="flex-1 p-6 bg-gray-50">
+      </aside>
+      {/* <main className="flex-1 p-6 bg-gray-50">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -129,9 +128,9 @@ export function Sidebar() {
           </div>
         </div>
         <div className="flex items-center mt-6 space-x-2">
-          <Button variant="outline">Este Ano</Button>
-          <Button variant="outline">Este Mês</Button>
           <Button variant="outline">Mês Passado</Button>
+          <Button variant="outline">Este Mês</Button>
+          <Button variant="outline">Este Ano</Button>
         </div>
         <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2 lg:grid-cols-5">
           <Card>
@@ -211,164 +210,10 @@ export function Sidebar() {
           </Card>
         </div>
       </main> */}
-function ChevronRightIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m9 18 6-6-6-6" />
-    </svg>
+    </div>
   );
 }
 
-function CircleHelpIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-      <path d="M12 17h.01" />
-    </svg>
-  );
-}
-
-function CreditCardIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="20" height="14" x="2" y="5" rx="2" />
-      <line x1="2" x2="22" y1="10" y2="10" />
-    </svg>
-  );
-}
-
-function CurrencyIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="8" />
-      <line x1="3" x2="6" y1="3" y2="6" />
-      <line x1="21" x2="18" y1="3" y2="6" />
-      <line x1="3" x2="6" y1="21" y2="18" />
-      <line x1="21" x2="18" y1="21" y2="18" />
-    </svg>
-  );
-}
-
-function DownloadIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" x2="12" y1="15" y2="3" />
-    </svg>
-  );
-}
-
-function FilesIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 7h-3a2 2 0 0 1-2-2V2" />
-      <path d="M9 18a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7l4 4v10a2 2 0 0 1-2 2Z" />
-      <path d="M3 7.6v12.8A1.6 1.6 0 0 0 4.6 22h9.8" />
-    </svg>
-  );
-}
-
-function LayoutDashboardIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="7" height="9" x="3" y="3" rx="1" />
-      <rect width="7" height="5" x="14" y="3" rx="1" />
-      <rect width="7" height="9" x="14" y="12" rx="1" />
-      <rect width="7" height="5" x="3" y="16" rx="1" />
-    </svg>
-  );
-}
 
 function LinechartChart(
   props: JSX.IntrinsicAttributes &
@@ -503,28 +348,6 @@ function PiechartcustomChart(
         </PieChart>
       </ChartContainer>
     </div>
-  );
-}
-
-function SettingsIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
   );
 }
 
