@@ -68,7 +68,7 @@ export function Sidebar() {
         </nav>
         <BotaoTrocaTema />
 
-        <Separator className="flex-grow" />
+        <Separator className="flex-grow mt-[330px]" />
 
         <div className="p-4 mt-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
@@ -108,8 +108,14 @@ export function Sidebar() {
             />
           </Button>
         </div>
-      </aside>
-      {/* <main className="flex-1 p-6 bg-gray-50">
+      </aside>  
+    </div>
+  );
+}
+
+
+
+  {/* <main className="flex-1 p-6 bg-gray-50">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -205,10 +211,6 @@ export function Sidebar() {
           </Card>
         </div>
       </main> */}
-    </div>
-  );
-}
-
 function ChevronRightIcon(
   props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
 ) {
