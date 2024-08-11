@@ -1,7 +1,7 @@
-import Login from "@/pages/login/Login";
+import { Sidebar } from "@/components/Sidebar/Sidebar";
 
 export default function Home() {
   return (
-      <Login />
+      <Sidebar />
   );
 }

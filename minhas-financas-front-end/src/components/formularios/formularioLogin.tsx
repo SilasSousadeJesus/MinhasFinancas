@@ -102,8 +102,7 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
           </form>
         </Form>
         <div className="flex flex-col justify-center">
-
-        <span className="text-center text-gray-500 text-sm whitespace-nowrap mt-2">
+          <span className="text-center text-gray-500 text-sm whitespace-nowrap mt-2">
             <Link href="/cadastro" passHref>
               <Button variant="link">Esqueceu sua senha?</Button>
             </Link>
