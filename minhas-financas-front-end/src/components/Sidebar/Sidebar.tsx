@@ -20,13 +20,6 @@ import { Pie, PieChart, CartesianGrid, XAxis, Line, LineChart } from "recharts";
 import { MenuNavegacao } from "../NavegacaoMenu/MenuNavegacao";
 import { PowerIcon } from "../Icons/Icons";
 import { BotaoTrocaTema } from "../BotaoTrocaTema/botaoTrocaTema";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 
 export function Sidebar() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -71,12 +64,10 @@ export function Sidebar() {
           </Button>
         </div>
         <nav className="flex flex-col content-center items-center justify-center p-4 space-y-4">
-          <MenuNavegacao />
+          <MenuNavegacao isSidebarExpanded={isSidebarExpanded}/>
         </nav>
         <BotaoTrocaTema />
-
         <Separator className="flex-grow mt-[330px]" />
-
         <div className="p-4 mt-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Avatar>

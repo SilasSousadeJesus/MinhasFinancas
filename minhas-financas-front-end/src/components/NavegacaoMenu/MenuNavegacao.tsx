@@ -22,6 +22,10 @@ import {
 } from "../Icons/Icons";
 import { useEffect, useState } from "react";
 
+interface MenuNavegacaoProps {
+  isSidebarExpanded: boolean;
+}
+
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Alert Dialog",
@@ -60,14 +64,12 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ];
 
-export function MenuNavegacao() {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
-      setIsSidebarExpanded(window.innerWidth >= 1024);
     };
     window.addEventListener("resize", handleResize);
     handleResize();
