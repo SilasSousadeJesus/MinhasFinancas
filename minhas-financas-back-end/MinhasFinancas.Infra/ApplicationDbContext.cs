@@ -21,6 +21,7 @@ namespace MinhasFinancas.Infra
         public DbSet<LancamentoFixo> LancamentoFixo { get; set; }
         public DbSet<LancamentoParcelado> LancamentoParcelado { get; set; }
         public DbSet<BemPatrimonial> BemPatrimonial { get; set; }
+        public DbSet<Meta> Meta { get; set; }
         public DbSet<PermanenciaBemMaterial> PermanenciaBemMaterial { get; set; }
         public DbSet<Passivo> Passivo { get; set; }
 

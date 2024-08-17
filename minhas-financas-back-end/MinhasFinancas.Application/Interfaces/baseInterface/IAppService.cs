@@ -5,7 +5,7 @@
         where TAtualizacaoDTO : class
     {
         Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id);
-        Task<RetornoGenerico> BuscarUmElementoAsync(string usuarioId, Guid BancoId);
+        Task<RetornoGenerico> BuscarUmElementoAsync(string usuarioId, Guid elementoId);
         Task<RetornoGenerico> DeletarElementoAsync(string idPatrono, Guid idElemento);
     }
 }

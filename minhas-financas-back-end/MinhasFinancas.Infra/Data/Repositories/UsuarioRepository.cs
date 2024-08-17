@@ -24,9 +24,11 @@ namespace MinhasFinancas.Infra.Data.Repositories
             var contas = await _context.Conta.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
             var lancamentos = await _context.Lancamento.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
             var bemPatrimonial = await _context.BemPatrimonial.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
+            var metas = await _context.Meta.Where(x=> x.UsuarioId == usuario.Id).ToListAsync();
                
             if (usuario != null)
             {
+                _context.Meta.RemoveRange(metas);
                 _context.BemPatrimonial.RemoveRange(bemPatrimonial);
                 _context.Lancamento.RemoveRange(lancamentos);
                 _context.Categoria.RemoveRange(categorias);
