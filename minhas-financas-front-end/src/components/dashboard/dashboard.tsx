@@ -10,11 +10,11 @@ import {
 
 export function PainelDashboard() {
   return (
-    <main className="flex-1 p-6 bg-gray-50">
+    <main className="flex-1 p-6 bg-gray-50 dark:bg-[#020817]">
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-sm text-gray-600">Bem vindo de volta, Silas Sousa!</p>
+        <p className="text-sm text-gray-500">Bem vindo de volta, Silas Sousa!</p>
       </div>
       <div className="flex space-x-2">
         <Button variant="outline">Gerenciar contas e cartões</Button>
