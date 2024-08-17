@@ -28,40 +28,29 @@ interface MenuNavegacaoProps {
 
 const components: { title: string; href: string; description: string }[] = [
   {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
+    title: "Relatorio Patrimonial",
+    href: "relatorios/relatorio-patrimonial",
     description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+      "Relatorio sobre o desenvolvimento patrimonial ao logo do tempo.",
   },
   {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
+    title: "Relatorio Anual",
+    href: "relatorios/relatorio-anual",
     description:
-      "For sighted users to preview content available behind a link.",
+      "Relatorio sobre o desenvolvimento financeiro por ano.",
   },
   {
-    title: "Progress",
-    href: "/docs/primitives/progress",
+    title: "Relatorio Por Categoria",
+    href: "relatorios/relatorio-por-categoria",
     description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+      "Relatorio sobre o desenvolvimento financeiro por categoria.",
   },
   {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
+    title: "Relatorio Por Saldo / Investimento / Despesas",
+    href: "relatorios/relatorio-saldo-investimento-despesa",
     description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
+      "Relatorio sobre os saldos, investimento e despesas.",
+  }
 ];
 
 export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
@@ -82,7 +71,7 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
     <NavigationMenu className="">
       <NavigationMenuList className="flex flex-col ">
         <NavigationMenuItem className="w-full ">
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/dashboard" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
                 " justify-center space-x-2 text-lg",
@@ -98,7 +87,7 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
         </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full" >
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/contas-e-cartoes" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
                 " justify-center space-x-2 text-lg",
@@ -112,7 +101,7 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
         </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full">
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/lancamentos" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
                 " justify-center space-x-2 text-lg",
@@ -121,6 +110,20 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
             >
               <DownloadIcon className="w-5 h-5" />
               <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Lançamentos</span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
+          <Link href="/orcamento" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                " justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <DownloadIcon className="w-5 h-5" />
+              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Orçamento</span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -147,7 +150,7 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
         </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full">
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/configuracoes" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
                 " justify-center space-x-2 text-lg",
