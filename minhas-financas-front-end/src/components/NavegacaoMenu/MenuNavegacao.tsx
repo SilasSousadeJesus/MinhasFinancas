@@ -17,7 +17,9 @@ import {
   CreditCardIcon,
   DownloadIcon,
   FilesIcon,
+  GoalIcon,
   LayoutDashboardIcon,
+  PocketIcon,
   SettingsIcon,
 } from "../Icons/Icons";
 import { useEffect, useState } from "react";
@@ -122,7 +124,7 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
                 navigationMenuTriggerStyle()
               )}
             >
-              <DownloadIcon className="w-5 h-5" />
+              <PocketIcon className="w-5 h-5" />
               <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Orçamento</span>
             </NavigationMenuLink>
           </Link>
@@ -136,7 +138,7 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
                 navigationMenuTriggerStyle()
               )}
             >
-              <DownloadIcon className="w-5 h-5" />
+              <GoalIcon className="w-5 h-5" />
               <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Metas</span>
             </NavigationMenuLink>
           </Link>
