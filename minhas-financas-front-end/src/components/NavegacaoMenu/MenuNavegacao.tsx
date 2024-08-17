@@ -129,6 +129,20 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
         </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full">
+          <Link href="/metas" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                " justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <DownloadIcon className="w-5 h-5" />
+              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Metas</span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
           <NavigationMenuTrigger className=" justify-center space-x-2 text-lg ">
             {" "}
             <FilesIcon className="w-5 h-5" />
