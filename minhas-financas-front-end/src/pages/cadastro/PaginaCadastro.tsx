@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function PaginaCadastro() {
   return (
     <div className="flex h-screen">
-      <div className="w-1/2 h-full relative">
+      <div className="hidden lg:block w-1/2 h-full relative">
         <Image
           src="/assets/img/background/fundoCinza.jpg"
           alt=""
@@ -12,7 +12,7 @@ export default function PaginaCadastro() {
           className="w-full h-full"
         />
       </div>
-      <div className="w-1/2 h-full flex justify-center items-center">
+      <div className="w-full lg:w-1/2 h-full flex justify-center items-center">
         <FormularioCadastro cardWidth="w-[500px]" />
       </div>
     </div>
