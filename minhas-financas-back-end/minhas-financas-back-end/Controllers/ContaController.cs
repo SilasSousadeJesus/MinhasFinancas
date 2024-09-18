@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Banco;
 using MinhasFinancas.Application.Interfaces;
 
@@ -14,7 +15,7 @@ namespace MinhasFinancas.API.Controllers
         {
             _appService = bancoAppService;  
         }
-
+        [Authorize]
         [HttpPost("Cadastrar")]
         public async Task<IActionResult> CadastrarConta(CadastrarContaDTO cadastroContaDTO)
         {
@@ -36,8 +37,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
-
+        [Authorize]
         [HttpGet("BuscarTodosAsContas/{usuarioId}")]
         public async Task<IActionResult> BuscarTodosAsContas([FromRoute] string usuarioId)
         {
@@ -58,7 +58,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarUmaConta/{usuarioId}/{bancoId}")]
         public async Task<IActionResult> BuscarUmaConta([FromRoute] string usuarioId, [FromRoute] Guid contaId)
         {
@@ -79,7 +79,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpPut("EditarConta/{usuarioId}/{bancoId}")]
         public async Task<IActionResult> EditarConta([FromRoute] string usuarioId, [FromRoute] Guid bancoId, [FromBody] EditarContaDTO editarBancoDTO)
         {
@@ -101,7 +101,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpDelete("DeletarConta/{usuarioId}/{bancoId}")]
         public async Task<IActionResult> DeletarConta(string usuarioId, Guid bancoId)
         {

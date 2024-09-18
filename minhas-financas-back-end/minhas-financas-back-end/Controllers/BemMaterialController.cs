@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.BemPatrimonial;
 using MinhasFinancas.Application.Interfaces;
 
@@ -15,6 +16,7 @@ namespace MinhasFinancas.API.Controllers
             _appService = bemPatrimonialAppService;
         }
 
+        [Authorize]
         [HttpPost("CadastrarBemMaterial")]
         public async Task<IActionResult> CadastrarBemMaterial([FromBody] CadastrarBemPatrimonialDTO cadastrarBemPatrimonialDTO)
         {
@@ -36,7 +38,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarTodosOsBemMateriais/{usuarioId}")]
         public async Task<IActionResult> BuscarTodosOsBemMateriais([FromRoute] string usuarioId)
         {
@@ -57,7 +59,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarUmBemMaterial/{usuarioId}/{bemMaterialId}")]
         public async Task<IActionResult> BuscarUmBemMaterial([FromRoute] string usuarioId, [FromRoute] Guid bemMaterialId)
         {
@@ -78,7 +80,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpPut("EditarBemMaterial/{usuarioId}/{bemMaterialId}")]
         public async Task<IActionResult> EditarBemMaterial([FromRoute] string usuarioId, [FromRoute] Guid bemMaterialId, [FromBody] EditarBemPatrimonialDTO  editarCartaoDTO)
         {
@@ -100,7 +102,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpDelete("DeletarBemMaterial/{usuarioId}/{bemMaterialId}")]
         public async Task<IActionResult> DeletarBemMaterial([FromRoute] string usuarioId, [FromRoute] Guid bemMaterialId)
         {

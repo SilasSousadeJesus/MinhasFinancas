@@ -244,6 +244,7 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
+
         public async Task<RetornoGenerico> AtualizarAndamentoMetaAsync(string idPatrono, Guid elementoId, decimal valor)
         {
             var retorno = new RetornoGenerico();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.BemPatrimonial;
 using MinhasFinancas.Application.DTOs.Passivo;
@@ -16,7 +17,7 @@ namespace MinhasFinancas.API.Controllers
         {
             _appService = passivoAppService;
         }
-
+        [Authorize]
         [HttpPost("CadastrarPassivo")]
         public async Task<IActionResult> CadastrarBemMaterial([FromBody] CadastrarPassivoDTO cadastrarPassivoDTO)
         {
@@ -38,7 +39,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarTodosOsPassivos/{usuarioId}")]
         public async Task<IActionResult> BuscarTodosOsBemMateriais([FromRoute] string usuarioId)
         {
@@ -59,7 +60,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarUmPassivo/{usuarioId}/{passivoId}")]
         public async Task<IActionResult> BuscarUmBemMaterial([FromRoute] string usuarioId, [FromRoute] Guid passivoId)
         {
@@ -80,7 +81,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpPut("EditarPassivo/{usuarioId}/{passivoId}")]
         public async Task<IActionResult> EditarBemMaterial([FromRoute] string usuarioId, [FromRoute] Guid passivoId, [FromBody] EditarPassivoDTO editarPassivoDTO)
         {
@@ -102,7 +103,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpDelete("DeletarPassivo/{usuarioId}/{passivoId}")]
         public async Task<IActionResult> DeletarBemMaterial([FromRoute] string usuarioId, [FromRoute] Guid passivoId)
         {

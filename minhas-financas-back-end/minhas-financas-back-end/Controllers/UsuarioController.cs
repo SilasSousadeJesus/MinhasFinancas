@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Usuario;
 using MinhasFinancas.Application.Interfaces;
 
@@ -35,7 +36,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarUmUsuario/{usuarioId}")]
         public async Task<IActionResult> BuscarUmUsuario([FromRoute] string usuarioId)
         {
@@ -78,7 +79,7 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-
+        [Authorize]
         [HttpPatch("EditarUsuario/{usuarioId}")]
         public async Task<IActionResult> EditarUsuario([FromRoute] string usuarioId, [FromBody] EditarUsuarioDTO editarUsuarioDTO)
         {
@@ -99,7 +100,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpDelete("DeletarUsuario/{usuarioId}")]
         public async Task<IActionResult> DeletarUsuario([FromRoute] string usuarioId)
         {

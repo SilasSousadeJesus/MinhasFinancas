@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Categoria;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Domain.Entities;
@@ -17,6 +18,7 @@ namespace MinhasFinancas.API.Controllers
         }
 
         // CATEGORIA
+        [Authorize]
         [HttpPost("CadastrarCategoria")]
         public async Task<IActionResult> CadastrarCategoria([FromBody] CadastrarCategoriaDTO cadastrarCategoria)
         {
@@ -38,7 +40,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarTodosAsCategorias/{usuarioId}")]
         public async Task<IActionResult> BuscarTodosAsCategorias([FromRoute] string usuarioId)
         {
@@ -59,7 +61,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarUmaCategoria/{usuarioId}/{categoriaId}")]
         public async Task<IActionResult> BuscarUmaCategoria([FromRoute] string usuarioId, [FromRoute] Guid categoriaId)
         {
@@ -80,7 +82,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpPut("EditarCategoria/{usuarioId}/{categoriaId}")]
         public async Task<IActionResult> EditarCategoria([FromRoute] string usuarioId, [FromRoute] Guid categoriaId, [FromBody] EditarCategoriaDTO editarCategoria)
         {
@@ -102,7 +104,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpDelete("DeletarCategoria/{usuarioId}/{categoriaId}")]
         public async Task<IActionResult> DeletarCategoria([FromRoute] string usuarioId, [FromRoute] Guid categoriaId)
         {
@@ -126,6 +128,7 @@ namespace MinhasFinancas.API.Controllers
 
 
         // SUBCATEGORIA
+        [Authorize]
         [HttpPost("CadastrarSubCategoria/{usuarioId}/{categoriaId}")]
         public async Task<IActionResult> CadastrarSubCategoria([FromRoute] string usuarioId,[FromRoute] Guid categoriaId, [FromBody] CadastrarSubCategoriaDTO cadastrarCategoria)
         {
@@ -148,7 +151,7 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-
+        [Authorize]
         [HttpGet("BuscarTodosAsSubCategorias/{usuarioId}/{categoriaId}")]
         public async Task<IActionResult> BuscarTodosAsSubCategorias(string usuarioId, Guid categoriaId)
         {
@@ -170,7 +173,7 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-
+        [Authorize]
         [HttpGet("BuscarUmaSubCategoria/{categoriaId}/{subCategoriaId}")]
         public async Task<IActionResult> BuscarUmaSubCategoria([FromRoute] Guid categoriaId, [FromRoute] Guid subCategoriaId)
         {
@@ -191,7 +194,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpPut("EditarSubCategoria/{usuarioId}/{categoriaId}/{subCategoriaId}")]
         public async Task<IActionResult> EditarSubCategoria([FromRoute] string usuarioId, [FromRoute] Guid categoriaId, [FromRoute] Guid subCategoriaId, [FromBody] EditarSubCategoriaDTO  editarSubCategoriaDTO)
         {
@@ -213,7 +216,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpDelete("DeletarSubCategoria/{usuarioId}/{categoriaId}/{subCategoriaId}")]
         public async Task<IActionResult> DeletarCategoria([FromRoute] string UsuarioId, [FromRoute] Guid categoriaId, [FromRoute] Guid subCategoriaId)
         {

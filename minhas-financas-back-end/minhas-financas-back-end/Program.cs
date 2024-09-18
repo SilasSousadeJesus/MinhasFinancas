@@ -71,6 +71,8 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IMetaAppService, MetaAppService>();
             builder.Services.AddScoped<IMetaRepository, MetaRepository>();
 
+            builder.Services.AddScoped<IPotencialCompraImovelAppService, PotencialCompraImovelAppService>();
+
             // Add authentication services
             AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);
 
@@ -132,8 +134,8 @@ namespace minhas_financas_back_end
             }
 
             app.UseHttpsRedirection();
-            app.UseAuthentication();
             app.UseAuthorization();
+            app.UseAuthentication();
             app.MapControllers();
 
             app.Run();

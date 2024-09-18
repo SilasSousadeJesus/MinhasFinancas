@@ -1,25 +1,27 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MinhasFinancas.Application.DTOs.PotencialCompra;
+using MinhasFinancas.Application.DTOs.Usuario;
 using MinhasFinancas.Application.Interfaces;
 
 namespace MinhasFinancas.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DashboardController : ControllerBase
+    public class PotecialCompraController : ControllerBase
     {
-        private readonly IDashboardAppService _appService;
-
-        public DashboardController(IDashboardAppService  dashboardAppService)
+        private readonly IPotencialCompraImovelAppService _appService;
+        public PotecialCompraController(IPotencialCompraImovelAppService potencialCompraImovelAppService)
         {
-            _appService = dashboardAppService;
+            _appService = potencialCompraImovelAppService;
         }
-        [Authorize]
-        [HttpGet("{usuarioId}")]
-        public async Task<IActionResult> BuscarInformacoesDashboard([FromRoute] string usuarioId)
-        {
 
-            var dados = await _appService.BuscarInformacoesDashboard(usuarioId);
+        [HttpPost()]
+        public async Task<IActionResult> PotecialCompra([FromBody] PotencialCompraDTO potencialCompraDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var dados = await _appService.CalcularPotencialCompraImovel(potencialCompraDTO);
 
             if (!dados.Sucesso)
             {

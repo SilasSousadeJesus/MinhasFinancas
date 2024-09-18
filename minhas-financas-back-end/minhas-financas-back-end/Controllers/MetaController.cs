@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Banco;
 using MinhasFinancas.Application.DTOs.Meta;
 using MinhasFinancas.Application.Interfaces;
@@ -16,7 +17,7 @@ namespace MinhasFinancas.API.Controllers
             _appService = appService;
         }
 
-
+        [Authorize]
         [HttpPost("Cadastrar")]
         public async Task<IActionResult> Cadastrar(CadastrarMetaDTO cadastrarMetaDTO)
         {
@@ -38,7 +39,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarTodosAsMetas/{usuarioId}")]
         public async Task<IActionResult> BuscarTodosAsMetas([FromRoute] string usuarioId)
         {
@@ -59,7 +60,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarUmaMeta/{usuarioId}/{metaId}")]
         public async Task<IActionResult> BuscarUmaConta([FromRoute] string usuarioId, [FromRoute] Guid metaId)
         {
@@ -80,7 +81,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpPut("EditarMeta/{usuarioId}/{metaId}")]
         public async Task<IActionResult> EditarMeta([FromRoute] string usuarioId, [FromRoute] Guid metaId, [FromBody] EditarMetalDTO editarMetalDTO)
         {
@@ -102,7 +103,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpDelete("DeletarMeta/{usuarioId}/{metaId}")]
         public async Task<IActionResult> DeletarConta(string usuarioId, Guid metaId)
         {
@@ -123,7 +124,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpPost("AtualizarAndamentoMeta/{idPatrono}/{elementoId}/{valor}")]
         public async Task<IActionResult> AtualizarAndamentoMeta([FromRoute]  string idPatrono, [FromRoute] Guid elementoId, [FromRoute] decimal valor)
         {

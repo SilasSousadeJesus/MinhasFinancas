@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.Interfaces;
 using Newtonsoft.Json;
@@ -15,7 +16,7 @@ namespace MinhasFinancas.API.Controllers
         {
             _appService = relatoriosAppService;
         }
-
+        [Authorize]
         [HttpGet("PorCategoria/{usuarioId}")]
         public async Task<IActionResult> RelatoriosPorCategoria([FromRoute] string usuarioId)
         {
@@ -37,7 +38,7 @@ namespace MinhasFinancas.API.Controllers
             return Ok(dados);
         }
 
-
+        [Authorize]
         [HttpGet("PorAno/{usuarioId}")]
         public async Task<IActionResult> RelatoriosPorAno([FromRoute] string usuarioId)
         {

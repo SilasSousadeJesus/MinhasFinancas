@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces;
 
@@ -14,7 +15,7 @@ namespace MinhasFinancas.API.Controllers
         {
             _appService = lancamentoAppService;
         }
-
+        [Authorize]
         [HttpPost("CadastrarLancamento")]
         public async Task<IActionResult> CadastrarCartao([FromBody] CadastrarLancamentoDTO cadastrarLancamento)
         {
@@ -36,7 +37,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarTodosOsLancamento/{usuarioId}")]
         public async Task<IActionResult> BuscarTodosOsCartoes([FromRoute] string usuarioId)
         {
@@ -57,7 +58,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarUmLancamento/{usuarioId}/{faturamentoId}")]
         public async Task<IActionResult> BuscarUmCartao([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId)
         {
@@ -78,7 +79,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpPut("EditarLancamento/{usuarioId}/{faturamentoId}")]
         public async Task<IActionResult> EditarCartao([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId, [FromBody] EditarLancamentoDTO editarLancamento)
         {
@@ -100,7 +101,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpDelete("DeletarLancamento/{usuarioId}/{faturamentoId}")]
         public async Task<IActionResult> DeletarCartao([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId)
         {
@@ -121,7 +122,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarLancamentosPorCategoria/{usuarioId}")]
         public async Task<IActionResult> BuscarLancamentosPorCategoria([FromRoute] string usuarioId)
         {

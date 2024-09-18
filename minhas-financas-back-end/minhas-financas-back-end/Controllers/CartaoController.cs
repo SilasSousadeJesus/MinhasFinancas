@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Cartao;
 using MinhasFinancas.Application.Interfaces;
 
@@ -14,7 +15,7 @@ namespace MinhasFinancas.API.Controllers
         {
             _appService = cartaoAppService;
         }
-
+        [Authorize]
         [HttpPost("CadastrarCartao")]
         public async Task<IActionResult> CadastrarCartao([FromBody] CadastrarCartaoDTO cadastroCartaoDTO)
         {
@@ -36,7 +37,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarTodosOsCartoes/{usuarioId}")]
         public async Task<IActionResult> BuscarTodosOsCartoes([FromRoute] string usuarioId)
         {
@@ -57,7 +58,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpGet("BuscarUmCartao/{usuarioId}/{cartaoId}")]
         public async Task<IActionResult> BuscarUmCartao([FromRoute] string usuarioId, [FromRoute] Guid cartaoId)
         {
@@ -78,7 +79,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpPut("EditarCartao/{usuarioId}/{cartaoId}")]
         public async Task<IActionResult> EditarCartao([FromRoute] string usuarioId, [FromRoute] Guid cartaoId, [FromBody] EditarCartaoDTO editarCartaoDTO)
         {
@@ -100,7 +101,7 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
-
+        [Authorize]
         [HttpDelete("DeletarCartao/{usuarioId}/{cartaoId}")]
         public async Task<IActionResult> DeletarCartao([FromRoute] string usuarioId, [FromRoute] Guid cartaoId)
         {
