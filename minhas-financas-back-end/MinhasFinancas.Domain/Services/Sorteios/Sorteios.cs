@@ -4,7 +4,7 @@
     {
         public Sorteios() { }
 
-        public int[] MegaSena(int quantidade, int min, int max)
+        public int[] MegaSena()
         {
             return Sorteio(6, 1, 60);
         }
