@@ -18,4 +18,10 @@
     <ProjectReference Include="..\MinhasFinancas.Infra\MinhasFinancas.Infra.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\categorias-iniciais.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

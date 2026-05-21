@@ -12,6 +12,7 @@ import { useEffect, useMemo, useState } from "react";
 import { buscarDashboard } from "@/services/api/dashboard";
 import { ApiError } from "@/types/api";
 import { DashboardData, DashboardPeriodo } from "@/types/dashboard";
+import { NovoLancamentoModal } from "@/components/lancamentos/NovoLancamentoModal";
 
 function parseCurrencyString(value: string) {
   const normalized = value
@@ -59,6 +60,7 @@ export function PainelDashboard() {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     async function carregarDashboard() {
@@ -83,7 +85,7 @@ export function PainelDashboard() {
     }
 
     carregarDashboard();
-  }, [session?.token, session?.usuario.id]);
+  }, [reloadToken, session?.token, session?.usuario.id]);
 
   const resumo = useMemo(() => {
     if (!dashboard) {
@@ -164,7 +166,7 @@ export function PainelDashboard() {
         </div>
         <div className="flex space-x-2">
           <Button variant="outline">Gerenciar contas e cartões</Button>
-          <Button variant="default">Novo Lançamento</Button>
+          <NovoLancamentoModal onCreated={() => setReloadToken((current) => current + 1)} />
         </div>
       </div>
 

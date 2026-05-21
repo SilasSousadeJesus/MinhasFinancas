@@ -160,6 +160,11 @@ namespace MinhasFinancas.Application.Services
 
         private async Task InformacoesComplementares(string UsuarioId) 
         {
+            if (await _categoriaRepository.UsuarioPossuiCategoriasAsync(UsuarioId))
+            {
+                return;
+            }
+
             var listaCategorias = CategoriasSubCategorias.ConstrutorCategoriasSubCategorias(UsuarioId);
 
             await _categoriaRepository.CadastrarListaDeCategoriasAsync(listaCategorias);

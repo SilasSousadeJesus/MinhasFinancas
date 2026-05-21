@@ -1,0 +1,263 @@
+[
+  {
+    "nomeCategoria": "Salario",
+    "icone": "Receita.png",
+    "tipo": "Receita",
+    "subCategorias": [
+      "CLT",
+      "Adiantamento",
+      "Decimo Terceiro",
+      "Horas Extras"
+    ]
+  },
+  {
+    "nomeCategoria": "Aposentadoria",
+    "icone": "Receita.png",
+    "tipo": "Receita",
+    "subCategorias": [
+      "INSS",
+      "Previdencia Privada"
+    ]
+  },
+  {
+    "nomeCategoria": "Dividendos",
+    "icone": "Receita.png",
+    "tipo": "Receita",
+    "subCategorias": [
+      "Acoes",
+      "FIIs",
+      "ETFs"
+    ]
+  },
+  {
+    "nomeCategoria": "Renda Extra",
+    "icone": "Receita.png",
+    "tipo": "Receita",
+    "subCategorias": [
+      "Freelance",
+      "Comissao",
+      "Bico",
+      "Consultoria"
+    ]
+  },
+  {
+    "nomeCategoria": "Pro labore",
+    "icone": "Receita.png",
+    "tipo": "Receita",
+    "subCategorias": [
+      "Mensal",
+      "Distribuicao"
+    ]
+  },
+  {
+    "nomeCategoria": "Bonus",
+    "icone": "Receita.png",
+    "tipo": "Receita",
+    "subCategorias": [
+      "Meta",
+      "Performance",
+      "Participacao nos Lucros"
+    ]
+  },
+  {
+    "nomeCategoria": "Reembolso",
+    "icone": "Receita.png",
+    "tipo": "Receita",
+    "subCategorias": [
+      "Trabalho",
+      "Saude",
+      "Viagem"
+    ]
+  },
+  {
+    "nomeCategoria": "Venda de Itens",
+    "icone": "Receita.png",
+    "tipo": "Receita",
+    "subCategorias": [
+      "Eletronicos",
+      "Roupas",
+      "Moveis",
+      "Outros"
+    ]
+  },
+  {
+    "nomeCategoria": "Casa",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Condominio",
+      "Agua",
+      "Energia",
+      "Gas",
+      "Internet",
+      "Manutencao",
+      "Aluguel"
+    ]
+  },
+  {
+    "nomeCategoria": "Alimentacao",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Mercado",
+      "Padaria",
+      "Restaurante",
+      "Lanche",
+      "Delivery"
+    ]
+  },
+  {
+    "nomeCategoria": "Transporte",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Combustivel",
+      "Aplicativo",
+      "Onibus",
+      "Metro",
+      "Manutencao",
+      "Estacionamento"
+    ]
+  },
+  {
+    "nomeCategoria": "Saude",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Farmacia",
+      "Consultas",
+      "Exames",
+      "Plano de Saude"
+    ]
+  },
+  {
+    "nomeCategoria": "Educacao",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Mensalidade",
+      "Cursos",
+      "Livros",
+      "Material"
+    ]
+  },
+  {
+    "nomeCategoria": "Lazer",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Cinema",
+      "Streaming",
+      "Viagem",
+      "Passeios"
+    ]
+  },
+  {
+    "nomeCategoria": "Vestuario",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Roupas",
+      "Calcados",
+      "Acessorios"
+    ]
+  },
+  {
+    "nomeCategoria": "Assinaturas",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Musica",
+      "Filmes",
+      "Software",
+      "Jogos"
+    ]
+  },
+  {
+    "nomeCategoria": "Impostos",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "IR",
+      "IPVA",
+      "IPTU",
+      "Taxas"
+    ]
+  },
+  {
+    "nomeCategoria": "Pets",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Racao",
+      "Veterinario",
+      "Banho e Tosa",
+      "Acessorios"
+    ]
+  },
+  {
+    "nomeCategoria": "Trabalho",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": [
+      "Equipamentos",
+      "Cursos",
+      "Ferramentas",
+      "Deslocamento"
+    ]
+  },
+  {
+    "nomeCategoria": "Presentes",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": []
+  },
+  {
+    "nomeCategoria": "Outras Despesas",
+    "icone": "Despesa.png",
+    "tipo": "Despesa",
+    "subCategorias": []
+  },
+  {
+    "nomeCategoria": "Reserva",
+    "icone": "Investimento.png",
+    "tipo": "Investimento",
+    "subCategorias": []
+  },
+  {
+    "nomeCategoria": "Renda Fixa",
+    "icone": "Investimento.png",
+    "tipo": "Investimento",
+    "subCategorias": []
+  },
+  {
+    "nomeCategoria": "Renda Variavel",
+    "icone": "Investimento.png",
+    "tipo": "Investimento",
+    "subCategorias": []
+  },
+  {
+    "nomeCategoria": "Tesouro Direto",
+    "icone": "Investimento.png",
+    "tipo": "Investimento",
+    "subCategorias": []
+  },
+  {
+    "nomeCategoria": "Fundos",
+    "icone": "Investimento.png",
+    "tipo": "Investimento",
+    "subCategorias": []
+  },
+  {
+    "nomeCategoria": "Previdencia",
+    "icone": "Investimento.png",
+    "tipo": "Investimento",
+    "subCategorias": []
+  },
+  {
+    "nomeCategoria": "Cripto",
+    "icone": "Investimento.png",
+    "tipo": "Investimento",
+    "subCategorias": []
+  }
+]

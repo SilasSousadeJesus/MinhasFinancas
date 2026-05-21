@@ -22,6 +22,8 @@ namespace MinhasFinancas.Application.Configurations
 
             CreateMap<CadastrarCategoriaDTO, Categoria>();
             CreateMap<EditarCategoriaDTO, Categoria>();
+            CreateMap<CadastrarSubCategoriaDTO, SubCategoria>();
+            CreateMap<EditarSubCategoriaDTO, SubCategoria>();
 
             CreateMap<CadastrarLancamentoDTO, Lancamento>();
             CreateMap<EditarLancamentoDTO, Lancamento>();

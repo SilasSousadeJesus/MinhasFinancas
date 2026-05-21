@@ -20,6 +20,11 @@ namespace MinhasFinancas.Application.Services
             _usuarioAppService = usuarioAppService;
         }
 
+        private static string NormalizarNome(string nome)
+        {
+            return nome.Trim();
+        }
+
 
         // categoria
         public async Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id)
@@ -118,6 +123,23 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
+                elementoDTO.NomeCategoria = NormalizarNome(elementoDTO.NomeCategoria);
+
+                var categoriaDuplicada = await _categoriaRepository.ExisteCategoriaComNomeAsync(
+                    elementoDTO.UsuarioId!,
+                    elementoDTO.NomeCategoria
+                );
+
+                if (categoriaDuplicada)
+                {
+                    retorno.Sucesso = false;
+                    retorno.HttpStatusCode = HttpStatusCode.BadRequest;
+                    retorno.MensagemSistema = "Ja existe uma categoria com esse nome para este usuario";
+                    retorno.MensagemUsuario = "Voce ja possui uma categoria com esse nome";
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
                 var categoria = _mapper.Map<Categoria>(elementoDTO);
 
                 await _categoriaRepository.CadastrarElementoAsync(categoria);
@@ -198,6 +220,24 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
+                elementoDTO.NomeCategoria = NormalizarNome(elementoDTO.NomeCategoria);
+
+                var categoriaDuplicada = await _categoriaRepository.ExisteCategoriaComNomeAsync(
+                    idPatrono,
+                    elementoDTO.NomeCategoria,
+                    elementoId
+                );
+
+                if (categoriaDuplicada)
+                {
+                    retorno.Sucesso = false;
+                    retorno.HttpStatusCode = HttpStatusCode.BadRequest;
+                    retorno.MensagemSistema = "Ja existe uma categoria com esse nome para este usuario";
+                    retorno.MensagemUsuario = "Voce ja possui uma categoria com esse nome";
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
                 var categoria = _mapper.Map<Categoria>(elementoDTO);
                 categoria.Id = elementoId;
                 categoria.UsuarioId = idPatrono;
@@ -223,29 +263,219 @@ namespace MinhasFinancas.Application.Services
         }
 
         // subcategoria
-        public Task<RetornoGenerico> BuscarTodosAsSubCategoriaAsync(string usuarioId, Guid categoriaId)
+        public async Task<RetornoGenerico> BuscarTodosAsSubCategoriaAsync(string usuarioId, Guid categoriaId)
         {
-            throw new NotImplementedException();
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var categoria = await BuscarUmElementoAsync(usuarioId, categoriaId);
+
+                if (!categoria.Sucesso)
+                {
+                    retorno.Sucesso = categoria.Sucesso;
+                    retorno.HttpStatusCode = categoria.HttpStatusCode;
+                    retorno.MensagemSistema = categoria.MensagemSistema;
+                    retorno.MensagemUsuario = categoria.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var lista = await _categoriaRepository.BuscarTodosAsSubCategoriasAsync(usuarioId, categoriaId);
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = $"{lista.Count} subcategoria(s) encontrada(s)";
+                retorno.MensagemUsuario = $"{lista.Count} subcategoria(s) encontrada(s)";
+                retorno.Dados = lista;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possível buscar a lista de subcategorias";
+                retorno.Dados = null;
+                return retorno;
+            }
         }
 
-        public Task<RetornoGenerico> EditarSubCategoriaAsync(string usuarioId, Guid categoriaId, Guid subCategoriaId, EditarSubCategoriaDTO editarSubCategoriaDTO)
+        public async Task<RetornoGenerico> EditarSubCategoriaAsync(string usuarioId, Guid categoriaId, Guid subCategoriaId, EditarSubCategoriaDTO editarSubCategoriaDTO)
         {
-            throw new NotImplementedException();
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var categoria = await BuscarUmElementoAsync(usuarioId, categoriaId);
+                if (!categoria.Sucesso)
+                {
+                    retorno.Sucesso = categoria.Sucesso;
+                    retorno.HttpStatusCode = categoria.HttpStatusCode;
+                    retorno.MensagemSistema = categoria.MensagemSistema;
+                    retorno.MensagemUsuario = categoria.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var subCategoriaExistente = await _categoriaRepository.BuscarUmaSubCategoriaAsync(categoriaId, subCategoriaId);
+                if (subCategoriaExistente == null)
+                {
+                    return new RetornoGenerico(false, "Subcategoria não encontrada", "Subcategoria não encontrada", HttpStatusCode.NotFound);
+                }
+
+                editarSubCategoriaDTO.NomeSubCategoria = NormalizarNome(editarSubCategoriaDTO.NomeSubCategoria);
+
+                var subCategoriaDuplicada = await _categoriaRepository.ExisteSubCategoriaComNomeAsync(
+                    categoriaId,
+                    editarSubCategoriaDTO.NomeSubCategoria,
+                    subCategoriaId
+                );
+
+                if (subCategoriaDuplicada)
+                {
+                    return new RetornoGenerico(
+                        false,
+                        "Ja existe uma subcategoria com esse nome nesta categoria",
+                        "Essa categoria ja possui uma subcategoria com esse nome",
+                        HttpStatusCode.BadRequest
+                    );
+                }
+
+                var subCategoria = _mapper.Map<SubCategoria>(editarSubCategoriaDTO);
+                subCategoria.Id = subCategoriaId;
+                subCategoria.CategoriaId = categoriaId;
+
+                await _categoriaRepository.EditarSubCategoriaAsync(subCategoria);
+
+                return new RetornoGenerico(true, "Subcategoria editada com sucesso", "Subcategoria editada", HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possível editar a subcategoria";
+                retorno.Dados = null;
+                return retorno;
+            }
         }
 
-        public Task<RetornoGenerico> DeletarSubCategoriaAsync(string usuarioId, Guid categoriaId, Guid subCategoriaId)
+        public async Task<RetornoGenerico> DeletarSubCategoriaAsync(string usuarioId, Guid categoriaId, Guid subCategoriaId)
         {
-            throw new NotImplementedException();
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var categoria = await BuscarUmElementoAsync(usuarioId, categoriaId);
+                if (!categoria.Sucesso)
+                {
+                    retorno.Sucesso = categoria.Sucesso;
+                    retorno.HttpStatusCode = categoria.HttpStatusCode;
+                    retorno.MensagemSistema = categoria.MensagemSistema;
+                    retorno.MensagemUsuario = categoria.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var subCategoria = await _categoriaRepository.BuscarUmaSubCategoriaAsync(categoriaId, subCategoriaId);
+                if (subCategoria == null)
+                {
+                    return new RetornoGenerico(false, "Subcategoria não encontrada", "Subcategoria não encontrada", HttpStatusCode.NotFound);
+                }
+
+                await _categoriaRepository.DeletarSubCategoriaAsync(subCategoria);
+
+                return new RetornoGenerico(true, "Subcategoria deletada com sucesso", "Subcategoria deletada", HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possível deletar a subcategoria";
+                retorno.Dados = null;
+                return retorno;
+            }
         }
 
-        public Task<RetornoGenerico> CadastrarSubCategoriaAsync(string usuarioId, Guid categoriaId, CadastrarSubCategoriaDTO cadastrarSubCategoriaDTO)
+        public async Task<RetornoGenerico> CadastrarSubCategoriaAsync(string usuarioId, Guid categoriaId, CadastrarSubCategoriaDTO cadastrarSubCategoriaDTO)
         {
-            throw new NotImplementedException();
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var categoria = await BuscarUmElementoAsync(usuarioId, categoriaId);
+                if (!categoria.Sucesso)
+                {
+                    retorno.Sucesso = categoria.Sucesso;
+                    retorno.HttpStatusCode = categoria.HttpStatusCode;
+                    retorno.MensagemSistema = categoria.MensagemSistema;
+                    retorno.MensagemUsuario = categoria.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                cadastrarSubCategoriaDTO.NomeSubCategoria = NormalizarNome(cadastrarSubCategoriaDTO.NomeSubCategoria);
+
+                var subCategoriaDuplicada = await _categoriaRepository.ExisteSubCategoriaComNomeAsync(
+                    categoriaId,
+                    cadastrarSubCategoriaDTO.NomeSubCategoria
+                );
+
+                if (subCategoriaDuplicada)
+                {
+                    return new RetornoGenerico(
+                        false,
+                        "Ja existe uma subcategoria com esse nome nesta categoria",
+                        "Essa categoria ja possui uma subcategoria com esse nome",
+                        HttpStatusCode.BadRequest
+                    );
+                }
+
+                var subCategoria = _mapper.Map<SubCategoria>(cadastrarSubCategoriaDTO);
+                subCategoria.Id = Guid.NewGuid();
+                subCategoria.CategoriaId = categoriaId;
+
+                await _categoriaRepository.CadastrarSubCategoriaAsync(subCategoria);
+
+                return new RetornoGenerico(true, "Subcategoria cadastrada com sucesso", "Subcategoria cadastrada", HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possível criar a subcategoria";
+                retorno.Dados = null;
+                return retorno;
+            }
         }
 
-        public Task<RetornoGenerico> BuscarUmaSubCategoriaAsync(Guid categoriaId, Guid subCategoriaId)
+        public async Task<RetornoGenerico> BuscarUmaSubCategoriaAsync(Guid categoriaId, Guid subCategoriaId)
         {
-            throw new NotImplementedException();
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var subCategoria = await _categoriaRepository.BuscarUmaSubCategoriaAsync(categoriaId, subCategoriaId);
+
+                retorno.Sucesso = subCategoria != null;
+                retorno.HttpStatusCode = subCategoria != null ? HttpStatusCode.OK : HttpStatusCode.NotFound;
+                retorno.MensagemSistema = subCategoria != null ? "Subcategoria encontrada" : "Subcategoria não encontrada";
+                retorno.MensagemUsuario = subCategoria != null ? "Subcategoria encontrada" : "Subcategoria não encontrada";
+                retorno.Dados = subCategoria;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possível encontrar a subcategoria";
+                retorno.Dados = null;
+                return retorno;
+            }
         }
 
 
