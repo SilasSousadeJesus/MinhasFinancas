@@ -81,8 +81,8 @@ namespace MinhasFinancas.Application.Services
 
             var teste = _jwtOptions.AccessTokenExpiration;
 
-            var dataExpiracaoAccessToken = DateTime.Now.AddSeconds(_jwtOptions.AccessTokenExpiration);
-            var dataExpiracaoRefreshToken = DateTime.Now.AddSeconds(_jwtOptions.RefreshTokenExpiration);
+            var dataExpiracaoAccessToken = DateTime.UtcNow.AddSeconds(_jwtOptions.AccessTokenExpiration);
+            var dataExpiracaoRefreshToken = DateTime.UtcNow.AddSeconds(_jwtOptions.RefreshTokenExpiration);
 
             var accessToken = GerarToken(accessTokenClaims, dataExpiracaoAccessToken);
             var refreshToken = GerarToken(refreshTokenClaims, dataExpiracaoRefreshToken);
@@ -96,7 +96,7 @@ namespace MinhasFinancas.Application.Services
                 issuer: _jwtOptions.Issuer,
                 audience: _jwtOptions.Audience,
                 claims: claims,
-                notBefore: DateTime.Now,
+                notBefore: DateTime.UtcNow,
                 expires: dataExpiracao,
                 signingCredentials: _jwtOptions.SigningCredentials);
 
@@ -111,8 +111,6 @@ namespace MinhasFinancas.Application.Services
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
             claims.Add(new Claim(JwtRegisteredClaimNames.Name, user.Nome));
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, DateTime.Now.ToString()));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));
 
             if (adicionarClaimsUsuario)
             {

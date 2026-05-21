@@ -1,6 +1,47 @@
 import { SVGProps, ClassAttributes, HTMLAttributes } from "react";
-import { LineChart, CartesianGrid, XAxis, Line, PieChart, Pie } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
+import {
+  LineChart,
+  CartesianGrid,
+  XAxis,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "../ui/chart";
+
+interface LineChartItem {
+  month: string;
+  receita: number;
+  despesa: number;
+}
+
+interface PieChartItem {
+  category: string;
+  total: number;
+  fill?: string;
+}
+
+const PIE_COLORS = [
+  "hsl(var(--chart-1))",
+  "hsl(var(--chart-2))",
+  "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
+];
+
+function formatCurrency(value: number) {
+  return value.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+}
 
 export function ChevronRightIcon(
   props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
@@ -188,49 +229,68 @@ export function LayoutDashboardIcon(
 export function LinechartChart(
   props: JSX.IntrinsicAttributes &
     ClassAttributes<HTMLDivElement> &
-    HTMLAttributes<HTMLDivElement>
+    HTMLAttributes<HTMLDivElement> & {
+      data?: LineChartItem[];
+    }
 ) {
+  const data = props.data ?? [];
+  const { data: _data, ...rest } = props;
+
   return (
-    <div {...props}>
+    <div {...rest}>
       <ChartContainer
         config={{
-          desktop: {
-            label: "Desktop",
+          receita: {
+            label: "Receitas",
             color: "hsl(var(--chart-1))",
+          },
+          despesa: {
+            label: "Despesas",
+            color: "hsl(var(--chart-2))",
           },
         }}
       >
         <LineChart
           accessibilityLayer
-          data={[
-            { month: "January", desktop: 186 },
-            { month: "February", desktop: 305 },
-            { month: "March", desktop: 237 },
-            { month: "April", desktop: 73 },
-            { month: "May", desktop: 209 },
-            { month: "June", desktop: 214 },
-          ]}
+          data={data}
           margin={{
             left: 12,
             right: 12,
           }}
         >
           <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
+          <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent hideLabel />}
+            content={
+              <ChartTooltipContent
+                formatter={(value, name) => (
+                  <>
+                    <div className="h-2.5 w-2.5 rounded-[2px] bg-primary" />
+                    <div className="flex flex-1 items-center justify-between gap-2">
+                      <span className="text-muted-foreground">
+                        {name === "receita" ? "Receitas" : "Despesas"}
+                      </span>
+                      <span className="font-mono font-medium tabular-nums text-foreground">
+                        {formatCurrency(Number(value))}
+                      </span>
+                    </div>
+                  </>
+                )}
+              />
+            }
           />
           <Line
-            dataKey="desktop"
+            dataKey="receita"
             type="natural"
-            stroke="var(--color-desktop)"
+            stroke="var(--color-receita)"
+            strokeWidth={2}
+            dot={false}
+          />
+          <Line
+            dataKey="despesa"
+            type="natural"
+            stroke="var(--color-despesa)"
             strokeWidth={2}
             dot={false}
           />
@@ -266,57 +326,56 @@ export function LogInIcon(
 export function PiechartcustomChart(
   props: JSX.IntrinsicAttributes &
     ClassAttributes<HTMLDivElement> &
-    HTMLAttributes<HTMLDivElement>
+    HTMLAttributes<HTMLDivElement> & {
+      data?: PieChartItem[];
+    }
 ) {
+  const data =
+    props.data?.map((item, index) => ({
+      ...item,
+      fill: item.fill ?? PIE_COLORS[index % PIE_COLORS.length],
+    })) ?? [];
+  const { data: _data, ...rest } = props;
+
   return (
-    <div {...props}>
+    <div {...rest}>
       <ChartContainer
-        config={{
-          visitors: {
-            label: "Visitors",
-          },
-          chrome: {
-            label: "Chrome",
-            color: "hsl(var(--chart-1))",
-          },
-          safari: {
-            label: "Safari",
-            color: "hsl(var(--chart-2))",
-          },
-          firefox: {
-            label: "Firefox",
-            color: "hsl(var(--chart-3))",
-          },
-          edge: {
-            label: "Edge",
-            color: "hsl(var(--chart-4))",
-          },
-          other: {
-            label: "Other",
-            color: "hsl(var(--chart-5))",
-          },
-        }}
+        config={Object.fromEntries(
+          data.map((item, index) => [
+            item.category,
+            {
+              label: item.category,
+              color: PIE_COLORS[index % PIE_COLORS.length],
+            },
+          ])
+        )}
       >
         <PieChart>
+          <ChartLegend content={<ChartLegendContent nameKey="category" />} />
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent hideLabel />}
+            content={
+              <ChartTooltipContent
+                formatter={(value, name) => (
+                  <>
+                    <div className="h-2.5 w-2.5 rounded-[2px] bg-primary" />
+                    <div className="flex flex-1 items-center justify-between gap-2">
+                      <span className="text-muted-foreground">{String(name)}</span>
+                      <span className="font-mono font-medium tabular-nums text-foreground">
+                        {formatCurrency(Number(value))}
+                      </span>
+                    </div>
+                  </>
+                )}
+                nameKey="category"
+              />
+            }
           />
-          <Pie
-            data={[
-              { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-              { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-              {
-                browser: "firefox",
-                visitors: 187,
-                fill: "var(--color-firefox)",
-              },
-              { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-              { browser: "other", visitors: 90, fill: "var(--color-other)" },
-            ]}
-            dataKey="visitors"
-            nameKey="browser"
-          />
+          <Pie data={data} dataKey="total" nameKey="category">
+            {data.map((entry) => (
+              <Cell key={entry.category} fill={entry.fill} />
+            ))}
+          </Pie>
         </PieChart>
       </ChartContainer>
     </div>
@@ -385,12 +444,13 @@ export function GoalIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement
       <path d="M20.561 10.222a9 9 0 1 1-12.55-5.29" />
       <path d="M8.002 9.997a5 5 0 1 0 8.9 2.02" />
     </svg>
-  )
+  );
 }
 
 export function PocketIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
+      {...props}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -404,5 +464,5 @@ export function PocketIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGEleme
       <path d="M4 3h16a2 2 0 0 1 2 2v6a10 10 0 0 1-10 10A10 10 0 0 1 2 11V5a2 2 0 0 1 2-2z" />
       <polyline points="8 10 12 14 16 10" />
     </svg>
-  )
+  );
 }

@@ -136,9 +136,9 @@ namespace MinhasFinancas.Domain.Services.DashBoard
                 .Sum(x => x.Valor);
 
 
-            var ano = Math.Round((despesaAnoCorrente / receitaAnoCorrente) * 100, 1);
-            var mesAtual = Math.Round((despesaMesCorrente / receitaMesCorrente) * 100, 1);
-            var mesPassado = Math.Round((despesaMesAnterior / receitaMesAnterior) * 100, 1);
+            var ano = receitaAnoCorrente == 0 ? 0 : Math.Round((despesaAnoCorrente / receitaAnoCorrente) * 100, 1);
+            var mesAtual = receitaMesCorrente == 0 ? 0 : Math.Round((despesaMesCorrente / receitaMesCorrente) * 100, 1);
+            var mesPassado = receitaMesAnterior == 0 ? 0 : Math.Round((despesaMesAnterior / receitaMesAnterior) * 100, 1);
 
             return new ResultadoDashBoard
             {

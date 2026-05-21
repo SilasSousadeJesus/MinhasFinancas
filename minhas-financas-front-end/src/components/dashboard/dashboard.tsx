@@ -8,12 +8,153 @@ import {
   CardTitle,
 } from "../ui/card";
 import { useAuth } from "@/providers/auth-provider";
+import { useEffect, useMemo, useState } from "react";
+import { buscarDashboard } from "@/services/api/dashboard";
+import { ApiError } from "@/types/api";
+import { DashboardData, DashboardPeriodo } from "@/types/dashboard";
+
+function parseCurrencyString(value: string) {
+  const normalized = value
+    .replace(/[^\d,-]/g, "")
+    .replace(/\./g, "")
+    .replace(",", ".");
+
+  const parsed = Number(normalized);
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+function formatMonthLabel(value: string) {
+  const [year, month] = value.split("-");
+
+  if (!year || !month) {
+    return value;
+  }
+
+  return new Date(Number(year), Number(month) - 1, 1).toLocaleDateString("pt-BR", {
+    month: "short",
+    year: "2-digit",
+  });
+}
+
+function getEmptyLineChartData() {
+  const today = new Date();
+
+  return Array.from({ length: 3 }, (_, index) => {
+    const date = new Date(today.getFullYear(), today.getMonth() - (2 - index), 1);
+
+    return {
+      month: date.toLocaleDateString("pt-BR", {
+        month: "short",
+        year: "2-digit",
+      }),
+      receita: 0,
+      despesa: 0,
+    };
+  });
+}
 
 export function PainelDashboard() {
   const { session } = useAuth();
+  const [periodo, setPeriodo] = useState<DashboardPeriodo>("ano");
+  const [dashboard, setDashboard] = useState<DashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function carregarDashboard() {
+      if (!session?.usuario.id || !session.token) {
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setErrorMessage("");
+        const response = await buscarDashboard(session.usuario.id, session.token);
+        setDashboard(response.dados);
+      } catch (error) {
+        if (error instanceof ApiError) {
+          setErrorMessage(error.message);
+        } else {
+          setErrorMessage("Não foi possível carregar o dashboard.");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    carregarDashboard();
+  }, [session?.token, session?.usuario.id]);
+
+  const resumo = useMemo(() => {
+    if (!dashboard) {
+      return {
+        receita: "R$ 0,00",
+        investimento: "R$ 0,00",
+        despesa: "R$ 0,00",
+        resultado: "0%",
+      };
+    }
+
+    if (periodo === "mesAtual") {
+      return {
+        receita: dashboard.receita.receitaMesCorrente,
+        investimento: dashboard.investimento.investimentoMesCorrente,
+        despesa: dashboard.despesa.despesasMesCorrente,
+        resultado: `${dashboard.resultado.resultadoMesCorrente}%`,
+      };
+    }
+
+    if (periodo === "mesPassado") {
+      return {
+        receita: dashboard.receita.receitaMesPassado,
+        investimento: dashboard.investimento.investimentoMesPassado,
+        despesa: dashboard.despesa.despesasMesPassado,
+        resultado: `${dashboard.resultado.resultadoMesPassado}%`,
+      };
+    }
+
+    return {
+      receita: dashboard.receita.receitaAnoCorrente,
+      investimento: dashboard.investimento.investimentoAnoCorrente,
+      despesa: dashboard.despesa.despesasAnoCorrente,
+      resultado: `${dashboard.resultado.resultadoAnoCorrente}%`,
+    };
+  }, [dashboard, periodo]);
+
+  const lineChartData = useMemo(() => {
+    const data =
+      dashboard?.receitasDespesasMensais.map((item) => ({
+        month: formatMonthLabel(item.mesAno),
+        receita: parseCurrencyString(item.receita),
+        despesa: parseCurrencyString(item.despesa),
+      })) ?? [];
+
+    return data.length > 0 ? data : getEmptyLineChartData();
+  }, [dashboard]);
+
+  const pieChartData = useMemo(() => {
+    const data =
+      dashboard?.lancamentosPorCategoriaDeDespesaDashboard
+        .map((categoria) => ({
+          category: categoria.nome,
+          total: categoria.lancamentos.reduce((sum, lancamento) => sum + lancamento.valor, 0),
+        }))
+        .filter((categoria) => categoria.total > 0) ?? [];
+
+    if (data.length > 0) {
+      return data;
+    }
+
+    return [
+      {
+        category: "Sem dados",
+        total: 0,
+      },
+    ];
+  }, [dashboard]);
 
   return (
-    <main className="flex-1 p-6 bg-gray-50 dark:bg-[#020817]">
+    <main className="flex-1 bg-gray-50 p-6 dark:bg-[#020817]">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -26,83 +167,104 @@ export function PainelDashboard() {
           <Button variant="default">Novo Lançamento</Button>
         </div>
       </div>
-      <div className="flex items-center mt-6 space-x-2">
-        <Button variant="outline">Este Ano</Button>
-        <Button variant="outline">Este Mês</Button>
-        <Button variant="outline">Mês Passado</Button>
+
+      <div className="mt-6 flex items-center space-x-2">
+        <Button
+          variant={periodo === "ano" ? "default" : "outline"}
+          onClick={() => setPeriodo("ano")}
+        >
+          Este Ano
+        </Button>
+        <Button
+          variant={periodo === "mesAtual" ? "default" : "outline"}
+          onClick={() => setPeriodo("mesAtual")}
+        >
+          Este Mês
+        </Button>
+        <Button
+          variant={periodo === "mesPassado" ? "default" : "outline"}
+          onClick={() => setPeriodo("mesPassado")}
+        >
+          Mês Passado
+        </Button>
       </div>
-      <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2 lg:grid-cols-4 justify-center">
+
+      {errorMessage ? (
+        <div className="mt-4 rounded-md border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          {errorMessage}
+        </div>
+      ) : null}
+
+      <div className="mt-6 grid grid-cols-1 justify-center gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardContent className="flex flex-col items-center">
-            <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mt-4">
+            <div className="mt-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
               <span className="text-2xl font-bold text-green-500">0%</span>
             </div>
             <p className="mt-2 text-lg font-medium">Receitas</p>
-            <p className="text-2xl font-bold">R$ 0,00</p>
+            <p className="text-2xl font-bold">{isLoading ? "..." : resumo.receita}</p>
             <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="flex flex-col items-center">
-            <div className="flex items-center justify-center w-16 h-16 bg-yellow-100 rounded-full mt-4">
+            <div className="mt-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100">
               <span className="text-2xl font-bold text-yellow-500">0%</span>
             </div>
             <p className="mt-2 text-lg font-medium">Investimentos</p>
-            <p className="text-2xl font-bold">R$ 0,00</p>
+            <p className="text-2xl font-bold">{isLoading ? "..." : resumo.investimento}</p>
             <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="flex flex-col items-center">
-            <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mt-4">
+            <div className="mt-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
               <span className="text-2xl font-bold text-red-500">0%</span>
             </div>
             <p className="mt-2 text-lg font-medium">Despesas</p>
-            <p className="text-2xl font-bold">R$ 0,00</p>
+            <p className="text-2xl font-bold">{isLoading ? "..." : resumo.despesa}</p>
             <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="flex flex-col items-center">
-            <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mt-4">
+            <div className="mt-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
               <span className="text-2xl font-bold text-gray-500">0%</span>
             </div>
             <p className="mt-2 text-lg font-medium">Resultado</p>
-            <p className="text-2xl font-bold">R$ 0,00</p>
+            <p className="text-2xl font-bold">{isLoading ? "..." : resumo.resultado}</p>
             <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
           </CardContent>
         </Card>
       </div>
-      <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2">
+
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Percentual da receita</CardTitle>
-            <CardDescription>Gráfico de percentual da receita</CardDescription>
+            <CardTitle>Despesas por categoria</CardTitle>
+            <CardDescription>Distribuição das despesas por categoria</CardDescription>
           </CardHeader>
           <CardContent>
-            <PiechartcustomChart className="w-full aspect-[4/3]" />
-            <div className="flex justify-center mt-4 space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-red-500 rounded-full" />
-                <span className="text-sm">Fixa</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-yellow-500 rounded-full" />
-                <span className="text-sm">Variável</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-blue-500 rounded-full" />
-                <span className="text-sm">Parcelada</span>
-              </div>
-            </div>
+            <PiechartcustomChart className="w-full aspect-[4/3]" data={pieChartData} />
+            {dashboard?.lancamentosPorCategoriaDeDespesaDashboard?.length === 0 ? (
+              <p className="mt-4 text-center text-sm text-muted-foreground">
+                Sem despesas cadastradas ainda.
+              </p>
+            ) : null}
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
             <CardTitle>Receitas e Despesas</CardTitle>
+            <CardDescription>Evolução mensal de receitas e despesas</CardDescription>
           </CardHeader>
           <CardContent>
-            <LinechartChart className="w-full aspect-[4/3]" />
+            <LinechartChart className="w-full aspect-[4/3]" data={lineChartData} />
+            {dashboard?.receitasDespesasMensais?.length === 0 ? (
+              <p className="mt-4 text-center text-sm text-muted-foreground">
+                Sem movimentações mensais ainda.
+              </p>
+            ) : null}
           </CardContent>
         </Card>
       </div>

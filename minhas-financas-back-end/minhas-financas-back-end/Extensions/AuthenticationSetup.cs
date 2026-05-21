@@ -48,7 +48,7 @@ namespace MinhasFinancas.API.Extensions
                 RequireExpirationTime = true,
                 ValidateLifetime = true,
 
-                ClockSkew = TimeSpan.Zero
+                ClockSkew = TimeSpan.FromMinutes(1)
             };
 
             services.AddAuthentication(options =>
