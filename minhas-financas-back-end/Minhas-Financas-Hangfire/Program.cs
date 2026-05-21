@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Minhas_Financas_Hangfire.Interfaces;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra;
+using MinhasFinancas.Infra.Data.config.configMigrate;
 
 namespace Minhas_Financas_Hangfire
 {
@@ -46,6 +47,8 @@ namespace Minhas_Financas_Hangfire
 
             var app = builder.Build();
 
+            app.MigrateDatabase();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -68,3 +71,4 @@ namespace Minhas_Financas_Hangfire
         }
     }
 }
+

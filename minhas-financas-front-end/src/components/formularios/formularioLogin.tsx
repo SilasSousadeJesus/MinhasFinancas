@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,17 +15,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Card,
   CardHeader,
-  CardTitle,
   CardDescription,
   CardContent,
   CardFooter,
 } from "../ui/card";
-import { BotaoTrocaTema } from "../BotaoTrocaTema/botaoTrocaTema";
 import { Separator } from "../ui/separator";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/providers/auth-provider";
+import { ApiError } from "@/types/api";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
   email: z.string().email("Digite seu email de login."),
@@ -34,6 +34,11 @@ const FormSchema = z.object({
 });
 
 export function FormularioLogin({ cardWidth = "w-[500px]" }) {
+  const { loginWithCredentials, isAuthenticated } = useAuth();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -42,8 +47,32 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    alert(JSON.stringify(data));
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    const nextPath = searchParams.get("next") || "/dashboard";
+    router.replace(nextPath);
+  }, [isAuthenticated, router, searchParams]);
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      setIsSubmitting(true);
+      setErrorMessage("");
+      await loginWithCredentials(data);
+      const nextPath = searchParams.get("next") || "/dashboard";
+      router.push(nextPath);
+      router.refresh();
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Não foi possível fazer login agora. Tente novamente.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -96,9 +125,12 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
-              Entrar
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Entrando..." : "Entrar"}
             </Button>
+            {errorMessage ? (
+              <p className="text-sm font-medium text-destructive">{errorMessage}</p>
+            ) : null}
           </form>
         </Form>
         <div className="flex flex-col justify-center">

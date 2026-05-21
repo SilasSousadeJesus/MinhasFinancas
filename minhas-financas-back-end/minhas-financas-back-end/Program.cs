@@ -9,6 +9,7 @@ using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Application.Services;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra;
+using MinhasFinancas.Infra.Data.config.configMigrate;
 using MinhasFinancas.Infra.Data.Interfaces;
 using MinhasFinancas.Infra.Data.Repositories;
 using Scalar.AspNetCore;
@@ -19,14 +20,14 @@ namespace minhas_financas_back_end
     {
         public static void Main(string[] args)
         {
-            // criar logicar para desativar os lançamentos fixos e parcelados caso o cara tente realizar o lancamento
-            // criar logica para ter registros de saque e deposito (movimentação)
+            // criar logicar para desativar os lanÃ§amentos fixos e parcelados caso o cara tente realizar o lancamento
+            // criar logica para ter registros de saque e deposito (movimentaÃ§Ã£o)
             // criar sistema de metas/sonhos/objetivos estilo caixinha do nubank;
             // continua criando logica para passivo e relacionar com ativos no relatorios
 
             var builder = WebApplication.CreateBuilder(args);
 
-            // Configuração do AutoMapper
+            // ConfiguraÃ§Ã£o do AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             var connectionString = builder.Configuration.GetConnectionString("ConnectionMinhasFinancas");
@@ -78,15 +79,30 @@ namespace minhas_financas_back_end
             // Add authentication services
             AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("Frontend", policy =>
+                {
+                    policy
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .WithOrigins(
+                            "http://localhost:3000",
+                            "http://127.0.0.1:3000"
+                        );
+                });
+            });
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API - Minhas Finanças", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API - Minhas FinanÃ§as", Version = "v1" });
 
-                // Adicione as configurações do JWT aqui
+                // Adicione as configuraÃ§Ãµes do JWT aqui
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -114,6 +130,8 @@ namespace minhas_financas_back_end
 
             var app = builder.Build();
 
+            //app.MigrateDatabase();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -121,7 +139,7 @@ namespace minhas_financas_back_end
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minhas Finanças - V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minhas FinanÃ§as - V1");
                     c.RoutePrefix = "swagger";
                 });
 
@@ -135,12 +153,18 @@ namespace minhas_financas_back_end
                 });
             }
 
-            app.UseHttpsRedirection();
-            app.UseAuthorization();
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+
+            app.UseCors("Frontend");
             app.UseAuthentication();
+            app.UseAuthorization();
             app.MapControllers();
 
             app.Run();
         }
     }
 }
+

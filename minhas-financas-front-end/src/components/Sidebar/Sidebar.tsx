@@ -20,13 +20,13 @@ import { Pie, PieChart, CartesianGrid, XAxis, Line, LineChart } from "recharts";
 import { MenuNavegacao } from "../NavegacaoMenu/MenuNavegacao";
 import { PowerIcon } from "../Icons/Icons";
 import { BotaoTrocaTema } from "../BotaoTrocaTema/botaoTrocaTema";
+import { useAuth } from "@/providers/auth-provider";
 
 export function Sidebar() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(0);
+  const { session, logout } = useAuth();
   useEffect(() => {
     const handleResize = () => {
-      setWindowWidth(window.innerWidth);
       setIsSidebarExpanded(window.innerWidth >= 1024);
     };
     window.addEventListener("resize", handleResize);
@@ -71,7 +71,10 @@ export function Sidebar() {
         <div className="p-4 mt-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Avatar>
-              <AvatarImage src="/placeholder-user.jpg" alt="Silas Sousa" />
+              <AvatarImage
+                src="/placeholder-user.jpg"
+                alt={session?.usuario.nome || "Usuário"}
+              />
               <AvatarFallback>SS</AvatarFallback>
             </Avatar>
             <div>
@@ -80,7 +83,7 @@ export function Sidebar() {
                   !isSidebarExpanded && "sr-only"
                 }`}
               >
-                Silas Sousa
+                {session?.usuario.nome || "Usuário"}
               </p>
               <p
                 className={`text-xs text-gray-600 truncate max-w-[ch-19] ${
@@ -90,7 +93,7 @@ export function Sidebar() {
                   maxWidth: "19ch",
                 }}
               >
-                silassousadejesus@gmail.com
+                {session?.usuario.email || "Sem e-mail"}
               </p>
             </div>
           </div>
@@ -98,6 +101,7 @@ export function Sidebar() {
             variant="ghost"
             size="icon"
             className={`rounded-full ${!isSidebarExpanded && "w-8 h-8"}`}
+            onClick={logout}
           >
             <PowerIcon
               className={`w-5 h-5 ${!isSidebarExpanded && "sr-only"}`}

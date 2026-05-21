@@ -7,15 +7,18 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { useAuth } from "@/providers/auth-provider";
 
 export function PainelDashboard() {
+  const { session } = useAuth();
+
   return (
     <main className="flex-1 p-6 bg-gray-50 dark:bg-[#020817]">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <p className="text-sm text-gray-500">
-            Bem vindo de volta, Silas Sousa!
+            Bem vindo de volta, {session?.usuario.nome || "usuário"}!
           </p>
         </div>
         <div className="flex space-x-2">

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MinhasFinancas.Application.DTOs.Autenticacao;
 using MinhasFinancas.Application.Interfaces;
@@ -48,12 +48,24 @@ namespace MinhasFinancas.Application.Services
                            resultado.RequiresTwoFactor ? "É necessário confirmar o login no seu email" :
                            "Erro ao tentar efetuar o login";
 
-            var credenciais = resultado.Succeeded ? await GerarCredenciais(loginDTO.Email) : null;
+            if (!resultado.Succeeded)
+            {
+                return new RetornoGenerico
+                {
+                    Sucesso = false,
+                    HttpStatusCode = System.Net.HttpStatusCode.Unauthorized,
+                    MensagemSistema = mensagem,
+                    MensagemUsuario = mensagem,
+                    Dados = null
+                };
+            }
+
+            var credenciais = await GerarCredenciais(loginDTO.Email);
 
             return new RetornoGenerico
             {
-                Sucesso = resultado.Succeeded,
-                HttpStatusCode = resultado.Succeeded ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.Unauthorized,
+                Sucesso = true,
+                HttpStatusCode = System.Net.HttpStatusCode.OK,
                 MensagemSistema = mensagem,
                 MensagemUsuario = mensagem,
                 Dados = new TokenViewModel(credenciais.Item1, credenciais.Item2)
