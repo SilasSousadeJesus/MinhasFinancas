@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Layers3, Pencil, Plus, Trash2 } from "lucide-react";
+import { Layers3, Pencil, Plus, Trash2, UserRound } from "lucide-react";
 import { ApiError } from "@/types/api";
 import {
   CadastrarCategoriaPayload,
@@ -57,6 +57,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 type TabValue = "1" | "0" | "2";
+type ConfigSection = "categorias" | "usuario";
 
 const TAB_ITEMS: Array<{ value: TabValue; tipo: TipoCategoria; label: string; singular: string }> = [
   { value: "1", tipo: 1, label: "Receitas", singular: "receita" },
@@ -102,6 +103,7 @@ export function CategoriasManager() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [activeTab, setActiveTab] = useState<TabValue>("1");
+  const [activeSection, setActiveSection] = useState<ConfigSection>("categorias");
 
   const [categoriaDialogOpen, setCategoriaDialogOpen] = useState(false);
   const [categoriaDialogMode, setCategoriaDialogMode] = useState<"create" | "edit">("create");
@@ -335,43 +337,23 @@ export function CategoriasManager() {
     <div className="flex-1 px-6 py-8 md:px-8">
       <div className="mx-auto max-w-6xl space-y-6">
         <Card className="border-0 shadow-none">
-          <CardHeader className="px-0 pt-0">
-            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-              <div>
-                <CardTitle className="text-3xl">Categorias e subcategorias</CardTitle>
-                <CardDescription className="mt-2 max-w-2xl text-base">
-                  Organize os tipos de lancamento do usuario. As categorias criadas aqui
-                  alimentam o modal de novo lancamento e a base inicial do produto.
-                </CardDescription>
-              </div>
-              <Button onClick={() => abrirNovaCategoria(Number(activeTab) as TipoCategoria)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Nova categoria
+          <CardHeader className="px-0 pt-8">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center">
+              <Button
+                variant={activeSection === "categorias" ? "default" : "outline"}
+                onClick={() => setActiveSection("categorias")}
+              >
+                Gerenciar Categorias
+              </Button>
+              <Button
+                variant={activeSection === "usuario" ? "default" : "outline"}
+                onClick={() => setActiveSection("usuario")}
+              >
+                Informacoes do Usuario
               </Button>
             </div>
           </CardHeader>
         </Card>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Total de categorias</CardDescription>
-              <CardTitle className="text-3xl">{categorias.length}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Total de subcategorias</CardDescription>
-              <CardTitle className="text-3xl">{totalSubCategorias}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Categorias padrao</CardDescription>
-              <CardTitle className="text-3xl">JSON + CRUD</CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
 
         {errorMessage ? (
           <div className="rounded-md border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
@@ -385,158 +367,233 @@ export function CategoriasManager() {
           </div>
         ) : null}
 
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabValue)} className="space-y-4">
-          <TabsList>
-            {TAB_ITEMS.map((item) => (
-              <TabsTrigger key={item.value} value={item.value}>
-                {item.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        {activeSection === "categorias" ? (
+          <>
+            <Card className="border-0 shadow-none">
+              <CardHeader className="px-0 pt-0">
+                <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <CardTitle className="text-3xl">Categorias e subcategorias</CardTitle>
+                    <CardDescription className="mt-2 max-w-2xl text-base">
+                      Organize os tipos de lancamento do usuario. As categorias criadas aqui
+                      alimentam o modal de novo lancamento e a base inicial do produto.
+                    </CardDescription>
+                  </div>
+                  <Button onClick={() => abrirNovaCategoria(Number(activeTab) as TipoCategoria)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Nova categoria
+                  </Button>
+                </div>
+              </CardHeader>
+            </Card>
 
-          {TAB_ITEMS.map((item) => {
-            const lista =
-              item.tipo === 1
-                ? categoriasPorTipo.receita
-                : item.tipo === 0
-                  ? categoriasPorTipo.despesa
-                  : categoriasPorTipo.investimento;
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Total de categorias</CardDescription>
+                  <CardTitle className="text-3xl">{categorias.length}</CardTitle>
+                </CardHeader>
+              </Card>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Total de subcategorias</CardDescription>
+                  <CardTitle className="text-3xl">{totalSubCategorias}</CardTitle>
+                </CardHeader>
+              </Card>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Categorias padrao</CardDescription>
+                  <CardTitle className="text-3xl">JSON + CRUD</CardTitle>
+                </CardHeader>
+              </Card>
+            </div>
 
-            return (
-              <TabsContent key={item.value} value={item.value}>
-                <Card>
-                  <CardHeader>
-                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <CardTitle>{item.label}</CardTitle>
-                        <CardDescription>
-                          Gerencie as categorias de {item.singular} e as subcategorias associadas.
-                        </CardDescription>
-                      </div>
-                      <Button variant="outline" onClick={() => abrirNovaCategoria(item.tipo)}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Nova categoria
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    {isLoading ? (
-                      <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
-                        Carregando categorias...
-                      </div>
-                    ) : lista.length === 0 ? (
-                      <div className="rounded-lg border border-dashed px-6 py-10 text-center">
-                        <Layers3 className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">
-                          Nenhuma categoria encontrada neste grupo ainda.
-                        </p>
-                      </div>
-                    ) : (
-                      <Accordion type="single" collapsible className="w-full">
-                        {lista.map((categoria) => (
-                          <AccordionItem key={categoria.id} value={categoria.id}>
-                            <AccordionTrigger className="hover:no-underline">
-                              <div className="flex w-full items-center justify-between gap-4 pr-4 text-left">
-                                <div>
-                                  <div className="font-medium">{categoria.nomeCategoria}</div>
-                                  <div className="mt-1 flex flex-wrap items-center gap-2">
-                                    <Badge variant="secondary">{getTipoBadgeLabel(categoria.tipo)}</Badge>
-                                    <Badge variant="outline">
-                                      {categoria.subCategorias?.length ?? 0} subcategorias
-                                    </Badge>
-                                  </div>
-                                </div>
-                              </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="space-y-4">
-                              <div className="flex flex-wrap gap-2">
-                                <Button variant="outline" size="sm" onClick={() => abrirEdicaoCategoria(categoria)}>
-                                  <Pencil className="mr-2 h-4 w-4" />
-                                  Editar categoria
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => abrirNovaSubCategoria(categoria)}>
-                                  <Plus className="mr-2 h-4 w-4" />
-                                  Nova subcategoria
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="text-destructive hover:text-destructive"
-                                  onClick={() =>
-                                    setDeleteTarget({
-                                      kind: "categoria",
-                                      categoriaId: categoria.id,
-                                      nome: categoria.nomeCategoria,
-                                    })
-                                  }
-                                >
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  Excluir categoria
-                                </Button>
-                              </div>
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabValue)} className="space-y-4">
+              <TabsList>
+                {TAB_ITEMS.map((item) => (
+                  <TabsTrigger key={item.value} value={item.value}>
+                    {item.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
 
-                              {categoria.subCategorias?.length ? (
-                                <div className="grid gap-3 md:grid-cols-2">
-                                  {categoria.subCategorias.map((subCategoria) => (
-                                    <div
-                                      key={subCategoria.id}
-                                      className="flex items-center justify-between rounded-lg border px-4 py-3"
-                                    >
-                                      <div>
-                                        <p className="font-medium">{subCategoria.nomeSubCategoria}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                          Vinculada a {categoria.nomeCategoria}
-                                        </p>
-                                      </div>
-                                      <div className="flex gap-2">
-                                        <Button
-                                          variant="ghost"
-                                          size="icon"
-                                          onClick={() =>
-                                            abrirEdicaoSubCategoria(
-                                              categoria,
-                                              subCategoria.id,
-                                              subCategoria.nomeSubCategoria
-                                            )
-                                          }
-                                        >
-                                          <Pencil className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                          variant="ghost"
-                                          size="icon"
-                                          className="text-destructive hover:text-destructive"
-                                          onClick={() =>
-                                            setDeleteTarget({
-                                              kind: "subcategoria",
-                                              categoriaId: categoria.id,
-                                              subCategoriaId: subCategoria.id,
-                                              nome: subCategoria.nomeSubCategoria,
-                                            })
-                                          }
-                                        >
-                                          <Trash2 className="h-4 w-4" />
-                                        </Button>
+              {TAB_ITEMS.map((item) => {
+                const lista =
+                  item.tipo === 1
+                    ? categoriasPorTipo.receita
+                    : item.tipo === 0
+                      ? categoriasPorTipo.despesa
+                      : categoriasPorTipo.investimento;
+
+                return (
+                  <TabsContent key={item.value} value={item.value}>
+                    <Card>
+                      <CardHeader>
+                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                          <div>
+                            <CardTitle>{item.label}</CardTitle>
+                            <CardDescription>
+                              Gerencie as categorias de {item.singular} e as subcategorias associadas.
+                            </CardDescription>
+                          </div>
+                          <Button variant="outline" onClick={() => abrirNovaCategoria(item.tipo)}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Nova categoria
+                          </Button>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        {isLoading ? (
+                          <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
+                            Carregando categorias...
+                          </div>
+                        ) : lista.length === 0 ? (
+                          <div className="rounded-lg border border-dashed px-6 py-10 text-center">
+                            <Layers3 className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground">
+                              Nenhuma categoria encontrada neste grupo ainda.
+                            </p>
+                          </div>
+                        ) : (
+                          <Accordion type="single" collapsible className="w-full">
+                            {lista.map((categoria) => (
+                              <AccordionItem key={categoria.id} value={categoria.id}>
+                                <AccordionTrigger className="hover:no-underline">
+                                  <div className="flex w-full items-center justify-between gap-4 pr-4 text-left">
+                                    <div>
+                                      <div className="font-medium">{categoria.nomeCategoria}</div>
+                                      <div className="mt-1 flex flex-wrap items-center gap-2">
+                                        <Badge variant="secondary">{getTipoBadgeLabel(categoria.tipo)}</Badge>
+                                        <Badge variant="outline">
+                                          {categoria.subCategorias?.length ?? 0} subcategorias
+                                        </Badge>
                                       </div>
                                     </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <div className="rounded-lg border border-dashed px-4 py-6 text-sm text-muted-foreground">
-                                  Nenhuma subcategoria cadastrada para esta categoria ainda.
-                                </div>
-                              )}
-                            </AccordionContent>
-                          </AccordionItem>
-                        ))}
-                      </Accordion>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            );
-          })}
-        </Tabs>
+                                  </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="space-y-4">
+                                  <div className="flex flex-wrap gap-2">
+                                    <Button variant="outline" size="sm" onClick={() => abrirEdicaoCategoria(categoria)}>
+                                      <Pencil className="mr-2 h-4 w-4" />
+                                      Editar categoria
+                                    </Button>
+                                    <Button variant="outline" size="sm" onClick={() => abrirNovaSubCategoria(categoria)}>
+                                      <Plus className="mr-2 h-4 w-4" />
+                                      Nova subcategoria
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="text-destructive hover:text-destructive"
+                                      onClick={() =>
+                                        setDeleteTarget({
+                                          kind: "categoria",
+                                          categoriaId: categoria.id,
+                                          nome: categoria.nomeCategoria,
+                                        })
+                                      }
+                                    >
+                                      <Trash2 className="mr-2 h-4 w-4" />
+                                      Excluir categoria
+                                    </Button>
+                                  </div>
+
+                                  {categoria.subCategorias?.length ? (
+                                    <div className="grid gap-3 md:grid-cols-2">
+                                      {categoria.subCategorias.map((subCategoria) => (
+                                        <div
+                                          key={subCategoria.id}
+                                          className="flex items-center justify-between rounded-lg border px-4 py-3"
+                                        >
+                                          <div>
+                                            <p className="font-medium">{subCategoria.nomeSubCategoria}</p>
+                                            <p className="text-sm text-muted-foreground">
+                                              Vinculada a {categoria.nomeCategoria}
+                                            </p>
+                                          </div>
+                                          <div className="flex gap-2">
+                                            <Button
+                                              variant="ghost"
+                                              size="icon"
+                                              onClick={() =>
+                                                abrirEdicaoSubCategoria(
+                                                  categoria,
+                                                  subCategoria.id,
+                                                  subCategoria.nomeSubCategoria
+                                                )
+                                              }
+                                            >
+                                              <Pencil className="h-4 w-4" />
+                                            </Button>
+                                            <Button
+                                              variant="ghost"
+                                              size="icon"
+                                              className="text-destructive hover:text-destructive"
+                                              onClick={() =>
+                                                setDeleteTarget({
+                                                  kind: "subcategoria",
+                                                  categoriaId: categoria.id,
+                                                  subCategoriaId: subCategoria.id,
+                                                  nome: subCategoria.nomeSubCategoria,
+                                                })
+                                              }
+                                            >
+                                              <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <div className="rounded-lg border border-dashed px-4 py-6 text-sm text-muted-foreground">
+                                      Nenhuma subcategoria cadastrada para esta categoria ainda.
+                                    </div>
+                                  )}
+                                </AccordionContent>
+                              </AccordionItem>
+                            ))}
+                          </Accordion>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                );
+              })}
+            </Tabs>
+          </>
+        ) : (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="rounded-full border p-2">
+                  <UserRound className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle>Informacoes do Usuario</CardTitle>
+                  <CardDescription>
+                    Esta secao concentra os dados principais da conta e abre caminho para futuras configuracoes.
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-lg border px-4 py-4">
+                <p className="text-sm text-muted-foreground">Nome</p>
+                <p className="mt-1 text-base font-medium">{session?.usuario.nome ?? "Nao informado"}</p>
+              </div>
+              <div className="rounded-lg border px-4 py-4">
+                <p className="text-sm text-muted-foreground">Email</p>
+                <p className="mt-1 text-base font-medium">{session?.usuario.email ?? "Nao informado"}</p>
+              </div>
+              <div className="rounded-lg border px-4 py-4 md:col-span-2">
+                <p className="text-sm text-muted-foreground">Status</p>
+                <p className="mt-1 text-base font-medium">
+                  Esta area esta preparada para futuras edicoes de perfil, seguranca e preferencias.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <Dialog open={categoriaDialogOpen} onOpenChange={setCategoriaDialogOpen}>
