@@ -7,6 +7,7 @@ import { ApiError } from "@/types/api";
 import { FiltroLancamentosParams, LancamentoResumo } from "@/types/lancamentos";
 import { buscarLancamentos, deletarLancamento } from "@/services/api/lancamentos";
 import { buscarCategorias } from "@/services/api/categories";
+import { buscarCartoes, buscarContas } from "@/services/api/finance";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { NovoLancamentoModal } from "@/components/lancamentos/NovoLancamentoModal";
 import { EditarLancamentoModal } from "@/components/lancamentos/EditarLancamentoModal";
@@ -54,6 +55,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { CategoriaResumo } from "@/types/categories";
+import { CartaoResumo, ContaResumo } from "@/types/finance";
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -112,6 +114,8 @@ export function LancamentosManager() {
   const { session } = useAuth();
   const [lancamentos, setLancamentos] = useState<LancamentoResumo[]>([]);
   const [categorias, setCategorias] = useState<CategoriaResumo[]>([]);
+  const [contas, setContas] = useState<ContaResumo[]>([]);
+  const [cartoes, setCartoes] = useState<CartaoResumo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -121,6 +125,8 @@ export function LancamentosManager() {
   const [deleteTarget, setDeleteTarget] = useState<LancamentoResumo | null>(null);
   const [tipoFiltro, setTipoFiltro] = useState("all");
   const [categoriaFiltro, setCategoriaFiltro] = useState("all");
+  const [contaFiltro, setContaFiltro] = useState("all");
+  const [cartaoFiltro, setCartaoFiltro] = useState("all");
   const [statusFiltro, setStatusFiltro] = useState("all");
   const [dataInicialFiltro, setDataInicialFiltro] = useState("");
   const [dataFinalFiltro, setDataFinalFiltro] = useState("");
@@ -137,6 +143,8 @@ export function LancamentosManager() {
       buscaDescricao,
       tipo: tipoFiltro !== "all" ? tipoFiltro : undefined,
       categoriaId: categoriaFiltro !== "all" ? categoriaFiltro : undefined,
+      contaId: contaFiltro !== "all" ? contaFiltro : undefined,
+      cartaoId: cartaoFiltro !== "all" ? cartaoFiltro : undefined,
       realizado:
         statusFiltro === "all" ? undefined : statusFiltro === "realizado" ? "true" : "false",
       dataInicial: dataInicialFiltro || undefined,
@@ -149,6 +157,8 @@ export function LancamentosManager() {
     [
       buscaDescricao,
       categoriaFiltro,
+      contaFiltro,
+      cartaoFiltro,
       dataFinalFiltro,
       dataInicialFiltro,
       direcaoOrdenacao,
@@ -169,10 +179,13 @@ export function LancamentosManager() {
       setIsLoading(true);
       setErrorMessage("");
 
-      const [lancamentosResponse, categoriasResponse] = await Promise.all([
-        buscarLancamentos(session.usuario.id, session.token, filtrosAtuais),
-        buscarCategorias(session.usuario.id, session.token),
-      ]);
+      const [lancamentosResponse, categoriasResponse, contasResponse, cartoesResponse] =
+        await Promise.all([
+          buscarLancamentos(session.usuario.id, session.token, filtrosAtuais),
+          buscarCategorias(session.usuario.id, session.token),
+          buscarContas(session.usuario.id, session.token).catch(() => ({ dados: [] })),
+          buscarCartoes(session.usuario.id, session.token).catch(() => ({ dados: [] })),
+        ]);
 
       const dadosPaginados = lancamentosResponse.dados;
       const dadosNormalizados = Array.isArray(dadosPaginados)
@@ -190,6 +203,8 @@ export function LancamentosManager() {
       setTotalItens(dadosNormalizados?.totalItens ?? 0);
       setPaginaAtual(dadosNormalizados?.paginaAtual ?? 1);
       setCategorias(categoriasResponse.dados ?? []);
+      setContas(contasResponse.dados ?? []);
+      setCartoes(cartoesResponse.dados ?? []);
     } catch (error) {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
@@ -228,12 +243,29 @@ export function LancamentosManager() {
       .map((categoria) => ({ id: categoria.id, nome: categoria.nomeCategoria }));
   }, [categorias]);
 
+  const contasDisponiveis = useMemo(() => {
+    return [...contas]
+      .sort((a, b) => a.nomeConta.localeCompare(b.nomeConta))
+      .map((conta) => ({ id: conta.id, nome: `${conta.nomeConta} - ${conta.instituicao}` }));
+  }, [contas]);
+
+  const cartoesDisponiveis = useMemo(() => {
+    return [...cartoes]
+      .sort((a, b) => a.nomeCartao.localeCompare(b.nomeCartao))
+      .map((cartao) => ({
+        id: cartao.id,
+        nome: `${cartao.nomeCartao} - ${cartao.instituicao}`,
+      }));
+  }, [cartoes]);
+
   useEffect(() => {
     setPaginaAtual(1);
   }, [
     buscaDescricao,
     tipoFiltro,
     categoriaFiltro,
+    contaFiltro,
+    cartaoFiltro,
     statusFiltro,
     dataInicialFiltro,
     dataFinalFiltro,
@@ -245,6 +277,8 @@ export function LancamentosManager() {
   function limparFiltros() {
     setTipoFiltro("all");
     setCategoriaFiltro("all");
+    setContaFiltro("all");
+    setCartaoFiltro("all");
     setStatusFiltro("all");
     setDataInicialFiltro("");
     setDataFinalFiltro("");
@@ -421,7 +455,57 @@ export function LancamentosManager() {
                 </div>
               </div>
 
-              <div className="mb-6 grid gap-4 md:grid-cols-2">
+              <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Conta</p>
+                  <Select
+                    value={contaFiltro}
+                    onValueChange={(value) => {
+                      setContaFiltro(value);
+                      if (value !== "all") {
+                        setCartaoFiltro("all");
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Todas as contas" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas as contas</SelectItem>
+                      {contasDisponiveis.map((conta) => (
+                        <SelectItem key={conta.id} value={conta.id}>
+                          {conta.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Cartao</p>
+                  <Select
+                    value={cartaoFiltro}
+                    onValueChange={(value) => {
+                      setCartaoFiltro(value);
+                      if (value !== "all") {
+                        setContaFiltro("all");
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Todos os cartoes" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os cartoes</SelectItem>
+                      {cartoesDisponiveis.map((cartao) => (
+                        <SelectItem key={cartao.id} value={cartao.id}>
+                          {cartao.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Ordenar por</p>
                   <Select value={ordenarPor} onValueChange={(value) => setOrdenarPor(value as "data" | "valor")}>

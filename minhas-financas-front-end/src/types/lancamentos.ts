@@ -24,6 +24,8 @@ export interface FiltroLancamentosParams {
   buscaDescricao?: string;
   tipo?: string;
   categoriaId?: string;
+  contaId?: string;
+  cartaoId?: string;
   realizado?: string;
   dataInicial?: string;
   dataFinal?: string;

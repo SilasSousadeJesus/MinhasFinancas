@@ -102,6 +102,16 @@ namespace MinhasFinancas.Application.Services
                     query = query.Where(x => x.CategoriaId == filtro.CategoriaId.Value);
                 }
 
+                if (filtro.ContaId.HasValue)
+                {
+                    query = query.Where(x => x.ContaId == filtro.ContaId.Value);
+                }
+
+                if (filtro.CartaoId.HasValue)
+                {
+                    query = query.Where(x => x.CartaoId == filtro.CartaoId.Value);
+                }
+
                 if (filtro.Realizado.HasValue)
                 {
                     query = query.Where(x => x.Realizado == filtro.Realizado.Value);

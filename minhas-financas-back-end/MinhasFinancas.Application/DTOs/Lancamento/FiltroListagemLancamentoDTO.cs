@@ -5,6 +5,8 @@ namespace MinhasFinancas.Application.DTOs.Lancamento
         public string BuscaDescricao { get; set; } = string.Empty;
         public int? Tipo { get; set; }
         public Guid? CategoriaId { get; set; }
+        public Guid? ContaId { get; set; }
+        public Guid? CartaoId { get; set; }
         public bool? Realizado { get; set; }
         public DateTime? DataInicial { get; set; }
         public DateTime? DataFinal { get; set; }
