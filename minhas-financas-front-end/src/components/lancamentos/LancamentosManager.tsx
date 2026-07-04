@@ -393,7 +393,7 @@ export function LancamentosManager() {
             </CardHeader>
           </Card>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <Card>
               <CardHeader className="pb-3">
                 <CardDescription>Total filtrado de lancamentos</CardDescription>
@@ -410,6 +410,14 @@ export function LancamentosManager() {
               <CardHeader className="pb-3">
                 <CardDescription>Despesas na pagina</CardDescription>
                 <CardTitle className="text-3xl">{formatCurrency(resumo.despesas)}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardDescription>Saldo liquido da pagina</CardDescription>
+                <CardTitle className="text-3xl">
+                  {formatCurrency(resumo.receitas - resumo.despesas)}
+                </CardTitle>
               </CardHeader>
             </Card>
           </div>
