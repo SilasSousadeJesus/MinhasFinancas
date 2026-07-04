@@ -57,6 +57,65 @@ import {
 import { CategoriaResumo } from "@/types/categories";
 import { CartaoResumo, ContaResumo } from "@/types/finance";
 
+type FiltrosEdicaoLancamentos = {
+  buscaDescricao: string;
+  tipo: string;
+  categoriaId: string;
+  contaId: string;
+  cartaoId: string;
+  statusLancamento: string;
+  dataInicialLancamento: string;
+  dataFinalLancamento: string;
+  dataInicialVencimento: string;
+  dataFinalVencimento: string;
+  dataInicialEfetivacao: string;
+  dataFinalEfetivacao: string;
+};
+
+function criarFiltrosPadrao(): FiltrosEdicaoLancamentos {
+  return {
+    buscaDescricao: "",
+    tipo: "all",
+    categoriaId: "all",
+    contaId: "all",
+    cartaoId: "all",
+    statusLancamento: "all",
+    dataInicialLancamento: "",
+    dataFinalLancamento: "",
+    dataInicialVencimento: "",
+    dataFinalVencimento: "",
+    dataInicialEfetivacao: "",
+    dataFinalEfetivacao: "",
+  };
+}
+
+function converterFiltrosParaBusca(
+  filtros: FiltrosEdicaoLancamentos,
+  pagina: number,
+  tamanhoPagina: number,
+  ordenarPor: "data" | "valor",
+  direcao: "asc" | "desc"
+): FiltroLancamentosParams {
+  return {
+    buscaDescricao: filtros.buscaDescricao || undefined,
+    tipo: filtros.tipo !== "all" ? filtros.tipo : undefined,
+    categoriaId: filtros.categoriaId !== "all" ? filtros.categoriaId : undefined,
+    contaId: filtros.contaId !== "all" ? filtros.contaId : undefined,
+    cartaoId: filtros.cartaoId !== "all" ? filtros.cartaoId : undefined,
+    statusLancamento: filtros.statusLancamento !== "all" ? filtros.statusLancamento : undefined,
+    dataInicialLancamento: filtros.dataInicialLancamento || undefined,
+    dataFinalLancamento: filtros.dataFinalLancamento || undefined,
+    dataInicialVencimento: filtros.dataInicialVencimento || undefined,
+    dataFinalVencimento: filtros.dataFinalVencimento || undefined,
+    dataInicialEfetivacao: filtros.dataInicialEfetivacao || undefined,
+    dataFinalEfetivacao: filtros.dataFinalEfetivacao || undefined,
+    ordenarPor,
+    direcao,
+    pagina,
+    tamanhoPagina,
+  };
+}
+
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -172,6 +231,7 @@ function ordenarLancamentosDaPagina(
 export function LancamentosManager() {
   const { session } = useAuth();
   const ultimaRequisicaoRef = useRef(0);
+  const ultimaRequisicaoDadosRef = useRef(0);
   const [lancamentos, setLancamentos] = useState<LancamentoResumo[]>([]);
   const [categorias, setCategorias] = useState<CategoriaResumo[]>([]);
   const [contas, setContas] = useState<ContaResumo[]>([]);
@@ -184,18 +244,12 @@ export function LancamentosManager() {
   const [selectedLancamentoId, setSelectedLancamentoId] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<LancamentoResumo | null>(null);
-  const [tipoFiltro, setTipoFiltro] = useState("all");
-  const [categoriaFiltro, setCategoriaFiltro] = useState("all");
-  const [contaFiltro, setContaFiltro] = useState("all");
-  const [cartaoFiltro, setCartaoFiltro] = useState("all");
-  const [statusFiltro, setStatusFiltro] = useState("all");
-  const [dataInicialLancamentoFiltro, setDataInicialLancamentoFiltro] = useState("");
-  const [dataFinalLancamentoFiltro, setDataFinalLancamentoFiltro] = useState("");
-  const [dataInicialVencimentoFiltro, setDataInicialVencimentoFiltro] = useState("");
-  const [dataFinalVencimentoFiltro, setDataFinalVencimentoFiltro] = useState("");
-  const [dataInicialEfetivacaoFiltro, setDataInicialEfetivacaoFiltro] = useState("");
-  const [dataFinalEfetivacaoFiltro, setDataFinalEfetivacaoFiltro] = useState("");
-  const [buscaDescricao, setBuscaDescricao] = useState("");
+  const [filtrosEmEdicao, setFiltrosEmEdicao] = useState<FiltrosEdicaoLancamentos>(
+    criarFiltrosPadrao
+  );
+  const [filtrosAplicados, setFiltrosAplicados] = useState<FiltrosEdicaoLancamentos>(
+    criarFiltrosPadrao
+  );
   const [ordenarPor, setOrdenarPor] = useState<"data" | "valor">("data");
   const [direcaoOrdenacao, setDirecaoOrdenacao] = useState<"asc" | "desc">("desc");
   const [paginaAtual, setPaginaAtual] = useState(1);
@@ -204,42 +258,15 @@ export function LancamentosManager() {
   const [tamanhoPagina, setTamanhoPagina] = useState(10);
 
   const filtrosAtuais = useMemo<FiltroLancamentosParams>(
-    () => ({
-      buscaDescricao,
-      tipo: tipoFiltro !== "all" ? tipoFiltro : undefined,
-      categoriaId: categoriaFiltro !== "all" ? categoriaFiltro : undefined,
-      contaId: contaFiltro !== "all" ? contaFiltro : undefined,
-      cartaoId: cartaoFiltro !== "all" ? cartaoFiltro : undefined,
-      statusLancamento: statusFiltro !== "all" ? statusFiltro : undefined,
-      dataInicialLancamento: dataInicialLancamentoFiltro || undefined,
-      dataFinalLancamento: dataFinalLancamentoFiltro || undefined,
-      dataInicialVencimento: dataInicialVencimentoFiltro || undefined,
-      dataFinalVencimento: dataFinalVencimentoFiltro || undefined,
-      dataInicialEfetivacao: dataInicialEfetivacaoFiltro || undefined,
-      dataFinalEfetivacao: dataFinalEfetivacaoFiltro || undefined,
-      ordenarPor,
-      direcao: direcaoOrdenacao,
-      pagina: paginaAtual,
-      tamanhoPagina,
-    }),
-    [
-      buscaDescricao,
-      categoriaFiltro,
-      contaFiltro,
-      cartaoFiltro,
-      dataFinalLancamentoFiltro,
-      dataFinalEfetivacaoFiltro,
-      dataFinalVencimentoFiltro,
-      dataInicialLancamentoFiltro,
-      dataInicialEfetivacaoFiltro,
-      dataInicialVencimentoFiltro,
-      direcaoOrdenacao,
-      ordenarPor,
-      paginaAtual,
-      statusFiltro,
-      tamanhoPagina,
-      tipoFiltro,
-    ]
+    () =>
+      converterFiltrosParaBusca(
+        filtrosAplicados,
+        paginaAtual,
+        tamanhoPagina,
+        ordenarPor,
+        direcaoOrdenacao
+      ),
+    [direcaoOrdenacao, filtrosAplicados, ordenarPor, paginaAtual, tamanhoPagina]
   );
 
   const carregarLancamentos = useCallback(async () => {
@@ -253,13 +280,11 @@ export function LancamentosManager() {
       setIsLoading(true);
       setErrorMessage("");
 
-      const [lancamentosResponse, categoriasResponse, contasResponse, cartoesResponse] =
-        await Promise.all([
-          buscarLancamentos(session.usuario.id, session.token, filtrosAtuais),
-          buscarCategorias(session.usuario.id, session.token),
-          buscarContas(session.usuario.id, session.token).catch(() => ({ dados: [] })),
-          buscarCartoes(session.usuario.id, session.token).catch(() => ({ dados: [] })),
-        ]);
+      const lancamentosResponse = await buscarLancamentos(
+        session.usuario.id,
+        session.token,
+        filtrosAtuais
+      );
 
       const dadosPaginados = lancamentosResponse.dados;
       const dadosNormalizados = Array.isArray(dadosPaginados)
@@ -286,9 +311,6 @@ export function LancamentosManager() {
       setTotalPaginas(dadosNormalizados?.totalPaginas ?? 1);
       setTotalItens(dadosNormalizados?.totalItens ?? 0);
       setPaginaAtual(dadosNormalizados?.paginaAtual ?? 1);
-      setCategorias(categoriasResponse.dados ?? []);
-      setContas(contasResponse.dados ?? []);
-      setCartoes(cartoesResponse.dados ?? []);
     } catch (error) {
       if (requisicaoAtual !== ultimaRequisicaoRef.current) {
         return;
@@ -306,9 +328,45 @@ export function LancamentosManager() {
     }
   }, [direcaoOrdenacao, filtrosAtuais, ordenarPor, session?.token, session?.usuario.id, tamanhoPagina]);
 
+  const carregarDadosDeApoio = useCallback(async () => {
+    if (!session?.usuario.id || !session.token) {
+      return;
+    }
+
+    const requisicaoAtual = ++ultimaRequisicaoDadosRef.current;
+
+    try {
+      const [categoriasResponse, contasResponse, cartoesResponse] = await Promise.all([
+        buscarCategorias(session.usuario.id, session.token),
+        buscarContas(session.usuario.id, session.token).catch(() => ({ dados: [] })),
+        buscarCartoes(session.usuario.id, session.token).catch(() => ({ dados: [] })),
+      ]);
+
+      if (requisicaoAtual !== ultimaRequisicaoDadosRef.current) {
+        return;
+      }
+
+      setCategorias(categoriasResponse.dados ?? []);
+      setContas(contasResponse.dados ?? []);
+      setCartoes(cartoesResponse.dados ?? []);
+    } catch (error) {
+      if (requisicaoAtual !== ultimaRequisicaoDadosRef.current) {
+        return;
+      }
+
+      if (error instanceof ApiError) {
+        setErrorMessage((mensagemAtual) => mensagemAtual || error.message);
+      }
+    }
+  }, [session?.token, session?.usuario.id]);
+
   useEffect(() => {
     carregarLancamentos();
   }, [carregarLancamentos]);
+
+  useEffect(() => {
+    carregarDadosDeApoio();
+  }, [carregarDadosDeApoio]);
 
   const resumo = useMemo(() => {
     return lancamentos.reduce(
@@ -348,41 +406,40 @@ export function LancamentosManager() {
       }));
   }, [cartoes]);
 
-  useEffect(() => {
+  function atualizarFiltroEmEdicao<K extends keyof FiltrosEdicaoLancamentos>(
+    campo: K,
+    valor: FiltrosEdicaoLancamentos[K]
+  ) {
+    setFiltrosEmEdicao((current) => ({
+      ...current,
+      [campo]: valor,
+    }));
+  }
+
+  function aplicarFiltros() {
     setPaginaAtual(1);
-  }, [
-    buscaDescricao,
-    tipoFiltro,
-    categoriaFiltro,
-    contaFiltro,
-    cartaoFiltro,
-    statusFiltro,
-    dataInicialLancamentoFiltro,
-    dataFinalLancamentoFiltro,
-    dataInicialVencimentoFiltro,
-    dataFinalVencimentoFiltro,
-    dataInicialEfetivacaoFiltro,
-    dataFinalEfetivacaoFiltro,
-    ordenarPor,
-    direcaoOrdenacao,
-    tamanhoPagina,
-  ]);
+    setFiltrosAplicados({ ...filtrosEmEdicao });
+  }
 
   function limparFiltros() {
-    setTipoFiltro("all");
-    setCategoriaFiltro("all");
-    setContaFiltro("all");
-    setCartaoFiltro("all");
-    setStatusFiltro("all");
-    setDataInicialLancamentoFiltro("");
-    setDataFinalLancamentoFiltro("");
-    setDataInicialVencimentoFiltro("");
-    setDataFinalVencimentoFiltro("");
-    setDataInicialEfetivacaoFiltro("");
-    setDataFinalEfetivacaoFiltro("");
-    setBuscaDescricao("");
-    setOrdenarPor("data");
-    setDirecaoOrdenacao("desc");
+    const filtrosLimpos = criarFiltrosPadrao();
+    setFiltrosEmEdicao(filtrosLimpos);
+    setFiltrosAplicados(filtrosLimpos);
+    setPaginaAtual(1);
+  }
+
+  function atualizarOrdenacao(value: "data" | "valor") {
+    setOrdenarPor(value);
+    setPaginaAtual(1);
+  }
+
+  function atualizarDirecao(value: "asc" | "desc") {
+    setDirecaoOrdenacao(value);
+    setPaginaAtual(1);
+  }
+
+  function atualizarTamanhoPagina(value: number) {
+    setTamanhoPagina(value);
     setPaginaAtual(1);
   }
 
@@ -525,15 +582,20 @@ export function LancamentosManager() {
                   <p className="text-sm font-medium">Busca por descricao</p>
                   <Input
                     type="text"
-                    value={buscaDescricao}
-                    onChange={(event) => setBuscaDescricao(event.target.value)}
+                    value={filtrosEmEdicao.buscaDescricao}
+                    onChange={(event) =>
+                      atualizarFiltroEmEdicao("buscaDescricao", event.target.value)
+                    }
                     placeholder="Ex: mercado, salario, freelance"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Tipo</p>
-                  <Select value={tipoFiltro} onValueChange={setTipoFiltro}>
+                  <Select
+                    value={filtrosEmEdicao.tipo}
+                    onValueChange={(value) => atualizarFiltroEmEdicao("tipo", value)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Todos os tipos" />
                     </SelectTrigger>
@@ -549,7 +611,10 @@ export function LancamentosManager() {
 
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Categoria</p>
-                  <Select value={categoriaFiltro} onValueChange={setCategoriaFiltro}>
+                  <Select
+                    value={filtrosEmEdicao.categoriaId}
+                    onValueChange={(value) => atualizarFiltroEmEdicao("categoriaId", value)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Todas as categorias" />
                     </SelectTrigger>
@@ -566,7 +631,12 @@ export function LancamentosManager() {
 
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Status</p>
-                  <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+                  <Select
+                    value={filtrosEmEdicao.statusLancamento}
+                    onValueChange={(value) =>
+                      atualizarFiltroEmEdicao("statusLancamento", value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Todos os status" />
                     </SelectTrigger>
@@ -584,8 +654,10 @@ export function LancamentosManager() {
                   <p className="text-sm font-medium">Data inicial do lancamento</p>
                   <Input
                     type="date"
-                    value={dataInicialLancamentoFiltro}
-                    onChange={(event) => setDataInicialLancamentoFiltro(event.target.value)}
+                    value={filtrosEmEdicao.dataInicialLancamento}
+                    onChange={(event) =>
+                      atualizarFiltroEmEdicao("dataInicialLancamento", event.target.value)
+                    }
                   />
                 </div>
 
@@ -593,8 +665,10 @@ export function LancamentosManager() {
                   <p className="text-sm font-medium">Data final do lancamento</p>
                   <Input
                     type="date"
-                    value={dataFinalLancamentoFiltro}
-                    onChange={(event) => setDataFinalLancamentoFiltro(event.target.value)}
+                    value={filtrosEmEdicao.dataFinalLancamento}
+                    onChange={(event) =>
+                      atualizarFiltroEmEdicao("dataFinalLancamento", event.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -603,11 +677,11 @@ export function LancamentosManager() {
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Conta</p>
                   <Select
-                    value={contaFiltro}
+                    value={filtrosEmEdicao.contaId}
                     onValueChange={(value) => {
-                      setContaFiltro(value);
+                      atualizarFiltroEmEdicao("contaId", value);
                       if (value !== "all") {
-                        setCartaoFiltro("all");
+                        atualizarFiltroEmEdicao("cartaoId", "all");
                       }
                     }}
                   >
@@ -628,11 +702,11 @@ export function LancamentosManager() {
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Cartao</p>
                   <Select
-                    value={cartaoFiltro}
+                    value={filtrosEmEdicao.cartaoId}
                     onValueChange={(value) => {
-                      setCartaoFiltro(value);
+                      atualizarFiltroEmEdicao("cartaoId", value);
                       if (value !== "all") {
-                        setContaFiltro("all");
+                        atualizarFiltroEmEdicao("contaId", "all");
                       }
                     }}
                   >
@@ -654,8 +728,10 @@ export function LancamentosManager() {
                   <p className="text-sm font-medium">Data inicial de vencimento</p>
                   <Input
                     type="date"
-                    value={dataInicialVencimentoFiltro}
-                    onChange={(event) => setDataInicialVencimentoFiltro(event.target.value)}
+                    value={filtrosEmEdicao.dataInicialVencimento}
+                    onChange={(event) =>
+                      atualizarFiltroEmEdicao("dataInicialVencimento", event.target.value)
+                    }
                   />
                 </div>
 
@@ -663,8 +739,10 @@ export function LancamentosManager() {
                   <p className="text-sm font-medium">Data final de vencimento</p>
                   <Input
                     type="date"
-                    value={dataFinalVencimentoFiltro}
-                    onChange={(event) => setDataFinalVencimentoFiltro(event.target.value)}
+                    value={filtrosEmEdicao.dataFinalVencimento}
+                    onChange={(event) =>
+                      atualizarFiltroEmEdicao("dataFinalVencimento", event.target.value)
+                    }
                   />
                 </div>
 
@@ -672,8 +750,10 @@ export function LancamentosManager() {
                   <p className="text-sm font-medium">Data inicial de efetivacao</p>
                   <Input
                     type="date"
-                    value={dataInicialEfetivacaoFiltro}
-                    onChange={(event) => setDataInicialEfetivacaoFiltro(event.target.value)}
+                    value={filtrosEmEdicao.dataInicialEfetivacao}
+                    onChange={(event) =>
+                      atualizarFiltroEmEdicao("dataInicialEfetivacao", event.target.value)
+                    }
                   />
                 </div>
 
@@ -681,14 +761,19 @@ export function LancamentosManager() {
                   <p className="text-sm font-medium">Data final de efetivacao</p>
                   <Input
                     type="date"
-                    value={dataFinalEfetivacaoFiltro}
-                    onChange={(event) => setDataFinalEfetivacaoFiltro(event.target.value)}
+                    value={filtrosEmEdicao.dataFinalEfetivacao}
+                    onChange={(event) =>
+                      atualizarFiltroEmEdicao("dataFinalEfetivacao", event.target.value)
+                    }
                   />
                 </div>
 
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Ordenar por</p>
-                  <Select value={ordenarPor} onValueChange={(value) => setOrdenarPor(value as "data" | "valor")}>
+                  <Select
+                    value={ordenarPor}
+                    onValueChange={(value) => atualizarOrdenacao(value as "data" | "valor")}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Escolha a ordenacao" />
                     </SelectTrigger>
@@ -703,7 +788,7 @@ export function LancamentosManager() {
                   <p className="text-sm font-medium">Direcao</p>
                   <Select
                     value={direcaoOrdenacao}
-                    onValueChange={(value) => setDirecaoOrdenacao(value as "asc" | "desc")}
+                    onValueChange={(value) => atualizarDirecao(value as "asc" | "desc")}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Escolha a direcao" />
@@ -720,9 +805,12 @@ export function LancamentosManager() {
                 <p className="text-sm text-muted-foreground">
                   {totalItens} resultado(s) encontrado(s).
                 </p>
-                <Button variant="ghost" onClick={limparFiltros}>
-                  Limpar filtros
-                </Button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button variant="outline" onClick={limparFiltros}>
+                    Limpar filtros
+                  </Button>
+                  <Button onClick={aplicarFiltros}>Buscar</Button>
+                </div>
               </div>
 
               {isLoading ? (
@@ -824,7 +912,7 @@ export function LancamentosManager() {
                     <span className="text-sm text-muted-foreground">Itens por pagina</span>
                     <Select
                       value={String(tamanhoPagina)}
-                      onValueChange={(value) => setTamanhoPagina(Number(value))}
+                      onValueChange={(value) => atualizarTamanhoPagina(Number(value))}
                     >
                       <SelectTrigger className="w-24">
                         <SelectValue placeholder="Quantidade" />

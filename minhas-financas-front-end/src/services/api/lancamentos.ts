@@ -4,8 +4,13 @@ import {
   FiltroLancamentosParams,
   LancamentoResumo,
   RespostaLancamentos,
-  ResultadoPaginado,
 } from "@/types/lancamentos";
+import { RetornoGenerico } from "@/types/api";
+
+const requisicoesLancamentosEmAndamento = new Map<
+  string,
+  Promise<RetornoGenerico<RespostaLancamentos>>
+>();
 
 export function buscarLancamentos(
   usuarioId: string,
@@ -42,14 +47,31 @@ export function buscarLancamentos(
   });
 
   const queryString = searchParams.toString();
+  const path = `/Lancamento/BuscarTodosOsLancamento/${usuarioId}${
+    queryString ? `?${queryString}` : ""
+  }`;
+  const requestKey = `${usuarioId}:${queryString || "sem-filtros"}`;
 
-  return apiRequest<RespostaLancamentos>(
-    `/Lancamento/BuscarTodosOsLancamento/${usuarioId}${queryString ? `?${queryString}` : ""}`,
-    {
+  const requisicaoEmAndamento = requisicoesLancamentosEmAndamento.get(requestKey);
+
+  if (requisicaoEmAndamento) {
+    return requisicaoEmAndamento;
+  }
+
+  const request = apiRequest<RespostaLancamentos>(path, {
     method: "GET",
     token,
+  }).finally(() => {
+    const requisicaoAtual = requisicoesLancamentosEmAndamento.get(requestKey);
+
+    if (requisicaoAtual === request) {
+      requisicoesLancamentosEmAndamento.delete(requestKey);
     }
-  );
+  });
+
+  requisicoesLancamentosEmAndamento.set(requestKey, request);
+
+  return request;
 }
 
 export function buscarLancamento(usuarioId: string, lancamentoId: string, token: string) {
