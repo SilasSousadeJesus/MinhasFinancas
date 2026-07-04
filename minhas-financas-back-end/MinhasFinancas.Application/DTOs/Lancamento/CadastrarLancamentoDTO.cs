@@ -12,6 +12,7 @@ namespace MinhasFinancas.Application.DTOs.Lancamento
         public DateTime DataLancamento { get; set; }
         public bool Realizado { get; set; }
         public EnumTipoFrequenciaLancamento FrequenciaLancamento { get; set; }
+        public int? QuantidadeParcelas { get; set; }
         public EnumTipoLancamento Tipo { get; set; }
         public EnumVinculoLancamento Vinculo { get; set; }
         public Guid? ContaId { get; set; } = Guid.Empty;

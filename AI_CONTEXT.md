@@ -45,6 +45,7 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - CRUD de categorias
 - CRUD de subcategorias
 - CRUD de lancamentos
+- suporte a lancamento pontual, fixo e parcelado com geracao imediata de registros reais
 - filtros de lancamentos por tipo, periodo, categoria, conta, cartao, status realizado, texto, ordenacao e paginacao
 - dashboard agregado
 - CRUD de metas
@@ -400,24 +401,33 @@ Fluxo tipico:
   - `Observacao`
   - `DataPagamento`
   - `DataLancamento`
+  - `GrupoParcelamentoId`
+  - `NumeroParcela`
+  - `TotalParcelas`
   - `Realizado`
   - `FrequenciaLancamento`
   - `Tipo`
   - `Vinculo`
 - Regras importantes:
   - tipos: `Despesa`, `Receita`, `InvestimentoDeposito`, `InvestimentoSaque`, `Transferencia`, `Saque`, `Deposito`
+  - frequencias: `Pontual`, `Fixo`, `Parcelado`
+  - `Pontual` cria 1 lancamento
+  - `Parcelado` cria imediatamente N lancamentos mensais reais e divide o valor total entre as parcelas
+  - no parcelado, todas as parcelas compartilham o mesmo `GrupoParcelamentoId` e recebem `NumeroParcela` e `TotalParcelas`
+  - `Pontual` e `Fixo` mantem `GrupoParcelamentoId`, `NumeroParcela` e `TotalParcelas` nulos
+  - `Fixo` cria imediatamente 12 lancamentos mensais reais
   - filtros backend suportam texto, tipo, categoria, conta, cartao, status, periodo, ordenacao e paginacao
   - parte da movimentacao altera conta/bem patrimonial no cadastro
 
 ### LancamentoFixo
 
 - Finalidade: apoiar recorrencia fixa.
-- Observacao: entidade existe, mas o fluxo completo ainda nao aparece fechado no front.
+- Observacao: a entidade existe, mas o fluxo operacional atual gera os registros reais diretamente na tabela `Lancamento`.
 
 ### LancamentoParcelado
 
 - Finalidade: apoiar parcelamento.
-- Observacao: entidade existe, mas o fluxo completo ainda nao aparece fechado no front.
+- Observacao: a entidade existe, mas o fluxo operacional atual gera os registros reais diretamente na tabela `Lancamento`.
 
 ### Meta
 
@@ -545,6 +555,10 @@ Fluxo tipico:
 
 - o frontend envia um DTO de criacao/edicao
 - o backend mapeia para `Lancamento`
+- no cadastro:
+  - `Pontual` persiste um unico registro
+  - `Parcelado` exige `QuantidadeParcelas > 1`, gera todos os meses imediatamente, acrescenta `X/Y` na descricao e compartilha um identificador de grupo entre as parcelas
+  - `Fixo` gera 12 meses futuros imediatamente
 - filtros e listagem acontecem em memoria a partir da lista carregada do repository
 - se o lancamento tiver `ContaId`, alguns tipos ajustam saldo e patrimonio:
   - `InvestimentoDeposito`: soma em `SaldoInvestimento` e no bem `Investimento`
@@ -932,7 +946,6 @@ Fluxo tipico:
 - metas carecem de tela integrada de uso final
 - relatorios possuem backend, mas nao front completo
 - bens patrimoniais e passivos nao aparecem como CRUD consolidado no front
-- recorrencia fixa e parcelada de lancamentos ainda nao estao plenamente operacionalizadas no front
 - SignalR e Hangfire nao estao ligados ao fluxo principal do usuario
 - existe controller de sorteios, mas nao foi identificado front correspondente
 
@@ -1053,6 +1066,8 @@ Fluxo tipico:
   - filtros, ordenacao e paginacao no backend
   - selecao real de conta/cartao/categoria/subcategoria no front
   - parte dos tipos atualiza saldo/patrimonio
+  - recorrencia nao usa tabela separada por enquanto; `Fixo` e `Parcelado` geram registros reais em `Lancamento`
+  - parcelamentos possuem `GrupoParcelamentoId`, `NumeroParcela` e `TotalParcelas` para agrupamento futuro no frontend
 
 ### Dashboard
 

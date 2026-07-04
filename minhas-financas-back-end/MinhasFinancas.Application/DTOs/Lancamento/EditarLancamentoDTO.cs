@@ -11,6 +11,9 @@ namespace MinhasFinancas.Application.DTOs.Lancamento
         public string Observacao { get; set; } = string.Empty;
         public DateTime DataPagamento { get; set; }
         public DateTime DataLancamento { get; set; }
+        public Guid? GrupoParcelamentoId { get; set; }
+        public int? NumeroParcela { get; set; }
+        public int? TotalParcelas { get; set; }
         public bool Realizado { get; set; }
         public EnumTipoFrequenciaLancamento FrequenciaLancamento { get; set; }
         public EnumTipoLancamento Tipo { get; set; }

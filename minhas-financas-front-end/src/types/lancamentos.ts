@@ -7,6 +7,9 @@ export interface LancamentoResumo {
   observacao: string;
   dataPagamento: string;
   dataLancamento: string;
+  grupoParcelamentoId: string | null;
+  numeroParcela: number | null;
+  totalParcelas: number | null;
   realizado: boolean;
   frequenciaLancamento: number;
   tipo: number;
@@ -52,6 +55,9 @@ export interface EditarLancamentoPayload {
   observacao: string;
   dataPagamento: string;
   dataLancamento: string;
+  grupoParcelamentoId: string | null;
+  numeroParcela: number | null;
+  totalParcelas: number | null;
   realizado: boolean;
   frequenciaLancamento: number;
   tipo: number;

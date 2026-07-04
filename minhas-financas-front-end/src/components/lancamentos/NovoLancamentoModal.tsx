@@ -49,25 +49,39 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 const FREQUENCIA_PONTUAL = "0";
+const FREQUENCIA_FIXA = "1";
+const FREQUENCIA_PARCELADA = "2";
 const TIPO_DESPESA = "0";
 const TIPO_RECEITA = "1";
 
-const formSchema = z.object({
-  tipo: z.string(),
-  valor: z.coerce.number().positive("Informe um valor maior que zero."),
-  descricao: z.string().min(2, "Informe uma descricao."),
-  observacao: z.string().optional(),
-  dataPagamento: z.string().min(1, "Informe a data de pagamento."),
-  dataLancamento: z.string().min(1, "Informe a data de lancamento."),
-  realizado: z.boolean(),
-  frequenciaLancamento: z.string(),
-  contaId: z.string(),
-  cartaoId: z.string(),
-  categoriaId: z.string(),
-  subCategoriaId: z.string(),
-  lancamentoFixo: z.boolean(),
-  lancamentoParcelado: z.boolean(),
-});
+const formSchema = z
+  .object({
+    tipo: z.string(),
+    valor: z.coerce.number().positive("Informe um valor maior que zero."),
+    descricao: z.string().min(2, "Informe uma descricao."),
+    observacao: z.string().optional(),
+    dataPagamento: z.string().min(1, "Informe a data de pagamento."),
+    dataLancamento: z.string().min(1, "Informe a data de lancamento."),
+    realizado: z.boolean(),
+    frequenciaLancamento: z.string(),
+    quantidadeParcelas: z.coerce.number().nullable().optional(),
+    contaId: z.string(),
+    cartaoId: z.string(),
+    categoriaId: z.string(),
+    subCategoriaId: z.string(),
+  })
+  .superRefine((values, ctx) => {
+    if (
+      values.frequenciaLancamento === FREQUENCIA_PARCELADA &&
+      (!values.quantidadeParcelas || values.quantidadeParcelas <= 1)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["quantidadeParcelas"],
+        message: "Informe uma quantidade de parcelas maior que 1.",
+      });
+    }
+  });
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -100,12 +114,11 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
       dataLancamento: getToday(),
       realizado: true,
       frequenciaLancamento: FREQUENCIA_PONTUAL,
+      quantidadeParcelas: null,
       contaId: SELECT_NONE,
       cartaoId: SELECT_NONE,
       categoriaId: SELECT_NONE,
       subCategoriaId: SELECT_NONE,
-      lancamentoFixo: false,
-      lancamentoParcelado: false,
     },
   });
 
@@ -153,6 +166,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
   );
 
   const tipoSelecionado = form.watch("tipo");
+  const frequenciaSelecionada = form.watch("frequenciaLancamento");
   const categoriaSelecionadaId = form.watch("categoriaId");
 
   const categoriasDisponiveis = useMemo(() => {
@@ -179,6 +193,12 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
     form.setValue("categoriaId", SELECT_NONE);
     form.setValue("subCategoriaId", SELECT_NONE);
   }, [tipoSelecionado, form]);
+
+  useEffect(() => {
+    if (frequenciaSelecionada !== FREQUENCIA_PARCELADA) {
+      form.setValue("quantidadeParcelas", null);
+    }
+  }, [frequenciaSelecionada, form]);
 
   async function onSubmit(values: FormValues) {
     if (!session?.usuario.id || !session.token) {
@@ -208,6 +228,10 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
           dataLancamento: `${values.dataLancamento}T00:00:00`,
           realizado: values.realizado,
           frequenciaLancamento: Number(values.frequenciaLancamento),
+          quantidadeParcelas:
+            values.frequenciaLancamento === FREQUENCIA_PARCELADA
+              ? values.quantidadeParcelas ?? null
+              : null,
           tipo: Number(values.tipo),
           vinculo,
           contaId: contaSelecionada,
@@ -228,12 +252,11 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
         dataLancamento: getToday(),
         realizado: true,
         frequenciaLancamento: FREQUENCIA_PONTUAL,
+        quantidadeParcelas: null,
         contaId: SELECT_NONE,
         cartaoId: SELECT_NONE,
         categoriaId: SELECT_NONE,
         subCategoriaId: SELECT_NONE,
-        lancamentoFixo: false,
-        lancamentoParcelado: false,
       });
       setOpen(false);
       onCreated();
@@ -299,10 +322,10 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="0">Pontual</SelectItem>
-                        <SelectItem value="1" disabled>
+                        <SelectItem value={FREQUENCIA_FIXA}>
                           Fixo
                         </SelectItem>
-                        <SelectItem value="2" disabled>
+                        <SelectItem value={FREQUENCIA_PARCELADA}>
                           Parcelado
                         </SelectItem>
                       </SelectContent>
@@ -312,6 +335,34 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 )}
               />
             </div>
+
+            {frequenciaSelecionada === FREQUENCIA_PARCELADA ? (
+              <FormField
+                control={form.control}
+                name="quantidadeParcelas"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantidade de parcelas</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="2"
+                        step="1"
+                        value={field.value ?? ""}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          field.onChange(value === "" ? null : Number(value));
+                        }}
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      O sistema vai gerar todas as parcelas mensalmente de uma vez.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : null}
 
             <div className="grid gap-4 md:grid-cols-2">
               <FormField
@@ -530,7 +581,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
               />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4">
               <FormField
                 control={form.control}
                 name="realizado"
@@ -548,40 +599,6 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                       </FormControl>
                     </div>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lancamentoFixo"
-                render={({ field }) => (
-                  <FormItem className="rounded-md border p-4 opacity-60">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <FormLabel>Lancamento fixo</FormLabel>
-                        <p className="text-sm text-muted-foreground">Sera habilitado depois.</p>
-                      </div>
-                      <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} disabled />
-                      </FormControl>
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lancamentoParcelado"
-                render={({ field }) => (
-                  <FormItem className="rounded-md border p-4 opacity-60">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <FormLabel>Lancamento parcelado</FormLabel>
-                        <p className="text-sm text-muted-foreground">Sera habilitado depois.</p>
-                      </div>
-                      <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} disabled />
-                      </FormControl>
-                    </div>
                   </FormItem>
                 )}
               />

@@ -229,66 +229,30 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var lancamento = _mapper.Map<Lancamento>(elementoDTO);
+                var lancamentos = GerarLancamentosProgramados(elementoDTO);
 
-                if (lancamento.ContaId != null)
+                foreach (var lancamento in lancamentos)
                 {
-                    var buscarContaVinculada = await _contaAppService.BuscarUmElementoAsync(lancamento.UsuarioId, (Guid)lancamento.ContaId);
-                    List<BemPatrimonial> buscarBensMateriais =  _bemPatrimonialAppService.BuscarTodosOsElementosAsync(lancamento.UsuarioId).Result.Dados;
-                    var investimentos = buscarBensMateriais.Where(x => x.Tipo == EnumBemPatrimonial.Investimento).FirstOrDefault();
-                    var dinheiroEmConta = buscarBensMateriais.Where(x => x.Tipo == EnumBemPatrimonial.DinheiroEmConta).FirstOrDefault();
-
-                    PermanenciaBemMaterial permancenciaInvestimento =  _bemPatrimonialAppService.BuscarUltimaDataPermanencia(investimentos.Id).Result.Dados;
-                    PermanenciaBemMaterial permancenciaDinheiroEmConta =  _bemPatrimonialAppService.BuscarUltimaDataPermanencia(dinheiroEmConta.Id).Result.Dados;
-
-                    var contaDTO = new EditarContaDTO()
-                    {
-                        Descricao = buscarContaVinculada.Dados.Descricao,
-                        Instituicao = buscarContaVinculada.Dados.Instituicao,
-                        NomeConta = buscarContaVinculada.Dados.NomeConta,
-                        Saldo = buscarContaVinculada.Dados.Saldo,
-                        Tipo = buscarContaVinculada.Dados.Tipo,
-                        SaldoInvestimento = buscarContaVinculada.Dados.SaldoInvestimento
-                    };
-
-                    switch (lancamento.Tipo)
-                    {
-                        case EnumTipoLancamento.InvestimentoDeposito:
-                            permancenciaInvestimento.Valor += lancamento.Valor;
-                            contaDTO.SaldoInvestimento += lancamento.Valor;
-                            await _contaAppService.EditarElementoAsync(elementoDTO.UsuarioId, (Guid)lancamento.ContaId, contaDTO);                         
-                            await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
-                            break;
-
-                        case EnumTipoLancamento.InvestimentoSaque:
-                            permancenciaInvestimento.Valor -= lancamento.Valor;
-                            contaDTO.SaldoInvestimento -= lancamento.Valor;
-                            await _contaAppService.EditarElementoAsync(elementoDTO.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
-                            await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
-                            break;
-
-                        case EnumTipoLancamento.Saque:
-                            contaDTO.Saldo -= lancamento.Valor;
-                            permancenciaDinheiroEmConta.Valor -= lancamento.Valor;
-                            await _contaAppService.EditarElementoAsync(elementoDTO.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
-                            await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
-                            break;
-
-                        case EnumTipoLancamento.Deposito:
-                            contaDTO.Saldo += lancamento.Valor;
-                            permancenciaDinheiroEmConta.Valor += lancamento.Valor;
-                            await _contaAppService.EditarElementoAsync(elementoDTO.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
-                            await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
-                            break;
-                    }
+                    await AplicarImpactosFinanceirosSeNecessarioAsync(lancamento);
                 }
 
-                await _lancamentoRepository.CadastrarElementoAsync(lancamento);
+                if (lancamentos.Count == 1)
+                {
+                    await _lancamentoRepository.CadastrarElementoAsync(lancamentos[0]);
+                }
+                else
+                {
+                    await _lancamentoRepository.CadastrarElementosAsync(lancamentos);
+                }
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Lançamento cadastrado com sucesso";
-                retorno.MensagemUsuario = "Lançamento cadastrado";
+                retorno.MensagemSistema = lancamentos.Count == 1
+                    ? "Lançamento cadastrado com sucesso"
+                    : $"{lancamentos.Count} lançamentos cadastrados com sucesso";
+                retorno.MensagemUsuario = lancamentos.Count == 1
+                    ? "Lançamento cadastrado"
+                    : $"{lancamentos.Count} lançamentos cadastrados";
                 retorno.Dados = null;
                 return retorno;
             }
@@ -300,6 +264,150 @@ namespace MinhasFinancas.Application.Services
                 retorno.MensagemUsuario = "Não foi possivel criar o Lançamento";
                 retorno.Dados = null;
                 return retorno;
+            }
+        }
+
+        private List<Lancamento> GerarLancamentosProgramados(CadastrarLancamentoDTO elementoDTO)
+        {
+            ValidarRecorrencia(elementoDTO);
+
+            return elementoDTO.FrequenciaLancamento switch
+            {
+                EnumTipoFrequenciaLancamento.Parcelado => GerarLancamentosParcelados(elementoDTO),
+                EnumTipoFrequenciaLancamento.Fixo => GerarLancamentosFixos(elementoDTO),
+                _ => new List<Lancamento> { CriarLancamentoBase(elementoDTO) },
+            };
+        }
+
+        private void ValidarRecorrencia(CadastrarLancamentoDTO elementoDTO)
+        {
+            if (elementoDTO.FrequenciaLancamento == EnumTipoFrequenciaLancamento.Parcelado
+                && (!elementoDTO.QuantidadeParcelas.HasValue || elementoDTO.QuantidadeParcelas.Value <= 1))
+            {
+                throw new InvalidOperationException("Lançamento parcelado exige quantidade de parcelas maior que 1.");
+            }
+        }
+
+        private List<Lancamento> GerarLancamentosParcelados(CadastrarLancamentoDTO elementoDTO)
+        {
+            var quantidadeParcelas = elementoDTO.QuantidadeParcelas!.Value;
+            var lancamentos = new List<Lancamento>(quantidadeParcelas);
+            var grupoParcelamentoId = Guid.NewGuid();
+            var valorBase = Math.Round(elementoDTO.Valor / quantidadeParcelas, 2, MidpointRounding.AwayFromZero);
+            var acumulado = 0m;
+
+            for (var parcela = 1; parcela <= quantidadeParcelas; parcela++)
+            {
+                var valorParcela = parcela == quantidadeParcelas
+                    ? elementoDTO.Valor - acumulado
+                    : valorBase;
+
+                acumulado += valorParcela;
+
+                var lancamento = CriarLancamentoBase(
+                    elementoDTO,
+                    parcela - 1,
+                    $"{elementoDTO.Descricao} {parcela}/{quantidadeParcelas}",
+                    valorParcela);
+
+                lancamento.GrupoParcelamentoId = grupoParcelamentoId;
+                lancamento.NumeroParcela = parcela;
+                lancamento.TotalParcelas = quantidadeParcelas;
+
+                lancamentos.Add(lancamento);
+            }
+
+            return lancamentos;
+        }
+
+        private List<Lancamento> GerarLancamentosFixos(CadastrarLancamentoDTO elementoDTO)
+        {
+            const int quantidadeMeses = 12;
+            var lancamentos = new List<Lancamento>(quantidadeMeses);
+
+            for (var indice = 0; indice < quantidadeMeses; indice++)
+            {
+                lancamentos.Add(CriarLancamentoBase(elementoDTO, indice));
+            }
+
+            return lancamentos;
+        }
+
+        private Lancamento CriarLancamentoBase(
+            CadastrarLancamentoDTO elementoDTO,
+            int mesesParaAdicionar = 0,
+            string? descricao = null,
+            decimal? valor = null)
+        {
+            var lancamento = _mapper.Map<Lancamento>(elementoDTO);
+            lancamento.Id = Guid.NewGuid();
+            lancamento.Descricao = descricao ?? elementoDTO.Descricao;
+            lancamento.Valor = valor ?? elementoDTO.Valor;
+            lancamento.DataPagamento = elementoDTO.DataPagamento.AddMonths(mesesParaAdicionar);
+            lancamento.DataLancamento = elementoDTO.DataLancamento.AddMonths(mesesParaAdicionar);
+
+            return lancamento;
+        }
+
+        private async Task AplicarImpactosFinanceirosSeNecessarioAsync(Lancamento lancamento)
+        {
+            if (lancamento.ContaId == null)
+            {
+                return;
+            }
+
+            var buscarContaVinculada = await _contaAppService.BuscarUmElementoAsync(lancamento.UsuarioId, (Guid)lancamento.ContaId);
+            List<BemPatrimonial> buscarBensMateriais = _bemPatrimonialAppService.BuscarTodosOsElementosAsync(lancamento.UsuarioId).Result.Dados;
+            var investimentos = buscarBensMateriais.FirstOrDefault(x => x.Tipo == EnumBemPatrimonial.Investimento);
+            var dinheiroEmConta = buscarBensMateriais.FirstOrDefault(x => x.Tipo == EnumBemPatrimonial.DinheiroEmConta);
+
+            if (buscarContaVinculada?.Dados == null || investimentos == null || dinheiroEmConta == null)
+            {
+                return;
+            }
+
+            PermanenciaBemMaterial permancenciaInvestimento = _bemPatrimonialAppService.BuscarUltimaDataPermanencia(investimentos.Id).Result.Dados;
+            PermanenciaBemMaterial permancenciaDinheiroEmConta = _bemPatrimonialAppService.BuscarUltimaDataPermanencia(dinheiroEmConta.Id).Result.Dados;
+
+            var contaDTO = new EditarContaDTO()
+            {
+                Descricao = buscarContaVinculada.Dados.Descricao,
+                Instituicao = buscarContaVinculada.Dados.Instituicao,
+                NomeConta = buscarContaVinculada.Dados.NomeConta,
+                Saldo = buscarContaVinculada.Dados.Saldo,
+                Tipo = buscarContaVinculada.Dados.Tipo,
+                SaldoInvestimento = buscarContaVinculada.Dados.SaldoInvestimento
+            };
+
+            switch (lancamento.Tipo)
+            {
+                case EnumTipoLancamento.InvestimentoDeposito:
+                    permancenciaInvestimento.Valor += lancamento.Valor;
+                    contaDTO.SaldoInvestimento += lancamento.Valor;
+                    await _contaAppService.EditarElementoAsync(lancamento.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
+                    await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
+                    break;
+
+                case EnumTipoLancamento.InvestimentoSaque:
+                    permancenciaInvestimento.Valor -= lancamento.Valor;
+                    contaDTO.SaldoInvestimento -= lancamento.Valor;
+                    await _contaAppService.EditarElementoAsync(lancamento.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
+                    await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaInvestimento);
+                    break;
+
+                case EnumTipoLancamento.Saque:
+                    contaDTO.Saldo -= lancamento.Valor;
+                    permancenciaDinheiroEmConta.Valor -= lancamento.Valor;
+                    await _contaAppService.EditarElementoAsync(lancamento.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
+                    await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaDinheiroEmConta);
+                    break;
+
+                case EnumTipoLancamento.Deposito:
+                    contaDTO.Saldo += lancamento.Valor;
+                    permancenciaDinheiroEmConta.Valor += lancamento.Valor;
+                    await _contaAppService.EditarElementoAsync(lancamento.UsuarioId, (Guid)lancamento.ContaId, contaDTO);
+                    await _bemPatrimonialAppService.EditarUltimaDataPermanencia(permancenciaDinheiroEmConta);
+                    break;
             }
         }
 

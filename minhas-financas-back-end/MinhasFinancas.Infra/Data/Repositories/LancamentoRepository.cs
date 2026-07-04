@@ -41,6 +41,12 @@ namespace MinhasFinancas.Infra.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task CadastrarElementosAsync(List<Lancamento> elementos)
+        {
+            await _context.Set<Lancamento>().AddRangeAsync(elementos);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task DeletarElementoAsync(Lancamento elemento)
         {
             _context.Set<Lancamento>().Remove(elemento);

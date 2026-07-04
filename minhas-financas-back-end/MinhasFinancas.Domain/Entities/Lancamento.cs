@@ -15,6 +15,9 @@ namespace MinhasFinancas.Domain.Entities
         public string Observacao { get; set; } = string.Empty;
         public DateTime DataPagamento { get; set; }
         public DateTime DataLancamento { get; set; }
+        public Guid? GrupoParcelamentoId { get; set; }
+        public int? NumeroParcela { get; set; }
+        public int? TotalParcelas { get; set; }
 
         // Boleanos
         public bool Realizado { get; set; }

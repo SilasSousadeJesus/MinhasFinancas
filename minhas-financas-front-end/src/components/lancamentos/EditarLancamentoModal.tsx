@@ -42,7 +42,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { EditarLancamentoPayload } from "@/types/lancamentos";
+import { EditarLancamentoPayload, LancamentoResumo } from "@/types/lancamentos";
 
 const FREQUENCIA_PONTUAL = "0";
 const TIPO_DESPESA = "0";
@@ -96,6 +96,7 @@ export function EditarLancamentoModal({
   const [contas, setContas] = useState<ContaResumo[]>([]);
   const [cartoes, setCartoes] = useState<CartaoResumo[]>([]);
   const [categorias, setCategorias] = useState<CategoriaResumo[]>([]);
+  const [lancamentoAtual, setLancamentoAtual] = useState<LancamentoResumo | null>(null);
   const previousTipoRef = useRef<string | null>(null);
   const previousCategoriaRef = useRef<string | null>(null);
   const isHydratingRef = useRef(false);
@@ -147,6 +148,7 @@ export function EditarLancamentoModal({
           return;
         }
 
+        setLancamentoAtual(lancamento);
         isHydratingRef.current = true;
         const nextTipo = String(lancamento.tipo);
         const nextCategoriaId = lancamento.categoriaId ?? SELECT_NONE;
@@ -261,6 +263,9 @@ export function EditarLancamentoModal({
         observacao: values.observacao || "",
         dataPagamento: `${values.dataPagamento}T00:00:00`,
         dataLancamento: `${values.dataLancamento}T00:00:00`,
+        grupoParcelamentoId: lancamentoAtual?.grupoParcelamentoId ?? null,
+        numeroParcela: lancamentoAtual?.numeroParcela ?? null,
+        totalParcelas: lancamentoAtual?.totalParcelas ?? null,
         realizado: values.realizado,
         frequenciaLancamento: Number(values.frequenciaLancamento),
         tipo: Number(values.tipo),
