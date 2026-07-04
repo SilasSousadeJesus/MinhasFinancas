@@ -5,5 +5,6 @@
         Pontual = 0,
         Fixo = 1,
         Parcelado = 2,
+        DiaUtil = 3,
     }
 }

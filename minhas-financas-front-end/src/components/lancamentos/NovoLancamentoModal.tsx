@@ -51,6 +51,7 @@ import { Textarea } from "@/components/ui/textarea";
 const FREQUENCIA_PONTUAL = "0";
 const FREQUENCIA_FIXA = "1";
 const FREQUENCIA_PARCELADA = "2";
+const FREQUENCIA_DIA_UTIL = "3";
 const TIPO_DESPESA = "0";
 const TIPO_RECEITA = "1";
 
@@ -65,6 +66,7 @@ const formSchema = z
     realizado: z.boolean(),
     frequenciaLancamento: z.string(),
     quantidadeParcelas: z.coerce.number().nullable().optional(),
+    numeroDiaUtil: z.coerce.number().nullable().optional(),
     contaId: z.string(),
     cartaoId: z.string(),
     categoriaId: z.string(),
@@ -81,12 +83,35 @@ const formSchema = z
         message: "Informe uma quantidade de parcelas maior que 1.",
       });
     }
+
+    if (
+      values.frequenciaLancamento === FREQUENCIA_DIA_UTIL &&
+      (!values.numeroDiaUtil || values.numeroDiaUtil <= 0)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["numeroDiaUtil"],
+        message: "Informe um numero de dia util maior que zero.",
+      });
+    }
   });
 
 type FormValues = z.infer<typeof formSchema>;
 
 function getToday() {
   return new Date().toISOString().split("T")[0];
+}
+
+function getDataPagamentoLabel(frequencia: string) {
+  return frequencia === FREQUENCIA_DIA_UTIL
+    ? "Data inicial da programacao"
+    : "Data do pagamento";
+}
+
+function getDataPagamentoHint(frequencia: string) {
+  return frequencia === FREQUENCIA_DIA_UTIL
+    ? "O sistema usa esta data apenas como mes inicial e calcula automaticamente o N-esimo dia util de cada mes."
+    : "";
 }
 
 interface NovoLancamentoModalProps {
@@ -115,6 +140,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
       realizado: true,
       frequenciaLancamento: FREQUENCIA_PONTUAL,
       quantidadeParcelas: null,
+      numeroDiaUtil: null,
       contaId: SELECT_NONE,
       cartaoId: SELECT_NONE,
       categoriaId: SELECT_NONE,
@@ -198,6 +224,10 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
     if (frequenciaSelecionada !== FREQUENCIA_PARCELADA) {
       form.setValue("quantidadeParcelas", null);
     }
+
+    if (frequenciaSelecionada !== FREQUENCIA_DIA_UTIL) {
+      form.setValue("numeroDiaUtil", null);
+    }
   }, [frequenciaSelecionada, form]);
 
   async function onSubmit(values: FormValues) {
@@ -232,6 +262,10 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
             values.frequenciaLancamento === FREQUENCIA_PARCELADA
               ? values.quantidadeParcelas ?? null
               : null,
+          numeroDiaUtil:
+            values.frequenciaLancamento === FREQUENCIA_DIA_UTIL
+              ? values.numeroDiaUtil ?? null
+              : null,
           tipo: Number(values.tipo),
           vinculo,
           contaId: contaSelecionada,
@@ -253,6 +287,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
         realizado: true,
         frequenciaLancamento: FREQUENCIA_PONTUAL,
         quantidadeParcelas: null,
+        numeroDiaUtil: null,
         contaId: SELECT_NONE,
         cartaoId: SELECT_NONE,
         categoriaId: SELECT_NONE,
@@ -328,6 +363,9 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                         <SelectItem value={FREQUENCIA_PARCELADA}>
                           Parcelado
                         </SelectItem>
+                        <SelectItem value={FREQUENCIA_DIA_UTIL}>
+                          Dia util
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -357,6 +395,34 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                     </FormControl>
                     <p className="text-xs text-muted-foreground">
                       O sistema vai gerar todas as parcelas mensalmente de uma vez.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : null}
+
+            {frequenciaSelecionada === FREQUENCIA_DIA_UTIL ? (
+              <FormField
+                control={form.control}
+                name="numeroDiaUtil"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Numero do dia util</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={field.value ?? ""}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          field.onChange(value === "" ? null : Number(value));
+                        }}
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      Exemplo: 5 para gerar sempre no 5o dia util de cada mes.
                     </p>
                     <FormMessage />
                   </FormItem>
@@ -423,10 +489,15 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 name="dataPagamento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Data do pagamento</FormLabel>
+                    <FormLabel>{getDataPagamentoLabel(frequenciaSelecionada)}</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
+                    {getDataPagamentoHint(frequenciaSelecionada) ? (
+                      <p className="text-xs text-muted-foreground">
+                        {getDataPagamentoHint(frequenciaSelecionada)}
+                      </p>
+                    ) : null}
                     <FormMessage />
                   </FormItem>
                 )}

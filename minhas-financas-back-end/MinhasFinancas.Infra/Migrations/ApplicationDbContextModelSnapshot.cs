@@ -359,8 +359,14 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Property<int>("FrequenciaLancamento")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("GrupoLancamentoProgramadoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("GrupoParcelamentoId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("NumeroDiaUtil")
+                        .HasColumnType("int");
 
                     b.Property<int?>("NumeroParcela")
                         .HasColumnType("int");
@@ -376,6 +382,9 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TipoProgramacao")
                         .HasColumnType("int");
 
                     b.Property<int?>("TotalParcelas")

@@ -27,6 +27,7 @@ export interface CadastrarLancamentoPayload {
   realizado: boolean;
   frequenciaLancamento: number;
   quantidadeParcelas?: number | null;
+  numeroDiaUtil?: number | null;
   tipo: number;
   vinculo: number;
   contaId: string | null;

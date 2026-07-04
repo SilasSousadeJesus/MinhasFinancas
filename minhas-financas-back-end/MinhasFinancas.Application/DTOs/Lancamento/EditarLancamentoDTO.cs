@@ -14,6 +14,9 @@ namespace MinhasFinancas.Application.DTOs.Lancamento
         public Guid? GrupoParcelamentoId { get; set; }
         public int? NumeroParcela { get; set; }
         public int? TotalParcelas { get; set; }
+        public Guid? GrupoLancamentoProgramadoId { get; set; }
+        public EnumTipoProgramacaoLancamento? TipoProgramacao { get; set; }
+        public int? NumeroDiaUtil { get; set; }
         public bool Realizado { get; set; }
         public EnumTipoFrequenciaLancamento FrequenciaLancamento { get; set; }
         public EnumTipoLancamento Tipo { get; set; }

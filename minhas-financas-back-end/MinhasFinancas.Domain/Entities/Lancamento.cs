@@ -18,6 +18,9 @@ namespace MinhasFinancas.Domain.Entities
         public Guid? GrupoParcelamentoId { get; set; }
         public int? NumeroParcela { get; set; }
         public int? TotalParcelas { get; set; }
+        public Guid? GrupoLancamentoProgramadoId { get; set; }
+        public EnumTipoProgramacaoLancamento? TipoProgramacao { get; set; }
+        public int? NumeroDiaUtil { get; set; }
 
         // Boleanos
         public bool Realizado { get; set; }

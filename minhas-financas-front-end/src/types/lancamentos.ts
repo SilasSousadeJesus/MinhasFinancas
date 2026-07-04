@@ -10,6 +10,9 @@ export interface LancamentoResumo {
   grupoParcelamentoId: string | null;
   numeroParcela: number | null;
   totalParcelas: number | null;
+  grupoLancamentoProgramadoId: string | null;
+  tipoProgramacao: number | null;
+  numeroDiaUtil: number | null;
   realizado: boolean;
   frequenciaLancamento: number;
   tipo: number;
@@ -58,6 +61,9 @@ export interface EditarLancamentoPayload {
   grupoParcelamentoId: string | null;
   numeroParcela: number | null;
   totalParcelas: number | null;
+  grupoLancamentoProgramadoId: string | null;
+  tipoProgramacao: number | null;
+  numeroDiaUtil: number | null;
   realizado: boolean;
   frequenciaLancamento: number;
   tipo: number;

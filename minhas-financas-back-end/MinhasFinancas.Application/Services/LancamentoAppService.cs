@@ -275,6 +275,7 @@ namespace MinhasFinancas.Application.Services
             {
                 EnumTipoFrequenciaLancamento.Parcelado => GerarLancamentosParcelados(elementoDTO),
                 EnumTipoFrequenciaLancamento.Fixo => GerarLancamentosFixos(elementoDTO),
+                EnumTipoFrequenciaLancamento.DiaUtil => GerarLancamentosDiaUtil(elementoDTO),
                 _ => new List<Lancamento> { CriarLancamentoBase(elementoDTO) },
             };
         }
@@ -285,6 +286,12 @@ namespace MinhasFinancas.Application.Services
                 && (!elementoDTO.QuantidadeParcelas.HasValue || elementoDTO.QuantidadeParcelas.Value <= 1))
             {
                 throw new InvalidOperationException("Lançamento parcelado exige quantidade de parcelas maior que 1.");
+            }
+
+            if (elementoDTO.FrequenciaLancamento == EnumTipoFrequenciaLancamento.DiaUtil
+                && (!elementoDTO.NumeroDiaUtil.HasValue || elementoDTO.NumeroDiaUtil.Value <= 0))
+            {
+                throw new InvalidOperationException("Lançamento dia útil exige um número de dia útil maior que zero.");
             }
         }
 
@@ -322,15 +329,74 @@ namespace MinhasFinancas.Application.Services
 
         private List<Lancamento> GerarLancamentosFixos(CadastrarLancamentoDTO elementoDTO)
         {
-            const int quantidadeMeses = 12;
+            return GerarLancamentosMensaisProgramados(
+                elementoDTO,
+                12,
+                null,
+                EnumTipoProgramacaoLancamento.Fixo,
+                (_, lancamento) => lancamento);
+        }
+
+        private List<Lancamento> GerarLancamentosDiaUtil(CadastrarLancamentoDTO elementoDTO)
+        {
+            return GerarLancamentosMensaisProgramados(
+                elementoDTO,
+                12,
+                null,
+                EnumTipoProgramacaoLancamento.DiaUtil,
+                (_, lancamento) =>
+                {
+                    var numeroDiaUtil = elementoDTO.NumeroDiaUtil!.Value;
+                    lancamento.DataPagamento = CalcularDataDiaUtil(lancamento.DataPagamento, numeroDiaUtil);
+                    lancamento.DataLancamento = CalcularDataDiaUtil(lancamento.DataLancamento, numeroDiaUtil);
+                    lancamento.NumeroDiaUtil = numeroDiaUtil;
+                    return lancamento;
+                });
+        }
+
+        private List<Lancamento> GerarLancamentosMensaisProgramados(
+            CadastrarLancamentoDTO elementoDTO,
+            int quantidadeMeses,
+            decimal? valor,
+            EnumTipoProgramacaoLancamento tipoProgramacao,
+            Func<int, Lancamento, Lancamento> configurarLancamento)
+        {
             var lancamentos = new List<Lancamento>(quantidadeMeses);
+            var grupoLancamentoProgramadoId = Guid.NewGuid();
 
             for (var indice = 0; indice < quantidadeMeses; indice++)
             {
-                lancamentos.Add(CriarLancamentoBase(elementoDTO, indice));
+                var lancamento = CriarLancamentoBase(elementoDTO, indice, valor: valor);
+                lancamento.GrupoLancamentoProgramadoId = grupoLancamentoProgramadoId;
+                lancamento.TipoProgramacao = tipoProgramacao;
+                lancamentos.Add(configurarLancamento(indice, lancamento));
             }
 
             return lancamentos;
+        }
+
+        private static DateTime CalcularDataDiaUtil(DateTime dataBase, int numeroDiaUtil)
+        {
+            var dataAtual = new DateTime(dataBase.Year, dataBase.Month, 1);
+            var contadorDiaUtil = 0;
+
+            while (dataAtual.Month == dataBase.Month)
+            {
+                if (dataAtual.DayOfWeek != DayOfWeek.Saturday && dataAtual.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    contadorDiaUtil++;
+
+                    if (contadorDiaUtil == numeroDiaUtil)
+                    {
+                        return dataAtual;
+                    }
+                }
+
+                dataAtual = dataAtual.AddDays(1);
+            }
+
+            throw new InvalidOperationException(
+                $"Não foi possível localizar o {numeroDiaUtil}º dia útil em {dataBase:MM/yyyy}.");
         }
 
         private Lancamento CriarLancamentoBase(

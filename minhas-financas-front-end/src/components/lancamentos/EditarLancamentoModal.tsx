@@ -45,6 +45,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { EditarLancamentoPayload, LancamentoResumo } from "@/types/lancamentos";
 
 const FREQUENCIA_PONTUAL = "0";
+const FREQUENCIA_DIA_UTIL = "3";
 const TIPO_DESPESA = "0";
 const TIPO_RECEITA = "1";
 
@@ -266,6 +267,9 @@ export function EditarLancamentoModal({
         grupoParcelamentoId: lancamentoAtual?.grupoParcelamentoId ?? null,
         numeroParcela: lancamentoAtual?.numeroParcela ?? null,
         totalParcelas: lancamentoAtual?.totalParcelas ?? null,
+        grupoLancamentoProgramadoId: lancamentoAtual?.grupoLancamentoProgramadoId ?? null,
+        tipoProgramacao: lancamentoAtual?.tipoProgramacao ?? null,
+        numeroDiaUtil: lancamentoAtual?.numeroDiaUtil ?? null,
         realizado: values.realizado,
         frequenciaLancamento: Number(values.frequenciaLancamento),
         tipo: Number(values.tipo),
@@ -344,6 +348,9 @@ export function EditarLancamentoModal({
                         </SelectItem>
                         <SelectItem value="2" disabled>
                           Parcelado
+                        </SelectItem>
+                        <SelectItem value={FREQUENCIA_DIA_UTIL} disabled>
+                          Dia util
                         </SelectItem>
                       </SelectContent>
                     </Select>

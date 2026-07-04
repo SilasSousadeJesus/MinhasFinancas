@@ -45,7 +45,7 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - CRUD de categorias
 - CRUD de subcategorias
 - CRUD de lancamentos
-- suporte a lancamento pontual, fixo e parcelado com geracao imediata de registros reais
+- suporte a lancamento pontual, fixo, parcelado e dia util com geracao imediata de registros reais
 - filtros de lancamentos por tipo, periodo, categoria, conta, cartao, status realizado, texto, ordenacao e paginacao
 - dashboard agregado
 - CRUD de metas
@@ -404,18 +404,24 @@ Fluxo tipico:
   - `GrupoParcelamentoId`
   - `NumeroParcela`
   - `TotalParcelas`
+  - `GrupoLancamentoProgramadoId`
+  - `TipoProgramacao`
+  - `NumeroDiaUtil`
   - `Realizado`
   - `FrequenciaLancamento`
   - `Tipo`
   - `Vinculo`
 - Regras importantes:
   - tipos: `Despesa`, `Receita`, `InvestimentoDeposito`, `InvestimentoSaque`, `Transferencia`, `Saque`, `Deposito`
-  - frequencias: `Pontual`, `Fixo`, `Parcelado`
+  - frequencias: `Pontual`, `Fixo`, `Parcelado`, `DiaUtil`
   - `Pontual` cria 1 lancamento
   - `Parcelado` cria imediatamente N lancamentos mensais reais e divide o valor total entre as parcelas
   - no parcelado, todas as parcelas compartilham o mesmo `GrupoParcelamentoId` e recebem `NumeroParcela` e `TotalParcelas`
   - `Pontual` e `Fixo` mantem `GrupoParcelamentoId`, `NumeroParcela` e `TotalParcelas` nulos
   - `Fixo` cria imediatamente 12 lancamentos mensais reais
+  - `DiaUtil` cria imediatamente 12 lancamentos mensais reais calculando a data pelo N-esimo dia util do mes, considerando inicialmente apenas segunda a sexta
+  - `Fixo` e `DiaUtil` usam `GrupoLancamentoProgramadoId` e `TipoProgramacao` para rastrear registros gerados pela mesma programacao
+  - `NumeroDiaUtil` fica preenchido apenas para frequencia `DiaUtil`
   - filtros backend suportam texto, tipo, categoria, conta, cartao, status, periodo, ordenacao e paginacao
   - parte da movimentacao altera conta/bem patrimonial no cadastro
 
@@ -559,6 +565,7 @@ Fluxo tipico:
   - `Pontual` persiste um unico registro
   - `Parcelado` exige `QuantidadeParcelas > 1`, gera todos os meses imediatamente, acrescenta `X/Y` na descricao e compartilha um identificador de grupo entre as parcelas
   - `Fixo` gera 12 meses futuros imediatamente
+  - `DiaUtil` exige `NumeroDiaUtil > 0`, gera 12 meses futuros imediatamente e calcula cada data pelo N-esimo dia util do respectivo mes
 - filtros e listagem acontecem em memoria a partir da lista carregada do repository
 - se o lancamento tiver `ContaId`, alguns tipos ajustam saldo e patrimonio:
   - `InvestimentoDeposito`: soma em `SaldoInvestimento` e no bem `Investimento`
@@ -1068,6 +1075,7 @@ Fluxo tipico:
   - parte dos tipos atualiza saldo/patrimonio
   - recorrencia nao usa tabela separada por enquanto; `Fixo` e `Parcelado` geram registros reais em `Lancamento`
   - parcelamentos possuem `GrupoParcelamentoId`, `NumeroParcela` e `TotalParcelas` para agrupamento futuro no frontend
+  - lancamentos programados (`Fixo` e `DiaUtil`) possuem `GrupoLancamentoProgramadoId` e `TipoProgramacao` para rastreabilidade futura
 
 ### Dashboard
 
