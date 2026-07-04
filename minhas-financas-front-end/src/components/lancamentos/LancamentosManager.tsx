@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
 import { ApiError } from "@/types/api";
@@ -100,18 +100,45 @@ function getTipoVariant(tipo: number): "default" | "secondary" | "destructive" |
   }
 }
 
-function ordenarLancamentos(lista: LancamentoResumo[]) {
-  return [...lista].sort(
-    (a, b) => new Date(b.dataLancamento).getTime() - new Date(a.dataLancamento).getTime()
-  );
-}
-
 function toDateInputValue(dateValue: string) {
   return new Date(dateValue).toISOString().split("T")[0];
 }
 
+function ordenarLancamentosDaPagina(
+  lista: LancamentoResumo[],
+  ordenarPor: "data" | "valor",
+  direcao: "asc" | "desc"
+) {
+  const multiplicador = direcao === "asc" ? 1 : -1;
+
+  return [...lista].sort((a, b) => {
+    if (ordenarPor === "valor") {
+      if (a.valor !== b.valor) {
+        return (a.valor - b.valor) * multiplicador;
+      }
+    } else {
+      const dataPagamentoA = new Date(a.dataPagamento).getTime();
+      const dataPagamentoB = new Date(b.dataPagamento).getTime();
+
+      if (dataPagamentoA !== dataPagamentoB) {
+        return (dataPagamentoA - dataPagamentoB) * multiplicador;
+      }
+    }
+
+    const dataLancamentoA = new Date(a.dataLancamento).getTime();
+    const dataLancamentoB = new Date(b.dataLancamento).getTime();
+
+    if (dataLancamentoA !== dataLancamentoB) {
+      return (dataLancamentoA - dataLancamentoB) * multiplicador;
+    }
+
+    return a.descricao.localeCompare(b.descricao, "pt-BR");
+  });
+}
+
 export function LancamentosManager() {
   const { session } = useAuth();
+  const ultimaRequisicaoRef = useRef(0);
   const [lancamentos, setLancamentos] = useState<LancamentoResumo[]>([]);
   const [categorias, setCategorias] = useState<CategoriaResumo[]>([]);
   const [contas, setContas] = useState<ContaResumo[]>([]);
@@ -128,8 +155,10 @@ export function LancamentosManager() {
   const [contaFiltro, setContaFiltro] = useState("all");
   const [cartaoFiltro, setCartaoFiltro] = useState("all");
   const [statusFiltro, setStatusFiltro] = useState("all");
-  const [dataInicialFiltro, setDataInicialFiltro] = useState("");
-  const [dataFinalFiltro, setDataFinalFiltro] = useState("");
+  const [dataInicialLancamentoFiltro, setDataInicialLancamentoFiltro] = useState("");
+  const [dataFinalLancamentoFiltro, setDataFinalLancamentoFiltro] = useState("");
+  const [dataInicialPagamentoFiltro, setDataInicialPagamentoFiltro] = useState("");
+  const [dataFinalPagamentoFiltro, setDataFinalPagamentoFiltro] = useState("");
   const [buscaDescricao, setBuscaDescricao] = useState("");
   const [ordenarPor, setOrdenarPor] = useState<"data" | "valor">("data");
   const [direcaoOrdenacao, setDirecaoOrdenacao] = useState<"asc" | "desc">("desc");
@@ -147,8 +176,10 @@ export function LancamentosManager() {
       cartaoId: cartaoFiltro !== "all" ? cartaoFiltro : undefined,
       realizado:
         statusFiltro === "all" ? undefined : statusFiltro === "realizado" ? "true" : "false",
-      dataInicial: dataInicialFiltro || undefined,
-      dataFinal: dataFinalFiltro || undefined,
+      dataInicialLancamento: dataInicialLancamentoFiltro || undefined,
+      dataFinalLancamento: dataFinalLancamentoFiltro || undefined,
+      dataInicialPagamento: dataInicialPagamentoFiltro || undefined,
+      dataFinalPagamento: dataFinalPagamentoFiltro || undefined,
       ordenarPor,
       direcao: direcaoOrdenacao,
       pagina: paginaAtual,
@@ -159,8 +190,10 @@ export function LancamentosManager() {
       categoriaFiltro,
       contaFiltro,
       cartaoFiltro,
-      dataFinalFiltro,
-      dataInicialFiltro,
+      dataFinalLancamentoFiltro,
+      dataFinalPagamentoFiltro,
+      dataInicialLancamentoFiltro,
+      dataInicialPagamentoFiltro,
       direcaoOrdenacao,
       ordenarPor,
       paginaAtual,
@@ -174,6 +207,8 @@ export function LancamentosManager() {
     if (!session?.usuario.id || !session.token) {
       return;
     }
+
+    const requisicaoAtual = ++ultimaRequisicaoRef.current;
 
     try {
       setIsLoading(true);
@@ -198,7 +233,17 @@ export function LancamentosManager() {
           }
         : dadosPaginados;
 
-      setLancamentos(ordenarLancamentos(dadosNormalizados?.itens ?? []));
+      if (requisicaoAtual !== ultimaRequisicaoRef.current) {
+        return;
+      }
+
+      const itensOrdenados = ordenarLancamentosDaPagina(
+        dadosNormalizados?.itens ?? [],
+        ordenarPor,
+        direcaoOrdenacao
+      );
+
+      setLancamentos(itensOrdenados);
       setTotalPaginas(dadosNormalizados?.totalPaginas ?? 1);
       setTotalItens(dadosNormalizados?.totalItens ?? 0);
       setPaginaAtual(dadosNormalizados?.paginaAtual ?? 1);
@@ -206,15 +251,21 @@ export function LancamentosManager() {
       setContas(contasResponse.dados ?? []);
       setCartoes(cartoesResponse.dados ?? []);
     } catch (error) {
+      if (requisicaoAtual !== ultimaRequisicaoRef.current) {
+        return;
+      }
+
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
         setErrorMessage("Nao foi possivel carregar os lancamentos.");
       }
     } finally {
-      setIsLoading(false);
+      if (requisicaoAtual === ultimaRequisicaoRef.current) {
+        setIsLoading(false);
+      }
     }
-  }, [filtrosAtuais, session?.token, session?.usuario.id, tamanhoPagina]);
+  }, [direcaoOrdenacao, filtrosAtuais, ordenarPor, session?.token, session?.usuario.id, tamanhoPagina]);
 
   useEffect(() => {
     carregarLancamentos();
@@ -267,8 +318,10 @@ export function LancamentosManager() {
     contaFiltro,
     cartaoFiltro,
     statusFiltro,
-    dataInicialFiltro,
-    dataFinalFiltro,
+    dataInicialLancamentoFiltro,
+    dataFinalLancamentoFiltro,
+    dataInicialPagamentoFiltro,
+    dataFinalPagamentoFiltro,
     ordenarPor,
     direcaoOrdenacao,
     tamanhoPagina,
@@ -280,8 +333,10 @@ export function LancamentosManager() {
     setContaFiltro("all");
     setCartaoFiltro("all");
     setStatusFiltro("all");
-    setDataInicialFiltro("");
-    setDataFinalFiltro("");
+    setDataInicialLancamentoFiltro("");
+    setDataFinalLancamentoFiltro("");
+    setDataInicialPagamentoFiltro("");
+    setDataFinalPagamentoFiltro("");
     setBuscaDescricao("");
     setOrdenarPor("data");
     setDirecaoOrdenacao("desc");
@@ -445,17 +500,25 @@ export function LancamentosManager() {
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Data inicial</p>
-                  <Input type="date" value={dataInicialFiltro} onChange={(event) => setDataInicialFiltro(event.target.value)} />
+                  <p className="text-sm font-medium">Data inicial do lancamento</p>
+                  <Input
+                    type="date"
+                    value={dataInicialLancamentoFiltro}
+                    onChange={(event) => setDataInicialLancamentoFiltro(event.target.value)}
+                  />
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Data final</p>
-                  <Input type="date" value={dataFinalFiltro} onChange={(event) => setDataFinalFiltro(event.target.value)} />
+                  <p className="text-sm font-medium">Data final do lancamento</p>
+                  <Input
+                    type="date"
+                    value={dataFinalLancamentoFiltro}
+                    onChange={(event) => setDataFinalLancamentoFiltro(event.target.value)}
+                  />
                 </div>
               </div>
 
-              <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-6">
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Conta</p>
                   <Select
@@ -507,13 +570,31 @@ export function LancamentosManager() {
                 </div>
 
                 <div className="space-y-2">
+                  <p className="text-sm font-medium">Data inicial de pagamento</p>
+                  <Input
+                    type="date"
+                    value={dataInicialPagamentoFiltro}
+                    onChange={(event) => setDataInicialPagamentoFiltro(event.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Data final de pagamento</p>
+                  <Input
+                    type="date"
+                    value={dataFinalPagamentoFiltro}
+                    onChange={(event) => setDataFinalPagamentoFiltro(event.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <p className="text-sm font-medium">Ordenar por</p>
                   <Select value={ordenarPor} onValueChange={(value) => setOrdenarPor(value as "data" | "valor")}>
                     <SelectTrigger>
                       <SelectValue placeholder="Escolha a ordenacao" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="data">Data</SelectItem>
+                      <SelectContent>
+                      <SelectItem value="data">Data de pagamento</SelectItem>
                       <SelectItem value="valor">Valor</SelectItem>
                     </SelectContent>
                   </Select>
@@ -572,7 +653,7 @@ export function LancamentosManager() {
                       <TableHead>Valor</TableHead>
                       <TableHead>Pagamento</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Acoes</TableHead>
+                      <TableHead className="text-right">Açoes</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

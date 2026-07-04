@@ -1,43 +1,51 @@
 import { ApiError, RetornoGenerico } from "@/types/api";
 import { API_BASE_URL } from "./config";
+import { LoadingRequestOptions, startGlobalLoading } from "./loading-manager";
 
 interface RequestOptions extends RequestInit {
   token?: string;
+  loading?: LoadingRequestOptions;
 }
 
 export async function apiRequest<T>(
   path: string,
-  { token, headers, ...init }: RequestOptions = {}
+  { token, headers, loading, ...init }: RequestOptions = {}
 ): Promise<RetornoGenerico<T>> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...headers,
-    },
-  });
+  const finalizarLoading = startGlobalLoading(loading);
 
-  const rawBody = await response.text();
-  let data: RetornoGenerico<T> | null = null;
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+      },
+    });
 
-  if (rawBody) {
-    try {
-      data = JSON.parse(rawBody) as RetornoGenerico<T>;
-    } catch {
-      data = null;
+    const rawBody = await response.text();
+    let data: RetornoGenerico<T> | null = null;
+
+    if (rawBody) {
+      try {
+        data = JSON.parse(rawBody) as RetornoGenerico<T>;
+      } catch {
+        data = null;
+      }
     }
-  }
 
-  if (!response.ok || !data?.sucesso) {
-    throw new ApiError(
-      data?.mensagemUsuario ||
-        data?.mensagemSistema ||
-        (rawBody && !data ? rawBody : "Erro ao processar a requisicao."),
-      response.status,
-      data ?? undefined
-    );
-  }
+    if (!response.ok || !data?.sucesso) {
+      throw new ApiError(
+        data?.mensagemUsuario ||
+          data?.mensagemSistema ||
+          (rawBody && !data ? rawBody : "Erro ao processar a requisicao."),
+        response.status,
+        data ?? undefined
+      );
+    }
 
-  return data;
+    return data;
+  } finally {
+    finalizarLoading();
+  }
 }

@@ -117,16 +117,28 @@ namespace MinhasFinancas.Application.Services
                     query = query.Where(x => x.Realizado == filtro.Realizado.Value);
                 }
 
-                if (filtro.DataInicial.HasValue)
+                if (filtro.DataInicialLancamento.HasValue)
                 {
-                    var dataInicial = filtro.DataInicial.Value.Date;
+                    var dataInicial = filtro.DataInicialLancamento.Value.Date;
                     query = query.Where(x => x.DataLancamento.Date >= dataInicial);
                 }
 
-                if (filtro.DataFinal.HasValue)
+                if (filtro.DataFinalLancamento.HasValue)
                 {
-                    var dataFinal = filtro.DataFinal.Value.Date;
+                    var dataFinal = filtro.DataFinalLancamento.Value.Date;
                     query = query.Where(x => x.DataLancamento.Date <= dataFinal);
+                }
+
+                if (filtro.DataInicialPagamento.HasValue)
+                {
+                    var dataInicialPagamento = filtro.DataInicialPagamento.Value.Date;
+                    query = query.Where(x => x.DataPagamento.Date >= dataInicialPagamento);
+                }
+
+                if (filtro.DataFinalPagamento.HasValue)
+                {
+                    var dataFinalPagamento = filtro.DataFinalPagamento.Value.Date;
+                    query = query.Where(x => x.DataPagamento.Date <= dataFinalPagamento);
                 }
 
                 var ordenarPor = filtro.OrdenarPor.Trim().ToLower();
@@ -136,7 +148,7 @@ namespace MinhasFinancas.Application.Services
                 query = ordenarPor switch
                 {
                     "valor" => asc ? query.OrderBy(x => x.Valor) : query.OrderByDescending(x => x.Valor),
-                    _ => asc ? query.OrderBy(x => x.DataLancamento) : query.OrderByDescending(x => x.DataLancamento),
+                    _ => asc ? query.OrderBy(x => x.DataPagamento) : query.OrderByDescending(x => x.DataPagamento),
                 };
 
                 var pagina = filtro.Pagina < 1 ? 1 : filtro.Pagina;

@@ -8,8 +8,10 @@ namespace MinhasFinancas.Application.DTOs.Lancamento
         public Guid? ContaId { get; set; }
         public Guid? CartaoId { get; set; }
         public bool? Realizado { get; set; }
-        public DateTime? DataInicial { get; set; }
-        public DateTime? DataFinal { get; set; }
+        public DateTime? DataInicialLancamento { get; set; }
+        public DateTime? DataFinalLancamento { get; set; }
+        public DateTime? DataInicialPagamento { get; set; }
+        public DateTime? DataFinalPagamento { get; set; }
         public string OrdenarPor { get; set; } = "data";
         public string Direcao { get; set; } = "desc";
         public int Pagina { get; set; } = 1;

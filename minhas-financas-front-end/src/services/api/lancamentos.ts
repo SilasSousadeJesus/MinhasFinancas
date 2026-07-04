@@ -13,13 +13,30 @@ export function buscarLancamentos(
   filtros: FiltroLancamentosParams = {}
 ) {
   const searchParams = new URLSearchParams();
+  const keyMap: Record<string, string> = {
+    buscaDescricao: "BuscaDescricao",
+    tipo: "Tipo",
+    categoriaId: "CategoriaId",
+    contaId: "ContaId",
+    cartaoId: "CartaoId",
+    realizado: "Realizado",
+    dataInicialLancamento: "DataInicialLancamento",
+    dataFinalLancamento: "DataFinalLancamento",
+    dataInicialPagamento: "DataInicialPagamento",
+    dataFinalPagamento: "DataFinalPagamento",
+    ordenarPor: "OrdenarPor",
+    direcao: "Direcao",
+    pagina: "Pagina",
+    tamanhoPagina: "TamanhoPagina",
+  };
 
   Object.entries(filtros).forEach(([key, value]) => {
     if (value === undefined || value === null || value === "") {
       return;
     }
 
-    searchParams.set(key, String(value));
+    const queryKey = keyMap[key] ?? key;
+    searchParams.set(queryKey, String(value));
   });
 
   const queryString = searchParams.toString();

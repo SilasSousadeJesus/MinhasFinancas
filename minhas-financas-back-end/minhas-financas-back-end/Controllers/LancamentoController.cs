@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces;
+using System.Globalization;
 
 namespace MinhasFinancas.API.Controllers
 {
@@ -41,6 +42,14 @@ namespace MinhasFinancas.API.Controllers
         [HttpGet("BuscarTodosOsLancamento/{usuarioId}")]
         public async Task<IActionResult> BuscarTodosOsCartoes([FromRoute] string usuarioId, [FromQuery] FiltroListagemLancamentoDTO filtro)
         {
+            filtro.DataInicialLancamento ??= ParseQueryDate(Request.Query["DataInicialLancamento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataInicialLancamento"].FirstOrDefault());
+            filtro.DataFinalLancamento ??= ParseQueryDate(Request.Query["DataFinalLancamento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataFinalLancamento"].FirstOrDefault());
+            filtro.DataInicialPagamento ??= ParseQueryDate(Request.Query["DataInicialPagamento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataInicialPagamento"].FirstOrDefault());
+            filtro.DataFinalPagamento ??= ParseQueryDate(Request.Query["DataFinalPagamento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataFinalPagamento"].FirstOrDefault());
 
             var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId, filtro);
 
@@ -58,6 +67,41 @@ namespace MinhasFinancas.API.Controllers
 
             return Ok(dados);
         }
+
+        private static DateTime? ParseQueryDate(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            var formats = new[]
+            {
+                "yyyy-MM-dd",
+                "yyyy-MM-ddTHH:mm:ss",
+                "yyyy-MM-ddTHH:mm:ss.fff",
+                "yyyy-MM-ddTHH:mm:ssZ",
+                "O",
+            };
+
+            if (DateTime.TryParseExact(
+                value,
+                formats,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeLocal | DateTimeStyles.AllowWhiteSpaces,
+                out var parsedExact))
+            {
+                return parsedExact;
+            }
+
+            if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var parsed))
+            {
+                return parsed;
+            }
+
+            return null;
+        }
+
         [Authorize]
         [HttpGet("BuscarUmLancamento/{usuarioId}/{faturamentoId}")]
         public async Task<IActionResult> BuscarUmCartao([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId)

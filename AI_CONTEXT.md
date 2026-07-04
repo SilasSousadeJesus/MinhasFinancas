@@ -46,7 +46,7 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - CRUD de subcategorias
 - CRUD de lancamentos
 - suporte a lancamento pontual, fixo, parcelado e dia util com geracao imediata de registros reais
-- filtros de lancamentos por tipo, periodo, categoria, conta, cartao, status realizado, texto, ordenacao e paginacao
+- filtros de lancamentos por tipo, periodo de lancamento, periodo de pagamento, categoria, conta, cartao, status realizado, texto, ordenacao e paginacao
 - dashboard agregado
 - CRUD de metas
 - atualizacao do andamento de meta por aporte
@@ -64,6 +64,7 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - cadastro real
 - sessao persistida em `localStorage`
 - protecao minima de rotas autenticadas
+- loading global automatico para requisicoes HTTP feitas via `apiRequest`
 - dashboard integrado
 - CRUD de categorias e subcategorias com boa UX
 - CRUD de lancamentos com modal de criacao e edicao
@@ -124,9 +125,9 @@ Observacao importante: na pratica, a regra de negocio esta dividida entre `Appli
 - `src/components`
   - UI e componentes de tela
 - `src/providers`
-  - providers de autenticacao e tema
+  - providers de autenticacao, tema e loading global
 - `src/services/api`
-  - client HTTP e modulos por dominio
+  - client HTTP, gerenciador global de loading e modulos por dominio
 - `src/types`
   - contratos TS para API e dominio de tela
 - `src/lib`
@@ -175,20 +176,23 @@ Observacao importante: na pratica, a regra de negocio esta dividida entre `Appli
 Fluxo tipico:
 
 1. O frontend chama `fetch` via `apiRequest` em `src/services/api/http.ts`.
-2. Se houver token, ele envia `Authorization: Bearer {token}`.
-3. O controller da API recebe a rota em `api/[Controller]`.
-4. O controller delega para um `AppService`.
-5. O `AppService` normalmente:
+2. Antes da chamada HTTP, o `apiRequest` registra a requisicao no gerenciador global de loading em `src/services/api/loading-manager.ts`.
+3. O `GlobalLoadingProvider` observa esse gerenciador e exibe o overlay `GlobalLoading` enquanto houver requisicoes ativas.
+4. Se houver token, ele envia `Authorization: Bearer {token}`.
+5. O controller da API recebe a rota em `api/[Controller]`.
+6. O controller delega para um `AppService`.
+7. O `AppService` normalmente:
    - valida usuario
    - valida existencia do agregado principal
    - mapeia DTOs
    - chama repository
    - monta `RetornoGenerico`
-6. O repository usa EF Core no `ApplicationDbContext`.
-7. Em calculos agregados, o `AppService` chama servicos do `Domain`.
-8. A resposta volta em `RetornoGenerico`.
-9. O frontend interpreta `sucesso`, `mensagemUsuario` e `dados`.
-10. Se `sucesso = false` ou status nao OK, `apiRequest` gera `ApiError`.
+8. O repository usa EF Core no `ApplicationDbContext`.
+9. Em calculos agregados, o `AppService` chama servicos do `Domain`.
+10. A resposta volta em `RetornoGenerico`.
+11. O frontend interpreta `sucesso`, `mensagemUsuario` e `dados`.
+12. Em `finally`, o `apiRequest` decrementa o contador global de loading.
+13. Se `sucesso = false` ou status nao OK, `apiRequest` gera `ApiError`.
 
 ## Tecnologias
 
@@ -422,7 +426,7 @@ Fluxo tipico:
   - `DiaUtil` cria imediatamente 12 lancamentos mensais reais calculando a data pelo N-esimo dia util do mes, considerando inicialmente apenas segunda a sexta
   - `Fixo` e `DiaUtil` usam `GrupoLancamentoProgramadoId` e `TipoProgramacao` para rastrear registros gerados pela mesma programacao
   - `NumeroDiaUtil` fica preenchido apenas para frequencia `DiaUtil`
-  - filtros backend suportam texto, tipo, categoria, conta, cartao, status, periodo, ordenacao e paginacao
+  - filtros backend suportam texto, tipo, categoria, conta, cartao, status, periodo de lancamento, periodo de pagamento, ordenacao e paginacao
   - parte da movimentacao altera conta/bem patrimonial no cadastro
 
 ### LancamentoFixo
@@ -567,6 +571,9 @@ Fluxo tipico:
   - `Fixo` gera 12 meses futuros imediatamente
   - `DiaUtil` exige `NumeroDiaUtil > 0`, gera 12 meses futuros imediatamente e calcula cada data pelo N-esimo dia util do respectivo mes
 - filtros e listagem acontecem em memoria a partir da lista carregada do repository
+- filtros de data sao separados:
+  - periodo de lancamento usa `DataLancamento`
+  - periodo de pagamento/vencimento usa `DataPagamento`
 - se o lancamento tiver `ContaId`, alguns tipos ajustam saldo e patrimonio:
   - `InvestimentoDeposito`: soma em `SaldoInvestimento` e no bem `Investimento`
   - `InvestimentoSaque`: subtrai de `SaldoInvestimento` e no bem `Investimento`
@@ -618,7 +625,8 @@ Fluxo tipico:
 ### Como sao calculados os totais
 
 - dashboard usa somas por `DataPagamento`
-- filtros de lancamento por periodo usam `DataLancamento`
+- filtros de lancamento por periodo de lancamento usam `DataLancamento`
+- filtros de lancamento por periodo de pagamento usam `DataPagamento`
 - categorias de despesa no dashboard agrupam por `Categoria`
 - graficos do front traduzem strings monetarias do dashboard para numero quando necessario
 
@@ -919,6 +927,7 @@ Fluxo tipico:
 - `components` dependem de `types`, `services/api`, `providers`, `lib`, `ui`
 - `services/api` dependem de `types` e `config`
 - `auth-provider` depende de `services/api/auth` e `lib/jwt`
+- `GlobalLoadingProvider` depende do gerenciador compartilhado em `services/api/loading-manager`
 - rotas autenticadas dependem de `ProtectedRoute`
 
 ## Pontos de Atencao
@@ -933,6 +942,7 @@ Fluxo tipico:
 - Filtros de lancamento sao aplicados apos carregar a lista completa; cuidado com performance se o volume crescer.
 - O dashboard trabalha com strings monetarias formatadas no backend, nao com decimais crus.
 - O frontend de projecao faz preview local adicional alem do calculo do backend.
+- Toda requisicao que usa `apiRequest` passa automaticamente pelo loading global; se alguma chamada no futuro nao puder exibir overlay, ela deve receber uma opcao explicita para desabilitar esse comportamento.
 
 ## Divida Tecnica
 

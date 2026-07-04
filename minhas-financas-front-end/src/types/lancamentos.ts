@@ -33,8 +33,10 @@ export interface FiltroLancamentosParams {
   contaId?: string;
   cartaoId?: string;
   realizado?: string;
-  dataInicial?: string;
-  dataFinal?: string;
+  dataInicialLancamento?: string;
+  dataFinalLancamento?: string;
+  dataInicialPagamento?: string;
+  dataFinalPagamento?: string;
   ordenarPor?: "data" | "valor";
   direcao?: "asc" | "desc";
   pagina?: number;

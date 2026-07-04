@@ -3,6 +3,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AuthProvider } from "@/providers/auth-provider";
+import { GlobalLoadingProvider } from "@/providers/global-loading-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -48,7 +49,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>{children}</AuthProvider>
+          <GlobalLoadingProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </GlobalLoadingProvider>
         </ThemeProvider>
       </body>
     </html>
