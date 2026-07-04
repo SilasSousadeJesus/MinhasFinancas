@@ -4,8 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
 import { ApiError } from "@/types/api";
-import { LancamentoResumo } from "@/types/lancamentos";
+import { FiltroLancamentosParams, LancamentoResumo } from "@/types/lancamentos";
 import { buscarLancamentos, deletarLancamento } from "@/services/api/lancamentos";
+import { buscarCategorias } from "@/services/api/categories";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { NovoLancamentoModal } from "@/components/lancamentos/NovoLancamentoModal";
 import { EditarLancamentoModal } from "@/components/lancamentos/EditarLancamentoModal";
@@ -35,6 +36,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -44,6 +53,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { CategoriaResumo } from "@/types/categories";
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -101,6 +111,7 @@ function toDateInputValue(dateValue: string) {
 export function LancamentosManager() {
   const { session } = useAuth();
   const [lancamentos, setLancamentos] = useState<LancamentoResumo[]>([]);
+  const [categorias, setCategorias] = useState<CategoriaResumo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -113,6 +124,40 @@ export function LancamentosManager() {
   const [statusFiltro, setStatusFiltro] = useState("all");
   const [dataInicialFiltro, setDataInicialFiltro] = useState("");
   const [dataFinalFiltro, setDataFinalFiltro] = useState("");
+  const [buscaDescricao, setBuscaDescricao] = useState("");
+  const [ordenarPor, setOrdenarPor] = useState<"data" | "valor">("data");
+  const [direcaoOrdenacao, setDirecaoOrdenacao] = useState<"asc" | "desc">("desc");
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [totalItens, setTotalItens] = useState(0);
+  const tamanhoPagina = 10;
+
+  const filtrosAtuais = useMemo<FiltroLancamentosParams>(
+    () => ({
+      buscaDescricao,
+      tipo: tipoFiltro !== "all" ? tipoFiltro : undefined,
+      categoriaId: categoriaFiltro !== "all" ? categoriaFiltro : undefined,
+      realizado:
+        statusFiltro === "all" ? undefined : statusFiltro === "realizado" ? "true" : "false",
+      dataInicial: dataInicialFiltro || undefined,
+      dataFinal: dataFinalFiltro || undefined,
+      ordenarPor,
+      direcao: direcaoOrdenacao,
+      pagina: paginaAtual,
+      tamanhoPagina,
+    }),
+    [
+      buscaDescricao,
+      categoriaFiltro,
+      dataFinalFiltro,
+      dataInicialFiltro,
+      direcaoOrdenacao,
+      ordenarPor,
+      paginaAtual,
+      statusFiltro,
+      tipoFiltro,
+    ]
+  );
 
   const carregarLancamentos = useCallback(async () => {
     if (!session?.usuario.id || !session.token) {
@@ -123,8 +168,27 @@ export function LancamentosManager() {
       setIsLoading(true);
       setErrorMessage("");
 
-      const response = await buscarLancamentos(session.usuario.id, session.token);
-      setLancamentos(ordenarLancamentos(response.dados ?? []));
+      const [lancamentosResponse, categoriasResponse] = await Promise.all([
+        buscarLancamentos(session.usuario.id, session.token, filtrosAtuais),
+        buscarCategorias(session.usuario.id, session.token),
+      ]);
+
+      const dadosPaginados = lancamentosResponse.dados;
+      const dadosNormalizados = Array.isArray(dadosPaginados)
+        ? {
+            itens: dadosPaginados,
+            paginaAtual: 1,
+            tamanhoPagina: dadosPaginados.length || tamanhoPagina,
+            totalItens: dadosPaginados.length,
+            totalPaginas: 1,
+          }
+        : dadosPaginados;
+
+      setLancamentos(ordenarLancamentos(dadosNormalizados?.itens ?? []));
+      setTotalPaginas(dadosNormalizados?.totalPaginas ?? 1);
+      setTotalItens(dadosNormalizados?.totalItens ?? 0);
+      setPaginaAtual(dadosNormalizados?.paginaAtual ?? 1);
+      setCategorias(categoriasResponse.dados ?? []);
     } catch (error) {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
@@ -134,60 +198,14 @@ export function LancamentosManager() {
     } finally {
       setIsLoading(false);
     }
-  }, [session?.token, session?.usuario.id]);
+  }, [filtrosAtuais, session?.token, session?.usuario.id]);
 
   useEffect(() => {
     carregarLancamentos();
   }, [carregarLancamentos]);
 
-  const categoriasDisponiveis = useMemo(() => {
-    const mapa = new Map<string, string>();
-
-    lancamentos.forEach((lancamento) => {
-      if (lancamento.categoriaId && lancamento.categoria?.nomeCategoria) {
-        mapa.set(lancamento.categoriaId, lancamento.categoria.nomeCategoria);
-      }
-    });
-
-    return Array.from(mapa.entries())
-      .map(([id, nome]) => ({ id, nome }))
-      .sort((a, b) => a.nome.localeCompare(b.nome));
-  }, [lancamentos]);
-
-  const lancamentosFiltrados = useMemo(() => {
-    return lancamentos.filter((lancamento) => {
-      if (tipoFiltro !== "all" && String(lancamento.tipo) !== tipoFiltro) {
-        return false;
-      }
-
-      if (categoriaFiltro !== "all" && lancamento.categoriaId !== categoriaFiltro) {
-        return false;
-      }
-
-      if (statusFiltro === "realizado" && !lancamento.realizado) {
-        return false;
-      }
-
-      if (statusFiltro === "pendente" && lancamento.realizado) {
-        return false;
-      }
-
-      const dataLancamento = toDateInputValue(lancamento.dataLancamento);
-
-      if (dataInicialFiltro && dataLancamento < dataInicialFiltro) {
-        return false;
-      }
-
-      if (dataFinalFiltro && dataLancamento > dataFinalFiltro) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [categoriaFiltro, dataFinalFiltro, dataInicialFiltro, lancamentos, statusFiltro, tipoFiltro]);
-
   const resumo = useMemo(() => {
-    return lancamentosFiltrados.reduce(
+    return lancamentos.reduce(
       (acc, lancamento) => {
         if (lancamento.tipo === 1) {
           acc.receitas += lancamento.valor;
@@ -201,7 +219,26 @@ export function LancamentosManager() {
       },
       { receitas: 0, despesas: 0 }
     );
-  }, [lancamentosFiltrados]);
+  }, [lancamentos]);
+
+  const categoriasDisponiveis = useMemo(() => {
+    return [...categorias]
+      .sort((a, b) => a.nomeCategoria.localeCompare(b.nomeCategoria))
+      .map((categoria) => ({ id: categoria.id, nome: categoria.nomeCategoria }));
+  }, [categorias]);
+
+  useEffect(() => {
+    setPaginaAtual(1);
+  }, [
+    buscaDescricao,
+    tipoFiltro,
+    categoriaFiltro,
+    statusFiltro,
+    dataInicialFiltro,
+    dataFinalFiltro,
+    ordenarPor,
+    direcaoOrdenacao,
+  ]);
 
   function limparFiltros() {
     setTipoFiltro("all");
@@ -209,6 +246,10 @@ export function LancamentosManager() {
     setStatusFiltro("all");
     setDataInicialFiltro("");
     setDataFinalFiltro("");
+    setBuscaDescricao("");
+    setOrdenarPor("data");
+    setDirecaoOrdenacao("desc");
+    setPaginaAtual(1);
   }
 
   async function confirmarExclusao() {
@@ -265,18 +306,18 @@ export function LancamentosManager() {
             <Card>
               <CardHeader className="pb-3">
                 <CardDescription>Total filtrado de lancamentos</CardDescription>
-                <CardTitle className="text-3xl">{lancamentosFiltrados.length}</CardTitle>
+                <CardTitle className="text-3xl">{totalItens}</CardTitle>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader className="pb-3">
-                <CardDescription>Receitas filtradas</CardDescription>
+                <CardDescription>Receitas na pagina</CardDescription>
                 <CardTitle className="text-3xl">{formatCurrency(resumo.receitas)}</CardTitle>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader className="pb-3">
-                <CardDescription>Despesas filtradas</CardDescription>
+                <CardDescription>Despesas na pagina</CardDescription>
                 <CardTitle className="text-3xl">{formatCurrency(resumo.despesas)}</CardTitle>
               </CardHeader>
             </Card>
@@ -309,7 +350,17 @@ export function LancamentosManager() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+              <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-6">
+                <div className="space-y-2 xl:col-span-2">
+                  <p className="text-sm font-medium">Busca por descricao</p>
+                  <Input
+                    type="text"
+                    value={buscaDescricao}
+                    onChange={(event) => setBuscaDescricao(event.target.value)}
+                    placeholder="Ex: mercado, salario, freelance"
+                  />
+                </div>
+
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Tipo</p>
                   <Select value={tipoFiltro} onValueChange={setTipoFiltro}>
@@ -368,9 +419,40 @@ export function LancamentosManager() {
                 </div>
               </div>
 
+              <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Ordenar por</p>
+                  <Select value={ordenarPor} onValueChange={(value) => setOrdenarPor(value as "data" | "valor")}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Escolha a ordenacao" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="data">Data</SelectItem>
+                      <SelectItem value="valor">Valor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Direcao</p>
+                  <Select
+                    value={direcaoOrdenacao}
+                    onValueChange={(value) => setDirecaoOrdenacao(value as "asc" | "desc")}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Escolha a direcao" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="desc">Decrescente</SelectItem>
+                      <SelectItem value="asc">Crescente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
               <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm text-muted-foreground">
-                  {lancamentosFiltrados.length} resultado(s) encontrado(s).
+                  {totalItens} resultado(s) encontrado(s).
                 </p>
                 <Button variant="ghost" onClick={limparFiltros}>
                   Limpar filtros
@@ -388,7 +470,7 @@ export function LancamentosManager() {
                     Ainda nao existem lancamentos cadastrados para esta conta.
                   </p>
                 </div>
-              ) : lancamentosFiltrados.length === 0 ? (
+              ) : totalItens === 0 ? (
                 <div className="rounded-lg border border-dashed px-6 py-10 text-center">
                   <p className="text-sm text-muted-foreground">
                     Nenhum lancamento encontrado com os filtros atuais.
@@ -408,7 +490,7 @@ export function LancamentosManager() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {lancamentosFiltrados.map((lancamento) => (
+                    {lancamentos.map((lancamento) => (
                       <TableRow key={lancamento.id}>
                         <TableCell>
                           <div>
@@ -451,6 +533,76 @@ export function LancamentosManager() {
                   </TableBody>
                 </Table>
               )}
+
+              {!isLoading && totalItens > 0 ? (
+                <Pagination className="mt-6">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          if (paginaAtual > 1) {
+                            setPaginaAtual((current) => current - 1);
+                          }
+                        }}
+                        className={paginaAtual <= 1 ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+
+                    {Array.from({ length: totalPaginas }, (_, index) => index + 1)
+                      .filter((pagina) => {
+                        if (totalPaginas <= 5) {
+                          return true;
+                        }
+
+                        return (
+                          pagina === 1 ||
+                          pagina === totalPaginas ||
+                          Math.abs(pagina - paginaAtual) <= 1
+                        );
+                      })
+                      .map((pagina, index, paginas) => {
+                        const paginaAnterior = paginas[index - 1];
+
+                        return (
+                          <div key={pagina} className="flex items-center">
+                            {paginaAnterior && pagina - paginaAnterior > 1 ? (
+                              <PaginationItem>
+                                <span className="px-2 text-sm text-muted-foreground">...</span>
+                              </PaginationItem>
+                            ) : null}
+                            <PaginationItem>
+                              <PaginationLink
+                                href="#"
+                                isActive={paginaAtual === pagina}
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  setPaginaAtual(pagina);
+                                }}
+                              >
+                                {pagina}
+                              </PaginationLink>
+                            </PaginationItem>
+                          </div>
+                        );
+                      })}
+
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          if (paginaAtual < totalPaginas) {
+                            setPaginaAtual((current) => current + 1);
+                          }
+                        }}
+                        className={paginaAtual >= totalPaginas ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              ) : null}
             </CardContent>
           </Card>
         </div>

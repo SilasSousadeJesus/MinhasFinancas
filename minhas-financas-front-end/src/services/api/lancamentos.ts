@@ -1,11 +1,36 @@
 import { apiRequest } from "./http";
-import { EditarLancamentoPayload, LancamentoResumo } from "@/types/lancamentos";
+import {
+  EditarLancamentoPayload,
+  FiltroLancamentosParams,
+  LancamentoResumo,
+  RespostaLancamentos,
+  ResultadoPaginado,
+} from "@/types/lancamentos";
 
-export function buscarLancamentos(usuarioId: string, token: string) {
-  return apiRequest<LancamentoResumo[]>(`/Lancamento/BuscarTodosOsLancamento/${usuarioId}`, {
+export function buscarLancamentos(
+  usuarioId: string,
+  token: string,
+  filtros: FiltroLancamentosParams = {}
+) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(filtros).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") {
+      return;
+    }
+
+    searchParams.set(key, String(value));
+  });
+
+  const queryString = searchParams.toString();
+
+  return apiRequest<RespostaLancamentos>(
+    `/Lancamento/BuscarTodosOsLancamento/${usuarioId}${queryString ? `?${queryString}` : ""}`,
+    {
     method: "GET",
     token,
-  });
+    }
+  );
 }
 
 export function buscarLancamento(usuarioId: string, lancamentoId: string, token: string) {

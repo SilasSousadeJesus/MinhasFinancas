@@ -20,6 +20,29 @@ export interface LancamentoResumo {
   subCategoria?: SubCategoriaResumo | null;
 }
 
+export interface FiltroLancamentosParams {
+  buscaDescricao?: string;
+  tipo?: string;
+  categoriaId?: string;
+  realizado?: string;
+  dataInicial?: string;
+  dataFinal?: string;
+  ordenarPor?: "data" | "valor";
+  direcao?: "asc" | "desc";
+  pagina?: number;
+  tamanhoPagina?: number;
+}
+
+export interface ResultadoPaginado<T> {
+  itens: T[];
+  paginaAtual: number;
+  tamanhoPagina: number;
+  totalItens: number;
+  totalPaginas: number;
+}
+
+export type RespostaLancamentos = ResultadoPaginado<LancamentoResumo> | LancamentoResumo[];
+
 export interface EditarLancamentoPayload {
   id: string;
   valor: number;

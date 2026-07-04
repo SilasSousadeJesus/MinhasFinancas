@@ -39,10 +39,10 @@ namespace MinhasFinancas.API.Controllers
         }
         [Authorize]
         [HttpGet("BuscarTodosOsLancamento/{usuarioId}")]
-        public async Task<IActionResult> BuscarTodosOsCartoes([FromRoute] string usuarioId)
+        public async Task<IActionResult> BuscarTodosOsCartoes([FromRoute] string usuarioId, [FromQuery] FiltroListagemLancamentoDTO filtro)
         {
 
-            var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId);
+            var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId, filtro);
 
             if (!dados.Sucesso)
             {

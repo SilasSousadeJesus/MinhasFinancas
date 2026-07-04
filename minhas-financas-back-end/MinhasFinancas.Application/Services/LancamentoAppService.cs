@@ -6,6 +6,7 @@ using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
 using System.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -51,6 +52,103 @@ namespace MinhasFinancas.Application.Services
                 retorno.MensagemSistema = $"{lista.Count} elemento(s) encontrado(s)";
                 retorno.MensagemUsuario = $"{lista.Count} elemento(s)  encontrado(s)";
                 retorno.Dados = lista;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possivel buscar a lista de lançamentos";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
+        public async Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id, FiltroListagemLancamentoDTO filtro)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorusuario = await _usuarioAppService.BuscarUmUsuario(id);
+
+                if (!buscaPorusuario.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorusuario.Sucesso;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = buscaPorusuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorusuario.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var lista = await _lancamentoRepository.BuscarTodosOsElementosAsync(id);
+                var query = lista.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(filtro.BuscaDescricao))
+                {
+                    var busca = filtro.BuscaDescricao.Trim().ToLower();
+                    query = query.Where(x => x.Descricao.ToLower().Contains(busca));
+                }
+
+                if (filtro.Tipo.HasValue)
+                {
+                    query = query.Where(x => (int)x.Tipo == filtro.Tipo.Value);
+                }
+
+                if (filtro.CategoriaId.HasValue)
+                {
+                    query = query.Where(x => x.CategoriaId == filtro.CategoriaId.Value);
+                }
+
+                if (filtro.Realizado.HasValue)
+                {
+                    query = query.Where(x => x.Realizado == filtro.Realizado.Value);
+                }
+
+                if (filtro.DataInicial.HasValue)
+                {
+                    var dataInicial = filtro.DataInicial.Value.Date;
+                    query = query.Where(x => x.DataLancamento.Date >= dataInicial);
+                }
+
+                if (filtro.DataFinal.HasValue)
+                {
+                    var dataFinal = filtro.DataFinal.Value.Date;
+                    query = query.Where(x => x.DataLancamento.Date <= dataFinal);
+                }
+
+                var ordenarPor = filtro.OrdenarPor.Trim().ToLower();
+                var direcao = filtro.Direcao.Trim().ToLower();
+                var asc = direcao == "asc";
+
+                query = ordenarPor switch
+                {
+                    "valor" => asc ? query.OrderBy(x => x.Valor) : query.OrderByDescending(x => x.Valor),
+                    _ => asc ? query.OrderBy(x => x.DataLancamento) : query.OrderByDescending(x => x.DataLancamento),
+                };
+
+                var pagina = filtro.Pagina < 1 ? 1 : filtro.Pagina;
+                var tamanhoPagina = filtro.TamanhoPagina < 1 ? 10 : filtro.TamanhoPagina;
+                var totalItens = query.Count();
+                var totalPaginas = totalItens == 0 ? 1 : (int)Math.Ceiling(totalItens / (double)tamanhoPagina);
+                var itens = query.Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
+
+                var resultado = new ResultadoPaginadoDTO<Lancamento>
+                {
+                    Itens = itens,
+                    PaginaAtual = pagina,
+                    TamanhoPagina = tamanhoPagina,
+                    TotalItens = totalItens,
+                    TotalPaginas = totalPaginas,
+                };
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = $"{totalItens} elemento(s) encontrado(s)";
+                retorno.MensagemUsuario = $"{totalItens} elemento(s) encontrado(s)";
+                retorno.Dados = resultado;
                 return retorno;
             }
             catch (Exception ex)
