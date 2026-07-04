@@ -52,7 +52,7 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
       return;
     }
 
-    const nextPath = searchParams.get("next") || "/dashboard";
+    const nextPath = searchParams?.get("next") || "/dashboard";
     router.replace(nextPath);
   }, [isAuthenticated, router, searchParams]);
 
@@ -61,7 +61,7 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
       setIsSubmitting(true);
       setErrorMessage("");
       await loginWithCredentials(data);
-      const nextPath = searchParams.get("next") || "/dashboard";
+      const nextPath = searchParams?.get("next") || "/dashboard";
       router.push(nextPath);
       router.refresh();
     } catch (error) {

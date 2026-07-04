@@ -140,7 +140,7 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
               )}
             >
               <ProjectionIcon className="w-5 h-5" />
-              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Projecao</span>
+              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Projeçoes</span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

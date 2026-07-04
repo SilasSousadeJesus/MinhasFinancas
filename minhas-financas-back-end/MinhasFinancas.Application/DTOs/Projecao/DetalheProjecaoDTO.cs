@@ -8,8 +8,10 @@ namespace MinhasFinancas.Application.DTOs.Projecao
         public decimal ValorAcumuladoInicial { get; set; }
         public decimal ValorObjetivo { get; set; }
         public int MesesLimite { get; set; }
+        public bool AtreladaADespesas { get; set; }
         public List<RendaProjecaoDTO> Rendas { get; set; } = new();
         public List<RendaExtraMensalProjecaoDTO> RendasExtrasMensais { get; set; } = new();
+        public List<DividaManualMensalProjecaoDTO> DividasManuaisMensais { get; set; } = new();
         public ResultadoProjecaoDTO? ResultadoAtual { get; set; }
     }
 }

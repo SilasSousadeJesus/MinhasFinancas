@@ -1,0 +1,8 @@
+namespace MinhasFinancas.Application.DTOs.Projecao
+{
+    public class DividaManualMensalProjecaoDTO
+    {
+        public string MesReferencia { get; set; } = string.Empty;
+        public decimal Valor { get; set; } = decimal.Zero;
+    }
+}

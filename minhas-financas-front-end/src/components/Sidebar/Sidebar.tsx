@@ -19,7 +19,7 @@ import {
 import { Pie, PieChart, CartesianGrid, XAxis, Line, LineChart } from "recharts";
 import { MenuNavegacao } from "../NavegacaoMenu/MenuNavegacao";
 import { PowerIcon } from "../Icons/Icons";
-import { BotaoTrocaTema } from "../BotaoTrocaTema/botaoTrocaTema";
+import { BotaoTrocaTema } from "../BotaoTrocaTema/BotaoTrocaTema";
 import { useAuth } from "@/providers/auth-provider";
 
 export function Sidebar() {

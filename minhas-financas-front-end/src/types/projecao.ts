@@ -9,7 +9,9 @@ export interface CalcularProjecaoPayload {
   valorObjetivo: number;
   dataInicial?: string | null;
   mesesLimite?: number;
+  atreladaADespesas: boolean;
   rendasExtrasMensais: RendaExtraMensalProjecaoInput[];
+  dividasManuaisMensais: DividaManualMensalProjecaoInput[];
 }
 
 export interface CriarProjecaoPayload {
@@ -19,8 +21,10 @@ export interface CriarProjecaoPayload {
   valorAcumuladoInicial: number;
   valorObjetivo: number;
   mesesLimite?: number;
+  atreladaADespesas: boolean;
   rendas: RendaProjecaoInput[];
   rendasExtrasMensais: RendaExtraMensalProjecaoInput[];
+  dividasManuaisMensais: DividaManualMensalProjecaoInput[];
 }
 
 export interface EditarProjecaoPayload {
@@ -29,8 +33,10 @@ export interface EditarProjecaoPayload {
   valorAcumuladoInicial: number;
   valorObjetivo: number;
   mesesLimite?: number;
+  atreladaADespesas: boolean;
   rendas: RendaProjecaoInput[];
   rendasExtrasMensais: RendaExtraMensalProjecaoInput[];
+  dividasManuaisMensais: DividaManualMensalProjecaoInput[];
 }
 
 export interface RendaExtraMensalProjecaoInput {
@@ -38,9 +44,15 @@ export interface RendaExtraMensalProjecaoInput {
   valor: number;
 }
 
+export interface DividaManualMensalProjecaoInput {
+  mesReferencia: string;
+  valor: number;
+}
+
 export interface LinhaResultadoProjecao {
   mesReferencia: string;
   dividasTotais: number;
+  dividasEditaveis: boolean;
   rendaExtraMensal: number;
   rendaManualTotal: number;
   receitaTotalMes: number;
@@ -68,6 +80,7 @@ export interface ProjecaoResumo {
   valorAcumuladoInicial: number;
   valorObjetivo: number;
   mesesLimite: number;
+  atreladaADespesas: boolean;
   quantidadeRendas: number;
   rendaManualTotal: number;
   resultadoAtual?: ResultadoProjecao | null;
@@ -80,7 +93,9 @@ export interface ProjecaoDetalhe {
   valorAcumuladoInicial: number;
   valorObjetivo: number;
   mesesLimite: number;
+  atreladaADespesas: boolean;
   rendas: RendaProjecaoInput[];
   rendasExtrasMensais: RendaExtraMensalProjecaoInput[];
+  dividasManuaisMensais: DividaManualMensalProjecaoInput[];
   resultadoAtual?: ResultadoProjecao | null;
 }

@@ -4,6 +4,7 @@ namespace MinhasFinancas.Application.DTOs.Projecao
     {
         public string MesReferencia { get; set; } = string.Empty;
         public decimal DividasTotais { get; set; } = decimal.Zero;
+        public bool DividasEditaveis { get; set; }
         public decimal RendaExtraMensal { get; set; } = decimal.Zero;
         public decimal RendaManualTotal { get; set; } = decimal.Zero;
         public decimal ReceitaTotalMes { get; set; } = decimal.Zero;

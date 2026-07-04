@@ -8,18 +8,38 @@ import {
   ResultadoProjecao,
 } from "@/types/projecao";
 
-export function listarProjecoes(usuarioId: string, token: string) {
-  return apiRequest<ProjecaoResumo[]>(`/Projecao/BuscarTodas/${usuarioId}`, {
-    method: "GET",
-    token,
+const inflightRequests = new Map<string, Promise<unknown>>();
+
+function withDedupe<T>(key: string, factory: () => Promise<T>) {
+  const existing = inflightRequests.get(key);
+  if (existing) {
+    return existing as Promise<T>;
+  }
+
+  const request = factory().finally(() => {
+    inflightRequests.delete(key);
   });
+
+  inflightRequests.set(key, request);
+  return request;
+}
+
+export function listarProjecoes(usuarioId: string, token: string) {
+  return withDedupe(`listar-projecoes:${usuarioId}`, () =>
+    apiRequest<ProjecaoResumo[]>(`/Projecao/BuscarTodas/${usuarioId}`, {
+      method: "GET",
+      token,
+    })
+  );
 }
 
 export function buscarProjecao(usuarioId: string, projecaoId: string, token: string) {
-  return apiRequest<ProjecaoDetalhe>(`/Projecao/BuscarUma/${usuarioId}/${projecaoId}`, {
-    method: "GET",
-    token,
-  });
+  return withDedupe(`buscar-projecao:${usuarioId}:${projecaoId}`, () =>
+    apiRequest<ProjecaoDetalhe>(`/Projecao/BuscarUma/${usuarioId}/${projecaoId}`, {
+      method: "GET",
+      token,
+    })
+  );
 }
 
 export function criarProjecao(payload: CriarProjecaoPayload, token: string) {

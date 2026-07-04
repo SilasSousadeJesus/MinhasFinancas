@@ -19,6 +19,7 @@ namespace MinhasFinancas.Domain.Entities
         public decimal ValorObjetivo { get; set; } = decimal.Zero;
 
         public int MesesLimite { get; set; } = 60;
+        public bool AtreladaADespesas { get; set; } = true;
 
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
 
@@ -30,5 +31,6 @@ namespace MinhasFinancas.Domain.Entities
 
         public List<RendaProjecao> Rendas { get; set; } = new();
         public List<RendaExtraProjecaoMensal> RendasExtrasMensais { get; set; } = new();
+        public List<DividaManualProjecaoMensal> DividasManuaisMensais { get; set; } = new();
     }
 }

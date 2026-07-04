@@ -19,6 +19,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
                 .Where(x => x.UsuarioId == id)
                 .Include(x => x.Rendas)
                 .Include(x => x.RendasExtrasMensais)
+                .Include(x => x.DividasManuaisMensais)
                 .OrderByDescending(x => x.DataAtualizacao)
                 .ToListAsync();
         }
@@ -29,6 +30,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
                 .Where(x => x.UsuarioId == idPatrono && x.Id == id)
                 .Include(x => x.Rendas.OrderBy(r => r.Nome))
                 .Include(x => x.RendasExtrasMensais.OrderBy(r => r.MesReferencia))
+                .Include(x => x.DividasManuaisMensais.OrderBy(r => r.MesReferencia))
                 .FirstOrDefaultAsync();
         }
 
@@ -49,6 +51,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
             var existente = await _context.Set<Projecao>()
                 .Include(x => x.Rendas)
                 .Include(x => x.RendasExtrasMensais)
+                .Include(x => x.DividasManuaisMensais)
                 .FirstOrDefaultAsync(x => x.Id == elemento.Id);
 
             if (existente == null)
@@ -61,6 +64,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
             existente.ValorAcumuladoInicial = elemento.ValorAcumuladoInicial;
             existente.ValorObjetivo = elemento.ValorObjetivo;
             existente.MesesLimite = elemento.MesesLimite;
+            existente.AtreladaADespesas = elemento.AtreladaADespesas;
             existente.DataAtualizacao = elemento.DataAtualizacao;
 
             _context.Set<RendaProjecao>().RemoveRange(existente.Rendas);
@@ -69,8 +73,12 @@ namespace MinhasFinancas.Infra.Data.Repositories
             _context.Set<RendaExtraProjecaoMensal>().RemoveRange(existente.RendasExtrasMensais);
             await _context.SaveChangesAsync();
 
+            _context.Set<DividaManualProjecaoMensal>().RemoveRange(existente.DividasManuaisMensais);
+            await _context.SaveChangesAsync();
+
             await _context.Set<RendaProjecao>().AddRangeAsync(elemento.Rendas);
             await _context.Set<RendaExtraProjecaoMensal>().AddRangeAsync(elemento.RendasExtrasMensais);
+            await _context.Set<DividaManualProjecaoMensal>().AddRangeAsync(elemento.DividasManuaisMensais);
 
             await _context.SaveChangesAsync();
         }

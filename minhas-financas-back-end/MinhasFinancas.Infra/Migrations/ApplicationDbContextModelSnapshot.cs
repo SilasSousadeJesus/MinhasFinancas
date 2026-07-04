@@ -309,6 +309,28 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("Conta");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.DividaManualProjecaoMensal", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("MesReferencia")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProjecaoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjecaoId");
+
+                    b.ToTable("DividaManualProjecaoMensal");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Lancamento", b =>
                 {
                     b.Property<Guid>("Id")
@@ -546,6 +568,9 @@ namespace MinhasFinancas.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("AtreladaADespesas")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("DataAtualizacao")
                         .HasColumnType("datetime2");
 
@@ -738,6 +763,17 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.DividaManualProjecaoMensal", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Projecao", "Projecao")
+                        .WithMany("DividasManuaisMensais")
+                        .HasForeignKey("ProjecaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Projecao");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Lancamento", b =>
                 {
                     b.HasOne("MinhasFinancas.Domain.Entities.Cartao", "Cartao")
@@ -890,6 +926,8 @@ namespace MinhasFinancas.Infra.Migrations
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
                 {
+                    b.Navigation("DividasManuaisMensais");
+
                     b.Navigation("Rendas");
 
                     b.Navigation("RendasExtrasMensais");

@@ -10,9 +10,10 @@ import { Cell, Pie, PieChart } from "recharts";
 import { useAuth } from "@/providers/auth-provider";
 import { ApiError } from "@/types/api";
 import {
+  DividaManualMensalProjecaoInput,
+  LinhaResultadoProjecao,
   ProjecaoDetalhe,
   RendaExtraMensalProjecaoInput,
-  ResultadoProjecao,
 } from "@/types/projecao";
 import { buscarProjecao, calcularProjecaoSalva, editarProjecao } from "@/services/api/projecao";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -41,6 +43,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ProjecaoLoadingOverlay } from "./ProjecaoLoadingOverlay";
 
 const rendaSchema = z.object({
   nome: z.string().min(2, "Informe o nome da renda."),
@@ -53,6 +56,7 @@ const formSchema = z.object({
   valorAcumuladoInicial: z.coerce.number().min(0, "O acumulado nao pode ser negativo."),
   valorObjetivo: z.coerce.number().min(0, "Informe um valor valido."),
   mesesLimite: z.coerce.number().min(1, "Informe ao menos 1 mes.").max(240, "Use no maximo 240 meses."),
+  atreladaADespesas: z.boolean(),
   rendas: z.array(rendaSchema).min(1, "Informe ao menos uma renda."),
 });
 
@@ -107,6 +111,29 @@ function toMonthlyExtrasMap(items: RendaExtraMensalProjecaoInput[] = []) {
   }, {});
 }
 
+function toMonthlyDebtsMap(items: DividaManualMensalProjecaoInput[] = []) {
+  return items.reduce<Record<string, number>>((acc, item) => {
+    acc[item.mesReferencia] = Number(item.valor) || 0;
+    return acc;
+  }, {});
+}
+
+function buildMonths(dataInicial: string, mesesLimite: number) {
+  if (!dataInicial || mesesLimite <= 0) {
+    return [];
+  }
+
+  const [year, month] = dataInicial.split("-").map(Number);
+  if (!year || !month) {
+    return [];
+  }
+
+  return Array.from({ length: mesesLimite }, (_, index) => {
+    const current = new Date(year, month - 1 + index, 1);
+    return `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}`;
+  });
+}
+
 interface ProjecaoManagerProps {
   projecaoId: string;
 }
@@ -114,8 +141,8 @@ interface ProjecaoManagerProps {
 export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
   const { session } = useAuth();
   const [projecao, setProjecao] = useState<ProjecaoDetalhe | null>(null);
-  const [resultado, setResultado] = useState<ResultadoProjecao | null>(null);
   const [extrasPorMes, setExtrasPorMes] = useState<Record<string, number>>({});
+  const [dividasPorMes, setDividasPorMes] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
@@ -129,6 +156,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
       valorAcumuladoInicial: 0,
       valorObjetivo: 0,
       mesesLimite: 60,
+      atreladaADespesas: true,
       rendas: [{ nome: "Salario principal", valorMensal: 0 }],
     },
   });
@@ -138,19 +166,17 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
     name: "rendas",
   });
 
-  const rendasWatch = useWatch({
-    control: form.control,
-    name: "rendas",
-  });
-
-  const valorObjetivoWatch = useWatch({
-    control: form.control,
-    name: "valorObjetivo",
-  });
-
+  const rendasWatch = useWatch({ control: form.control, name: "rendas" });
+  const valorObjetivoWatch = useWatch({ control: form.control, name: "valorObjetivo" });
   const valorAcumuladoInicialWatch = useWatch({
     control: form.control,
     name: "valorAcumuladoInicial",
+  });
+  const dataInicialWatch = useWatch({ control: form.control, name: "dataInicial" });
+  const mesesLimiteWatch = useWatch({ control: form.control, name: "mesesLimite" });
+  const atreladaADespesasWatch = useWatch({
+    control: form.control,
+    name: "atreladaADespesas",
   });
 
   const rendaBaseTotal = useMemo(() => {
@@ -161,21 +187,13 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
   }, [rendasWatch]);
 
   const valorRestanteAtual = useMemo(() => {
-    if (resultado) {
-      return resultado.valorRestanteParaObjetivo;
-    }
-
     return Math.max(
       0,
       (Number(valorObjetivoWatch) || 0) - (Number(valorAcumuladoInicialWatch) || 0)
     );
-  }, [resultado, valorAcumuladoInicialWatch, valorObjetivoWatch]);
+  }, [valorAcumuladoInicialWatch, valorObjetivoWatch]);
 
   const percentualConcluidoAtual = useMemo(() => {
-    if (resultado) {
-      return Number(resultado.percentualConcluido) || 0;
-    }
-
     const objetivo = Number(valorObjetivoWatch) || 0;
     const acumulado = Number(valorAcumuladoInicialWatch) || 0;
 
@@ -184,7 +202,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
     }
 
     return Math.min(100, Math.max(0, (acumulado / objetivo) * 100));
-  }, [resultado, valorAcumuladoInicialWatch, valorObjetivoWatch]);
+  }, [valorAcumuladoInicialWatch, valorObjetivoWatch]);
 
   const progressChartData = useMemo(() => {
     const concluido = Number(percentualConcluidoAtual.toFixed(2));
@@ -196,12 +214,61 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
     ];
   }, [percentualConcluidoAtual]);
 
-  const linhasComExtras = useMemo(() => {
-    return (resultado?.linhas ?? []).map((linha) => ({
-      ...linha,
-      rendaExtraMensal: extrasPorMes[linha.mesReferencia] ?? linha.rendaExtraMensal ?? 0,
-    }));
-  }, [extrasPorMes, resultado?.linhas]);
+  const mesesDaProjecao = useMemo(() => {
+    const dataBase = dataInicialWatch || normalizeMonthInput(projecao?.dataInicial) || "";
+    return buildMonths(dataBase, Number(mesesLimiteWatch) || 0);
+  }, [dataInicialWatch, mesesLimiteWatch, projecao?.dataInicial]);
+
+  const linhasOriginaisPorMes = useMemo(() => {
+    return (projecao?.resultadoAtual?.linhas ?? []).reduce<Record<string, LinhaResultadoProjecao>>(
+      (acc, linha) => {
+      acc[linha.mesReferencia] = linha;
+      return acc;
+      },
+      {}
+    );
+  }, [projecao?.resultadoAtual?.linhas]);
+
+  const previewRows = useMemo(() => {
+    let acumuladoAtual = Number(valorAcumuladoInicialWatch) || 0;
+
+    return mesesDaProjecao.map((mesReferencia) => {
+      const linhaOriginal = (linhasOriginaisPorMes as Record<string, any>)[mesReferencia];
+      const rendaExtraMensal = Number(extrasPorMes[mesReferencia] ?? linhaOriginal?.rendaExtraMensal ?? 0);
+      const dividasTotais = atreladaADespesasWatch
+        ? Number(linhaOriginal?.dividasTotais ?? 0)
+        : Number(dividasPorMes[mesReferencia] ?? linhaOriginal?.dividasTotais ?? 0);
+      const receitaTotalMes = rendaBaseTotal + rendaExtraMensal;
+      const sobraDoMes = receitaTotalMes - dividasTotais;
+      acumuladoAtual += sobraDoMes;
+
+      return {
+        mesReferencia,
+        dividasTotais,
+        dividasEditaveis: !atreladaADespesasWatch,
+        rendaExtraMensal,
+        rendaManualTotal: rendaBaseTotal,
+        receitaTotalMes,
+        sobraDoMes,
+        acumuladoProjetado: acumuladoAtual,
+        objetivoAtingidoNoMes: acumuladoAtual >= (Number(valorObjetivoWatch) || 0),
+      };
+    });
+  }, [
+    atreladaADespesasWatch,
+    dividasPorMes,
+    extrasPorMes,
+    linhasOriginaisPorMes,
+    mesesDaProjecao,
+    rendaBaseTotal,
+    valorAcumuladoInicialWatch,
+    valorObjetivoWatch,
+  ]);
+
+  const objetivoProjetado = useMemo(() => {
+    const linha = previewRows.find((item) => item.objetivoAtingidoNoMes);
+    return linha?.mesReferencia ?? null;
+  }, [previewRows]);
 
   async function carregarProjecao() {
     if (!session?.usuario.id || !session.token) {
@@ -224,6 +291,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
 
       setProjecao(dados);
       setExtrasPorMes(toMonthlyExtrasMap(dados.rendasExtrasMensais));
+      setDividasPorMes(toMonthlyDebtsMap(dados.dividasManuaisMensais));
 
       form.reset({
         nome: dados.nome,
@@ -231,13 +299,12 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
         valorAcumuladoInicial: dados.valorAcumuladoInicial,
         valorObjetivo: dados.valorObjetivo,
         mesesLimite: dados.mesesLimite,
+        atreladaADespesas: dados.atreladaADespesas,
         rendas:
           dados.rendas.length > 0
             ? dados.rendas
             : [{ nome: "Salario principal", valorMensal: 0 }],
       });
-
-      setResultado(dados.resultadoAtual ?? null);
     } catch (error) {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
@@ -263,6 +330,15 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
       }));
   }
 
+  function buildDebtsPayload() {
+    return Object.entries(dividasPorMes)
+      .filter(([, valor]) => Number(valor) >= 0)
+      .map(([mesReferencia, valor]) => ({
+        mesReferencia,
+        valor: Number(valor) || 0,
+      }));
+  }
+
   async function salvarProjecao(values: FormValues) {
     if (!session?.usuario.id || !session.token) {
       throw new Error("Sessao invalida.");
@@ -277,11 +353,13 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
         valorAcumuladoInicial: values.valorAcumuladoInicial,
         valorObjetivo: values.valorObjetivo,
         mesesLimite: values.mesesLimite,
+        atreladaADespesas: values.atreladaADespesas,
         rendas: values.rendas.map((renda) => ({
           nome: renda.nome,
           valorMensal: renda.valorMensal,
         })),
         rendasExtrasMensais: buildExtrasPayload(),
+        dividasManuaisMensais: buildDebtsPayload(),
       },
       session.token
     );
@@ -323,16 +401,9 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
       }
 
       await salvarProjecao(values);
-      const response = await calcularProjecaoSalva(session.usuario.id, projecaoId, session.token);
-      setResultado(response.dados ?? null);
-      setProjecao((current) =>
-        current
-          ? {
-              ...current,
-              rendasExtrasMensais: buildExtrasPayload(),
-            }
-          : current
-      );
+      await carregarProjecao();
+      await calcularProjecaoSalva(session.usuario.id, projecaoId, session.token);
+      await carregarProjecao();
     } catch (error) {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
@@ -346,8 +417,21 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
     }
   }
 
+  const isBusy = isLoading || isSaving || isCalculating;
+
   return (
-    <main className="flex-1 px-6 py-8 md:px-8">
+    <main className="relative flex-1 px-6 py-8 md:px-8">
+      <ProjecaoLoadingOverlay
+        visible={isBusy}
+        message={
+          isLoading
+            ? "Carregando projeçao..."
+            : isCalculating
+              ? "Salvando e gerando projeçao..."
+              : "Salvando projeçao..."
+        }
+      />
+
       <div className="mx-auto max-w-7xl space-y-6">
         <Card className="border-0 shadow-none">
           <CardHeader className="px-0 pt-0">
@@ -356,13 +440,15 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                 <Button asChild variant="ghost" className="w-fit px-0 text-muted-foreground">
                   <Link href="/projecao">
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    Voltar para as projecoes
+                    Voltar para Projeçoes
                   </Link>
                 </Button>
                 <div>
                   <CardTitle className="text-3xl">Projecao detalhada</CardTitle>
                   <CardDescription className="mt-2 max-w-3xl text-base">
-                    A renda base fica no cadastro da projecao. A renda extra agora pode ser ajustada por mes diretamente na tabela.
+                    A renda base fica no cadastro da projecao. Preencha a renda extra
+                    diretamente em cada mes e, se a projeçao nao estiver atrelada a despesas,
+                    edite tambem as dividas mensais.
                   </CardDescription>
                 </div>
               </div>
@@ -372,18 +458,14 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                   type="button"
                   variant="outline"
                   onClick={form.handleSubmit(onSubmit)}
-                  disabled={isLoading || isSaving || isCalculating}
+                  disabled={isBusy}
                 >
                   <Save className="mr-2 h-4 w-4" />
-                  {isSaving ? "Salvando..." : "Salvar alteracoes"}
+                  {isSaving ? "Salvando..." : "Salvar alteraçoes"}
                 </Button>
-                <Button
-                  type="button"
-                  onClick={handleSalvarECalcular}
-                  disabled={isLoading || isSaving || isCalculating}
-                >
+                <Button type="button" onClick={handleSalvarECalcular} disabled={isBusy}>
                   <Sparkles className="mr-2 h-4 w-4" />
-                  {isCalculating ? "Calculando..." : "Salvar e gerar projecao"}
+                  {isCalculating ? "Calculando..." : "Salvar e gerar Projeção"}
                 </Button>
               </div>
             </div>
@@ -401,7 +483,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
             <CardHeader className="pb-3">
               <CardDescription>Objetivo projetado</CardDescription>
               <CardTitle className="text-3xl">
-                {resultado ? formatMonth(resultado.mesObjetivo) : "A calcular"}
+                {objetivoProjetado ? formatMonth(objetivoProjetado) : "A calcular"}
               </CardTitle>
             </CardHeader>
           </Card>
@@ -424,166 +506,179 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
             <CardHeader>
               <CardTitle>Dados da projecao</CardTitle>
               <CardDescription>
-                As despesas continuam vindo automaticamente dos lancamentos. A renda extra agora e mensal e independente por linha.
+                Some salario, aluguel, comissao e outras entradas recorrentes da projecao.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {isLoading ? (
-                <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
-                  Carregando projecao...
-                </div>
-              ) : (
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-                      <FormField
-                        control={form.control}
-                        name="nome"
-                        render={({ field }) => (
-                          <FormItem className="xl:col-span-2">
-                            <FormLabel>Nome da projecao</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Ex: Reserva de emergencia" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="dataInicial"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Mes inicial</FormLabel>
-                            <FormControl>
-                              <Input type="month" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="valorAcumuladoInicial"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Acumulado atual</FormLabel>
-                            <FormControl>
-                              <Input type="number" step="0.01" min="0" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="valorObjetivo"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Objetivo final</FormLabel>
-                            <FormControl>
-                              <Input type="number" step="0.01" min="0" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                    <FormField
+                      control={form.control}
+                      name="nome"
+                      render={({ field }) => (
+                        <FormItem className="xl:col-span-2">
+                          <FormLabel>Nome da projeção</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ex: Reserva de emergencia" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="dataInicial"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mes inicial</FormLabel>
+                          <FormControl>
+                            <Input type="month" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="valorAcumuladoInicial"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Acumulado atual</FormLabel>
+                          <FormControl>
+                            <Input type="number" step="0.01" min="0" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="valorObjetivo"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Objetivo final</FormLabel>
+                          <FormControl>
+                            <Input type="number" step="0.01" min="0" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                    <div className="grid gap-4 md:max-w-xs">
-                      <FormField
-                        control={form.control}
-                        name="mesesLimite"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Meses a projetar</FormLabel>
-                            <FormControl>
-                              <Input type="number" min="1" max="240" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                  <div className="grid gap-4 md:grid-cols-[240px_1fr]">
+                    <FormField
+                      control={form.control}
+                      name="mesesLimite"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Meses a projetar</FormLabel>
+                          <FormControl>
+                            <Input type="number" min="1" max="240" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="atreladaADespesas"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-xl border p-4">
+                          <div className="space-y-1">
+                            <FormLabel>Atrelada a despesas</FormLabel>
+                            <p className="text-sm text-muted-foreground">
+                              Se estiver em &quot;Sim&quot;, a projeçao usa as despesas dos lancamentos.
+                              Se estiver em &quot;Nao&quot;, a coluna de dividas fica livre para edicao.
+                            </p>
+                          </div>
+                          <FormControl>
+                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold">Rendas base</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Some salario, aluguel, comissao e outras entradas recorrentes da projecao.
+                        </p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => append({ nome: "", valorMensal: 0 })}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Nova renda
+                      </Button>
                     </div>
 
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="text-lg font-semibold">Rendas base</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Some salario, aluguel, comissao e outras entradas recorrentes da projecao.
-                          </p>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => append({ nome: "", valorMensal: 0 })}
+                      {fields.map((field, index) => (
+                        <div
+                          key={field.id}
+                          className="grid gap-4 rounded-lg border p-4 md:grid-cols-[1fr_220px_auto]"
                         >
-                          <Plus className="mr-2 h-4 w-4" />
-                          Nova renda
-                        </Button>
-                      </div>
+                          <FormField
+                            control={form.control}
+                            name={`rendas.${index}.nome`}
+                            render={({ field: rendaField }) => (
+                              <FormItem>
+                                <FormLabel>Nome da renda</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Ex: Salario, freelance, aluguel"
+                                    {...rendaField}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                      <div className="space-y-4">
-                        {fields.map((field, index) => (
-                          <div
-                            key={field.id}
-                            className="grid gap-4 rounded-lg border p-4 md:grid-cols-[1fr_220px_auto]"
-                          >
-                            <FormField
-                              control={form.control}
-                              name={`rendas.${index}.nome`}
-                              render={({ field: rendaField }) => (
-                                <FormItem>
-                                  <FormLabel>Nome da renda</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="Ex: Salario, freelance, aluguel"
-                                      {...rendaField}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                          <FormField
+                            control={form.control}
+                            name={`rendas.${index}.valorMensal`}
+                            render={({ field: rendaField }) => (
+                              <FormItem>
+                                <FormLabel>Valor mensal</FormLabel>
+                                <FormControl>
+                                  <Input type="number" step="0.01" min="0" {...rendaField} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                            <FormField
-                              control={form.control}
-                              name={`rendas.${index}.valorMensal`}
-                              render={({ field: rendaField }) => (
-                                <FormItem>
-                                  <FormLabel>Valor mensal</FormLabel>
-                                  <FormControl>
-                                    <Input type="number" step="0.01" min="0" {...rendaField} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <div className="flex items-end">
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="text-destructive hover:text-destructive"
-                                onClick={() => {
-                                  if (fields.length > 1) {
-                                    remove(index);
-                                  }
-                                }}
-                                disabled={fields.length === 1}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
+                          <div className="flex items-end">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => {
+                                if (fields.length > 1) {
+                                  remove(index);
+                                }
+                              }}
+                              disabled={fields.length === 1}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      ))}
                     </div>
-                  </form>
-                </Form>
-              )}
+                  </div>
+                </form>
+              </Form>
             </CardContent>
           </Card>
 
@@ -633,12 +728,10 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Restante</span>
-                  <span className="font-semibold">
-                    {(100 - percentualConcluidoAtual).toFixed(1)}%
-                  </span>
+                  <span className="font-semibold">{(100 - percentualConcluidoAtual).toFixed(1)}%</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Acumulado inicial</span>
+                  <span className="text-muted-foreground">Acumulado atual</span>
                   <span className="font-semibold">
                     {formatCurrency(Number(valorAcumuladoInicialWatch) || 0)}
                   </span>
@@ -656,19 +749,23 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle>Resultado da projecao</CardTitle>
-            <CardDescription>
-              Preencha a renda extra diretamente em cada mes e depois salve ou recalcule a projecao.
-            </CardDescription>
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              <div>
+                <CardTitle>Resultado da projeção</CardTitle>
+                <CardDescription className="mt-2">
+                  Preencha a renda extra diretamente em cada mes e depois salve ou recalcule a projecao.
+                </CardDescription>
+              </div>
+              <Button type="button" onClick={handleSalvarECalcular} disabled={isBusy}>
+                <Sparkles className="mr-2 h-4 w-4" />
+                {isCalculating ? "Calculando..." : "Salvar e gerar Projeção"}
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            {!resultado ? (
+            {previewRows.length === 0 ? (
               <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
                 Salve e gere a projecao para visualizar a linha do tempo do objetivo.
-              </div>
-            ) : linhasComExtras.length === 0 ? (
-              <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
-                Nenhum mes foi gerado para a projecao atual.
               </div>
             ) : (
               <Table>
@@ -682,16 +779,34 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {linhasComExtras.map((linha) => (
+                  {previewRows.map((linha) => (
                     <TableRow key={linha.mesReferencia}>
                       <TableCell className="font-medium">{formatMonth(linha.mesReferencia)}</TableCell>
-                      <TableCell>{formatCurrency(linha.dividasTotais)}</TableCell>
+                      <TableCell className="min-w-[180px]">
+                        {linha.dividasEditaveis ? (
+                          <Input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={dividasPorMes[linha.mesReferencia] ?? linha.dividasTotais ?? 0}
+                            onChange={(event) => {
+                              const valor = Number(event.target.value) || 0;
+                              setDividasPorMes((current) => ({
+                                ...current,
+                                [linha.mesReferencia]: valor,
+                              }));
+                            }}
+                          />
+                        ) : (
+                          formatCurrency(linha.dividasTotais)
+                        )}
+                      </TableCell>
                       <TableCell className="min-w-[180px]">
                         <Input
                           type="number"
                           step="0.01"
                           min="0"
-                          value={extrasPorMes[linha.mesReferencia] ?? 0}
+                          value={extrasPorMes[linha.mesReferencia] ?? linha.rendaExtraMensal ?? 0}
                           onChange={(event) => {
                             const valor = Number(event.target.value) || 0;
                             setExtrasPorMes((current) => ({
