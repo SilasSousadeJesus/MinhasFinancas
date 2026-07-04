@@ -18,6 +18,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
             return await _context.Set<Projecao>()
                 .Where(x => x.UsuarioId == id)
                 .Include(x => x.Rendas)
+                .Include(x => x.RendasExtrasMensais)
                 .OrderByDescending(x => x.DataAtualizacao)
                 .ToListAsync();
         }
@@ -27,6 +28,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
             return await _context.Set<Projecao>()
                 .Where(x => x.UsuarioId == idPatrono && x.Id == id)
                 .Include(x => x.Rendas.OrderBy(r => r.Nome))
+                .Include(x => x.RendasExtrasMensais.OrderBy(r => r.MesReferencia))
                 .FirstOrDefaultAsync();
         }
 
@@ -46,6 +48,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         {
             var existente = await _context.Set<Projecao>()
                 .Include(x => x.Rendas)
+                .Include(x => x.RendasExtrasMensais)
                 .FirstOrDefaultAsync(x => x.Id == elemento.Id);
 
             if (existente == null)
@@ -63,7 +66,11 @@ namespace MinhasFinancas.Infra.Data.Repositories
             _context.Set<RendaProjecao>().RemoveRange(existente.Rendas);
             await _context.SaveChangesAsync();
 
+            _context.Set<RendaExtraProjecaoMensal>().RemoveRange(existente.RendasExtrasMensais);
+            await _context.SaveChangesAsync();
+
             await _context.Set<RendaProjecao>().AddRangeAsync(elemento.Rendas);
+            await _context.Set<RendaExtraProjecaoMensal>().AddRangeAsync(elemento.RendasExtrasMensais);
 
             await _context.SaveChangesAsync();
         }

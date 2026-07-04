@@ -8,7 +8,13 @@ export const VINCULO_CONTA = 3;
 export const VINCULO_AVULSO = 4;
 
 export function normalizarSelecaoOpcional(value: string) {
-  return value !== SELECT_NONE ? value : null;
+  const valorNormalizado = value?.trim();
+
+  if (!valorNormalizado || valorNormalizado === SELECT_NONE) {
+    return null;
+  }
+
+  return valorNormalizado;
 }
 
 export function resolverVinculoLancamento(

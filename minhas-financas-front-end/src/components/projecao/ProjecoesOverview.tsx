@@ -127,6 +127,7 @@ export function ProjecoesOverview() {
           valorObjetivo: 0,
           mesesLimite: 60,
           rendas: [{ nome: "Salario principal", valorMensal: 0 }],
+          rendasExtrasMensais: [],
         },
         session.token
       );
@@ -254,7 +255,7 @@ export function ProjecoesOverview() {
                         Renda mensal
                       </p>
                       <p className="mt-2 text-lg font-semibold">
-                        {formatCurrency(projecao.rendaManualTotal)}
+                        {formatCurrency(Number(projecao.rendaManualTotal) || 0)}
                       </p>
                     </div>
                     <div className="rounded-xl border bg-muted/30 p-3">

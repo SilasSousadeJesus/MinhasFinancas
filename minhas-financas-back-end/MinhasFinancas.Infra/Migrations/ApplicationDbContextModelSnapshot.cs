@@ -579,6 +579,28 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("Projecao");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.RendaExtraProjecaoMensal", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("MesReferencia")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProjecaoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjecaoId");
+
+                    b.ToTable("RendaExtraProjecaoMensal");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.RendaProjecao", b =>
                 {
                     b.Property<Guid>("Id")
@@ -803,6 +825,17 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.RendaExtraProjecaoMensal", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Projecao", "Projecao")
+                        .WithMany("RendasExtrasMensais")
+                        .HasForeignKey("ProjecaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Projecao");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.RendaProjecao", b =>
                 {
                     b.HasOne("MinhasFinancas.Domain.Entities.Projecao", "Projecao")
@@ -858,6 +891,8 @@ namespace MinhasFinancas.Infra.Migrations
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
                 {
                     b.Navigation("Rendas");
+
+                    b.Navigation("RendasExtrasMensais");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Usuario", b =>

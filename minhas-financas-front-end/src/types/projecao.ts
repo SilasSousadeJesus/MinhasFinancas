@@ -9,6 +9,7 @@ export interface CalcularProjecaoPayload {
   valorObjetivo: number;
   dataInicial?: string | null;
   mesesLimite?: number;
+  rendasExtrasMensais: RendaExtraMensalProjecaoInput[];
 }
 
 export interface CriarProjecaoPayload {
@@ -19,6 +20,7 @@ export interface CriarProjecaoPayload {
   valorObjetivo: number;
   mesesLimite?: number;
   rendas: RendaProjecaoInput[];
+  rendasExtrasMensais: RendaExtraMensalProjecaoInput[];
 }
 
 export interface EditarProjecaoPayload {
@@ -28,12 +30,18 @@ export interface EditarProjecaoPayload {
   valorObjetivo: number;
   mesesLimite?: number;
   rendas: RendaProjecaoInput[];
+  rendasExtrasMensais: RendaExtraMensalProjecaoInput[];
+}
+
+export interface RendaExtraMensalProjecaoInput {
+  mesReferencia: string;
+  valor: number;
 }
 
 export interface LinhaResultadoProjecao {
   mesReferencia: string;
   dividasTotais: number;
-  receitasDosLancamentos: number;
+  rendaExtraMensal: number;
   rendaManualTotal: number;
   receitaTotalMes: number;
   sobraDoMes: number;
@@ -46,6 +54,7 @@ export interface ResultadoProjecao {
   valorAcumuladoInicial: number;
   valorObjetivo: number;
   valorRestanteParaObjetivo: number;
+  percentualConcluido: number;
   mesObjetivo?: string | null;
   quantidadeMesesParaObjetivo?: number | null;
   objetivoAlcancado: boolean;
@@ -72,5 +81,6 @@ export interface ProjecaoDetalhe {
   valorObjetivo: number;
   mesesLimite: number;
   rendas: RendaProjecaoInput[];
+  rendasExtrasMensais: RendaExtraMensalProjecaoInput[];
   resultadoAtual?: ResultadoProjecao | null;
 }

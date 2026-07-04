@@ -26,6 +26,7 @@ namespace MinhasFinancas.Infra
         public DbSet<Passivo> Passivo { get; set; }
         public DbSet<Projecao> Projecao { get; set; }
         public DbSet<RendaProjecao> RendaProjecao { get; set; }
+        public DbSet<RendaExtraProjecaoMensal> RendaExtraProjecaoMensal { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,6 +54,12 @@ namespace MinhasFinancas.Infra
 
             modelBuilder.Entity<Projecao>()
                 .HasMany(x => x.Rendas)
+                .WithOne(x => x.Projecao)
+                .HasForeignKey(x => x.ProjecaoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Projecao>()
+                .HasMany(x => x.RendasExtrasMensais)
                 .WithOne(x => x.Projecao)
                 .HasForeignKey(x => x.ProjecaoId)
                 .OnDelete(DeleteBehavior.Cascade);

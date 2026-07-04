@@ -9,5 +9,6 @@ namespace MinhasFinancas.Application.DTOs.Projecao
         public int MesesLimite { get; set; } = 60;
         public string UsuarioId { get; set; } = string.Empty;
         public List<RendaProjecaoDTO> Rendas { get; set; } = new();
+        public List<RendaExtraMensalProjecaoDTO> RendasExtrasMensais { get; set; } = new();
     }
 }

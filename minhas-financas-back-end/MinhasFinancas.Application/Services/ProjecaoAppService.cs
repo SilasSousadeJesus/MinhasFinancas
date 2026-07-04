@@ -4,6 +4,7 @@ using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
+using System.Globalization;
 using System.Net;
 
 namespace MinhasFinancas.Application.Services
@@ -29,8 +30,6 @@ namespace MinhasFinancas.Application.Services
 
         public async Task<RetornoGenerico> BuscarTodosAsync(string usuarioId)
         {
-            var retorno = new RetornoGenerico();
-
             try
             {
                 var validacao = await ValidarUsuarioAsync(usuarioId);
@@ -64,12 +63,14 @@ namespace MinhasFinancas.Application.Services
                     })
                     .ToList();
 
-                retorno.Sucesso = true;
-                retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = $"{lista.Count} projeção(ões) encontrada(s)";
-                retorno.MensagemUsuario = $"{lista.Count} projeção(ões) encontrada(s)";
-                retorno.Dados = lista;
-                return retorno;
+                return new RetornoGenerico
+                {
+                    Sucesso = true,
+                    HttpStatusCode = HttpStatusCode.OK,
+                    MensagemSistema = $"{lista.Count} projeção(ões) encontrada(s)",
+                    MensagemUsuario = $"{lista.Count} projeção(ões) encontrada(s)",
+                    Dados = lista
+                };
             }
             catch (Exception ex)
             {
@@ -79,8 +80,6 @@ namespace MinhasFinancas.Application.Services
 
         public async Task<RetornoGenerico> BuscarUmAsync(string usuarioId, Guid projecaoId)
         {
-            var retorno = new RetornoGenerico();
-
             try
             {
                 var validacao = await ValidarUsuarioAsync(usuarioId);
@@ -92,12 +91,14 @@ namespace MinhasFinancas.Application.Services
                 var projecao = await _projecaoRepository.BuscarUmElementoAsync(usuarioId, projecaoId);
                 if (projecao == null)
                 {
-                    retorno.Sucesso = false;
-                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
-                    retorno.MensagemSistema = "Projeção não encontrada.";
-                    retorno.MensagemUsuario = "Projeção não encontrada.";
-                    retorno.Dados = null;
-                    return retorno;
+                    return new RetornoGenerico
+                    {
+                        Sucesso = false,
+                        HttpStatusCode = HttpStatusCode.NotFound,
+                        MensagemSistema = "Projeção não encontrada.",
+                        MensagemUsuario = "Projeção não encontrada.",
+                        Dados = null
+                    };
                 }
 
                 var detalhe = new DetalheProjecaoDTO
@@ -115,6 +116,14 @@ namespace MinhasFinancas.Application.Services
                             Nome = x.Nome,
                             ValorMensal = x.ValorMensal
                         })
+                        .ToList(),
+                    RendasExtrasMensais = projecao.RendasExtrasMensais
+                        .OrderBy(x => x.MesReferencia)
+                        .Select(x => new RendaExtraMensalProjecaoDTO
+                        {
+                            MesReferencia = x.MesReferencia.ToString("yyyy-MM"),
+                            Valor = x.Valor
+                        })
                         .ToList()
                 };
 
@@ -124,12 +133,14 @@ namespace MinhasFinancas.Application.Services
                     detalhe.ResultadoAtual = CalcularResultado(projecao, lancamentos);
                 }
 
-                retorno.Sucesso = true;
-                retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Projeção encontrada.";
-                retorno.MensagemUsuario = "Projeção encontrada.";
-                retorno.Dados = detalhe;
-                return retorno;
+                return new RetornoGenerico
+                {
+                    Sucesso = true,
+                    HttpStatusCode = HttpStatusCode.OK,
+                    MensagemSistema = "Projeção encontrada.",
+                    MensagemUsuario = "Projeção encontrada.",
+                    Dados = detalhe
+                };
             }
             catch (Exception ex)
             {
@@ -139,8 +150,6 @@ namespace MinhasFinancas.Application.Services
 
         public async Task<RetornoGenerico> CadastrarAsync(CadastrarProjecaoDTO projecaoDTO)
         {
-            var retorno = new RetornoGenerico();
-
             try
             {
                 var validacao = await ValidarUsuarioAsync(projecaoDTO.UsuarioId);
@@ -152,12 +161,14 @@ namespace MinhasFinancas.Application.Services
                 var projecao = MontarEntidadeCadastro(projecaoDTO);
                 await _projecaoRepository.CadastrarElementoAsync(projecao);
 
-                retorno.Sucesso = true;
-                retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Projeção cadastrada com sucesso.";
-                retorno.MensagemUsuario = "Projeção cadastrada com sucesso.";
-                retorno.Dados = projecao.Id;
-                return retorno;
+                return new RetornoGenerico
+                {
+                    Sucesso = true,
+                    HttpStatusCode = HttpStatusCode.OK,
+                    MensagemSistema = "Projeção cadastrada com sucesso.",
+                    MensagemUsuario = "Projeção cadastrada com sucesso.",
+                    Dados = projecao.Id
+                };
             }
             catch (Exception ex)
             {
@@ -167,30 +178,32 @@ namespace MinhasFinancas.Application.Services
 
         public async Task<RetornoGenerico> EditarAsync(string usuarioId, Guid projecaoId, EditarProjecaoDTO projecaoDTO)
         {
-            var retorno = new RetornoGenerico();
-
             try
             {
                 var busca = await _projecaoRepository.BuscarUmElementoAsync(usuarioId, projecaoId);
                 if (busca == null)
                 {
-                    retorno.Sucesso = false;
-                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
-                    retorno.MensagemSistema = "Projeção não encontrada.";
-                    retorno.MensagemUsuario = "Projeção não encontrada.";
-                    retorno.Dados = null;
-                    return retorno;
+                    return new RetornoGenerico
+                    {
+                        Sucesso = false,
+                        HttpStatusCode = HttpStatusCode.NotFound,
+                        MensagemSistema = "Projeção não encontrada.",
+                        MensagemUsuario = "Projeção não encontrada.",
+                        Dados = null
+                    };
                 }
 
                 var projecao = MontarEntidadeEdicao(usuarioId, projecaoId, projecaoDTO, busca.DataCadastro);
                 await _projecaoRepository.EditarElementoAsync(projecao);
 
-                retorno.Sucesso = true;
-                retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Projeção atualizada com sucesso.";
-                retorno.MensagemUsuario = "Projeção atualizada com sucesso.";
-                retorno.Dados = null;
-                return retorno;
+                return new RetornoGenerico
+                {
+                    Sucesso = true,
+                    HttpStatusCode = HttpStatusCode.OK,
+                    MensagemSistema = "Projeção atualizada com sucesso.",
+                    MensagemUsuario = "Projeção atualizada com sucesso.",
+                    Dados = null
+                };
             }
             catch (Exception ex)
             {
@@ -200,29 +213,31 @@ namespace MinhasFinancas.Application.Services
 
         public async Task<RetornoGenerico> DeletarAsync(string usuarioId, Guid projecaoId)
         {
-            var retorno = new RetornoGenerico();
-
             try
             {
                 var projecao = await _projecaoRepository.BuscarUmElementoAsync(usuarioId, projecaoId);
                 if (projecao == null)
                 {
-                    retorno.Sucesso = false;
-                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
-                    retorno.MensagemSistema = "Projeção não encontrada.";
-                    retorno.MensagemUsuario = "Projeção não encontrada.";
-                    retorno.Dados = null;
-                    return retorno;
+                    return new RetornoGenerico
+                    {
+                        Sucesso = false,
+                        HttpStatusCode = HttpStatusCode.NotFound,
+                        MensagemSistema = "Projeção não encontrada.",
+                        MensagemUsuario = "Projeção não encontrada.",
+                        Dados = null
+                    };
                 }
 
                 await _projecaoRepository.DeletarElementoAsync(projecao);
 
-                retorno.Sucesso = true;
-                retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Projeção excluída com sucesso.";
-                retorno.MensagemUsuario = "Projeção excluída com sucesso.";
-                retorno.Dados = null;
-                return retorno;
+                return new RetornoGenerico
+                {
+                    Sucesso = true,
+                    HttpStatusCode = HttpStatusCode.OK,
+                    MensagemSistema = "Projeção excluída com sucesso.",
+                    MensagemUsuario = "Projeção excluída com sucesso.",
+                    Dados = null
+                };
             }
             catch (Exception ex)
             {
@@ -232,8 +247,6 @@ namespace MinhasFinancas.Application.Services
 
         public async Task<RetornoGenerico> CalcularAsync(string usuarioId, CalcularProjecaoDTO calcularProjecaoDTO)
         {
-            var retorno = new RetornoGenerico();
-
             try
             {
                 var validacao = await ValidarUsuarioAsync(usuarioId);
@@ -256,7 +269,8 @@ namespace MinhasFinancas.Application.Services
                             Nome = x.Nome,
                             ValorMensal = x.ValorMensal
                         })
-                        .ToList()
+                        .ToList(),
+                    RendasExtrasMensais = MapearRendasExtrasMensais(Guid.NewGuid(), calcularProjecaoDTO.RendasExtrasMensais)
                 };
 
                 var validacaoCalculo = ValidarProjecao(projecao);
@@ -268,12 +282,14 @@ namespace MinhasFinancas.Application.Services
                 var lancamentos = await _lancamentoRepository.BuscarTodosOsElementosAsync(usuarioId);
                 var resultado = CalcularResultado(projecao, lancamentos);
 
-                retorno.Sucesso = true;
-                retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Projeção calculada com sucesso.";
-                retorno.MensagemUsuario = "Projeção calculada.";
-                retorno.Dados = resultado;
-                return retorno;
+                return new RetornoGenerico
+                {
+                    Sucesso = true,
+                    HttpStatusCode = HttpStatusCode.OK,
+                    MensagemSistema = "Projeção calculada com sucesso.",
+                    MensagemUsuario = "Projeção calculada.",
+                    Dados = resultado
+                };
             }
             catch (Exception ex)
             {
@@ -283,19 +299,19 @@ namespace MinhasFinancas.Application.Services
 
         public async Task<RetornoGenerico> CalcularAsync(string usuarioId, Guid projecaoId)
         {
-            var retorno = new RetornoGenerico();
-
             try
             {
                 var projecao = await _projecaoRepository.BuscarUmElementoAsync(usuarioId, projecaoId);
                 if (projecao == null)
                 {
-                    retorno.Sucesso = false;
-                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
-                    retorno.MensagemSistema = "Projeção não encontrada.";
-                    retorno.MensagemUsuario = "Projeção não encontrada.";
-                    retorno.Dados = null;
-                    return retorno;
+                    return new RetornoGenerico
+                    {
+                        Sucesso = false,
+                        HttpStatusCode = HttpStatusCode.NotFound,
+                        MensagemSistema = "Projeção não encontrada.",
+                        MensagemUsuario = "Projeção não encontrada.",
+                        Dados = null
+                    };
                 }
 
                 var validacao = ValidarProjecao(projecao);
@@ -307,12 +323,14 @@ namespace MinhasFinancas.Application.Services
                 var lancamentos = await _lancamentoRepository.BuscarTodosOsElementosAsync(usuarioId);
                 var resultado = CalcularResultado(projecao, lancamentos);
 
-                retorno.Sucesso = true;
-                retorno.HttpStatusCode = HttpStatusCode.OK;
-                retorno.MensagemSistema = "Projeção calculada com sucesso.";
-                retorno.MensagemUsuario = "Projeção calculada.";
-                retorno.Dados = resultado;
-                return retorno;
+                return new RetornoGenerico
+                {
+                    Sucesso = true,
+                    HttpStatusCode = HttpStatusCode.OK,
+                    MensagemSistema = "Projeção calculada com sucesso.",
+                    MensagemUsuario = "Projeção calculada.",
+                    Dados = resultado
+                };
             }
             catch (Exception ex)
             {
@@ -357,6 +375,7 @@ namespace MinhasFinancas.Application.Services
                     ValorMensal = x.ValorMensal
                 })
                 .ToList();
+            projecao.RendasExtrasMensais = MapearRendasExtrasMensais(projecao.Id, dto.RendasExtrasMensais);
 
             return projecao;
         }
@@ -380,8 +399,25 @@ namespace MinhasFinancas.Application.Services
                     ValorMensal = x.ValorMensal
                 })
                 .ToList();
+            projecao.RendasExtrasMensais = MapearRendasExtrasMensais(projecaoId, dto.RendasExtrasMensais);
 
             return projecao;
+        }
+
+        private List<RendaExtraProjecaoMensal> MapearRendasExtrasMensais(
+            Guid projecaoId,
+            List<RendaExtraMensalProjecaoDTO>? rendasExtrasMensais)
+        {
+            return (rendasExtrasMensais ?? new List<RendaExtraMensalProjecaoDTO>())
+                .Where(x => !string.IsNullOrWhiteSpace(x.MesReferencia) && x.Valor > decimal.Zero)
+                .Select(x => new RendaExtraProjecaoMensal
+                {
+                    Id = Guid.NewGuid(),
+                    ProjecaoId = projecaoId,
+                    MesReferencia = ParseMesReferencia(x.MesReferencia),
+                    Valor = x.Valor
+                })
+                .ToList();
         }
 
         private RetornoGenerico? ValidarProjecao(Projecao projecao)
@@ -396,9 +432,13 @@ namespace MinhasFinancas.Application.Services
                 return CriarRetornoValidacao("O valor objetivo precisa ser maior que zero.", "Informe um objetivo maior que zero.");
             }
 
-            if (!projecao.Rendas.Any() || projecao.Rendas.All(x => x.ValorMensal <= decimal.Zero))
+            var rendaBaseTotal = projecao.Rendas
+                .Where(x => x.ValorMensal > decimal.Zero)
+                .Sum(x => x.ValorMensal);
+
+            if (rendaBaseTotal <= decimal.Zero)
             {
-                return CriarRetornoValidacao("Nenhuma renda válida foi informada.", "Informe pelo menos uma renda maior que zero.");
+                return CriarRetornoValidacao("Nenhuma renda válida foi informada.", "Informe pelo menos uma renda base maior que zero.");
             }
 
             if (projecao.Rendas.Any(x => string.IsNullOrWhiteSpace(x.Nome)))
@@ -412,7 +452,6 @@ namespace MinhasFinancas.Application.Services
         private bool PodeCalcular(Projecao projecao)
         {
             return projecao.ValorObjetivo > decimal.Zero
-                && projecao.Rendas.Any()
                 && projecao.Rendas.Any(x => x.ValorMensal > decimal.Zero)
                 && !string.IsNullOrWhiteSpace(projecao.Nome);
         }
@@ -423,28 +462,26 @@ namespace MinhasFinancas.Application.Services
                 .Where(x => x.ValorMensal > decimal.Zero)
                 .Sum(x => x.ValorMensal);
 
+            var rendasExtrasPorMes = projecao.RendasExtrasMensais
+                .GroupBy(x => x.MesReferencia.ToString("yyyy-MM"))
+                .ToDictionary(
+                    grupo => grupo.Key,
+                    grupo => grupo.Sum(x => x.Valor));
+
             var dataBase = new DateTime(projecao.DataInicial.Year, projecao.DataInicial.Month, 1);
             var mesesLimite = projecao.MesesLimite <= 0 ? 60 : projecao.MesesLimite;
 
             var lancamentosProjetaveis = lancamentos
                 .Where(x =>
                     x.DataPagamento.Date >= dataBase &&
-                    (x.Tipo == EnumTipoLancamento.Despesa || x.Tipo == EnumTipoLancamento.Receita))
+                    x.Tipo == EnumTipoLancamento.Despesa)
                 .ToList();
 
             var lancamentosPorMes = lancamentosProjetaveis
                 .GroupBy(x => new { x.DataPagamento.Year, x.DataPagamento.Month })
                 .ToDictionary(
                     grupo => $"{grupo.Key.Year:D4}-{grupo.Key.Month:D2}",
-                    grupo => new
-                    {
-                        Receitas = grupo
-                            .Where(x => x.Tipo == EnumTipoLancamento.Receita)
-                            .Sum(x => x.Valor),
-                        Despesas = grupo
-                            .Where(x => x.Tipo == EnumTipoLancamento.Despesa)
-                            .Sum(x => x.Valor)
-                    });
+                    grupo => grupo.Sum(x => x.Valor));
 
             var resultado = new ResultadoProjecaoDTO
             {
@@ -461,6 +498,7 @@ namespace MinhasFinancas.Application.Services
                 resultado.MesObjetivo = $"{dataBase.Year:D4}-{dataBase.Month:D2}";
                 resultado.QuantidadeMesesParaObjetivo = 0;
                 resultado.ValorRestanteParaObjetivo = decimal.Zero;
+                resultado.PercentualConcluido = 100;
                 return resultado;
             }
 
@@ -469,13 +507,13 @@ namespace MinhasFinancas.Application.Services
                 var mesAtual = dataBase.AddMonths(indiceMes);
                 var chaveMes = $"{mesAtual.Year:D4}-{mesAtual.Month:D2}";
 
-                var dadosDoMes = lancamentosPorMes.TryGetValue(chaveMes, out var valorDoMes)
+                var rendaExtraMensal = rendasExtrasPorMes.TryGetValue(chaveMes, out var rendaExtra)
+                    ? rendaExtra
+                    : decimal.Zero;
+                var dividasTotais = lancamentosPorMes.TryGetValue(chaveMes, out var valorDoMes)
                     ? valorDoMes
-                    : null;
-
-                var receitasDosLancamentos = dadosDoMes?.Receitas ?? decimal.Zero;
-                var dividasTotais = dadosDoMes?.Despesas ?? decimal.Zero;
-                var receitaTotalMes = rendaManualTotal + receitasDosLancamentos;
+                    : decimal.Zero;
+                var receitaTotalMes = rendaManualTotal + rendaExtraMensal;
                 var sobraDoMes = receitaTotalMes - dividasTotais;
 
                 acumuladoAtual += sobraDoMes;
@@ -484,7 +522,7 @@ namespace MinhasFinancas.Application.Services
                 {
                     MesReferencia = chaveMes,
                     DividasTotais = dividasTotais,
-                    ReceitasDosLancamentos = receitasDosLancamentos,
+                    RendaExtraMensal = rendaExtraMensal,
                     RendaManualTotal = rendaManualTotal,
                     ReceitaTotalMes = receitaTotalMes,
                     SobraDoMes = sobraDoMes,
@@ -506,8 +544,26 @@ namespace MinhasFinancas.Application.Services
             resultado.ValorRestanteParaObjetivo = resultado.ObjetivoAlcancado
                 ? decimal.Zero
                 : Math.Max(decimal.Zero, projecao.ValorObjetivo - acumuladoAtual);
+            resultado.PercentualConcluido = projecao.ValorObjetivo <= decimal.Zero
+                ? decimal.Zero
+                : Math.Min(100, Math.Max(0, (acumuladoAtual / projecao.ValorObjetivo) * 100));
 
             return resultado;
+        }
+
+        private DateTime ParseMesReferencia(string mesReferencia)
+        {
+            if (DateTime.TryParseExact(
+                $"{mesReferencia}-01",
+                "yyyy-MM-dd",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var data))
+            {
+                return data;
+            }
+
+            throw new InvalidOperationException($"Mes de referencia invalido: {mesReferencia}");
         }
 
         private RetornoGenerico CriarRetornoValidacao(string mensagemSistema, string mensagemUsuario)

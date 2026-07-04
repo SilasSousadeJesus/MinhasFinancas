@@ -29,5 +29,6 @@ namespace MinhasFinancas.Domain.Entities
         public Usuario? Usuario { get; set; }
 
         public List<RendaProjecao> Rendas { get; set; } = new();
+        public List<RendaExtraProjecaoMensal> RendasExtrasMensais { get; set; } = new();
     }
 }

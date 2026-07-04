@@ -162,10 +162,10 @@ export function EditarLancamentoModal({
           dataLancamento: toDateInputValue(lancamento.dataLancamento),
           realizado: Boolean(lancamento.realizado),
           frequenciaLancamento: String(lancamento.frequenciaLancamento ?? 0),
-          contaId: lancamento.contaId ?? SELECT_NONE,
-          cartaoId: lancamento.cartaoId ?? SELECT_NONE,
+          contaId: lancamento.contaId || SELECT_NONE,
+          cartaoId: lancamento.cartaoId || SELECT_NONE,
           categoriaId: nextCategoriaId,
-          subCategoriaId: lancamento.subCategoriaId ?? SELECT_NONE,
+          subCategoriaId: lancamento.subCategoriaId || SELECT_NONE,
         });
 
         requestAnimationFrame(() => {

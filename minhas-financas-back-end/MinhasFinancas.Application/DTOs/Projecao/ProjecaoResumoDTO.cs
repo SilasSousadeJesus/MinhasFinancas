@@ -9,7 +9,7 @@ namespace MinhasFinancas.Application.DTOs.Projecao
         public decimal ValorObjetivo { get; set; }
         public int MesesLimite { get; set; }
         public int QuantidadeRendas { get; set; }
-        public decimal RendaManualTotal { get; set; }
+        public decimal RendaManualTotal { get; set; } = decimal.Zero;
         public ResultadoProjecaoDTO? ResultadoAtual { get; set; }
     }
 }
