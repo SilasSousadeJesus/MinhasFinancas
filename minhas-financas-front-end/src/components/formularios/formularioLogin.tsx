@@ -25,7 +25,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/providers/auth-provider";
 import { ApiError } from "@/types/api";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
@@ -38,7 +38,6 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -47,21 +46,30 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
     },
   });
 
+  function getNextPath() {
+    if (typeof window === "undefined") {
+      return "/dashboard";
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    return params.get("next") || "/dashboard";
+  }
+
   useEffect(() => {
     if (!isAuthenticated) {
       return;
     }
 
-    const nextPath = searchParams?.get("next") || "/dashboard";
+    const nextPath = getNextPath();
     router.replace(nextPath);
-  }, [isAuthenticated, router, searchParams]);
+  }, [isAuthenticated, router]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       setIsSubmitting(true);
       setErrorMessage("");
       await loginWithCredentials(data);
-      const nextPath = searchParams?.get("next") || "/dashboard";
+      const nextPath = getNextPath();
       router.push(nextPath);
       router.refresh();
     } catch (error) {
