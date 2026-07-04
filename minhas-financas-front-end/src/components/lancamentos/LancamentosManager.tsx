@@ -130,7 +130,7 @@ export function LancamentosManager() {
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const [totalItens, setTotalItens] = useState(0);
-  const tamanhoPagina = 10;
+  const [tamanhoPagina, setTamanhoPagina] = useState(10);
 
   const filtrosAtuais = useMemo<FiltroLancamentosParams>(
     () => ({
@@ -155,6 +155,7 @@ export function LancamentosManager() {
       ordenarPor,
       paginaAtual,
       statusFiltro,
+      tamanhoPagina,
       tipoFiltro,
     ]
   );
@@ -198,7 +199,7 @@ export function LancamentosManager() {
     } finally {
       setIsLoading(false);
     }
-  }, [filtrosAtuais, session?.token, session?.usuario.id]);
+  }, [filtrosAtuais, session?.token, session?.usuario.id, tamanhoPagina]);
 
   useEffect(() => {
     carregarLancamentos();
@@ -238,6 +239,7 @@ export function LancamentosManager() {
     dataFinalFiltro,
     ordenarPor,
     direcaoOrdenacao,
+    tamanhoPagina,
   ]);
 
   function limparFiltros() {
@@ -419,7 +421,7 @@ export function LancamentosManager() {
                 </div>
               </div>
 
-              <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div className="mb-6 grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Ordenar por</p>
                   <Select value={ordenarPor} onValueChange={(value) => setOrdenarPor(value as "data" | "valor")}>
@@ -535,73 +537,95 @@ export function LancamentosManager() {
               )}
 
               {!isLoading && totalItens > 0 ? (
-                <Pagination className="mt-6">
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        href="#"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          if (paginaAtual > 1) {
-                            setPaginaAtual((current) => current - 1);
+                <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-muted-foreground">Itens por pagina</span>
+                    <Select
+                      value={String(tamanhoPagina)}
+                      onValueChange={(value) => setTamanhoPagina(Number(value))}
+                    >
+                      <SelectTrigger className="w-24">
+                        <SelectValue placeholder="Quantidade" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="10">10</SelectItem>
+                        <SelectItem value="20">20</SelectItem>
+                        <SelectItem value="30">30</SelectItem>
+                        <SelectItem value="40">40</SelectItem>
+                        <SelectItem value="50">50</SelectItem>
+                        <SelectItem value="100">100</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Pagination className="mx-0 w-auto justify-start md:justify-end">
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          href="#"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            if (paginaAtual > 1) {
+                              setPaginaAtual((current) => current - 1);
+                            }
+                          }}
+                          className={paginaAtual <= 1 ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+
+                      {Array.from({ length: totalPaginas }, (_, index) => index + 1)
+                        .filter((pagina) => {
+                          if (totalPaginas <= 5) {
+                            return true;
                           }
-                        }}
-                        className={paginaAtual <= 1 ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
 
-                    {Array.from({ length: totalPaginas }, (_, index) => index + 1)
-                      .filter((pagina) => {
-                        if (totalPaginas <= 5) {
-                          return true;
-                        }
+                          return (
+                            pagina === 1 ||
+                            pagina === totalPaginas ||
+                            Math.abs(pagina - paginaAtual) <= 1
+                          );
+                        })
+                        .map((pagina, index, paginas) => {
+                          const paginaAnterior = paginas[index - 1];
 
-                        return (
-                          pagina === 1 ||
-                          pagina === totalPaginas ||
-                          Math.abs(pagina - paginaAtual) <= 1
-                        );
-                      })
-                      .map((pagina, index, paginas) => {
-                        const paginaAnterior = paginas[index - 1];
-
-                        return (
-                          <div key={pagina} className="flex items-center">
-                            {paginaAnterior && pagina - paginaAnterior > 1 ? (
+                          return (
+                            <div key={pagina} className="flex items-center">
+                              {paginaAnterior && pagina - paginaAnterior > 1 ? (
+                                <PaginationItem>
+                                  <span className="px-2 text-sm text-muted-foreground">...</span>
+                                </PaginationItem>
+                              ) : null}
                               <PaginationItem>
-                                <span className="px-2 text-sm text-muted-foreground">...</span>
+                                <PaginationLink
+                                  href="#"
+                                  isActive={paginaAtual === pagina}
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    setPaginaAtual(pagina);
+                                  }}
+                                >
+                                  {pagina}
+                                </PaginationLink>
                               </PaginationItem>
-                            ) : null}
-                            <PaginationItem>
-                              <PaginationLink
-                                href="#"
-                                isActive={paginaAtual === pagina}
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  setPaginaAtual(pagina);
-                                }}
-                              >
-                                {pagina}
-                              </PaginationLink>
-                            </PaginationItem>
-                          </div>
-                        );
-                      })}
+                            </div>
+                          );
+                        })}
 
-                    <PaginationItem>
-                      <PaginationNext
-                        href="#"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          if (paginaAtual < totalPaginas) {
-                            setPaginaAtual((current) => current + 1);
-                          }
-                        }}
-                        className={paginaAtual >= totalPaginas ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
+                      <PaginationItem>
+                        <PaginationNext
+                          href="#"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            if (paginaAtual < totalPaginas) {
+                              setPaginaAtual((current) => current + 1);
+                            }
+                          }}
+                          className={paginaAtual >= totalPaginas ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
               ) : null}
             </CardContent>
           </Card>
