@@ -130,7 +130,7 @@ namespace minhas_financas_back_end
 
             var app = builder.Build();
 
-            //app.MigrateDatabase();
+            app.MigrateDatabase();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

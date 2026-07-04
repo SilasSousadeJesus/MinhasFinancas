@@ -1,6 +1,7 @@
+"use client";
+
+import { LancamentosManager } from "@/components/lancamentos/LancamentosManager";
+
 export default function Lancamentos() {
-    return (
-        <h1>Lancamentos</h1>
-    );
-  }
-  
+  return <LancamentosManager />;
+}
