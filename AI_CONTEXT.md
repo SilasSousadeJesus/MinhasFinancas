@@ -966,6 +966,152 @@ Fluxo tipico:
 - SignalR e Hangfire nao estao ligados ao fluxo principal do usuario
 - existe controller de sorteios, mas nao foi identificado front correspondente
 
+## Roadmap do Projeto
+
+### Objetivo
+
+Esta secao tem como objetivo registrar todas as funcionalidades planejadas para evolucao do sistema.
+
+Ela funciona como o backlog oficial do projeto e deve ser consultada antes do desenvolvimento de qualquer nova funcionalidade.
+
+O objetivo e garantir que nenhuma ideia importante seja esquecida e que a evolucao do sistema aconteca de forma organizada e planejada.
+
+### Principios
+
+- O Roadmap contem apenas funcionalidades futuras
+- O Roadmap nao representa o estado atual do sistema
+- O estado atual da aplicacao deve estar documentado nas demais secoes deste documento
+- Sempre que uma funcionalidade for concluida, ela deve ser removida do Roadmap
+- Apos sua implementacao, sua documentacao deve ser incorporada as secoes correspondentes do `AI_CONTEXT.md`, como Arquitetura, Entidades, Fluxos e Regras de Negocio
+- O historico das implementacoes pertence ao `CHANGELOG.md`, nunca ao Roadmap
+
+### Fluxo de trabalho
+
+Sempre que uma nova funcionalidade surgir durante o desenvolvimento ou durante discussoes de arquitetura:
+
+1. Registrar a funcionalidade neste Roadmap.
+2. Definir em qual modulo ela pertence.
+3. Descrever claramente o objetivo da funcionalidade.
+4. Listar apenas os requisitos principais.
+5. Nao detalhar implementacao tecnica nesta secao.
+
+Quando a funcionalidade for implementada:
+
+1. Remove-la do Roadmap.
+2. Atualizar toda a documentacao necessaria do `AI_CONTEXT.md`.
+3. Registrar a implementacao no `CHANGELOG.md`.
+4. Garantir que o `AI_CONTEXT.md` continue representando fielmente o estado atual do sistema.
+
+### Organizacao
+
+O Roadmap deve sempre ser organizado por modulos do sistema.
+
+Exemplos:
+
+- Dashboard
+- Lancamentos
+- Contas
+- Cartoes
+- Patrimonio
+- Metas
+- Projecoes
+- Relatorios
+- Configuracoes
+- Infraestrutura
+- Outros
+
+### Como descrever uma funcionalidade
+
+Cada item deve conter apenas:
+
+- Objetivo da funcionalidade
+- Breve descricao
+- Lista das principais melhorias esperadas
+
+Evitar detalhamento tecnico, implementacao, classes, entidades ou decisoes de codigo.
+
+Esses detalhes pertencem ao momento da implementacao.
+
+### Responsabilidade da IA
+
+Sempre que concluir uma implementacao, a IA devera verificar se existe alguma funcionalidade correspondente neste Roadmap.
+
+Se existir:
+
+- Remover a funcionalidade da lista
+- Atualizar a documentacao tecnica nas demais secoes do `AI_CONTEXT.md`
+- Informar ao final da implementacao que o Roadmap foi atualizado
+
+Caso a implementacao gere novas ideias ou melhorias futuras, elas deverao ser adicionadas ao Roadmap no modulo correspondente.
+
+### Dashboard
+
+#### Objetivo
+
+Transformar o Dashboard em um verdadeiro centro de inteligencia financeira, permitindo que o usuario compreenda rapidamente sua situacao atual, futura e os pontos que exigem atencao.
+
+#### Pendencias
+
+- [ ] Patrimonio liquido
+- [ ] Evolucao patrimonial
+- [ ] Saldo projetado
+- [ ] Fluxo de caixa futuro
+- [ ] Proximos vencimentos
+- [ ] Resumo financeiro inteligente
+- [ ] KPIs de saude financeira
+- [ ] Alertas financeiros
+
+### Lancamentos
+
+#### Objetivo
+
+Transformar o modulo de lancamentos em um sistema completo de gestao financeira, preservando rastreabilidade, historico e controle total sobre cada movimentacao.
+
+#### Pendencias
+
+- [ ] Modal para visualizacao de todas as parcelas
+- [ ] Edicao em lote de parcelas
+- [ ] Exclusao individual ou completa de parcelamentos
+- [ ] Historico de alteracoes
+
+### Projecoes
+
+#### Pendencias
+
+- (Adicionar futuras melhorias deste modulo)
+
+### Patrimonio
+
+#### Pendencias
+
+- (Adicionar futuras melhorias deste modulo)
+
+### Metas
+
+#### Pendencias
+
+- (Adicionar futuras melhorias deste modulo)
+
+### Cartoes
+
+#### Pendencias
+
+- (Adicionar futuras melhorias deste modulo)
+
+### Infraestrutura
+
+#### Objetivo
+
+Registrar melhorias estruturais que beneficiam toda a aplicacao.
+
+#### Pendencias
+
+- [ ] Melhorias globais de performance
+- [ ] Melhorias de seguranca
+- [ ] Melhorias de observabilidade
+- [ ] Melhorias de auditoria
+- [ ] Melhorias de experiencia do usuario
+
 ## Decisoes Arquiteturais
 
 ### Por que AutoMapper
