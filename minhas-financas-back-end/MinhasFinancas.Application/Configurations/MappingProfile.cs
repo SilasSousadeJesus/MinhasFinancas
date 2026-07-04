@@ -42,6 +42,10 @@ namespace MinhasFinancas.Application.Configurations
             CreateMap<CadastrarProjecaoDTO, Projecao>();
             CreateMap<EditarProjecaoDTO, Projecao>();
             CreateMap<RendaProjecaoDTO, RendaProjecao>();
+
+            CreateMap<RendaExtraMensalProjecaoDTO, RendaExtraProjecaoMensal>()
+                    .ForMember(dest => dest.MesReferencia,
+                         opt => opt.MapFrom(src => DateTime.Parse(src.MesReferencia)));
         }
     }
 }
