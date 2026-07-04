@@ -8,6 +8,11 @@ import { ApiError } from "@/types/api";
 import { useAuth } from "@/providers/auth-provider";
 import { buscarCategorias } from "@/services/api/categories";
 import {
+  normalizarSelecaoOpcional,
+  resolverVinculoLancamento,
+  SELECT_NONE,
+} from "@/lib/lancamento-vinculo";
+import {
   buscarContas,
   buscarCartoes,
   cadastrarLancamento,
@@ -43,8 +48,6 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
-const VINCULO_CONTA = "3";
-const VINCULO_AVULSO = "4";
 const FREQUENCIA_PONTUAL = "0";
 const TIPO_DESPESA = "0";
 const TIPO_RECEITA = "1";
@@ -97,10 +100,10 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
       dataLancamento: getToday(),
       realizado: true,
       frequenciaLancamento: FREQUENCIA_PONTUAL,
-      contaId: "none",
-      cartaoId: "none",
-      categoriaId: "none",
-      subCategoriaId: "none",
+      contaId: SELECT_NONE,
+      cartaoId: SELECT_NONE,
+      categoriaId: SELECT_NONE,
+      subCategoriaId: SELECT_NONE,
       lancamentoFixo: false,
       lancamentoParcelado: false,
     },
@@ -150,7 +153,6 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
   );
 
   const tipoSelecionado = form.watch("tipo");
-
   const categoriaSelecionadaId = form.watch("categoriaId");
 
   const categoriasDisponiveis = useMemo(() => {
@@ -158,7 +160,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
   }, [categoriasDespesa, categoriasReceita, tipoSelecionado]);
 
   const subCategoriasDisponiveis = useMemo(() => {
-    if (categoriaSelecionadaId === "none") {
+    if (categoriaSelecionadaId === SELECT_NONE) {
       return [];
     }
 
@@ -170,12 +172,12 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
   }, [categoriaSelecionadaId, categoriasDisponiveis]);
 
   useEffect(() => {
-    form.setValue("subCategoriaId", "none");
+    form.setValue("subCategoriaId", SELECT_NONE);
   }, [categoriaSelecionadaId, form]);
 
   useEffect(() => {
-    form.setValue("categoriaId", "none");
-    form.setValue("subCategoriaId", "none");
+    form.setValue("categoriaId", SELECT_NONE);
+    form.setValue("subCategoriaId", SELECT_NONE);
   }, [tipoSelecionado, form]);
 
   async function onSubmit(values: FormValues) {
@@ -188,7 +190,14 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
       setIsSubmitting(true);
       setErrorMessage("");
 
-      const contaSelecionada = values.contaId !== "none" ? values.contaId : null;
+      const contaSelecionada = normalizarSelecaoOpcional(values.contaId);
+      const cartaoSelecionado = normalizarSelecaoOpcional(values.cartaoId);
+      const vinculo = resolverVinculoLancamento(
+        contaSelecionada,
+        cartaoSelecionado,
+        contas,
+        cartoes
+      );
 
       await cadastrarLancamento(
         {
@@ -200,12 +209,12 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
           realizado: values.realizado,
           frequenciaLancamento: Number(values.frequenciaLancamento),
           tipo: Number(values.tipo),
-          vinculo: contaSelecionada ? Number(VINCULO_CONTA) : Number(VINCULO_AVULSO),
+          vinculo,
           contaId: contaSelecionada,
-          cartaoId: null,
+          cartaoId: cartaoSelecionado,
           usuarioId: session.usuario.id,
-          categoriaId: values.categoriaId !== "none" ? values.categoriaId : null,
-          subCategoriaId: values.subCategoriaId !== "none" ? values.subCategoriaId : null,
+          categoriaId: normalizarSelecaoOpcional(values.categoriaId),
+          subCategoriaId: normalizarSelecaoOpcional(values.subCategoriaId),
         },
         session.token
       );
@@ -219,10 +228,10 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
         dataLancamento: getToday(),
         realizado: true,
         frequenciaLancamento: FREQUENCIA_PONTUAL,
-        contaId: "none",
-        cartaoId: "none",
-        categoriaId: "none",
-        subCategoriaId: "none",
+        contaId: SELECT_NONE,
+        cartaoId: SELECT_NONE,
+        categoriaId: SELECT_NONE,
+        subCategoriaId: SELECT_NONE,
         lancamentoFixo: false,
         lancamentoParcelado: false,
       });
@@ -393,14 +402,22 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Conta</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value !== SELECT_NONE) {
+                          form.setValue("cartaoId", SELECT_NONE);
+                        }
+                      }}
+                      value={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione uma conta" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Avulso / sem conta</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Avulso / sem conta</SelectItem>
                         {contas.map((conta) => (
                           <SelectItem key={conta.id} value={conta.id}>
                             {conta.nomeConta} - {conta.instituicao}
@@ -418,14 +435,22 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Cartao</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value} disabled>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value !== SELECT_NONE) {
+                          form.setValue("contaId", SELECT_NONE);
+                        }
+                      }}
+                      value={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Cartao sera habilitado depois" />
+                          <SelectValue placeholder="Selecione um cartao" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Nao utilizado agora</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Nao utilizado agora</SelectItem>
                         {cartoes.map((cartao) => (
                           <SelectItem key={cartao.id} value={cartao.id}>
                             {cartao.nomeCartao} - {cartao.instituicao}
@@ -433,6 +458,9 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                         ))}
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Ao escolher um cartao, a conta fica avulsa automaticamente.
+                    </p>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -453,7 +481,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Sem categoria</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Sem categoria</SelectItem>
                         {categoriasDisponiveis.map((categoria) => (
                           <SelectItem key={categoria.id} value={categoria.id}>
                             {categoria.nomeCategoria}
@@ -474,13 +502,13 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                     <Select
                       onValueChange={field.onChange}
                       value={field.value}
-                      disabled={categoriaSelecionadaId === "none"}
+                      disabled={categoriaSelecionadaId === SELECT_NONE}
                     >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue
                             placeholder={
-                              categoriaSelecionadaId === "none"
+                              categoriaSelecionadaId === SELECT_NONE
                                 ? "Selecione uma categoria primeiro"
                                 : "Selecione uma subcategoria"
                             }
@@ -488,7 +516,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Sem subcategoria</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Sem subcategoria</SelectItem>
                         {subCategoriasDisponiveis.map((subCategoria) => (
                           <SelectItem key={subCategoria.id} value={subCategoria.id}>
                             {subCategoria.nomeSubCategoria}

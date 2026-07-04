@@ -4,12 +4,18 @@ export interface ContaResumo {
   id: string;
   nomeConta: string;
   instituicao: string;
+  tipo?: number;
+  saldo?: number;
+  saldoInvestimento?: number;
 }
 
 export interface CartaoResumo {
   id: string;
   nomeCartao: string;
   instituicao: string;
+  tipo?: number;
+  bandeira?: string;
+  ultimos4Digitos?: string;
 }
 
 export interface CadastrarLancamentoPayload {

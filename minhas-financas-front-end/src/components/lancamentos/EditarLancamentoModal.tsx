@@ -5,6 +5,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ApiError } from "@/types/api";
+import {
+  normalizarSelecaoOpcional,
+  resolverVinculoLancamento,
+  SELECT_NONE,
+} from "@/lib/lancamento-vinculo";
 import { buscarCategorias } from "@/services/api/categories";
 import { buscarCartoes, buscarContas } from "@/services/api/finance";
 import { buscarLancamento, editarLancamento } from "@/services/api/lancamentos";
@@ -39,8 +44,6 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { EditarLancamentoPayload } from "@/types/lancamentos";
 
-const VINCULO_CONTA = "3";
-const VINCULO_AVULSO = "4";
 const FREQUENCIA_PONTUAL = "0";
 const TIPO_DESPESA = "0";
 const TIPO_RECEITA = "1";
@@ -108,10 +111,10 @@ export function EditarLancamentoModal({
       dataLancamento: "",
       realizado: true,
       frequenciaLancamento: FREQUENCIA_PONTUAL,
-      contaId: "none",
-      cartaoId: "none",
-      categoriaId: "none",
-      subCategoriaId: "none",
+      contaId: SELECT_NONE,
+      cartaoId: SELECT_NONE,
+      categoriaId: SELECT_NONE,
+      subCategoriaId: SELECT_NONE,
     },
   });
 
@@ -146,7 +149,7 @@ export function EditarLancamentoModal({
 
         isHydratingRef.current = true;
         const nextTipo = String(lancamento.tipo);
-        const nextCategoriaId = lancamento.categoriaId ?? "none";
+        const nextCategoriaId = lancamento.categoriaId ?? SELECT_NONE;
         previousTipoRef.current = nextTipo;
         previousCategoriaRef.current = nextCategoriaId;
 
@@ -159,10 +162,10 @@ export function EditarLancamentoModal({
           dataLancamento: toDateInputValue(lancamento.dataLancamento),
           realizado: Boolean(lancamento.realizado),
           frequenciaLancamento: String(lancamento.frequenciaLancamento ?? 0),
-          contaId: lancamento.contaId ?? "none",
-          cartaoId: lancamento.cartaoId ?? "none",
+          contaId: lancamento.contaId ?? SELECT_NONE,
+          cartaoId: lancamento.cartaoId ?? SELECT_NONE,
           categoriaId: nextCategoriaId,
-          subCategoriaId: lancamento.subCategoriaId ?? "none",
+          subCategoriaId: lancamento.subCategoriaId ?? SELECT_NONE,
         });
 
         requestAnimationFrame(() => {
@@ -200,7 +203,7 @@ export function EditarLancamentoModal({
   }, [categoriasDespesa, categoriasReceita, tipoSelecionado]);
 
   const subCategoriasDisponiveis = useMemo(() => {
-    if (categoriaSelecionadaId === "none") {
+    if (categoriaSelecionadaId === SELECT_NONE) {
       return [];
     }
 
@@ -219,9 +222,9 @@ export function EditarLancamentoModal({
       return;
     }
 
-    form.setValue("categoriaId", "none");
-    form.setValue("subCategoriaId", "none");
-    previousCategoriaRef.current = "none";
+    form.setValue("categoriaId", SELECT_NONE);
+    form.setValue("subCategoriaId", SELECT_NONE);
+    previousCategoriaRef.current = SELECT_NONE;
   }, [form, tipoSelecionado]);
 
   useEffect(() => {
@@ -236,7 +239,7 @@ export function EditarLancamentoModal({
       return;
     }
 
-    form.setValue("subCategoriaId", "none");
+    form.setValue("subCategoriaId", SELECT_NONE);
   }, [categoriaSelecionadaId, form]);
 
   async function onSubmit(values: FormValues) {
@@ -248,7 +251,8 @@ export function EditarLancamentoModal({
       setIsSubmitting(true);
       setErrorMessage("");
 
-      const contaSelecionada = values.contaId !== "none" ? values.contaId : null;
+      const contaSelecionada = normalizarSelecaoOpcional(values.contaId);
+      const cartaoSelecionado = normalizarSelecaoOpcional(values.cartaoId);
 
       const payload: EditarLancamentoPayload = {
         id: lancamentoId,
@@ -260,12 +264,12 @@ export function EditarLancamentoModal({
         realizado: values.realizado,
         frequenciaLancamento: Number(values.frequenciaLancamento),
         tipo: Number(values.tipo),
-        vinculo: contaSelecionada ? Number(VINCULO_CONTA) : Number(VINCULO_AVULSO),
+        vinculo: resolverVinculoLancamento(contaSelecionada, cartaoSelecionado, contas, cartoes),
         contaId: contaSelecionada,
-        cartaoId: null,
+        cartaoId: cartaoSelecionado,
         usuarioId,
-        categoriaId: values.categoriaId !== "none" ? values.categoriaId : null,
-        subCategoriaId: values.subCategoriaId !== "none" ? values.subCategoriaId : null,
+        categoriaId: normalizarSelecaoOpcional(values.categoriaId),
+        subCategoriaId: normalizarSelecaoOpcional(values.subCategoriaId),
       };
 
       await editarLancamento(usuarioId, lancamentoId, payload, token);
@@ -433,14 +437,22 @@ export function EditarLancamentoModal({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Conta</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value !== SELECT_NONE) {
+                          form.setValue("cartaoId", SELECT_NONE);
+                        }
+                      }}
+                      value={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione uma conta" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Avulso / sem conta</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Avulso / sem conta</SelectItem>
                         {contas.map((conta) => (
                           <SelectItem key={conta.id} value={conta.id}>
                             {conta.nomeConta} - {conta.instituicao}
@@ -458,14 +470,22 @@ export function EditarLancamentoModal({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Cartao</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value} disabled>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value !== SELECT_NONE) {
+                          form.setValue("contaId", SELECT_NONE);
+                        }
+                      }}
+                      value={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Cartao sera habilitado depois" />
+                          <SelectValue placeholder="Selecione um cartao" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Nao utilizado agora</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Nao utilizado agora</SelectItem>
                         {cartoes.map((cartao) => (
                           <SelectItem key={cartao.id} value={cartao.id}>
                             {cartao.nomeCartao} - {cartao.instituicao}
@@ -473,6 +493,9 @@ export function EditarLancamentoModal({
                         ))}
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Ao escolher um cartao, a conta fica avulsa automaticamente.
+                    </p>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -493,7 +516,7 @@ export function EditarLancamentoModal({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Sem categoria</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Sem categoria</SelectItem>
                         {categoriasDisponiveis.map((categoria) => (
                           <SelectItem key={categoria.id} value={categoria.id}>
                             {categoria.nomeCategoria}
@@ -514,13 +537,13 @@ export function EditarLancamentoModal({
                     <Select
                       onValueChange={field.onChange}
                       value={field.value}
-                      disabled={categoriaSelecionadaId === "none"}
+                      disabled={categoriaSelecionadaId === SELECT_NONE}
                     >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue
                             placeholder={
-                              categoriaSelecionadaId === "none"
+                              categoriaSelecionadaId === SELECT_NONE
                                 ? "Selecione uma categoria primeiro"
                                 : "Selecione uma subcategoria"
                             }
@@ -528,7 +551,7 @@ export function EditarLancamentoModal({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Sem subcategoria</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Sem subcategoria</SelectItem>
                         {subCategoriasDisponiveis.map((subCategoria) => (
                           <SelectItem key={subCategoria.id} value={subCategoria.id}>
                             {subCategoria.nomeSubCategoria}

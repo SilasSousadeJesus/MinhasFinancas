@@ -1,6 +1,7 @@
+"use client";
+
+import { ContasCartoesManager } from "@/components/contas-cartoes/ContasCartoesManager";
+
 export default function ContasCartoes() {
-    return (
-        <h1>Contas e Cartoes</h1>
-    );
-  }
-  
+  return <ContasCartoesManager />;
+}

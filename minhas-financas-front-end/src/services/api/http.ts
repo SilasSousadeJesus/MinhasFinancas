@@ -18,11 +18,22 @@ export async function apiRequest<T>(
     },
   });
 
-  const data = (await response.json().catch(() => null)) as RetornoGenerico<T> | null;
+  const rawBody = await response.text();
+  let data: RetornoGenerico<T> | null = null;
+
+  if (rawBody) {
+    try {
+      data = JSON.parse(rawBody) as RetornoGenerico<T>;
+    } catch {
+      data = null;
+    }
+  }
 
   if (!response.ok || !data?.sucesso) {
     throw new ApiError(
-      data?.mensagemUsuario || data?.mensagemSistema || "Erro ao processar a requisição.",
+      data?.mensagemUsuario ||
+        data?.mensagemSistema ||
+        (rawBody && !data ? rawBody : "Erro ao processar a requisicao."),
       response.status,
       data ?? undefined
     );
