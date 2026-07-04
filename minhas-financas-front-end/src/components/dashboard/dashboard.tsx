@@ -1,4 +1,5 @@
-import { LinechartChart, PiechartcustomChart } from "../Icons/Icons";
+import { useEffect, useMemo, useState } from "react";
+import { PiechartcustomChart, LinechartChart } from "../Icons/Icons";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -8,11 +9,11 @@ import {
   CardTitle,
 } from "../ui/card";
 import { useAuth } from "@/providers/auth-provider";
-import { useEffect, useMemo, useState } from "react";
 import { buscarDashboard } from "@/services/api/dashboard";
 import { ApiError } from "@/types/api";
 import { DashboardData, DashboardPeriodo } from "@/types/dashboard";
 import { NovoLancamentoModal } from "@/components/lancamentos/NovoLancamentoModal";
+import { GerenciarContasCartoesModal } from "@/components/contas-cartoes/GerenciarContasCartoesModal";
 
 function parseCurrencyString(value: string) {
   const normalized = value
@@ -77,7 +78,7 @@ export function PainelDashboard() {
         if (error instanceof ApiError) {
           setErrorMessage(error.message);
         } else {
-          setErrorMessage("Não foi possível carregar o dashboard.");
+          setErrorMessage("Nao foi possivel carregar o dashboard.");
         }
       } finally {
         setIsLoading(false);
@@ -161,11 +162,11 @@ export function PainelDashboard() {
         <div>
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <p className="text-sm text-gray-500">
-            Bem vindo de volta, {session?.usuario.nome || "usuário"}!
+            Bem vindo de volta, {session?.usuario.nome || "usuario"}!
           </p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline">Gerenciar contas e cartões</Button>
+          <GerenciarContasCartoesModal />
           <NovoLancamentoModal onCreated={() => setReloadToken((current) => current + 1)} />
         </div>
       </div>
@@ -181,13 +182,13 @@ export function PainelDashboard() {
           variant={periodo === "mesAtual" ? "default" : "outline"}
           onClick={() => setPeriodo("mesAtual")}
         >
-          Este Mês
+          Este Mes
         </Button>
         <Button
           variant={periodo === "mesPassado" ? "default" : "outline"}
           onClick={() => setPeriodo("mesPassado")}
         >
-          Mês Passado
+          Mes Passado
         </Button>
       </div>
 
@@ -205,7 +206,7 @@ export function PainelDashboard() {
             </div>
             <p className="mt-2 text-lg font-medium">Receitas</p>
             <p className="text-2xl font-bold">{isLoading ? "..." : resumo.receita}</p>
-            <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
+            <p className="text-sm text-gray-600">Orcado R$ 0,00</p>
           </CardContent>
         </Card>
         <Card>
@@ -215,7 +216,7 @@ export function PainelDashboard() {
             </div>
             <p className="mt-2 text-lg font-medium">Investimentos</p>
             <p className="text-2xl font-bold">{isLoading ? "..." : resumo.investimento}</p>
-            <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
+            <p className="text-sm text-gray-600">Orcado R$ 0,00</p>
           </CardContent>
         </Card>
         <Card>
@@ -225,7 +226,7 @@ export function PainelDashboard() {
             </div>
             <p className="mt-2 text-lg font-medium">Despesas</p>
             <p className="text-2xl font-bold">{isLoading ? "..." : resumo.despesa}</p>
-            <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
+            <p className="text-sm text-gray-600">Orcado R$ 0,00</p>
           </CardContent>
         </Card>
         <Card>
@@ -235,7 +236,7 @@ export function PainelDashboard() {
             </div>
             <p className="mt-2 text-lg font-medium">Resultado</p>
             <p className="text-2xl font-bold">{isLoading ? "..." : resumo.resultado}</p>
-            <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
+            <p className="text-sm text-gray-600">Orcado R$ 0,00</p>
           </CardContent>
         </Card>
       </div>
@@ -244,10 +245,10 @@ export function PainelDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Despesas por categoria</CardTitle>
-            <CardDescription>Distribuição das despesas por categoria</CardDescription>
+            <CardDescription>Distribuicao das despesas por categoria</CardDescription>
           </CardHeader>
           <CardContent>
-            <PiechartcustomChart className="w-full aspect-[4/3]" data={pieChartData} />
+            <PiechartcustomChart className="aspect-[4/3] w-full" data={pieChartData} />
             {dashboard?.lancamentosPorCategoriaDeDespesaDashboard?.length === 0 ? (
               <p className="mt-4 text-center text-sm text-muted-foreground">
                 Sem despesas cadastradas ainda.
@@ -258,13 +259,13 @@ export function PainelDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Receitas e Despesas</CardTitle>
-            <CardDescription>Evolução mensal de receitas e despesas</CardDescription>
+            <CardDescription>Evolucao mensal de receitas e despesas</CardDescription>
           </CardHeader>
           <CardContent>
-            <LinechartChart className="w-full aspect-[4/3]" data={lineChartData} />
+            <LinechartChart className="aspect-[4/3] w-full" data={lineChartData} />
             {dashboard?.receitasDespesasMensais?.length === 0 ? (
               <p className="mt-4 text-center text-sm text-muted-foreground">
-                Sem movimentações mensais ainda.
+                Sem movimentacoes mensais ainda.
               </p>
             ) : null}
           </CardContent>
