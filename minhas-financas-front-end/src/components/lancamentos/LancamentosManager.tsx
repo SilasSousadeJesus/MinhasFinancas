@@ -577,240 +577,309 @@ export function LancamentosManager() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-                <div className="space-y-2 xl:col-span-2">
-                  <p className="text-sm font-medium">Busca por descricao</p>
-                  <Input
-                    type="text"
-                    value={filtrosEmEdicao.buscaDescricao}
-                    onChange={(event) =>
-                      atualizarFiltroEmEdicao("buscaDescricao", event.target.value)
-                    }
-                    placeholder="Ex: mercado, salario, freelance"
-                  />
-                </div>
+              <div className="mb-8 space-y-8">
+                <section className="space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-semibold tracking-wide text-foreground">
+                      Pesquisa
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Local para encontrar rapidamente um lancamento especifico.
+                    </p>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="space-y-2 xl:col-span-2">
+                      <p className="text-sm font-medium">Descricao</p>
+                      <Input
+                        type="text"
+                        value={filtrosEmEdicao.buscaDescricao}
+                        onChange={(event) =>
+                          atualizarFiltroEmEdicao("buscaDescricao", event.target.value)
+                        }
+                        placeholder="Ex: mercado, salario, freelance"
+                      />
+                    </div>
+                  </div>
+                </section>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Tipo</p>
-                  <Select
-                    value={filtrosEmEdicao.tipo}
-                    onValueChange={(value) => atualizarFiltroEmEdicao("tipo", value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Todos os tipos" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos os tipos</SelectItem>
-                      <SelectItem value="1">Receita</SelectItem>
-                      <SelectItem value="0">Despesa</SelectItem>
-                      <SelectItem value="2">Investimento</SelectItem>
-                      <SelectItem value="4">Transferencia</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <section className="space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-semibold tracking-wide text-foreground">
+                      Classificacao
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Filtros ligados a natureza e ao enquadramento do lancamento.
+                    </p>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Tipo</p>
+                      <Select
+                        value={filtrosEmEdicao.tipo}
+                        onValueChange={(value) => atualizarFiltroEmEdicao("tipo", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Todos os tipos" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todos os tipos</SelectItem>
+                          <SelectItem value="1">Receita</SelectItem>
+                          <SelectItem value="0">Despesa</SelectItem>
+                          <SelectItem value="2">Investimento</SelectItem>
+                          <SelectItem value="4">Transferencia</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Categoria</p>
-                  <Select
-                    value={filtrosEmEdicao.categoriaId}
-                    onValueChange={(value) => atualizarFiltroEmEdicao("categoriaId", value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Todas as categorias" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas as categorias</SelectItem>
-                      {categoriasDisponiveis.map((categoria) => (
-                        <SelectItem key={categoria.id} value={categoria.id}>
-                          {categoria.nome}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Status</p>
+                      <Select
+                        value={filtrosEmEdicao.statusLancamento}
+                        onValueChange={(value) =>
+                          atualizarFiltroEmEdicao("statusLancamento", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Todos os status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todos os status</SelectItem>
+                          <SelectItem value="0">Pendente</SelectItem>
+                          <SelectItem value="1">Pago</SelectItem>
+                          <SelectItem value="2">Recebido</SelectItem>
+                          <SelectItem value="3">Cancelado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Status</p>
-                  <Select
-                    value={filtrosEmEdicao.statusLancamento}
-                    onValueChange={(value) =>
-                      atualizarFiltroEmEdicao("statusLancamento", value)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Todos os status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos os status</SelectItem>
-                      <SelectItem value="0">Pendente</SelectItem>
-                      <SelectItem value="1">Pago</SelectItem>
-                      <SelectItem value="2">Recebido</SelectItem>
-                      <SelectItem value="3">Cancelado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Categoria</p>
+                      <Select
+                        value={filtrosEmEdicao.categoriaId}
+                        onValueChange={(value) => atualizarFiltroEmEdicao("categoriaId", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Todas as categorias" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todas as categorias</SelectItem>
+                          {categoriasDisponiveis.map((categoria) => (
+                            <SelectItem key={categoria.id} value={categoria.id}>
+                              {categoria.nome}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Data inicial do lancamento</p>
-                  <Input
-                    type="date"
-                    value={filtrosEmEdicao.dataInicialLancamento}
-                    onChange={(event) =>
-                      atualizarFiltroEmEdicao("dataInicialLancamento", event.target.value)
-                    }
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Conta</p>
+                      <Select
+                        value={filtrosEmEdicao.contaId}
+                        onValueChange={(value) => {
+                          atualizarFiltroEmEdicao("contaId", value);
+                          if (value !== "all") {
+                            atualizarFiltroEmEdicao("cartaoId", "all");
+                          }
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Todas as contas" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todas as contas</SelectItem>
+                          {contasDisponiveis.map((conta) => (
+                            <SelectItem key={conta.id} value={conta.id}>
+                              {conta.nome}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Data final do lancamento</p>
-                  <Input
-                    type="date"
-                    value={filtrosEmEdicao.dataFinalLancamento}
-                    onChange={(event) =>
-                      atualizarFiltroEmEdicao("dataFinalLancamento", event.target.value)
-                    }
-                  />
-                </div>
-              </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Cartao</p>
+                      <Select
+                        value={filtrosEmEdicao.cartaoId}
+                        onValueChange={(value) => {
+                          atualizarFiltroEmEdicao("cartaoId", value);
+                          if (value !== "all") {
+                            atualizarFiltroEmEdicao("contaId", "all");
+                          }
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Todos os cartoes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todos os cartoes</SelectItem>
+                          {cartoesDisponiveis.map((cartao) => (
+                            <SelectItem key={cartao.id} value={cartao.id}>
+                              {cartao.nome}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </section>
 
-              <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Conta</p>
-                  <Select
-                    value={filtrosEmEdicao.contaId}
-                    onValueChange={(value) => {
-                      atualizarFiltroEmEdicao("contaId", value);
-                      if (value !== "all") {
-                        atualizarFiltroEmEdicao("cartaoId", "all");
-                      }
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Todas as contas" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas as contas</SelectItem>
-                      {contasDisponiveis.map((conta) => (
-                        <SelectItem key={conta.id} value={conta.id}>
-                          {conta.nome}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <section className="space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-semibold tracking-wide text-foreground">
+                      Periodos
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Escolha com clareza qual janela temporal deseja analisar.
+                    </p>
+                  </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Cartao</p>
-                  <Select
-                    value={filtrosEmEdicao.cartaoId}
-                    onValueChange={(value) => {
-                      atualizarFiltroEmEdicao("cartaoId", value);
-                      if (value !== "all") {
-                        atualizarFiltroEmEdicao("contaId", "all");
-                      }
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Todos os cartoes" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos os cartoes</SelectItem>
-                      {cartoesDisponiveis.map((cartao) => (
-                        <SelectItem key={cartao.id} value={cartao.id}>
-                          {cartao.nome}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                  <div className="grid gap-6 xl:grid-cols-3">
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-medium text-foreground">Periodo do lancamento</h4>
+                      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium">Inicial</p>
+                          <Input
+                            type="date"
+                            value={filtrosEmEdicao.dataInicialLancamento}
+                            onChange={(event) =>
+                              atualizarFiltroEmEdicao("dataInicialLancamento", event.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium">Final</p>
+                          <Input
+                            type="date"
+                            value={filtrosEmEdicao.dataFinalLancamento}
+                            onChange={(event) =>
+                              atualizarFiltroEmEdicao("dataFinalLancamento", event.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Data inicial de vencimento</p>
-                  <Input
-                    type="date"
-                    value={filtrosEmEdicao.dataInicialVencimento}
-                    onChange={(event) =>
-                      atualizarFiltroEmEdicao("dataInicialVencimento", event.target.value)
-                    }
-                  />
-                </div>
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-medium text-foreground">Periodo de vencimento</h4>
+                      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium">Inicial</p>
+                          <Input
+                            type="date"
+                            value={filtrosEmEdicao.dataInicialVencimento}
+                            onChange={(event) =>
+                              atualizarFiltroEmEdicao("dataInicialVencimento", event.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium">Final</p>
+                          <Input
+                            type="date"
+                            value={filtrosEmEdicao.dataFinalVencimento}
+                            onChange={(event) =>
+                              atualizarFiltroEmEdicao("dataFinalVencimento", event.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Data final de vencimento</p>
-                  <Input
-                    type="date"
-                    value={filtrosEmEdicao.dataFinalVencimento}
-                    onChange={(event) =>
-                      atualizarFiltroEmEdicao("dataFinalVencimento", event.target.value)
-                    }
-                  />
-                </div>
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-medium text-foreground">Periodo de efetivacao</h4>
+                      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium">Inicial</p>
+                          <Input
+                            type="date"
+                            value={filtrosEmEdicao.dataInicialEfetivacao}
+                            onChange={(event) =>
+                              atualizarFiltroEmEdicao("dataInicialEfetivacao", event.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium">Final</p>
+                          <Input
+                            type="date"
+                            value={filtrosEmEdicao.dataFinalEfetivacao}
+                            onChange={(event) =>
+                              atualizarFiltroEmEdicao("dataFinalEfetivacao", event.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Data inicial de efetivacao</p>
-                  <Input
-                    type="date"
-                    value={filtrosEmEdicao.dataInicialEfetivacao}
-                    onChange={(event) =>
-                      atualizarFiltroEmEdicao("dataInicialEfetivacao", event.target.value)
-                    }
-                  />
-                </div>
+                <section className="space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-semibold tracking-wide text-foreground">
+                      Ordenacao
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Defina como a lista deve ser organizada na tela.
+                    </p>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2 xl:max-w-2xl">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Ordenar por</p>
+                      <Select
+                        value={ordenarPor}
+                        onValueChange={(value) => atualizarOrdenacao(value as "data" | "valor")}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Escolha a ordenacao" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="data">Data de vencimento</SelectItem>
+                          <SelectItem value="valor">Valor</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Data final de efetivacao</p>
-                  <Input
-                    type="date"
-                    value={filtrosEmEdicao.dataFinalEfetivacao}
-                    onChange={(event) =>
-                      atualizarFiltroEmEdicao("dataFinalEfetivacao", event.target.value)
-                    }
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Direcao</p>
+                      <Select
+                        value={direcaoOrdenacao}
+                        onValueChange={(value) => atualizarDirecao(value as "asc" | "desc")}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Escolha a direcao" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="desc">Decrescente</SelectItem>
+                          <SelectItem value="asc">Crescente</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </section>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Ordenar por</p>
-                  <Select
-                    value={ordenarPor}
-                    onValueChange={(value) => atualizarOrdenacao(value as "data" | "valor")}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Escolha a ordenacao" />
-                    </SelectTrigger>
-                      <SelectContent>
-                      <SelectItem value="data">Data de vencimento</SelectItem>
-                      <SelectItem value="valor">Valor</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Direcao</p>
-                  <Select
-                    value={direcaoOrdenacao}
-                    onValueChange={(value) => atualizarDirecao(value as "asc" | "desc")}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Escolha a direcao" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="desc">Decrescente</SelectItem>
-                      <SelectItem value="asc">Crescente</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                <p className="text-sm text-muted-foreground">
-                  {totalItens} resultado(s) encontrado(s).
-                </p>
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button variant="outline" onClick={limparFiltros}>
-                    Limpar filtros
-                  </Button>
-                  <Button onClick={aplicarFiltros}>Buscar</Button>
-                </div>
+                <section className="space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-semibold tracking-wide text-foreground">
+                      Acoes
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Aplique ou limpe os filtros mantendo todas as opcoes visiveis.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <p className="text-sm text-muted-foreground">
+                      {totalItens} resultado(s) encontrado(s).
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button variant="outline" onClick={limparFiltros}>
+                        Limpar filtros
+                      </Button>
+                      <Button onClick={aplicarFiltros}>Buscar</Button>
+                    </div>
+                  </div>
+                </section>
               </div>
 
               {isLoading ? (

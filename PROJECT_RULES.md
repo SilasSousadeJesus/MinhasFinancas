@@ -39,6 +39,19 @@ Use este arquivo para registrar acordos operacionais e arquiteturais do projeto.
 - Filtros devem deixar explicito qual campo estao filtrando.
 - Toda operacao demorada deve dar feedback visual ao usuario.
 
+## Organizacao da Interface
+
+- Toda tela deve ser organizada de acordo com o fluxo mental do usuario, e nao pela ordem em que as funcionalidades foram implementadas.
+- Campos relacionados devem permanecer agrupados visualmente.
+- Sempre que possivel, utilizar a seguinte hierarquia:
+  1. Pesquisa
+  2. Classificacao
+  3. Periodos
+  4. Ordenacao
+  5. Acoes
+- Evitar distribuir informacoes relacionadas em regioes diferentes da tela.
+- A interface deve permitir que o usuario compreenda rapidamente onde encontrar determinada informacao, reduzindo o esforco cognitivo e melhorando a produtividade.
+
 ## Dados Financeiros
 
 - Lancamentos gerados automaticamente devem manter vinculo com sua origem.
