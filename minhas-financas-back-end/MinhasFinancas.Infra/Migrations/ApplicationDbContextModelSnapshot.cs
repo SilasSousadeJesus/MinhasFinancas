@@ -540,6 +540,68 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("PermanenciaPassivo");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DataAtualizacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataInicial")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MesesLimite")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("ValorAcumuladoInicial")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ValorObjetivo")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Projecao");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.RendaProjecao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjecaoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("ValorMensal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjecaoId");
+
+                    b.ToTable("RendaProjecao");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.SubCategoria", b =>
                 {
                     b.Property<Guid>("Id")
@@ -730,6 +792,28 @@ namespace MinhasFinancas.Infra.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
+                        .WithMany("Projecoes")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.RendaProjecao", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Projecao", "Projecao")
+                        .WithMany("Rendas")
+                        .HasForeignKey("ProjecaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Projecao");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.SubCategoria", b =>
                 {
                     b.HasOne("MinhasFinancas.Domain.Entities.Categoria", null)
@@ -771,6 +855,11 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Navigation("DataPermanencia");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
+                {
+                    b.Navigation("Rendas");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Usuario", b =>
                 {
                     b.Navigation("Bancos");
@@ -784,6 +873,8 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Navigation("Lancamentos");
 
                     b.Navigation("Metas");
+
+                    b.Navigation("Projecoes");
                 });
 #pragma warning restore 612, 618
         }

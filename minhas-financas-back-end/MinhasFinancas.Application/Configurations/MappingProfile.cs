@@ -6,6 +6,7 @@ using MinhasFinancas.Application.DTOs.Categoria;
 using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.DTOs.Meta;
 using MinhasFinancas.Application.DTOs.Passivo;
+using MinhasFinancas.Application.DTOs.Projecao;
 using MinhasFinancas.Domain.Entities;
 
 namespace MinhasFinancas.Application.Configurations
@@ -37,6 +38,10 @@ namespace MinhasFinancas.Application.Configurations
 
             CreateMap<CadastrarMetaDTO, Meta>();
             CreateMap<EditarMetalDTO, Meta>();
+
+            CreateMap<CadastrarProjecaoDTO, Projecao>();
+            CreateMap<EditarProjecaoDTO, Projecao>();
+            CreateMap<RendaProjecaoDTO, RendaProjecao>();
         }
     }
 }

@@ -24,6 +24,8 @@ namespace MinhasFinancas.Infra
         public DbSet<Meta> Meta { get; set; }
         public DbSet<PermanenciaBemMaterial> PermanenciaBemMaterial { get; set; }
         public DbSet<Passivo> Passivo { get; set; }
+        public DbSet<Projecao> Projecao { get; set; }
+        public DbSet<RendaProjecao> RendaProjecao { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,11 +45,17 @@ namespace MinhasFinancas.Infra
 
             // deletes em cascata
 
-                modelBuilder.Entity<SubCategoria>()
+            modelBuilder.Entity<SubCategoria>()
                     .HasOne<Categoria>()
                     .WithMany(c => c.SubCategorias)
                     .HasForeignKey(sc => sc.CategoriaId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Projecao>()
+                .HasMany(x => x.Rendas)
+                .WithOne(x => x.Projecao)
+                .HasForeignKey(x => x.ProjecaoId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Configuração das chaves primárias para as entidades do Identity
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(x => new { x.LoginProvider, x.ProviderKey });

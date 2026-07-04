@@ -20,6 +20,7 @@ import {
   GoalIcon,
   LayoutDashboardIcon,
   PocketIcon,
+  ProjectionIcon,
   SettingsIcon,
 } from "../Icons/Icons";
 import { useEffect, useState } from "react";
@@ -126,6 +127,20 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
             >
               <PocketIcon className="w-5 h-5" />
               <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Orçamento</span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
+          <Link href="/projecao" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                " justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <ProjectionIcon className="w-5 h-5" />
+              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Projecao</span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
