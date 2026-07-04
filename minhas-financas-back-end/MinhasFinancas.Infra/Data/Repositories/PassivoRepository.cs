@@ -15,6 +15,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<List<Passivo>> BuscarTodosOsElementosAsync(string id)
         {
             var listaDeBens = await _context.Set<Passivo>()
+                .AsNoTracking()
                 .Include(x => x.DataPermanencia)
                  .Where(b => b.UsuarioId == id)
                  .ToListAsync();
@@ -25,6 +26,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<Passivo> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
             return await _context.Set<Passivo>()
+                    .AsNoTracking()
                     .Include(x => x.DataPermanencia)
                     .Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
         }

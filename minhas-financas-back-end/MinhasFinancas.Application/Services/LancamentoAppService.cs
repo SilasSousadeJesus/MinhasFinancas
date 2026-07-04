@@ -112,9 +112,9 @@ namespace MinhasFinancas.Application.Services
                     query = query.Where(x => x.CartaoId == filtro.CartaoId.Value);
                 }
 
-                if (filtro.Realizado.HasValue)
+                if (filtro.StatusLancamento.HasValue)
                 {
-                    query = query.Where(x => x.Realizado == filtro.Realizado.Value);
+                    query = query.Where(x => (int)x.StatusLancamento == filtro.StatusLancamento.Value);
                 }
 
                 if (filtro.DataInicialLancamento.HasValue)
@@ -129,16 +129,28 @@ namespace MinhasFinancas.Application.Services
                     query = query.Where(x => x.DataLancamento.Date <= dataFinal);
                 }
 
-                if (filtro.DataInicialPagamento.HasValue)
+                if (filtro.DataInicialVencimento.HasValue)
                 {
-                    var dataInicialPagamento = filtro.DataInicialPagamento.Value.Date;
-                    query = query.Where(x => x.DataPagamento.Date >= dataInicialPagamento);
+                    var dataInicialVencimento = filtro.DataInicialVencimento.Value.Date;
+                    query = query.Where(x => x.DataVencimento.Date >= dataInicialVencimento);
                 }
 
-                if (filtro.DataFinalPagamento.HasValue)
+                if (filtro.DataFinalVencimento.HasValue)
                 {
-                    var dataFinalPagamento = filtro.DataFinalPagamento.Value.Date;
-                    query = query.Where(x => x.DataPagamento.Date <= dataFinalPagamento);
+                    var dataFinalVencimento = filtro.DataFinalVencimento.Value.Date;
+                    query = query.Where(x => x.DataVencimento.Date <= dataFinalVencimento);
+                }
+
+                if (filtro.DataInicialEfetivacao.HasValue)
+                {
+                    var dataInicialEfetivacao = filtro.DataInicialEfetivacao.Value.Date;
+                    query = query.Where(x => x.DataEfetivacao.HasValue && x.DataEfetivacao.Value.Date >= dataInicialEfetivacao);
+                }
+
+                if (filtro.DataFinalEfetivacao.HasValue)
+                {
+                    var dataFinalEfetivacao = filtro.DataFinalEfetivacao.Value.Date;
+                    query = query.Where(x => x.DataEfetivacao.HasValue && x.DataEfetivacao.Value.Date <= dataFinalEfetivacao);
                 }
 
                 var ordenarPor = filtro.OrdenarPor.Trim().ToLower();
@@ -148,7 +160,7 @@ namespace MinhasFinancas.Application.Services
                 query = ordenarPor switch
                 {
                     "valor" => asc ? query.OrderBy(x => x.Valor) : query.OrderByDescending(x => x.Valor),
-                    _ => asc ? query.OrderBy(x => x.DataPagamento) : query.OrderByDescending(x => x.DataPagamento),
+                    _ => asc ? query.OrderBy(x => x.DataVencimento) : query.OrderByDescending(x => x.DataVencimento),
                 };
 
                 var pagina = filtro.Pagina < 1 ? 1 : filtro.Pagina;
@@ -190,18 +202,6 @@ namespace MinhasFinancas.Application.Services
 
             try
             {
-                var buscaPorusuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
-
-                if (!buscaPorusuario.Sucesso)
-                {
-                    retorno.Sucesso = buscaPorusuario.Sucesso;
-                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
-                    retorno.MensagemSistema = buscaPorusuario.MensagemSistema;
-                    retorno.MensagemUsuario = buscaPorusuario.MensagemUsuario;
-                    retorno.Dados = null;
-                    return retorno;
-                }
-
                 var lancamento = await _lancamentoRepository.BuscarUmElementoAsync(usuarioId, lancamentoId);
 
                 retorno.Sucesso = lancamento != null ? true : false;
@@ -282,6 +282,7 @@ namespace MinhasFinancas.Application.Services
         private List<Lancamento> GerarLancamentosProgramados(CadastrarLancamentoDTO elementoDTO)
         {
             ValidarRecorrencia(elementoDTO);
+            PrepararCadastroInicial(elementoDTO);
 
             return elementoDTO.FrequenciaLancamento switch
             {
@@ -359,8 +360,7 @@ namespace MinhasFinancas.Application.Services
                 (_, lancamento) =>
                 {
                     var numeroDiaUtil = elementoDTO.NumeroDiaUtil!.Value;
-                    lancamento.DataPagamento = CalcularDataDiaUtil(lancamento.DataPagamento, numeroDiaUtil);
-                    lancamento.DataLancamento = CalcularDataDiaUtil(lancamento.DataLancamento, numeroDiaUtil);
+                    lancamento.DataVencimento = CalcularDataDiaUtil(lancamento.DataVencimento, numeroDiaUtil);
                     lancamento.NumeroDiaUtil = numeroDiaUtil;
                     return lancamento;
                 });
@@ -421,10 +421,75 @@ namespace MinhasFinancas.Application.Services
             lancamento.Id = Guid.NewGuid();
             lancamento.Descricao = descricao ?? elementoDTO.Descricao;
             lancamento.Valor = valor ?? elementoDTO.Valor;
-            lancamento.DataPagamento = elementoDTO.DataPagamento.AddMonths(mesesParaAdicionar);
-            lancamento.DataLancamento = elementoDTO.DataLancamento.AddMonths(mesesParaAdicionar);
+            lancamento.DataVencimento = elementoDTO.DataVencimento.AddMonths(mesesParaAdicionar);
+            lancamento.DataLancamento = elementoDTO.DataLancamento;
 
             return lancamento;
+        }
+
+        private static void PrepararCadastroInicial(CadastrarLancamentoDTO elementoDTO)
+        {
+            elementoDTO.StatusLancamento = EnumStatusLancamento.Pendente;
+            elementoDTO.DataEfetivacao = null;
+        }
+
+        private static void ValidarStatusLancamento(Lancamento lancamento)
+        {
+            if (lancamento.StatusLancamento == EnumStatusLancamento.Pendente || lancamento.StatusLancamento == EnumStatusLancamento.Cancelado)
+            {
+                lancamento.DataEfetivacao = null;
+            }
+
+            if ((lancamento.StatusLancamento == EnumStatusLancamento.Pago || lancamento.StatusLancamento == EnumStatusLancamento.Recebido)
+                && !lancamento.DataEfetivacao.HasValue)
+            {
+                throw new InvalidOperationException("Lancamentos efetivados exigem DataEfetivacao preenchida.");
+            }
+
+            if (EhMovimentoDeEntrada(lancamento.Tipo) && lancamento.StatusLancamento == EnumStatusLancamento.Pago)
+            {
+                throw new InvalidOperationException("Movimentos de entrada nao podem usar o status Pago.");
+            }
+
+            if (EhMovimentoDeSaida(lancamento.Tipo) && lancamento.StatusLancamento == EnumStatusLancamento.Recebido)
+            {
+                throw new InvalidOperationException("Movimentos de saida nao podem usar o status Recebido.");
+            }
+        }
+
+        private static EnumStatusLancamento DeterminarStatusDeEfetivacao(Lancamento lancamento)
+        {
+            if (lancamento.StatusLancamento == EnumStatusLancamento.Cancelado)
+            {
+                throw new InvalidOperationException("Lancamentos cancelados nao podem ser efetivados.");
+            }
+
+            if (lancamento.StatusLancamento == EnumStatusLancamento.Pago || lancamento.StatusLancamento == EnumStatusLancamento.Recebido)
+            {
+                throw new InvalidOperationException("Este lancamento ja foi efetivado.");
+            }
+
+            return lancamento.Tipo switch
+            {
+                EnumTipoLancamento.Despesa => EnumStatusLancamento.Pago,
+                EnumTipoLancamento.Receita => EnumStatusLancamento.Recebido,
+                _ => throw new InvalidOperationException("A efetivacao rapida esta disponivel apenas para receitas e despesas."),
+            };
+        }
+
+        private static bool EhMovimentoDeEntrada(EnumTipoLancamento tipo)
+        {
+            return tipo == EnumTipoLancamento.Receita
+                || tipo == EnumTipoLancamento.Deposito
+                || tipo == EnumTipoLancamento.InvestimentoSaque;
+        }
+
+        private static bool EhMovimentoDeSaida(EnumTipoLancamento tipo)
+        {
+            return tipo == EnumTipoLancamento.Despesa
+                || tipo == EnumTipoLancamento.Saque
+                || tipo == EnumTipoLancamento.InvestimentoDeposito
+                || tipo == EnumTipoLancamento.Transferencia;
         }
 
         private async Task AplicarImpactosFinanceirosSeNecessarioAsync(Lancamento lancamento)
@@ -547,11 +612,12 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var categoria = _mapper.Map<Lancamento>(elementoDTO);
-                categoria.Id = elementoId;
-                categoria.UsuarioId = idPatrono;
+                var lancamento = _mapper.Map<Lancamento>(elementoDTO);
+                lancamento.Id = elementoId;
+                lancamento.UsuarioId = idPatrono;
+                ValidarStatusLancamento(lancamento);
 
-                await _lancamentoRepository.EditarElementoAsync(categoria);
+                await _lancamentoRepository.EditarElementoAsync(lancamento);
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
@@ -566,6 +632,55 @@ namespace MinhasFinancas.Application.Services
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
                 retorno.MensagemUsuario = "Não foi possivel editar o Lançamento";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
+        public async Task<RetornoGenerico> EfetivarLancamentoAsync(string usuarioId, Guid lancamentoId)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorLancamento = await BuscarUmElementoAsync(usuarioId, lancamentoId);
+
+                if (!buscaPorLancamento.Sucesso || buscaPorLancamento.Dados is not Lancamento lancamento)
+                {
+                    retorno.Sucesso = buscaPorLancamento.Sucesso;
+                    retorno.HttpStatusCode = buscaPorLancamento.HttpStatusCode;
+                    retorno.MensagemSistema = buscaPorLancamento.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorLancamento.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var novoStatus = DeterminarStatusDeEfetivacao(lancamento);
+
+                lancamento.StatusLancamento = novoStatus;
+                lancamento.DataEfetivacao = DateTime.Now;
+
+                await _lancamentoRepository.EditarElementoAsync(lancamento);
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = "Lancamento efetivado com sucesso";
+                retorno.MensagemUsuario = novoStatus == EnumStatusLancamento.Pago
+                    ? "Lancamento marcado como pago"
+                    : "Lancamento marcado como recebido";
+                retorno.Dados = null;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = ex is InvalidOperationException
+                    ? HttpStatusCode.BadRequest
+                    : HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = ex is InvalidOperationException
+                    ? ex.Message
+                    : "Nao foi possivel efetivar o lancamento";
                 retorno.Dados = null;
                 return retorno;
             }

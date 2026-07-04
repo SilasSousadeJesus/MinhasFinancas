@@ -16,6 +16,8 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<List<Projecao>> BuscarTodosOsElementosAsync(string id)
         {
             return await _context.Set<Projecao>()
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Where(x => x.UsuarioId == id)
                 .Include(x => x.Rendas)
                 .Include(x => x.RendasExtrasMensais)
@@ -27,6 +29,8 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<Projecao> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
             return await _context.Set<Projecao>()
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Where(x => x.UsuarioId == idPatrono && x.Id == id)
                 .Include(x => x.Rendas.OrderBy(r => r.Nome))
                 .Include(x => x.RendasExtrasMensais.OrderBy(r => r.MesReferencia))

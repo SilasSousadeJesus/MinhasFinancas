@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Check, Pencil, Plus, Trash2 } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
 import { ApiError } from "@/types/api";
 import { FiltroLancamentosParams, LancamentoResumo } from "@/types/lancamentos";
-import { buscarLancamentos, deletarLancamento } from "@/services/api/lancamentos";
+import { buscarLancamentos, deletarLancamento, efetivarLancamento } from "@/services/api/lancamentos";
 import { buscarCategorias } from "@/services/api/categories";
 import { buscarCartoes, buscarContas } from "@/services/api/finance";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
@@ -100,6 +100,39 @@ function getTipoVariant(tipo: number): "default" | "secondary" | "destructive" |
   }
 }
 
+function getStatusLabel(status: number, tipo: number) {
+  switch (status) {
+    case 1:
+      return "Pago";
+    case 2:
+      return "Recebido";
+    case 3:
+      return "Cancelado";
+    default:
+      return "Pendente";
+  }
+}
+
+function getStatusVariant(status: number): "default" | "secondary" | "destructive" | "outline" {
+  switch (status) {
+    case 1:
+    case 2:
+      return "secondary";
+    case 3:
+      return "outline";
+    default:
+      return "destructive";
+  }
+}
+
+function podeEfetivarRapido(lancamento: LancamentoResumo) {
+  return lancamento.statusLancamento === 0 && (lancamento.tipo === 0 || lancamento.tipo === 1);
+}
+
+function getAcaoEfetivacaoLabel(lancamento: LancamentoResumo) {
+  return lancamento.tipo === 0 ? "Pagar" : "Receber";
+}
+
 function toDateInputValue(dateValue: string) {
   return new Date(dateValue).toISOString().split("T")[0];
 }
@@ -117,11 +150,11 @@ function ordenarLancamentosDaPagina(
         return (a.valor - b.valor) * multiplicador;
       }
     } else {
-      const dataPagamentoA = new Date(a.dataPagamento).getTime();
-      const dataPagamentoB = new Date(b.dataPagamento).getTime();
+      const dataVencimentoA = new Date(a.dataVencimento).getTime();
+      const dataVencimentoB = new Date(b.dataVencimento).getTime();
 
-      if (dataPagamentoA !== dataPagamentoB) {
-        return (dataPagamentoA - dataPagamentoB) * multiplicador;
+      if (dataVencimentoA !== dataVencimentoB) {
+        return (dataVencimentoA - dataVencimentoB) * multiplicador;
       }
     }
 
@@ -145,6 +178,7 @@ export function LancamentosManager() {
   const [cartoes, setCartoes] = useState<CartaoResumo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [efetivandoId, setEfetivandoId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [selectedLancamentoId, setSelectedLancamentoId] = useState<string | null>(null);
@@ -157,8 +191,10 @@ export function LancamentosManager() {
   const [statusFiltro, setStatusFiltro] = useState("all");
   const [dataInicialLancamentoFiltro, setDataInicialLancamentoFiltro] = useState("");
   const [dataFinalLancamentoFiltro, setDataFinalLancamentoFiltro] = useState("");
-  const [dataInicialPagamentoFiltro, setDataInicialPagamentoFiltro] = useState("");
-  const [dataFinalPagamentoFiltro, setDataFinalPagamentoFiltro] = useState("");
+  const [dataInicialVencimentoFiltro, setDataInicialVencimentoFiltro] = useState("");
+  const [dataFinalVencimentoFiltro, setDataFinalVencimentoFiltro] = useState("");
+  const [dataInicialEfetivacaoFiltro, setDataInicialEfetivacaoFiltro] = useState("");
+  const [dataFinalEfetivacaoFiltro, setDataFinalEfetivacaoFiltro] = useState("");
   const [buscaDescricao, setBuscaDescricao] = useState("");
   const [ordenarPor, setOrdenarPor] = useState<"data" | "valor">("data");
   const [direcaoOrdenacao, setDirecaoOrdenacao] = useState<"asc" | "desc">("desc");
@@ -174,12 +210,13 @@ export function LancamentosManager() {
       categoriaId: categoriaFiltro !== "all" ? categoriaFiltro : undefined,
       contaId: contaFiltro !== "all" ? contaFiltro : undefined,
       cartaoId: cartaoFiltro !== "all" ? cartaoFiltro : undefined,
-      realizado:
-        statusFiltro === "all" ? undefined : statusFiltro === "realizado" ? "true" : "false",
+      statusLancamento: statusFiltro !== "all" ? statusFiltro : undefined,
       dataInicialLancamento: dataInicialLancamentoFiltro || undefined,
       dataFinalLancamento: dataFinalLancamentoFiltro || undefined,
-      dataInicialPagamento: dataInicialPagamentoFiltro || undefined,
-      dataFinalPagamento: dataFinalPagamentoFiltro || undefined,
+      dataInicialVencimento: dataInicialVencimentoFiltro || undefined,
+      dataFinalVencimento: dataFinalVencimentoFiltro || undefined,
+      dataInicialEfetivacao: dataInicialEfetivacaoFiltro || undefined,
+      dataFinalEfetivacao: dataFinalEfetivacaoFiltro || undefined,
       ordenarPor,
       direcao: direcaoOrdenacao,
       pagina: paginaAtual,
@@ -191,9 +228,11 @@ export function LancamentosManager() {
       contaFiltro,
       cartaoFiltro,
       dataFinalLancamentoFiltro,
-      dataFinalPagamentoFiltro,
+      dataFinalEfetivacaoFiltro,
+      dataFinalVencimentoFiltro,
       dataInicialLancamentoFiltro,
-      dataInicialPagamentoFiltro,
+      dataInicialEfetivacaoFiltro,
+      dataInicialVencimentoFiltro,
       direcaoOrdenacao,
       ordenarPor,
       paginaAtual,
@@ -320,8 +359,10 @@ export function LancamentosManager() {
     statusFiltro,
     dataInicialLancamentoFiltro,
     dataFinalLancamentoFiltro,
-    dataInicialPagamentoFiltro,
-    dataFinalPagamentoFiltro,
+    dataInicialVencimentoFiltro,
+    dataFinalVencimentoFiltro,
+    dataInicialEfetivacaoFiltro,
+    dataFinalEfetivacaoFiltro,
     ordenarPor,
     direcaoOrdenacao,
     tamanhoPagina,
@@ -335,8 +376,10 @@ export function LancamentosManager() {
     setStatusFiltro("all");
     setDataInicialLancamentoFiltro("");
     setDataFinalLancamentoFiltro("");
-    setDataInicialPagamentoFiltro("");
-    setDataFinalPagamentoFiltro("");
+    setDataInicialVencimentoFiltro("");
+    setDataFinalVencimentoFiltro("");
+    setDataInicialEfetivacaoFiltro("");
+    setDataFinalEfetivacaoFiltro("");
     setBuscaDescricao("");
     setOrdenarPor("data");
     setDirecaoOrdenacao("desc");
@@ -365,6 +408,34 @@ export function LancamentosManager() {
       }
     } finally {
       setIsDeleting(false);
+    }
+  }
+
+  async function efetivarRapidamente(lancamento: LancamentoResumo) {
+    if (!session?.usuario.id || !session.token || !podeEfetivarRapido(lancamento)) {
+      return;
+    }
+
+    try {
+      setEfetivandoId(lancamento.id);
+      setErrorMessage("");
+      setSuccessMessage("");
+
+      await efetivarLancamento(session.usuario.id, lancamento.id, session.token);
+      setSuccessMessage(
+        lancamento.tipo === 0
+          ? "Lancamento marcado como pago."
+          : "Lancamento marcado como recebido."
+      );
+      await carregarLancamentos();
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Nao foi possivel efetivar o lancamento.");
+      }
+    } finally {
+      setEfetivandoId(null);
     }
   }
 
@@ -501,8 +572,10 @@ export function LancamentosManager() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todos os status</SelectItem>
-                      <SelectItem value="realizado">Realizado</SelectItem>
-                      <SelectItem value="pendente">Pendente</SelectItem>
+                      <SelectItem value="0">Pendente</SelectItem>
+                      <SelectItem value="1">Pago</SelectItem>
+                      <SelectItem value="2">Recebido</SelectItem>
+                      <SelectItem value="3">Cancelado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -578,20 +651,38 @@ export function LancamentosManager() {
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Data inicial de pagamento</p>
+                  <p className="text-sm font-medium">Data inicial de vencimento</p>
                   <Input
                     type="date"
-                    value={dataInicialPagamentoFiltro}
-                    onChange={(event) => setDataInicialPagamentoFiltro(event.target.value)}
+                    value={dataInicialVencimentoFiltro}
+                    onChange={(event) => setDataInicialVencimentoFiltro(event.target.value)}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Data final de pagamento</p>
+                  <p className="text-sm font-medium">Data final de vencimento</p>
                   <Input
                     type="date"
-                    value={dataFinalPagamentoFiltro}
-                    onChange={(event) => setDataFinalPagamentoFiltro(event.target.value)}
+                    value={dataFinalVencimentoFiltro}
+                    onChange={(event) => setDataFinalVencimentoFiltro(event.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Data inicial de efetivacao</p>
+                  <Input
+                    type="date"
+                    value={dataInicialEfetivacaoFiltro}
+                    onChange={(event) => setDataInicialEfetivacaoFiltro(event.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Data final de efetivacao</p>
+                  <Input
+                    type="date"
+                    value={dataFinalEfetivacaoFiltro}
+                    onChange={(event) => setDataFinalEfetivacaoFiltro(event.target.value)}
                   />
                 </div>
 
@@ -602,7 +693,7 @@ export function LancamentosManager() {
                       <SelectValue placeholder="Escolha a ordenacao" />
                     </SelectTrigger>
                       <SelectContent>
-                      <SelectItem value="data">Data de pagamento</SelectItem>
+                      <SelectItem value="data">Data de vencimento</SelectItem>
                       <SelectItem value="valor">Valor</SelectItem>
                     </SelectContent>
                   </Select>
@@ -659,9 +750,10 @@ export function LancamentosManager() {
                       <TableHead>Tipo</TableHead>
                       <TableHead>Categoria</TableHead>
                       <TableHead>Valor</TableHead>
-                      <TableHead>Pagamento</TableHead>
+                      <TableHead>Vencimento</TableHead>
+                      <TableHead>Efetivacao</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Açoes</TableHead>
+                      <TableHead className="text-right">Acoes</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -682,14 +774,31 @@ export function LancamentosManager() {
                         </TableCell>
                         <TableCell>{lancamento.categoria?.nomeCategoria ?? "Sem categoria"}</TableCell>
                         <TableCell className="font-medium">{formatCurrency(lancamento.valor)}</TableCell>
-                        <TableCell>{formatDate(lancamento.dataPagamento)}</TableCell>
+                        <TableCell>{formatDate(lancamento.dataVencimento)}</TableCell>
                         <TableCell>
-                          <Badge variant={lancamento.realizado ? "secondary" : "outline"}>
-                            {lancamento.realizado ? "Realizado" : "Pendente"}
+                          {lancamento.dataEfetivacao ? formatDate(lancamento.dataEfetivacao) : "-"}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={getStatusVariant(lancamento.statusLancamento)}>
+                            {getStatusLabel(lancamento.statusLancamento, lancamento.tipo)}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex justify-end gap-2">
+                            {podeEfetivarRapido(lancamento) ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="min-w-[7.5rem] justify-center"
+                                onClick={() => efetivarRapidamente(lancamento)}
+                                disabled={efetivandoId === lancamento.id}
+                              >
+                                <Check className="mr-2 h-4 w-4" />
+                                {efetivandoId === lancamento.id
+                                  ? "Salvando..."
+                                  : getAcaoEfetivacaoLabel(lancamento)}
+                              </Button>
+                            ) : null}
                             <Button variant="ghost" size="icon" onClick={() => abrirEdicao(lancamento.id)}>
                               <Pencil className="h-4 w-4" />
                             </Button>

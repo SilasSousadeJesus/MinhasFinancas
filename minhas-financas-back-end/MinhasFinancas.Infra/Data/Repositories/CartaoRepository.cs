@@ -17,13 +17,17 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<List<Cartao>> BuscarTodosOsElementosAsync(string id)
         {
             return await _context.Set<Cartao>()
+                 .AsNoTracking()
                  .Where(b => b.UsuarioId == id)
                  .ToListAsync();
         }
 
         public async Task<Cartao> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
-            return await _context.Set<Cartao>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
+            return await _context.Set<Cartao>()
+                .AsNoTracking()
+                .Where(x => x.UsuarioId == idPatrono && x.Id == id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task CadastrarElementoAsync(Cartao elemento)

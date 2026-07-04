@@ -16,6 +16,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<List<Categoria>> BuscarTodosOsElementosAsync(string Id)
         {
             return await _context.Set<Categoria>()
+                                        .AsNoTracking()
                                         .Include(c => c.SubCategorias)
                                         .Where(b => b.UsuarioId == Id)
                                         .ToListAsync();
@@ -39,6 +40,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<Categoria> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
             return await _context.Set<Categoria>()
+                .AsNoTracking()
                 .Include(c => c.SubCategorias)
                 .Where(x => x.UsuarioId == idPatrono && x.Id == id)
                 .FirstOrDefaultAsync();
@@ -77,6 +79,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<List<SubCategoria>> BuscarTodosAsSubCategoriasAsync(string usuarioId, Guid categoriaId)
         {
             return await _context.Set<SubCategoria>()
+                .AsNoTracking()
                 .Join(
                     _context.Set<Categoria>(),
                     subCategoria => subCategoria.CategoriaId,
@@ -101,6 +104,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<SubCategoria?> BuscarUmaSubCategoriaAsync(Guid categoriaId, Guid subCategoriaId)
         {
             return await _context.Set<SubCategoria>()
+                .AsNoTracking()
                 .Where(x => x.CategoriaId == categoriaId && x.Id == subCategoriaId)
                 .FirstOrDefaultAsync();
         }

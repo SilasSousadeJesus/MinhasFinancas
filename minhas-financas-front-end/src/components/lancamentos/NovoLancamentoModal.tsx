@@ -45,7 +45,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 const FREQUENCIA_PONTUAL = "0";
@@ -54,6 +53,7 @@ const FREQUENCIA_PARCELADA = "2";
 const FREQUENCIA_DIA_UTIL = "3";
 const TIPO_DESPESA = "0";
 const TIPO_RECEITA = "1";
+const STATUS_PENDENTE = "0";
 
 const formSchema = z
   .object({
@@ -61,9 +61,8 @@ const formSchema = z
     valor: z.coerce.number().positive("Informe um valor maior que zero."),
     descricao: z.string().min(2, "Informe uma descricao."),
     observacao: z.string().optional(),
-    dataPagamento: z.string().min(1, "Informe a data de pagamento."),
+    dataVencimento: z.string().min(1, "Informe a data de vencimento."),
     dataLancamento: z.string().min(1, "Informe a data de lancamento."),
-    realizado: z.boolean(),
     frequenciaLancamento: z.string(),
     quantidadeParcelas: z.coerce.number().nullable().optional(),
     numeroDiaUtil: z.coerce.number().nullable().optional(),
@@ -102,13 +101,13 @@ function getToday() {
   return new Date().toISOString().split("T")[0];
 }
 
-function getDataPagamentoLabel(frequencia: string) {
+function getDataVencimentoLabel(frequencia: string) {
   return frequencia === FREQUENCIA_DIA_UTIL
     ? "Data inicial da programacao"
-    : "Data do pagamento";
+    : "Data de vencimento";
 }
 
-function getDataPagamentoHint(frequencia: string) {
+function getDataVencimentoHint(frequencia: string) {
   return frequencia === FREQUENCIA_DIA_UTIL
     ? "O sistema usa esta data apenas como mes inicial e calcula automaticamente o N-esimo dia util de cada mes."
     : "";
@@ -135,9 +134,8 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
       valor: 0,
       descricao: "",
       observacao: "",
-      dataPagamento: getToday(),
+      dataVencimento: getToday(),
       dataLancamento: getToday(),
-      realizado: true,
       frequenciaLancamento: FREQUENCIA_PONTUAL,
       quantidadeParcelas: null,
       numeroDiaUtil: null,
@@ -254,9 +252,10 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
           valor: values.valor,
           descricao: values.descricao,
           observacao: values.observacao || "",
-          dataPagamento: `${values.dataPagamento}T00:00:00`,
+          dataVencimento: `${values.dataVencimento}T00:00:00`,
           dataLancamento: `${values.dataLancamento}T00:00:00`,
-          realizado: values.realizado,
+          dataEfetivacao: null,
+          statusLancamento: Number(STATUS_PENDENTE),
           frequenciaLancamento: Number(values.frequenciaLancamento),
           quantidadeParcelas:
             values.frequenciaLancamento === FREQUENCIA_PARCELADA
@@ -282,9 +281,8 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
         valor: 0,
         descricao: "",
         observacao: "",
-        dataPagamento: getToday(),
+        dataVencimento: getToday(),
         dataLancamento: getToday(),
-        realizado: true,
         frequenciaLancamento: FREQUENCIA_PONTUAL,
         quantidadeParcelas: null,
         numeroDiaUtil: null,
@@ -486,16 +484,16 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
             <div className="grid gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="dataPagamento"
+                name="dataVencimento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{getDataPagamentoLabel(frequenciaSelecionada)}</FormLabel>
+                    <FormLabel>{getDataVencimentoLabel(frequenciaSelecionada)}</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
-                    {getDataPagamentoHint(frequenciaSelecionada) ? (
+                    {getDataVencimentoHint(frequenciaSelecionada) ? (
                       <p className="text-xs text-muted-foreground">
-                        {getDataPagamentoHint(frequenciaSelecionada)}
+                        {getDataVencimentoHint(frequenciaSelecionada)}
                       </p>
                     ) : null}
                     <FormMessage />
@@ -652,27 +650,11 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
               />
             </div>
 
-            <div className="grid gap-4">
-              <FormField
-                control={form.control}
-                name="realizado"
-                render={({ field }) => (
-                  <FormItem className="rounded-md border p-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <FormLabel>Realizado</FormLabel>
-                        <p className="text-sm text-muted-foreground">
-                          Define se o lancamento ja foi efetivamente concluido.
-                        </p>
-                      </div>
-                      <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="rounded-md border p-4">
+              <p className="text-sm font-medium">Status inicial</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Todo novo lancamento nasce como pendente. A efetivacao acontece depois, quando ele for pago ou recebido.
+              </p>
             </div>
 
             {errorMessage ? (

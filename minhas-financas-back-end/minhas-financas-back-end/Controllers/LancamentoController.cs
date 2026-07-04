@@ -46,10 +46,14 @@ namespace MinhasFinancas.API.Controllers
                 ?? ParseQueryDate(Request.Query["dataInicialLancamento"].FirstOrDefault());
             filtro.DataFinalLancamento ??= ParseQueryDate(Request.Query["DataFinalLancamento"].FirstOrDefault())
                 ?? ParseQueryDate(Request.Query["dataFinalLancamento"].FirstOrDefault());
-            filtro.DataInicialPagamento ??= ParseQueryDate(Request.Query["DataInicialPagamento"].FirstOrDefault())
-                ?? ParseQueryDate(Request.Query["dataInicialPagamento"].FirstOrDefault());
-            filtro.DataFinalPagamento ??= ParseQueryDate(Request.Query["DataFinalPagamento"].FirstOrDefault())
-                ?? ParseQueryDate(Request.Query["dataFinalPagamento"].FirstOrDefault());
+            filtro.DataInicialVencimento ??= ParseQueryDate(Request.Query["DataInicialVencimento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataInicialVencimento"].FirstOrDefault());
+            filtro.DataFinalVencimento ??= ParseQueryDate(Request.Query["DataFinalVencimento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataFinalVencimento"].FirstOrDefault());
+            filtro.DataInicialEfetivacao ??= ParseQueryDate(Request.Query["DataInicialEfetivacao"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataInicialEfetivacao"].FirstOrDefault());
+            filtro.DataFinalEfetivacao ??= ParseQueryDate(Request.Query["DataFinalEfetivacao"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataFinalEfetivacao"].FirstOrDefault());
 
             var dados = await _appService.BuscarTodosOsElementosAsync(usuarioId, filtro);
 
@@ -130,6 +134,26 @@ namespace MinhasFinancas.API.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var dados = await _appService.EditarElementoAsync(usuarioId, faturamentoId, editarLancamento);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+        [Authorize]
+        [HttpPost("EfetivarLancamento/{usuarioId}/{faturamentoId}")]
+        public async Task<IActionResult> EfetivarLancamento([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId)
+        {
+            var dados = await _appService.EfetivarLancamentoAsync(usuarioId, faturamentoId);
 
             if (!dados.Sucesso)
             {

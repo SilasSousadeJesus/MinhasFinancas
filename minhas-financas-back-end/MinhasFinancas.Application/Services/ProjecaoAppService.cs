@@ -481,9 +481,9 @@ namespace MinhasFinancas.Application.Services
 
             var lancamentosPorMes = lancamentos
                 .Where(x =>
-                    x.DataPagamento.Date >= dataBase &&
+                    x.DataVencimento.Date >= dataBase &&
                     x.Tipo == EnumTipoLancamento.Despesa)
-                .GroupBy(x => new { x.DataPagamento.Year, x.DataPagamento.Month })
+                .GroupBy(x => new { x.DataVencimento.Year, x.DataVencimento.Month })
                 .ToDictionary(
                     grupo => $"{grupo.Key.Year:D4}-{grupo.Key.Month:D2}",
                     grupo => grupo.Sum(x => x.Valor));

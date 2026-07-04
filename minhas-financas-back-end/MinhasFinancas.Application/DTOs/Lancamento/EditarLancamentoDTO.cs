@@ -9,15 +9,16 @@ namespace MinhasFinancas.Application.DTOs.Lancamento
         public decimal Valor { get; set; } = decimal.Zero;
         public string Descricao { get; set; } = string.Empty;
         public string Observacao { get; set; } = string.Empty;
-        public DateTime DataPagamento { get; set; }
+        public DateTime DataVencimento { get; set; }
         public DateTime DataLancamento { get; set; }
+        public DateTime? DataEfetivacao { get; set; }
         public Guid? GrupoParcelamentoId { get; set; }
         public int? NumeroParcela { get; set; }
         public int? TotalParcelas { get; set; }
         public Guid? GrupoLancamentoProgramadoId { get; set; }
         public EnumTipoProgramacaoLancamento? TipoProgramacao { get; set; }
         public int? NumeroDiaUtil { get; set; }
-        public bool Realizado { get; set; }
+        public EnumStatusLancamento StatusLancamento { get; set; }
         public EnumTipoFrequenciaLancamento FrequenciaLancamento { get; set; }
         public EnumTipoLancamento Tipo { get; set; }
         public EnumVinculoLancamento Vinculo { get; set; }

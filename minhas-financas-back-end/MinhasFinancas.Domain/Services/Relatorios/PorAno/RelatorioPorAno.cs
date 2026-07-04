@@ -57,7 +57,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
 
             var lancamentosPorAno = listaLancamentos
                 .Where(l => l.Tipo == tipoLancamento)
-                .GroupBy(l => l.DataPagamento.Year)
+                .GroupBy(l => l.DataVencimento.Year)
                 .OrderBy(g => g.Key) 
                 .ToList();
 
@@ -79,7 +79,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorAno
 
             var lancamentosPorAno = listaLancamentos
                 .Where(l => l.Tipo == EnumTipoLancamento.Receita || l.Tipo == tipoLancamento)
-                .GroupBy(l => l.DataPagamento.Year)
+                .GroupBy(l => l.DataVencimento.Year)
                 .OrderBy(g => g.Key)
                 .ToList();
 

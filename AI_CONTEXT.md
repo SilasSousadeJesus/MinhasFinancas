@@ -46,8 +46,9 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - CRUD de subcategorias
 - CRUD de lancamentos
 - suporte a lancamento pontual, fixo, parcelado e dia util com geracao imediata de registros reais
-- filtros de lancamentos por tipo, periodo de lancamento, periodo de pagamento, categoria, conta, cartao, status realizado, texto, ordenacao e paginacao
+- filtros de lancamentos por tipo, periodo de lancamento, periodo de vencimento, categoria, conta, cartao, status do lancamento, texto, ordenacao e paginacao
 - dashboard agregado
+- radar financeiro no dashboard com proximos vencimentos, contas atrasadas, alertas objetivos e fluxo de caixa dos proximos 30 dias
 - CRUD de metas
 - atualizacao do andamento de meta por aporte
 - CRUD de bens patrimoniais
@@ -66,6 +67,7 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - protecao minima de rotas autenticadas
 - loading global automatico para requisicoes HTTP feitas via `apiRequest`
 - dashboard integrado
+- radar financeiro integrado no dashboard
 - CRUD de categorias e subcategorias com boa UX
 - CRUD de lancamentos com modal de criacao e edicao
 - filtros, ordenacao e paginacao de lancamentos
@@ -309,6 +311,83 @@ Fluxo tipico:
 - `src/lib`
   - helpers transversais
 
+## Nomenclaturas e Conceitos Oficiais do Projeto
+
+Esta secao registra os conceitos oficiais do dominio financeiro do projeto. Ela deve servir como referencia semantica para futuras implementacoes e refatoracoes.
+
+### Lancamento
+
+Registro de uma movimentacao financeira do usuario. Pode representar uma receita, uma despesa ou outro evento financeiro suportado pelo sistema.
+
+### Data de Lancamento
+
+Data em que o lancamento foi registrado no sistema. Representa o momento do cadastro do registro e nao deve ser interpretada como vencimento, pagamento ou recebimento.
+
+### Data de Vencimento
+
+Data prevista para que a movimentacao ocorra.
+
+- Em despesas, representa o vencimento da obrigacao.
+- Em receitas, representa a data prevista de entrada do valor.
+
+### Data de Efetivacao
+
+Data em que o dinheiro realmente entrou ou saiu. Em despesas, representa a data do pagamento. Em receitas, representa a data do recebimento.
+
+- nunca deve ser preenchida automaticamente no cadastro
+- so deve ser preenchida quando o usuario efetivar explicitamente o lancamento
+- representa o momento em que a movimentacao afetou de fato o patrimonio do usuario
+
+### Status do Lancamento
+
+Estado atual do ciclo de vida do lancamento. Este e o conceito oficial para determinar se uma movimentacao ainda esta prevista, se ja foi concluida ou se foi cancelada.
+
+### Pendente
+
+Status de um lancamento que foi registrado e possui previsao, mas ainda nao foi efetivamente pago ou recebido.
+
+### Pago
+
+Status de uma despesa que ja foi efetivamente quitada.
+
+### Recebido
+
+Status de uma receita que ja foi efetivamente recebida.
+
+### Cancelado
+
+Status de um lancamento que deixou de produzir efeito financeiro esperado e nao deve mais ser tratado como previsao ativa nem como realizacao.
+
+### Receita
+
+Movimentacao financeira de entrada de recursos para o usuario.
+
+- pode assumir apenas: `Pendente`, `Recebido`, `Cancelado`
+- nunca pode assumir o status `Pago`
+
+### Despesa
+
+Movimentacao financeira de saida de recursos do usuario.
+
+- pode assumir apenas: `Pendente`, `Pago`, `Cancelado`
+- nunca pode assumir o status `Recebido`
+
+### Efetivacao
+
+Efetivar um lancamento significa registrar que a movimentacao financeira realmente ocorreu.
+
+- receita: `Pendente -> Recebido`
+- despesa: `Pendente -> Pago`
+- a efetivacao preenche automaticamente `DataEfetivacao`
+
+### Fluxo de Caixa Previsto
+
+Leitura financeira baseada em eventos ainda nao efetivados, usando as datas previstas de vencimento ou recebimento para projetar entradas e saidas futuras.
+
+### Fluxo de Caixa Realizado
+
+Leitura financeira baseada apenas em eventos que ja ocorreram de fato, usando a data de efetivacao para representar o comportamento real do caixa.
+
 ## Entidades
 
 ### Usuario
@@ -403,21 +482,31 @@ Fluxo tipico:
   - `Valor`
   - `Descricao`
   - `Observacao`
-  - `DataPagamento`
+  - `DataVencimento`
   - `DataLancamento`
+  - `DataEfetivacao`
   - `GrupoParcelamentoId`
   - `NumeroParcela`
   - `TotalParcelas`
   - `GrupoLancamentoProgramadoId`
   - `TipoProgramacao`
   - `NumeroDiaUtil`
-  - `Realizado`
+  - `StatusLancamento`
   - `FrequenciaLancamento`
   - `Tipo`
   - `Vinculo`
 - Regras importantes:
   - tipos: `Despesa`, `Receita`, `InvestimentoDeposito`, `InvestimentoSaque`, `Transferencia`, `Saque`, `Deposito`
   - frequencias: `Pontual`, `Fixo`, `Parcelado`, `DiaUtil`
+  - todo novo lancamento nasce com `StatusLancamento = Pendente`
+  - `DataLancamento` representa a data de cadastro do registro no sistema
+  - `DataVencimento` representa a previsao de saida ou entrada financeira
+  - `DataEfetivacao` nunca e preenchida no cadastro e so deve existir quando o lancamento foi efetivamente pago ou recebido
+  - despesas concluidas usam `StatusLancamento = Pago`
+  - receitas concluidas usam `StatusLancamento = Recebido`
+  - receitas aceitam apenas `Pendente`, `Recebido` e `Cancelado`
+  - despesas aceitam apenas `Pendente`, `Pago` e `Cancelado`
+  - `Cancelado` remove o lancamento das leituras previstas e realizadas
   - `Pontual` cria 1 lancamento
   - `Parcelado` cria imediatamente N lancamentos mensais reais e divide o valor total entre as parcelas
   - no parcelado, todas as parcelas compartilham o mesmo `GrupoParcelamentoId` e recebem `NumeroParcela` e `TotalParcelas`
@@ -426,7 +515,7 @@ Fluxo tipico:
   - `DiaUtil` cria imediatamente 12 lancamentos mensais reais calculando a data pelo N-esimo dia util do mes, considerando inicialmente apenas segunda a sexta
   - `Fixo` e `DiaUtil` usam `GrupoLancamentoProgramadoId` e `TipoProgramacao` para rastrear registros gerados pela mesma programacao
   - `NumeroDiaUtil` fica preenchido apenas para frequencia `DiaUtil`
-  - filtros backend suportam texto, tipo, categoria, conta, cartao, status, periodo de lancamento, periodo de pagamento, ordenacao e paginacao
+  - filtros backend suportam texto, tipo, categoria, conta, cartao, status, periodo de lancamento, periodo de vencimento, ordenacao e paginacao
   - parte da movimentacao altera conta/bem patrimonial no cadastro
 
 ### LancamentoFixo
@@ -566,14 +655,27 @@ Fluxo tipico:
 - o frontend envia um DTO de criacao/edicao
 - o backend mapeia para `Lancamento`
 - no cadastro:
+  - todo novo lancamento e normalizado para `StatusLancamento = Pendente` e `DataEfetivacao = null`
   - `Pontual` persiste um unico registro
   - `Parcelado` exige `QuantidadeParcelas > 1`, gera todos os meses imediatamente, acrescenta `X/Y` na descricao e compartilha um identificador de grupo entre as parcelas
   - `Fixo` gera 12 meses futuros imediatamente
   - `DiaUtil` exige `NumeroDiaUtil > 0`, gera 12 meses futuros imediatamente e calcula cada data pelo N-esimo dia util do respectivo mes
+- na efetivacao rapida:
+  - existe endpoint dedicado no backend para evitar reaproveitar o fluxo generico de edicao
+  - despesas pendentes viram `Pago`
+  - receitas pendentes viram `Recebido`
+  - `DataEfetivacao` e preenchida automaticamente com a data atual do servidor
+  - lancamentos cancelados ou ja efetivados nao podem ser efetivados novamente
+- na edicao:
+  - `Pendente` e `Cancelado` limpam `DataEfetivacao`
+  - `Pago` e `Recebido` exigem `DataEfetivacao`
+  - movimentos de entrada nao podem usar status `Pago`
+  - movimentos de saida nao podem usar status `Recebido`
 - filtros e listagem acontecem em memoria a partir da lista carregada do repository
 - filtros de data sao separados:
   - periodo de lancamento usa `DataLancamento`
-  - periodo de pagamento/vencimento usa `DataPagamento`
+  - periodo de vencimento usa `DataVencimento`
+  - periodo de efetivacao usa `DataEfetivacao`
 - se o lancamento tiver `ContaId`, alguns tipos ajustam saldo e patrimonio:
   - `InvestimentoDeposito`: soma em `SaldoInvestimento` e no bem `Investimento`
   - `InvestimentoSaque`: subtrai de `SaldoInvestimento` e no bem `Investimento`
@@ -620,13 +722,19 @@ Fluxo tipico:
   - receitas x despesas por mes
   - acumulo de investimentos
   - despesas por categoria
-  - contas a pagar com `Realizado = false`
+  - contas pendentes com `StatusLancamento = Pendente`
+- o radar financeiro tambem entrega informacoes prontas para consumo da tela:
+  - proximos vencimentos dos proximos 7 dias
+  - contas atrasadas com dias em atraso
+  - alertas financeiros objetivos
+  - fluxo de caixa previsto dos proximos 30 dias considerando lancamentos pendentes
 
 ### Como sao calculados os totais
 
-- dashboard usa somas por `DataPagamento`
+- dashboard usa `DataVencimento` para leituras previstas e `DataEfetivacao` para leituras realizadas quando aplicavel
 - filtros de lancamento por periodo de lancamento usam `DataLancamento`
-- filtros de lancamento por periodo de pagamento usam `DataPagamento`
+- filtros de lancamento por periodo de vencimento usam `DataVencimento`
+- filtros de lancamento por periodo de efetivacao usam `DataEfetivacao`
 - categorias de despesa no dashboard agrupam por `Categoria`
 - graficos do front traduzem strings monetarias do dashboard para numero quando necessario
 
@@ -681,15 +789,21 @@ Fluxo tipico:
 
 1. Front abre `NovoLancamentoModal` ou `EditarLancamentoModal`.
 2. Usuario seleciona tipo, categoria, subcategoria e opcionalmente conta/cartao.
-3. Backend persiste e pode refletir impacto em saldo/patrimonio.
-4. Listagem suporta:
+3. Backend persiste o registro com `DataLancamento`, `DataVencimento` e `StatusLancamento` coerentes com o fluxo.
+4. Quando o usuario conclui a movimentacao, pode usar a acao rapida `Pagar` ou `Receber` na propria tabela.
+5. O backend usa um endpoint dedicado de efetivacao para alterar o status e preencher `DataEfetivacao`.
+6. Quando necessario, o modal de edicao ainda permite ajustar manualmente status e data de efetivacao dentro das combinacoes validas.
+7. Backend pode refletir impacto em saldo/patrimonio.
+8. Listagem suporta:
    - busca por descricao
    - filtro por tipo
-   - filtro por periodo
+   - filtro por periodo de lancamento
+   - filtro por periodo de vencimento
+   - filtro por periodo de efetivacao
    - filtro por categoria
    - filtro por conta
    - filtro por cartao
-   - filtro por realizado
+   - filtro por status do lancamento
    - ordenacao por data/valor
    - paginacao
 
@@ -772,12 +886,14 @@ Fluxo tipico:
 - `GET /api/Lancamento/BuscarTodosOsLancamento/{usuarioId}`
 - `GET /api/Lancamento/BuscarUmLancamento/{usuarioId}/{faturamentoId}`
 - `PUT /api/Lancamento/EditarLancamento/{usuarioId}/{faturamentoId}`
+- `POST /api/Lancamento/EfetivarLancamento/{usuarioId}/{faturamentoId}`
 - `DELETE /api/Lancamento/DeletarLancamento/{usuarioId}/{faturamentoId}`
 - `GET /api/Lancamento/BuscarLancamentosPorCategoria/{usuarioId}`
 
 #### Dashboard
 
 - `GET /api/Dashboard/{usuarioId}`
+  - retorna agregados gerais e o bloco `radarFinanceiro`
 
 #### Meta
 
@@ -900,6 +1016,8 @@ Fluxo tipico:
 - CRUD base via `IRepository<T>`
 - repositories especificos adicionam queries extras
 - parte da filtragem ainda acontece no AppService apos buscar lista completa
+- consultas somente leitura passaram a priorizar `AsNoTracking` para reduzir custo de tracking desnecessario
+- consultas de `Projecao` com multiplas colecoes usam `AsSplitQuery` para evitar explosao cartesiana no carregamento
 
 ### AutoMapper
 
@@ -1055,11 +1173,9 @@ Transformar o Dashboard em um verdadeiro centro de inteligencia financeira, perm
 - [ ] Patrimonio liquido
 - [ ] Evolucao patrimonial
 - [ ] Saldo projetado
-- [ ] Fluxo de caixa futuro
-- [ ] Proximos vencimentos
 - [ ] Resumo financeiro inteligente
 - [ ] KPIs de saude financeira
-- [ ] Alertas financeiros
+- [ ] Metas em risco
 
 ### Lancamentos
 
@@ -1244,9 +1360,11 @@ Registrar melhorias estruturais que beneficiam toda a aplicacao.
 - Entidades impactadas:
   - `Lancamento`
 - Decisoes tomadas:
-  - backend monta agregados prontos
-  - frontend interpreta periodo (ano, mes atual, mes passado)
-  - orcado ainda nao esta integrado ao modulo de orcamento
+- backend monta agregados prontos
+- frontend interpreta periodo (ano, mes atual, mes passado)
+- backend tambem monta o bloco `RadarFinanceiro` para evitar regra solta na tela
+- alertas financeiros do dashboard foram estruturados em formato expansivel com `codigo`, `titulo`, `descricao` e `severidade`
+- orcado ainda nao esta integrado ao modulo de orcamento
 
 ### Contas e Cartoes
 

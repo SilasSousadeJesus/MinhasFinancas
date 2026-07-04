@@ -89,7 +89,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
         private List<CategoriaPorcentagemRelatorio> CalcularPorcentagemPorCategoria(int ano, int mes, EnumTipoLancamento tipoLancamento, EnumTipoCategoria tipoCategoria)
         {
             var lancamentosFiltrados = lancamentos
-                .Where(l => l.DataPagamento.Year == ano && (mes == 0 || l.DataPagamento.Month == mes) && l.Tipo == tipoLancamento)
+                .Where(l => l.DataVencimento.Year == ano && (mes == 0 || l.DataVencimento.Month == mes) && l.Tipo == tipoLancamento)
                 .ToList();
 
             var totalDespesas = lancamentosFiltrados.Sum(l => l.Valor);
@@ -112,7 +112,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
         private List<CategoriaDetalhamentoRelatorio> CalcularPorcentagemPorCategoria(int ano, int mes, EnumTipoLancamento tipoLancamento, EnumTipoCategoria tipoCategoria, bool isMensal)
         {
             var lancamentosFiltrados = lancamentos
-                .Where(l => l.DataPagamento.Year == ano && (mes == 0 || l.DataPagamento.Month == mes) && l.Tipo == tipoLancamento)
+                .Where(l => l.DataVencimento.Year == ano && (mes == 0 || l.DataVencimento.Month == mes) && l.Tipo == tipoLancamento)
                 .ToList();
 
             var categoriasFiltradasPorTipo = categorias.Where(x => x.Tipo == tipoCategoria);
@@ -137,7 +137,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
                 var fimSemana = inicioSemana.AddDays(6);
 
                 var valorSemana = lancamentos
-                    .Where(l => l.CategoriaId == categoriaId && l.DataPagamento >= inicioSemana && l.DataPagamento <= fimSemana)
+                    .Where(l => l.CategoriaId == categoriaId && l.DataVencimento >= inicioSemana && l.DataVencimento <= fimSemana)
                     .Sum(l => l.Valor);
 
                 semanas.Add(new Detalhamento
@@ -155,7 +155,7 @@ namespace MinhasFinancas.Domain.Services.Relatorios.PorCategoria
             for (int mes = 1; mes <= 12; mes++)
             {
                 var valorMes = lancamentos
-                    .Where(l => l.CategoriaId == categoriaId && l.DataPagamento.Month == mes)
+                    .Where(l => l.CategoriaId == categoriaId && l.DataVencimento.Month == mes)
                     .Sum(l => l.Valor);
 
                 meses.Add(new Detalhamento

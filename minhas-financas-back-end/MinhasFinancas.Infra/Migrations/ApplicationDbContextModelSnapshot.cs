@@ -346,10 +346,13 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Property<Guid?>("ContaId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("DataEfetivacao")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DataLancamento")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DataPagamento")
+                    b.Property<DateTime>("DataVencimento")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
@@ -375,8 +378,8 @@ namespace MinhasFinancas.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Realizado")
-                        .HasColumnType("bit");
+                    b.Property<int>("StatusLancamento")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("SubCategoriaId")
                         .HasColumnType("uniqueidentifier");

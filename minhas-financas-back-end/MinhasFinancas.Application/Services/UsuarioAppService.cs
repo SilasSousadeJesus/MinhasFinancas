@@ -63,7 +63,9 @@ namespace MinhasFinancas.Application.Services
 
         public async Task<RetornoGenerico> BuscarUmUsuario(string UsuarioId)
         {
-            var user = await _userManager.FindByIdAsync(UsuarioId);
+            var user = await _userManager.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == UsuarioId);
 
             mensagemSistema = user == null ? "Usuario não encontrado" : "Usuario Encontrado";
             mensagemUsuario = user == null ? "Usuario não encontrado" : "Usuario Encontrado";

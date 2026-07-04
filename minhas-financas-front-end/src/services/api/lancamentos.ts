@@ -19,11 +19,13 @@ export function buscarLancamentos(
     categoriaId: "CategoriaId",
     contaId: "ContaId",
     cartaoId: "CartaoId",
-    realizado: "Realizado",
+    statusLancamento: "StatusLancamento",
     dataInicialLancamento: "DataInicialLancamento",
     dataFinalLancamento: "DataFinalLancamento",
-    dataInicialPagamento: "DataInicialPagamento",
-    dataFinalPagamento: "DataFinalPagamento",
+    dataInicialVencimento: "DataInicialVencimento",
+    dataFinalVencimento: "DataFinalVencimento",
+    dataInicialEfetivacao: "DataInicialEfetivacao",
+    dataFinalEfetivacao: "DataFinalEfetivacao",
     ordenarPor: "OrdenarPor",
     direcao: "Direcao",
     pagina: "Pagina",
@@ -70,6 +72,13 @@ export function editarLancamento(
     method: "PUT",
     token,
     body: JSON.stringify(payload),
+  });
+}
+
+export function efetivarLancamento(usuarioId: string, lancamentoId: string, token: string) {
+  return apiRequest<null>(`/Lancamento/EfetivarLancamento/${usuarioId}/${lancamentoId}`, {
+    method: "POST",
+    token,
   });
 }
 

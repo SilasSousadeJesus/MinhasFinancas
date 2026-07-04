@@ -17,6 +17,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<List<Lancamento>> BuscarLancamentosPorCategoriaAsync(string usuarioId)
         {
             return await _context.Set<Lancamento>()
+                                           .AsNoTracking()
                                            .Where(b => b.UsuarioId == usuarioId)
                                            .Include(l => l.Categoria)
                                            .ToListAsync();
@@ -25,6 +26,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<List<Lancamento>> BuscarTodosOsElementosAsync(string id)
         {
             return await _context.Set<Lancamento>()
+               .AsNoTracking()
                .Where(b => b.UsuarioId == id)
                 .Include(l => l.Categoria)
                .ToListAsync();
@@ -32,7 +34,10 @@ namespace MinhasFinancas.Infra.Data.Repositories
 
         public async Task<Lancamento> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
-            return await _context.Set<Lancamento>().Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
+            return await _context.Set<Lancamento>()
+                .AsNoTracking()
+                .Where(x => x.UsuarioId == idPatrono && x.Id == id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task CadastrarElementoAsync(Lancamento elemento)

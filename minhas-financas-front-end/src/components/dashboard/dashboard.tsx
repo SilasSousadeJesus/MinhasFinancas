@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { PiechartcustomChart, LinechartChart } from "../Icons/Icons";
+import { AlertTriangle, BellRing, CalendarClock, Clock3 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -8,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { Badge } from "../ui/badge";
 import { useAuth } from "@/providers/auth-provider";
 import { buscarDashboard } from "@/services/api/dashboard";
 import { ApiError } from "@/types/api";
@@ -36,6 +38,21 @@ function formatMonthLabel(value: string) {
     month: "short",
     year: "2-digit",
   });
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("pt-BR").format(new Date(value));
+}
+
+function getAlertBadgeVariant(severidade: string): "default" | "secondary" | "destructive" | "outline" {
+  switch (severidade) {
+    case "alta":
+      return "destructive";
+    case "media":
+      return "default";
+    default:
+      return "secondary";
+  }
 }
 
 function getEmptyLineChartData() {
@@ -271,6 +288,187 @@ export function PainelDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <section className="mt-6 space-y-4">
+        <div>
+          <h2 className="text-xl font-semibold">Radar Financeiro</h2>
+          <p className="text-sm text-muted-foreground">
+            Itens que exigem atencao imediata e ajudam a antecipar o caixa dos proximos dias.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <CalendarClock className="h-5 w-5 text-amber-500" />
+                <CardTitle>Proximos vencimentos</CardTitle>
+              </div>
+              <CardDescription>Lancamentos previstos para os proximos 7 dias.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {dashboard?.radarFinanceiro.proximosVencimentos.length ? (
+                dashboard.radarFinanceiro.proximosVencimentos.map((item, index) => (
+                  <div
+                    key={`${item.descricao}-${item.dataVencimento}-${index}`}
+                    className="rounded-xl border border-border/60 p-4"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium">{item.descricao}</p>
+                        <p className="text-sm text-muted-foreground">{item.categoria}</p>
+                      </div>
+                      <p className="font-semibold">{item.valor}</p>
+                    </div>
+                    <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                      <span>Vencimento {formatDate(item.dataVencimento)}</span>
+                      <Badge variant="outline">{item.situacao}</Badge>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Nenhum vencimento previsto para os proximos dias.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Clock3 className="h-5 w-5 text-rose-500" />
+                <CardTitle>Contas atrasadas</CardTitle>
+              </div>
+              <CardDescription>Lancamentos vencidos e ainda nao pagos.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {dashboard?.radarFinanceiro.contasAtrasadas.length ? (
+                dashboard.radarFinanceiro.contasAtrasadas.map((item, index) => (
+                  <div
+                    key={`${item.descricao}-${item.diasEmAtraso}-${index}`}
+                    className="rounded-xl border border-border/60 p-4"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium">{item.descricao}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {item.diasEmAtraso} dia(s) em atraso
+                        </p>
+                      </div>
+                      <p className="font-semibold">{item.valor}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Nenhuma conta atrasada encontrada.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <BellRing className="h-5 w-5 text-sky-500" />
+                <CardTitle>Alertas financeiros</CardTitle>
+              </div>
+              <CardDescription>
+                Alertas objetivos prontos para expansao futura sem alterar a tela.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {dashboard?.radarFinanceiro.alertasFinanceiros.length ? (
+                dashboard.radarFinanceiro.alertasFinanceiros.map((alerta) => (
+                  <div
+                    key={alerta.codigo}
+                    className="rounded-xl border border-border/60 p-4"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium">{alerta.titulo}</p>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {alerta.descricao}
+                        </p>
+                      </div>
+                      <Badge variant={getAlertBadgeVariant(alerta.severidade)}>
+                        {alerta.severidade}
+                      </Badge>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-xl border border-dashed border-emerald-500/30 bg-emerald-500/5 p-4">
+                  <p className="text-sm text-emerald-700 dark:text-emerald-300">
+                    Nenhum alerta financeiro importante foi identificado agora.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-violet-500" />
+                <CardTitle>Fluxo de caixa dos proximos 30 dias</CardTitle>
+              </div>
+              <CardDescription>
+                Resumo das receitas e despesas previstas ainda nao realizadas.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="rounded-xl border border-border/60 p-4">
+                  <p className="text-sm text-muted-foreground">Receitas previstas</p>
+                  <p className="mt-2 text-lg font-semibold">
+                    {dashboard?.radarFinanceiro.fluxoCaixaProximos30Dias.receitasPrevistas ?? "R$ 0,00"}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-border/60 p-4">
+                  <p className="text-sm text-muted-foreground">Despesas previstas</p>
+                  <p className="mt-2 text-lg font-semibold">
+                    {dashboard?.radarFinanceiro.fluxoCaixaProximos30Dias.despesasPrevistas ?? "R$ 0,00"}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-border/60 p-4">
+                  <p className="text-sm text-muted-foreground">Saldo previsto</p>
+                  <p className="mt-2 text-lg font-semibold">
+                    {dashboard?.radarFinanceiro.fluxoCaixaProximos30Dias.saldoPrevisto ?? "R$ 0,00"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-sm font-medium">Linha do tempo</p>
+                {dashboard?.radarFinanceiro.fluxoCaixaProximos30Dias.linhaDoTempo.length ? (
+                  dashboard.radarFinanceiro.fluxoCaixaProximos30Dias.linhaDoTempo.map((item) => (
+                    <div
+                      key={item.data}
+                      className="flex flex-col gap-2 rounded-xl border border-border/60 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="font-medium">{formatDate(item.data)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Receita {item.receita} | Despesa {item.despesa}
+                        </p>
+                      </div>
+                      <p className="font-semibold">{item.saldo}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Nenhuma movimentacao prevista nos proximos 30 dias.
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
     </main>
   );
 }

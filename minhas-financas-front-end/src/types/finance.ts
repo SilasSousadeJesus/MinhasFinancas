@@ -22,9 +22,10 @@ export interface CadastrarLancamentoPayload {
   valor: number;
   descricao: string;
   observacao: string;
-  dataPagamento: string;
+  dataVencimento: string;
   dataLancamento: string;
-  realizado: boolean;
+  dataEfetivacao: string | null;
+  statusLancamento: number;
   frequenciaLancamento: number;
   quantidadeParcelas?: number | null;
   numeroDiaUtil?: number | null;

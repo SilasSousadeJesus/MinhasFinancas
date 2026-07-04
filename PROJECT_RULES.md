@@ -25,6 +25,12 @@ Use este arquivo para registrar acordos operacionais e arquiteturais do projeto.
 - Regras criticas devem ser validadas no backend, mesmo que tambem existam validacoes no frontend.
 - Infraestruturas globais devem ser reutilizaveis, desacopladas e nao especificas de uma tela.
 
+## Evolucao incremental
+
+- Sempre que uma funcionalidade fizer parte de um plano maior, implementar primeiro uma versao simples, porem arquiteturalmente correta.
+- Evitar implementar toda a visao futura de uma unica vez.
+- Cada versao deve deixar a arquitetura preparada para a proxima evolucao, sem gerar retrabalho ou quebra de compatibilidade.
+
 ## Frontend
 
 - Evitar loading manual espalhado pelas paginas.

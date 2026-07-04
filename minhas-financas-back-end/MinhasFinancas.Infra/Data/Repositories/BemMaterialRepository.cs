@@ -17,6 +17,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<List<BemPatrimonial>> BuscarTodosOsElementosAsync(string id)
         {
             var listaDeBens =await _context.Set<BemPatrimonial>()
+                .AsNoTracking()
                 .Include(x => x.DataPermanencia)
                  .Where(b => b.UsuarioId == id)
                  .ToListAsync();
@@ -26,6 +27,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<BemPatrimonial> BuscarUmElementoAsync(string idPatrono, Guid id)
         {
             return await _context.Set<BemPatrimonial>()
+                .AsNoTracking()
                 .Include(x => x.DataPermanencia)
                 .Where(x => x.UsuarioId == idPatrono && x.Id == id).FirstOrDefaultAsync();
         }
@@ -62,11 +64,11 @@ namespace MinhasFinancas.Infra.Data.Repositories
 
         public async Task<PermanenciaBemMaterial> BuscarUltimaDataPermanencia(Guid bemMaterialId)
         {
-            var listaPermanenciaBemMaterial = await _context.Set<PermanenciaBemMaterial>().Where(b => b.BemPatrimonialId == bemMaterialId).OrderByDescending(x => x.DataPermanencia).ToListAsync();
-
-            var ultimaPermanencia = listaPermanenciaBemMaterial[0];
-
-            return ultimaPermanencia;
+            return await _context.Set<PermanenciaBemMaterial>()
+                .AsNoTracking()
+                .Where(b => b.BemPatrimonialId == bemMaterialId)
+                .OrderByDescending(x => x.DataPermanencia)
+                .FirstOrDefaultAsync();
         }
 
         public async Task EditarUltimaDataPermanencia(PermanenciaBemMaterial ultimaDataPermanencia)

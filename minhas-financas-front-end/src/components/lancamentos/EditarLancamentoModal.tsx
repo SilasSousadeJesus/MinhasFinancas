@@ -40,7 +40,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { EditarLancamentoPayload, LancamentoResumo } from "@/types/lancamentos";
 
@@ -48,21 +47,55 @@ const FREQUENCIA_PONTUAL = "0";
 const FREQUENCIA_DIA_UTIL = "3";
 const TIPO_DESPESA = "0";
 const TIPO_RECEITA = "1";
+const STATUS_PENDENTE = "0";
+const STATUS_PAGO = "1";
+const STATUS_RECEBIDO = "2";
+const STATUS_CANCELADO = "3";
 
-const formSchema = z.object({
-  tipo: z.string(),
-  valor: z.coerce.number().positive("Informe um valor maior que zero."),
-  descricao: z.string().min(2, "Informe uma descricao."),
-  observacao: z.string().optional(),
-  dataPagamento: z.string().min(1, "Informe a data de pagamento."),
-  dataLancamento: z.string().min(1, "Informe a data de lancamento."),
-  realizado: z.boolean(),
-  frequenciaLancamento: z.string(),
-  contaId: z.string(),
-  cartaoId: z.string(),
-  categoriaId: z.string(),
-  subCategoriaId: z.string(),
-});
+const formSchema = z
+  .object({
+    tipo: z.string(),
+    valor: z.coerce.number().positive("Informe um valor maior que zero."),
+    descricao: z.string().min(2, "Informe uma descricao."),
+    observacao: z.string().optional(),
+    dataVencimento: z.string().min(1, "Informe a data de vencimento."),
+    dataLancamento: z.string().min(1, "Informe a data de lancamento."),
+    dataEfetivacao: z.string().optional(),
+    statusLancamento: z.string(),
+    frequenciaLancamento: z.string(),
+    contaId: z.string(),
+    cartaoId: z.string(),
+    categoriaId: z.string(),
+    subCategoriaId: z.string(),
+  })
+  .superRefine((values, ctx) => {
+    if (
+      (values.statusLancamento === STATUS_PAGO || values.statusLancamento === STATUS_RECEBIDO) &&
+      !values.dataEfetivacao
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["dataEfetivacao"],
+        message: "Informe a data de efetivacao para lancamentos pagos ou recebidos.",
+      });
+    }
+
+    if (values.tipo === TIPO_RECEITA && values.statusLancamento === STATUS_PAGO) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["statusLancamento"],
+        message: "Receitas nao podem assumir o status Pago.",
+      });
+    }
+
+    if (values.tipo === TIPO_DESPESA && values.statusLancamento === STATUS_RECEBIDO) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["statusLancamento"],
+        message: "Despesas nao podem assumir o status Recebido.",
+      });
+    }
+  });
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -109,9 +142,10 @@ export function EditarLancamentoModal({
       valor: 0,
       descricao: "",
       observacao: "",
-      dataPagamento: "",
+      dataVencimento: "",
       dataLancamento: "",
-      realizado: true,
+      dataEfetivacao: "",
+      statusLancamento: STATUS_PENDENTE,
       frequenciaLancamento: FREQUENCIA_PONTUAL,
       contaId: SELECT_NONE,
       cartaoId: SELECT_NONE,
@@ -161,9 +195,10 @@ export function EditarLancamentoModal({
           valor: lancamento.valor,
           descricao: lancamento.descricao ?? "",
           observacao: lancamento.observacao ?? "",
-          dataPagamento: toDateInputValue(lancamento.dataPagamento),
+          dataVencimento: toDateInputValue(lancamento.dataVencimento),
           dataLancamento: toDateInputValue(lancamento.dataLancamento),
-          realizado: Boolean(lancamento.realizado),
+          dataEfetivacao: toDateInputValue(lancamento.dataEfetivacao),
+          statusLancamento: String(lancamento.statusLancamento ?? 0),
           frequenciaLancamento: String(lancamento.frequenciaLancamento ?? 0),
           contaId: lancamento.contaId || SELECT_NONE,
           cartaoId: lancamento.cartaoId || SELECT_NONE,
@@ -200,6 +235,7 @@ export function EditarLancamentoModal({
 
   const tipoSelecionado = form.watch("tipo");
   const categoriaSelecionadaId = form.watch("categoriaId");
+  const statusSelecionado = form.watch("statusLancamento");
 
   const categoriasDisponiveis = useMemo(() => {
     return tipoSelecionado === TIPO_DESPESA ? categoriasDespesa : categoriasReceita;
@@ -245,6 +281,27 @@ export function EditarLancamentoModal({
     form.setValue("subCategoriaId", SELECT_NONE);
   }, [categoriaSelecionadaId, form]);
 
+  useEffect(() => {
+    if (
+      statusSelecionado === STATUS_PENDENTE ||
+      statusSelecionado === STATUS_CANCELADO
+    ) {
+      form.setValue("dataEfetivacao", "");
+    }
+  }, [form, statusSelecionado]);
+
+  useEffect(() => {
+    if (tipoSelecionado === TIPO_RECEITA && statusSelecionado === STATUS_PAGO) {
+      form.setValue("statusLancamento", STATUS_PENDENTE);
+      form.setValue("dataEfetivacao", "");
+    }
+
+    if (tipoSelecionado === TIPO_DESPESA && statusSelecionado === STATUS_RECEBIDO) {
+      form.setValue("statusLancamento", STATUS_PENDENTE);
+      form.setValue("dataEfetivacao", "");
+    }
+  }, [form, statusSelecionado, tipoSelecionado]);
+
   async function onSubmit(values: FormValues) {
     if (!lancamentoId) {
       return;
@@ -262,15 +319,16 @@ export function EditarLancamentoModal({
         valor: values.valor,
         descricao: values.descricao,
         observacao: values.observacao || "",
-        dataPagamento: `${values.dataPagamento}T00:00:00`,
+        dataVencimento: `${values.dataVencimento}T00:00:00`,
         dataLancamento: `${values.dataLancamento}T00:00:00`,
+        dataEfetivacao: values.dataEfetivacao ? `${values.dataEfetivacao}T00:00:00` : null,
         grupoParcelamentoId: lancamentoAtual?.grupoParcelamentoId ?? null,
         numeroParcela: lancamentoAtual?.numeroParcela ?? null,
         totalParcelas: lancamentoAtual?.totalParcelas ?? null,
         grupoLancamentoProgramadoId: lancamentoAtual?.grupoLancamentoProgramadoId ?? null,
         tipoProgramacao: lancamentoAtual?.tipoProgramacao ?? null,
         numeroDiaUtil: lancamentoAtual?.numeroDiaUtil ?? null,
-        realizado: values.realizado,
+        statusLancamento: Number(values.statusLancamento),
         frequenciaLancamento: Number(values.frequenciaLancamento),
         tipo: Number(values.tipo),
         vinculo: resolverVinculoLancamento(contaSelecionada, cartaoSelecionado, contas, cartoes),
@@ -416,10 +474,10 @@ export function EditarLancamentoModal({
             <div className="grid gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="dataPagamento"
+                name="dataVencimento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Data do pagamento</FormLabel>
+                    <FormLabel>Data de vencimento</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -435,6 +493,56 @@ export function EditarLancamentoModal({
                     <FormLabel>Data do lancamento</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="statusLancamento"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status do lancamento</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={STATUS_PENDENTE}>Pendente</SelectItem>
+                        {tipoSelecionado === TIPO_DESPESA ? (
+                          <SelectItem value={STATUS_PAGO}>Pago</SelectItem>
+                        ) : (
+                          <SelectItem value={STATUS_RECEBIDO}>Recebido</SelectItem>
+                        )}
+                        <SelectItem value={STATUS_CANCELADO}>Cancelado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="dataEfetivacao"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data de efetivacao</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        disabled={
+                          statusSelecionado === STATUS_PENDENTE ||
+                          statusSelecionado === STATUS_CANCELADO
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -576,27 +684,6 @@ export function EditarLancamentoModal({
                 )}
               />
             </div>
-
-            <FormField
-              control={form.control}
-              name="realizado"
-              render={({ field }) => (
-                <FormItem className="rounded-md border p-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <FormLabel>Realizado</FormLabel>
-                      <p className="text-sm text-muted-foreground">
-                        Define se o lancamento ja foi efetivamente concluido.
-                      </p>
-                    </div>
-                    <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             {errorMessage ? (
               <div className="rounded-md border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">

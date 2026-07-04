@@ -8,9 +8,10 @@ namespace MinhasFinancas.Application.DTOs.Lancamento
         public decimal Valor { get; set; } = decimal.Zero;
         public string Descricao { get; set; } = string.Empty;
         public string Observacao { get; set; } = string.Empty;
-        public DateTime DataPagamento { get; set; }
+        public DateTime DataVencimento { get; set; }
         public DateTime DataLancamento { get; set; }
-        public bool Realizado { get; set; }
+        public DateTime? DataEfetivacao { get; set; }
+        public EnumStatusLancamento StatusLancamento { get; set; } = EnumStatusLancamento.Pendente;
         public EnumTipoFrequenciaLancamento FrequenciaLancamento { get; set; }
         public int? QuantidadeParcelas { get; set; }
         public int? NumeroDiaUtil { get; set; }

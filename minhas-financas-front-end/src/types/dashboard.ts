@@ -39,6 +39,48 @@ export interface DashboardCategoriaDespesa {
   lancamentos: DashboardLancamentoCategoriaItem[];
 }
 
+export interface DashboardProximoVencimento {
+  descricao: string;
+  categoria: string;
+  valor: string;
+  dataVencimento: string;
+  situacao: string;
+}
+
+export interface DashboardContaAtrasada {
+  descricao: string;
+  diasEmAtraso: number;
+  valor: string;
+}
+
+export interface DashboardAlertaFinanceiro {
+  codigo: string;
+  titulo: string;
+  descricao: string;
+  severidade: string;
+}
+
+export interface DashboardFluxoCaixaTimelineItem {
+  data: string;
+  receita: string;
+  despesa: string;
+  saldo: string;
+}
+
+export interface DashboardFluxoCaixaProximos30Dias {
+  receitasPrevistas: string;
+  despesasPrevistas: string;
+  saldoPrevisto: string;
+  linhaDoTempo: DashboardFluxoCaixaTimelineItem[];
+}
+
+export interface DashboardRadarFinanceiro {
+  proximosVencimentos: DashboardProximoVencimento[];
+  contasAtrasadas: DashboardContaAtrasada[];
+  alertasFinanceiros: DashboardAlertaFinanceiro[];
+  fluxoCaixaProximos30Dias: DashboardFluxoCaixaProximos30Dias;
+}
+
 export interface DashboardData {
   receita: DashboardReceita;
   despesa: DashboardDespesa;
@@ -48,6 +90,7 @@ export interface DashboardData {
   acumuloInvestimentoMensal: unknown[];
   lancamentosPorCategoriaDeDespesaDashboard: DashboardCategoriaDespesa[];
   contasApagarDashboard: unknown;
+  radarFinanceiro: DashboardRadarFinanceiro;
 }
 
 export type DashboardPeriodo = "ano" | "mesAtual" | "mesPassado";

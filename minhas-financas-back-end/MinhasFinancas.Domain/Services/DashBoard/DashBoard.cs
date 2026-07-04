@@ -28,6 +28,7 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         public List<ReceitaDespesaMensal> ReceitasDespesasMensais { get; set; }
         public List<InvestimentoMensal> AcumuloInvestimentoMensal { get; set; }
         public List<LancamentosPorCategoriaDashboard> LancamentosPorCategoriaDeDespesaDashboard { get; set; }
+        public RadarFinanceiroDashboard RadarFinanceiro { get; set; }
 
         private void Calcular(List<Lancamento> listaLancamentos)
         {
@@ -39,20 +40,32 @@ namespace MinhasFinancas.Domain.Services.DashBoard
             ContasApagarDashboard = CalcularContasApagar(listaLancamentos);
             AcumuloInvestimentoMensal = CalcularAcumuloInvestimento(listaLancamentos);
             LancamentosPorCategoriaDeDespesaDashboard = AgruparLancamentosPorCategoriaDespesa(listaLancamentos);
+            RadarFinanceiro = CalcularRadarFinanceiro(listaLancamentos);
+        }
+
+        private RadarFinanceiroDashboard CalcularRadarFinanceiro(List<Lancamento> listaLancamentos)
+        {
+            return new RadarFinanceiroDashboard
+            {
+                ProximosVencimentos = CalcularProximosVencimentos(listaLancamentos),
+                ContasAtrasadas = CalcularContasAtrasadas(listaLancamentos),
+                AlertasFinanceiros = CalcularAlertasFinanceiros(listaLancamentos),
+                FluxoCaixaProximos30Dias = CalcularFluxoCaixaProximos30Dias(listaLancamentos)
+            };
         }
 
         private ReceitaDashBoard CalcularReceitas(List<Lancamento> listaLancamentos)
         {
             var receitaAnoCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Receita)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Receita && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             var receitaMesCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Receita)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Receita && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             var receitaMesAnterior = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Receita)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Receita && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             return new ReceitaDashBoard
@@ -66,15 +79,15 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         private DespesaDashBoard CalcularDespesas(List<Lancamento> listaLancamentos)
         {
             var despesaAnoCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Despesa)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Despesa && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             var despesaMesCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Despesa)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Despesa && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             var despesaMesAnterior = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Despesa)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Despesa && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             return new DespesaDashBoard
@@ -88,15 +101,15 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         private InvestimentoDashBoard CalcularInvestimentos(List<Lancamento> listaLancamentos)
         {
             var InvestimentoAnoCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.InvestimentoDeposito)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.InvestimentoDeposito && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             var InvestimentoMesCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.InvestimentoDeposito)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.InvestimentoDeposito && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             var InvestimentoMesAnterior = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.InvestimentoDeposito)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.InvestimentoDeposito && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             return new InvestimentoDashBoard
@@ -110,29 +123,29 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         private ResultadoDashBoard CalcularResultados(List<Lancamento> listaLancamentos)
         {
             var receitaAnoCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Receita)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Receita && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             var despesaAnoCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Despesa)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Despesa && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
 
             var receitaMesCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Receita)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Receita && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             var despesaMesCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Despesa)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Despesa && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
 
             var receitaMesAnterior = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Receita)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Receita && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
             var despesaMesAnterior = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Despesa)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Despesa && x.StatusLancamento != EnumStatusLancamento.Cancelado)
                 .Sum(x => x.Valor);
 
 
@@ -151,15 +164,15 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         private ContasApagarDashboard CalcularContasApagar(List<Lancamento> listaLancamentos)
         {
             var ContasApagarAnoCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Despesa && !x.Realizado)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.Tipo == EnumTipoLancamento.Despesa && x.StatusLancamento == EnumStatusLancamento.Pendente)
                 .Sum(x => x.Valor);
 
             var ContasApagarMesCorrente = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Despesa && !x.Realizado)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesCorrente && x.Tipo == EnumTipoLancamento.Despesa && x.StatusLancamento == EnumStatusLancamento.Pendente)
                 .Sum(x => x.Valor);
 
             var ContasApagarMesAnterior = listaLancamentos
-                .Where(x => x.DataPagamento.Year == anoCorrente && x.DataPagamento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Despesa && !x.Realizado)
+                .Where(x => x.DataVencimento.Year == anoCorrente && x.DataVencimento.Month == mesAnterior && x.Tipo == EnumTipoLancamento.Despesa && x.StatusLancamento == EnumStatusLancamento.Pendente)
                 .Sum(x => x.Valor);
 
             return new ContasApagarDashboard
@@ -176,7 +189,12 @@ namespace MinhasFinancas.Domain.Services.DashBoard
 
             foreach (var lancamento in listaLancamentos)
             {
-                var key = $"{lancamento.DataPagamento.Year}-{lancamento.DataPagamento.Month:00}";
+                if (lancamento.StatusLancamento == EnumStatusLancamento.Cancelado)
+                {
+                    continue;
+                }
+
+                var key = $"{lancamento.DataVencimento.Year}-{lancamento.DataVencimento.Month:00}";
 
                 if (!receitasDespesasMensais.ContainsKey(key))
                 {
@@ -208,9 +226,10 @@ namespace MinhasFinancas.Domain.Services.DashBoard
 
             foreach (var lancamento in listaLancamentos
                 .Where(x => x.Tipo == EnumTipoLancamento.InvestimentoDeposito)
-                .OrderBy(x => x.DataPagamento))
+                .Where(x => x.StatusLancamento != EnumStatusLancamento.Cancelado)
+                .OrderBy(x => x.DataVencimento))
             {
-                var key = $"{lancamento.DataPagamento.Year}-{lancamento.DataPagamento.Month:00}";
+                var key = $"{lancamento.DataVencimento.Year}-{lancamento.DataVencimento.Month:00}";
 
                 if (!investimentosMensais.ContainsKey(key))
                 {
@@ -255,6 +274,180 @@ namespace MinhasFinancas.Domain.Services.DashBoard
                 .ToList();
 
             return agrupados;
+        }
+
+        private List<ProximoVencimentoDashboard> CalcularProximosVencimentos(List<Lancamento> listaLancamentos)
+        {
+            var hoje = DateTime.Today;
+            var limite = hoje.AddDays(7);
+
+            return listaLancamentos
+                .Where(x =>
+                    x.StatusLancamento == EnumStatusLancamento.Pendente &&
+                    x.DataVencimento.Date >= hoje &&
+                    x.DataVencimento.Date <= limite &&
+                    (x.Tipo == EnumTipoLancamento.Despesa || x.Tipo == EnumTipoLancamento.Receita))
+                .OrderBy(x => x.DataVencimento)
+                .Take(5)
+                .Select(x => new ProximoVencimentoDashboard
+                {
+                    Descricao = x.Descricao,
+                    Categoria = x.Categoria?.NomeCategoria ?? "Sem categoria",
+                    Valor = x.Valor.ToString("C", new CultureInfo("pt-BR")),
+                    DataVencimento = x.DataVencimento,
+                    Situacao = ObterSituacaoVencimento(x.DataVencimento.Date, hoje)
+                })
+                .ToList();
+        }
+
+        private List<ContaAtrasadaDashboard> CalcularContasAtrasadas(List<Lancamento> listaLancamentos)
+        {
+            var hoje = DateTime.Today;
+
+            return listaLancamentos
+                .Where(x =>
+                    x.StatusLancamento == EnumStatusLancamento.Pendente &&
+                    x.DataVencimento.Date < hoje &&
+                    x.Tipo == EnumTipoLancamento.Despesa)
+                .OrderBy(x => x.DataVencimento)
+                .Select(x => new ContaAtrasadaDashboard
+                {
+                    Descricao = x.Descricao,
+                    DiasEmAtraso = (hoje - x.DataVencimento.Date).Days,
+                    Valor = x.Valor.ToString("C", new CultureInfo("pt-BR"))
+                })
+                .ToList();
+        }
+
+        private List<AlertaFinanceiroDashboard> CalcularAlertasFinanceiros(List<Lancamento> listaLancamentos)
+        {
+            var hoje = DateTime.Today;
+            var alertas = new List<AlertaFinanceiroDashboard>();
+
+            var contasVencidas = listaLancamentos.Count(x =>
+                x.StatusLancamento == EnumStatusLancamento.Pendente &&
+                x.DataVencimento.Date < hoje &&
+                x.Tipo == EnumTipoLancamento.Despesa);
+
+            if (contasVencidas > 0)
+            {
+                alertas.Add(new AlertaFinanceiroDashboard
+                {
+                    Codigo = "CONTAS_VENCIDAS",
+                    Titulo = "Existem contas vencidas",
+                    Descricao = $"{contasVencidas} conta(s) estao vencidas e ainda nao foram pagas.",
+                    Severidade = "alta"
+                });
+            }
+
+            var faturasProximas = listaLancamentos.Count(x =>
+                x.StatusLancamento == EnumStatusLancamento.Pendente &&
+                x.CartaoId.HasValue &&
+                x.Tipo == EnumTipoLancamento.Despesa &&
+                x.DataVencimento.Date >= hoje &&
+                x.DataVencimento.Date <= hoje.AddDays(5));
+
+            if (faturasProximas > 0)
+            {
+                alertas.Add(new AlertaFinanceiroDashboard
+                {
+                    Codigo = "FATURA_PROXIMA_VENCIMENTO",
+                    Titulo = "Existe fatura proxima do vencimento",
+                    Descricao = $"{faturasProximas} lancamento(s) em cartao vencem nos proximos 5 dias.",
+                    Severidade = "media"
+                });
+            }
+
+            var semCategoria = listaLancamentos.Count(x => x.CategoriaId == null);
+
+            if (semCategoria > 0)
+            {
+                alertas.Add(new AlertaFinanceiroDashboard
+                {
+                    Codigo = "LANCAMENTOS_SEM_CATEGORIA",
+                    Titulo = "Existem lancamentos sem categoria",
+                    Descricao = $"{semCategoria} lancamento(s) ainda nao possuem categoria definida.",
+                    Severidade = "media"
+                });
+            }
+
+            var futurosInconsistentes = listaLancamentos.Count(x =>
+                x.StatusLancamento != EnumStatusLancamento.Pendente &&
+                !x.DataEfetivacao.HasValue);
+
+            if (futurosInconsistentes > 0)
+            {
+                alertas.Add(new AlertaFinanceiroDashboard
+                {
+                    Codigo = "LANCAMENTOS_FUTUROS_INCONSISTENTES",
+                    Titulo = "Existem lancamentos futuros inconsistentes",
+                    Descricao = $"{futurosInconsistentes} lancamento(s) possuem status de efetivacao, mas nao informam DataEfetivacao.",
+                    Severidade = "baixa"
+                });
+            }
+
+            return alertas;
+        }
+
+        private FluxoCaixaProximos30DiasDashboard CalcularFluxoCaixaProximos30Dias(List<Lancamento> listaLancamentos)
+        {
+            var hoje = DateTime.Today;
+            var limite = hoje.AddDays(30);
+
+            var lancamentosPeriodo = listaLancamentos
+                .Where(x =>
+                    x.StatusLancamento == EnumStatusLancamento.Pendente &&
+                    x.DataVencimento.Date >= hoje &&
+                    x.DataVencimento.Date <= limite &&
+                    (x.Tipo == EnumTipoLancamento.Receita || x.Tipo == EnumTipoLancamento.Despesa))
+                .OrderBy(x => x.DataVencimento)
+                .ToList();
+
+            var receitasPrevistas = lancamentosPeriodo
+                .Where(x => x.Tipo == EnumTipoLancamento.Receita)
+                .Sum(x => x.Valor);
+
+            var despesasPrevistas = lancamentosPeriodo
+                .Where(x => x.Tipo == EnumTipoLancamento.Despesa)
+                .Sum(x => x.Valor);
+
+            var linhaDoTempo = lancamentosPeriodo
+                .GroupBy(x => x.DataVencimento.Date)
+                .OrderBy(g => g.Key)
+                .Select(g => new FluxoCaixaTimelineItemDashboard
+                {
+                    Data = g.Key,
+                    Receita = g.Where(x => x.Tipo == EnumTipoLancamento.Receita)
+                        .Sum(x => x.Valor)
+                        .ToString("C", new CultureInfo("pt-BR")),
+                    Despesa = g.Where(x => x.Tipo == EnumTipoLancamento.Despesa)
+                        .Sum(x => x.Valor)
+                        .ToString("C", new CultureInfo("pt-BR")),
+                    Saldo = (
+                        g.Where(x => x.Tipo == EnumTipoLancamento.Receita).Sum(x => x.Valor) -
+                        g.Where(x => x.Tipo == EnumTipoLancamento.Despesa).Sum(x => x.Valor))
+                        .ToString("C", new CultureInfo("pt-BR"))
+                })
+                .ToList();
+
+            return new FluxoCaixaProximos30DiasDashboard
+            {
+                ReceitasPrevistas = receitasPrevistas.ToString("C", new CultureInfo("pt-BR")),
+                DespesasPrevistas = despesasPrevistas.ToString("C", new CultureInfo("pt-BR")),
+                SaldoPrevisto = (receitasPrevistas - despesasPrevistas).ToString("C", new CultureInfo("pt-BR")),
+                LinhaDoTempo = linhaDoTempo
+            };
+        }
+
+        private static string ObterSituacaoVencimento(DateTime dataVencimento, DateTime hoje)
+        {
+            if (dataVencimento == hoje)
+            {
+                return "Vence hoje";
+            }
+
+            var dias = (dataVencimento - hoje).Days;
+            return $"Vence em {dias} dia(s)";
         }
 
     }
