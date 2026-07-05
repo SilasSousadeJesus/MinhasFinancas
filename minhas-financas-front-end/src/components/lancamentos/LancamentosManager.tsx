@@ -72,7 +72,26 @@ type FiltrosEdicaoLancamentos = {
   dataFinalEfetivacao: string;
 };
 
-function criarFiltrosPadrao(): FiltrosEdicaoLancamentos {
+function formatDateInput(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function criarPeriodoVencimentoMesAtual() {
+  const now = new Date();
+  const primeiroDia = new Date(now.getFullYear(), now.getMonth(), 1);
+  const ultimoDia = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  return {
+    dataInicialVencimento: formatDateInput(primeiroDia),
+    dataFinalVencimento: formatDateInput(ultimoDia),
+  };
+}
+
+function criarFiltrosVazios(): FiltrosEdicaoLancamentos {
   return {
     buscaDescricao: "",
     tipo: "all",
@@ -86,6 +105,13 @@ function criarFiltrosPadrao(): FiltrosEdicaoLancamentos {
     dataFinalVencimento: "",
     dataInicialEfetivacao: "",
     dataFinalEfetivacao: "",
+  };
+}
+
+function criarFiltrosIniciais(): FiltrosEdicaoLancamentos {
+  return {
+    ...criarFiltrosVazios(),
+    ...criarPeriodoVencimentoMesAtual(),
   };
 }
 
@@ -125,6 +151,15 @@ function formatCurrency(value: number) {
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("pt-BR").format(new Date(value));
+}
+
+function escapeExcelXml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
 }
 
 function getTipoLabel(tipo: number) {
@@ -228,6 +263,47 @@ function ordenarLancamentosDaPagina(
   });
 }
 
+function gerarConteudoExcelLancamentos(lancamentos: LancamentoResumo[]) {
+  const linhas = lancamentos
+    .map((lancamento) => {
+      const colunas = [
+        lancamento.descricao,
+        getTipoLabel(lancamento.tipo),
+        formatCurrency(lancamento.valor),
+        formatDate(lancamento.dataVencimento),
+        lancamento.dataEfetivacao ? formatDate(lancamento.dataEfetivacao) : "-",
+        getStatusLabel(lancamento.statusLancamento, lancamento.tipo),
+        formatDate(lancamento.dataLancamento),
+      ].map((valor) => `<Cell><Data ss:Type="String">${escapeExcelXml(valor)}</Data></Cell>`);
+
+      return `<Row>${colunas.join("")}</Row>`;
+    })
+    .join("");
+
+  return `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Lançamentos">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">Descrição</Data></Cell>
+        <Cell><Data ss:Type="String">Tipo</Data></Cell>
+        <Cell><Data ss:Type="String">Valor</Data></Cell>
+        <Cell><Data ss:Type="String">Vencimento</Data></Cell>
+        <Cell><Data ss:Type="String">Efetivação do pagamento/recebimento</Data></Cell>
+        <Cell><Data ss:Type="String">Status</Data></Cell>
+        <Cell><Data ss:Type="String">Data do lançamento</Data></Cell>
+      </Row>
+      ${linhas}
+    </Table>
+  </Worksheet>
+</Workbook>`;
+}
+
 export function LancamentosManager() {
   const { session } = useAuth();
   const ultimaRequisicaoRef = useRef(0);
@@ -237,6 +313,7 @@ export function LancamentosManager() {
   const [contas, setContas] = useState<ContaResumo[]>([]);
   const [cartoes, setCartoes] = useState<CartaoResumo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [efetivandoId, setEfetivandoId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -245,10 +322,10 @@ export function LancamentosManager() {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<LancamentoResumo | null>(null);
   const [filtrosEmEdicao, setFiltrosEmEdicao] = useState<FiltrosEdicaoLancamentos>(
-    criarFiltrosPadrao
+    criarFiltrosIniciais
   );
   const [filtrosAplicados, setFiltrosAplicados] = useState<FiltrosEdicaoLancamentos>(
-    criarFiltrosPadrao
+    criarFiltrosIniciais
   );
   const [ordenarPor, setOrdenarPor] = useState<"data" | "valor">("data");
   const [direcaoOrdenacao, setDirecaoOrdenacao] = useState<"asc" | "desc">("desc");
@@ -422,7 +499,7 @@ export function LancamentosManager() {
   }
 
   function limparFiltros() {
-    const filtrosLimpos = criarFiltrosPadrao();
+    const filtrosLimpos = criarFiltrosVazios();
     setFiltrosEmEdicao(filtrosLimpos);
     setFiltrosAplicados(filtrosLimpos);
     setPaginaAtual(1);
@@ -501,6 +578,82 @@ export function LancamentosManager() {
     setEditOpen(true);
   }
 
+  async function exportarExcel() {
+    if (!session?.usuario.id || !session.token) {
+      return;
+    }
+
+    try {
+      setIsExporting(true);
+      setErrorMessage("");
+      setSuccessMessage("");
+
+      const tamanhoPaginaExportacao = 500;
+      let pagina = 1;
+      let totalPaginasBusca = 1;
+      const todosLancamentos: LancamentoResumo[] = [];
+
+      do {
+        const response = await buscarLancamentos(
+          session.usuario.id,
+          session.token,
+          converterFiltrosParaBusca(
+            filtrosAplicados,
+            pagina,
+            tamanhoPaginaExportacao,
+            ordenarPor,
+            direcaoOrdenacao
+          )
+        );
+
+        const dados = response.dados;
+        const dadosNormalizados = Array.isArray(dados)
+          ? {
+              itens: dados,
+              totalPaginas: 1,
+            }
+          : dados;
+
+        todosLancamentos.push(...(dadosNormalizados?.itens ?? []));
+        totalPaginasBusca = Math.max(dadosNormalizados?.totalPaginas ?? 1, 1);
+        pagina += 1;
+      } while (pagina <= totalPaginasBusca);
+
+      const lancamentosOrdenados = ordenarLancamentosDaPagina(
+        todosLancamentos,
+        ordenarPor,
+        direcaoOrdenacao
+      );
+
+      const conteudo = gerarConteudoExcelLancamentos(lancamentosOrdenados);
+      const blob = new Blob([conteudo], {
+        type: "application/vnd.ms-excel;charset=utf-8;",
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const dataArquivo = formatDateInput(new Date());
+
+      link.href = url;
+      link.download = `lancamentos-${dataArquivo}.xls`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+
+      setSuccessMessage(
+        `${lancamentosOrdenados.length} lançamento(s) exportado(s) para Excel com sucesso.`
+      );
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Não foi possível exportar os lançamentos para Excel.");
+      }
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
   return (
     <div className="flex flex-row">
       <Sidebar />
@@ -568,12 +721,21 @@ export function LancamentosManager() {
                 <div>
                   <CardTitle>Lista de lançamentos</CardTitle>
                   <CardDescription>
-                    Filtre, edite e exclua os itens ja registrados no sistema.
+                    Filtre, edite e exclua os itens já registrados no sistema.
                   </CardDescription>
                 </div>
-                <Button variant="outline" onClick={carregarLancamentos}>
-                  Atualizar lista
-                </Button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button variant="outline" onClick={carregarLancamentos}>
+                    Atualizar lista
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={exportarExcel}
+                    disabled={isExporting || totalItens === 0}
+                  >
+                    {isExporting ? "Exportando..." : "Exportar Excel"}
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -596,7 +758,7 @@ export function LancamentosManager() {
                         onChange={(event) =>
                           atualizarFiltroEmEdicao("buscaDescricao", event.target.value)
                         }
-                        placeholder="Ex: mercado, salario, freelance"
+                        placeholder="Ex: mercado, salário, freelance"
                       />
                     </div>
                   </div>
@@ -698,7 +860,7 @@ export function LancamentosManager() {
                     </div>
 
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">Cartao</p>
+                      <p className="text-sm font-medium">Cartão</p>
                       <Select
                         value={filtrosEmEdicao.cartaoId}
                         onValueChange={(value) => {
@@ -739,7 +901,7 @@ export function LancamentosManager() {
                       <h4 className="text-sm font-medium text-foreground">Período do lançamento</h4>
                       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">Inicial</p>
+                          <p className="text-sm font-medium">Data inicial do lançamento</p>
                           <Input
                             type="date"
                             value={filtrosEmEdicao.dataInicialLancamento}
@@ -749,7 +911,7 @@ export function LancamentosManager() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">Final</p>
+                          <p className="text-sm font-medium">Data final do lançamento</p>
                           <Input
                             type="date"
                             value={filtrosEmEdicao.dataFinalLancamento}
@@ -765,7 +927,7 @@ export function LancamentosManager() {
                       <h4 className="text-sm font-medium text-foreground">Período de vencimento</h4>
                       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">Inicial</p>
+                          <p className="text-sm font-medium">Data inicial de vencimento</p>
                           <Input
                             type="date"
                             value={filtrosEmEdicao.dataInicialVencimento}
@@ -775,7 +937,7 @@ export function LancamentosManager() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">Final</p>
+                          <p className="text-sm font-medium">Data final de vencimento</p>
                           <Input
                             type="date"
                             value={filtrosEmEdicao.dataFinalVencimento}
@@ -791,7 +953,7 @@ export function LancamentosManager() {
                       <h4 className="text-sm font-medium text-foreground">Período de efetivação</h4>
                       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">Inicial</p>
+                          <p className="text-sm font-medium">Data inicial de efetivação</p>
                           <Input
                             type="date"
                             value={filtrosEmEdicao.dataInicialEfetivacao}
@@ -801,7 +963,7 @@ export function LancamentosManager() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">Final</p>
+                          <p className="text-sm font-medium">Data final de efetivação</p>
                           <Input
                             type="date"
                             value={filtrosEmEdicao.dataFinalEfetivacao}
@@ -832,7 +994,7 @@ export function LancamentosManager() {
                         onValueChange={(value) => atualizarOrdenacao(value as "data" | "valor")}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Escolha a ordenacao" />
+                          <SelectValue placeholder="Escolha a ordenação" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="data">Data de vencimento</SelectItem>
@@ -842,13 +1004,13 @@ export function LancamentosManager() {
                     </div>
 
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">Direcao</p>
+                      <p className="text-sm font-medium">Direção</p>
                       <Select
                         value={direcaoOrdenacao}
                         onValueChange={(value) => atualizarDirecao(value as "asc" | "desc")}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Escolha a direcao" />
+                          <SelectValue placeholder="Escolha a direção" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="desc">Decrescente</SelectItem>
@@ -865,7 +1027,7 @@ export function LancamentosManager() {
                       Ações
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      Aplique ou limpe os filtros mantendo todas as opcoes visiveis.
+                      Aplique ou limpe os filtros mantendo todas as opções visíveis.
                     </p>
                   </div>
                   <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -908,7 +1070,7 @@ export function LancamentosManager() {
                       <TableHead>Categoria</TableHead>
                       <TableHead>Valor</TableHead>
                       <TableHead>Vencimento</TableHead>
-                      <TableHead>Efetivacao</TableHead>
+                      <TableHead>Efetivação</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="text-right">Ações</TableHead>
                     </TableRow>

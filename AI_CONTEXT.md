@@ -72,6 +72,8 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - CRUD de categorias e subcategorias com boa UX
 - CRUD de lancamentos com modal de criacao e edicao
 - filtros, ordenacao e paginacao de lancamentos
+- periodo de vencimento inicial preenchido automaticamente com o mes corrente na tela de lancamentos
+- exportacao em Excel da listagem de lancamentos respeitando os filtros aplicados
 - tela de fluxo de caixa simples com navegacao mensal, resumo, comparativo e listas separadas de receitas e despesas
 - CRUD de contas e cartoes
 - selecao real de conta/cartao/categoria/subcategoria no modal de lancamento
@@ -1350,6 +1352,8 @@ Registrar melhorias estruturais que beneficiam toda a aplicacao.
   - `BemPatrimonial`
 - Decisoes tomadas:
   - filtros, ordenacao e paginacao no backend
+  - a tela de lancamentos inicia com filtro de vencimento aplicado ao mes corrente para priorizar a leitura operacional do periodo atual
+  - a exportacao Excel da tela reutiliza os filtros aplicados e busca todos os registros filtrados, sem se limitar apenas a pagina visivel
   - fluxo de caixa simples ganhou endpoint mensal consolidado por `DataVencimento`, sem criar novas tabelas e sem duplicar dados
   - selecao real de conta/cartao/categoria/subcategoria no front
   - parte dos tipos atualiza saldo/patrimonio
