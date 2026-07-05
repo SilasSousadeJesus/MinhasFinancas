@@ -751,30 +751,30 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
           <CardHeader>
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div>
-                <CardTitle>Resultado da projeÃ§Ã£o</CardTitle>
+                <CardTitle>Resultado da projeção</CardTitle>
                 <CardDescription className="mt-2">
-                  Preencha a renda extra diretamente em cada mÃªs e depois salve ou recalcule a projeÃ§Ã£o.
+                  Preencha a renda extra diretamente em cada mês e depois salve ou recalcule a projeção.
                 </CardDescription>
               </div>
               <Button type="button" onClick={handleSalvarECalcular} disabled={isBusy}>
                 <Sparkles className="mr-2 h-4 w-4" />
-                {isCalculating ? "Calculando..." : "Salvar e gerar projeÃ§Ã£o"}
+                {isCalculating ? "Calculando..." : "Salvar e gerar projeção"}
               </Button>
             </div>
           </CardHeader>
           <CardContent>
             {previewRows.length === 0 ? (
               <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
-                Salve e gere a projeÃ§Ã£o para visualizar a linha do tempo do objetivo.
+                Salve e gere a projeção para visualizar a linha do tempo do objetivo.
               </div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>MÃªs</TableHead>
-                    <TableHead>DÃ­vidas totais</TableHead>
+                    <TableHead>Mês</TableHead>
+                    <TableHead>Dívidas totais</TableHead>
                     <TableHead>Renda Extra</TableHead>
-                    <TableHead>Sobra do mÃªs</TableHead>
+                    <TableHead>Sobra do mês</TableHead>
                     <TableHead>Acumulado</TableHead>
                   </TableRow>
                 </TableHeader>
