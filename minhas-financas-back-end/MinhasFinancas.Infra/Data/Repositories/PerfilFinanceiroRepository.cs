@@ -16,7 +16,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         public async Task<PerfilFinanceiro?> BuscarPorUsuarioAsync(string usuarioId)
         {
             return await _context.Set<PerfilFinanceiro>()
-                .Include(x => x.Configuracoes.OrderByDescending(c => c.DataInicioVigencia).ThenByDescending(c => c.DataCriacao))
+                .Include(x => x.Configuracoes)
                 .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId && x.Ativo);
         }
 
@@ -24,7 +24,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
         {
             return await _context.Set<PerfilFinanceiro>()
                 .AsNoTracking()
-                .Include(x => x.Configuracoes.OrderByDescending(c => c.DataInicioVigencia).ThenByDescending(c => c.DataCriacao))
+                .Include(x => x.Configuracoes)
                 .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId && x.Ativo);
         }
 

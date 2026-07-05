@@ -1,10 +1,14 @@
 using System;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using MinhasFinancas.Infra;
 
 #nullable disable
 
 namespace MinhasFinancas.Infra.Migrations
 {
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20260705201000_perfil_financeiro")]
     public partial class perfil_financeiro : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
