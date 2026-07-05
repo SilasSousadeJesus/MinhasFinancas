@@ -95,7 +95,7 @@ export function PainelDashboard() {
         if (error instanceof ApiError) {
           setErrorMessage(error.message);
         } else {
-          setErrorMessage("Nao foi possivel carregar o dashboard.");
+          setErrorMessage("Não foi possível carregar o dashboard.");
         }
       } finally {
         setIsLoading(false);
@@ -197,7 +197,7 @@ export function PainelDashboard() {
         <div>
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <p className="text-sm text-gray-500">
-            Bem vindo de volta, {session?.usuario.nome || "usuario"}!
+            Bem-vindo de volta, {session?.usuario.nome || "usuário"}!
           </p>
         </div>
         <div className="flex space-x-2">
@@ -217,13 +217,13 @@ export function PainelDashboard() {
           variant={periodo === "mesAtual" ? "default" : "outline"}
           onClick={() => setPeriodo("mesAtual")}
         >
-          Este Mes
+          Este mês
         </Button>
         <Button
           variant={periodo === "mesPassado" ? "default" : "outline"}
           onClick={() => setPeriodo("mesPassado")}
         >
-          Mes Passado
+          Mês passado
         </Button>
       </div>
 
@@ -241,7 +241,7 @@ export function PainelDashboard() {
             </div>
             <p className="mt-2 text-lg font-medium">Receitas</p>
             <p className="text-2xl font-bold">{isLoading ? "..." : resumo.receita}</p>
-            <p className="text-sm text-gray-600">Orcado R$ 0,00</p>
+            <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
           </CardContent>
         </Card>
         <Card>
@@ -280,7 +280,7 @@ export function PainelDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Despesas por categoria</CardTitle>
-            <CardDescription>Distribuicao das despesas por categoria</CardDescription>
+            <CardDescription>Distribuição das despesas por categoria</CardDescription>
           </CardHeader>
           <CardContent>
             <PiechartcustomChart className="aspect-[4/3] w-full" data={pieChartData} />
@@ -294,13 +294,13 @@ export function PainelDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Receitas e Despesas</CardTitle>
-            <CardDescription>Evolucao mensal de receitas e despesas</CardDescription>
+            <CardDescription>Evolução mensal de receitas e despesas</CardDescription>
           </CardHeader>
           <CardContent>
             <LinechartChart className="aspect-[4/3] w-full" data={lineChartData} />
             {dashboard?.receitasDespesasMensais?.length === 0 ? (
               <p className="mt-4 text-center text-sm text-muted-foreground">
-                Sem movimentacoes mensais ainda.
+                Sem movimentações mensais ainda.
               </p>
             ) : null}
           </CardContent>
@@ -311,7 +311,7 @@ export function PainelDashboard() {
         <div>
           <h2 className="text-xl font-semibold">Radar Financeiro</h2>
           <p className="text-sm text-muted-foreground">
-            Itens que exigem atencao imediata e ajudam a antecipar o caixa dos proximos dias.
+            Itens que exigem atenção imediata e ajudam a antecipar o caixa dos próximos dias.
           </p>
         </div>
 
@@ -320,9 +320,9 @@ export function PainelDashboard() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <CalendarClock className="h-5 w-5 text-amber-500" />
-                <CardTitle>Proximos vencimentos</CardTitle>
+                <CardTitle>Próximos vencimentos</CardTitle>
               </div>
-              <CardDescription>Lancamentos previstos para os proximos 7 dias.</CardDescription>
+              <CardDescription>Lançamentos previstos para os próximos 7 dias.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {dashboard?.radarFinanceiro.proximosVencimentos.length ? (
@@ -346,7 +346,7 @@ export function PainelDashboard() {
                 ))
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  Nenhum vencimento previsto para os proximos dias.
+                  Nenhum vencimento previsto para os próximos dias.
                 </p>
               )}
             </CardContent>
@@ -358,7 +358,7 @@ export function PainelDashboard() {
                 <Clock3 className="h-5 w-5 text-rose-500" />
                 <CardTitle>Contas atrasadas</CardTitle>
               </div>
-              <CardDescription>Lancamentos vencidos e ainda nao pagos.</CardDescription>
+              <CardDescription>Lançamentos vencidos e ainda não pagos.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {dashboard?.radarFinanceiro.contasAtrasadas.length ? (
@@ -395,7 +395,7 @@ export function PainelDashboard() {
                 <CardTitle>Alertas financeiros</CardTitle>
               </div>
               <CardDescription>
-                Alertas objetivos prontos para expansao futura sem alterar a tela.
+                Alertas objetivos prontos para expansão futura sem alterar a tela.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -432,10 +432,10 @@ export function PainelDashboard() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-violet-500" />
-                <CardTitle>Fluxo de caixa dos proximos 30 dias</CardTitle>
+                <CardTitle>Fluxo de caixa dos próximos 30 dias</CardTitle>
               </div>
               <CardDescription>
-                Resumo das receitas e despesas previstas ainda nao realizadas.
+                Resumo das receitas e despesas previstas ainda não realizadas.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -479,7 +479,7 @@ export function PainelDashboard() {
                   ))
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    Nenhuma movimentacao prevista nos proximos 30 dias.
+                    Nenhuma movimentação prevista nos próximos 30 dias.
                   </p>
                 )}
               </div>

@@ -88,7 +88,7 @@ export function FluxoCaixaSimplesManager() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel carregar o fluxo de caixa simples.");
+        setErrorMessage("Não foi possível carregar o fluxo de caixa simples.");
       }
     } finally {
       setIsLoading(false);
@@ -127,7 +127,7 @@ export function FluxoCaixaSimplesManager() {
                 <CardTitle className="text-3xl">Fluxo de Caixa Simples</CardTitle>
                 <CardDescription className="mt-2 max-w-3xl text-base">
                   Uma leitura mensal direta para conferir receitas, despesas e saldo
-                  sem precisar navegar por varios graficos ou filtros.
+                  sem precisar navegar por vários gráficos ou filtros.
                 </CardDescription>
               </div>
 
@@ -165,21 +165,21 @@ export function FluxoCaixaSimplesManager() {
         <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Receitas do mes</CardDescription>
+              <CardDescription>Receitas do mês</CardDescription>
               <CardTitle className="text-3xl">{formatCurrency(receitasTotal)}</CardTitle>
             </CardHeader>
           </Card>
 
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Despesas do mes</CardDescription>
+              <CardDescription>Despesas do mês</CardDescription>
               <CardTitle className="text-3xl">{formatCurrency(despesasTotal)}</CardTitle>
             </CardHeader>
           </Card>
 
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Saldo do mes</CardDescription>
+              <CardDescription>Saldo do mês</CardDescription>
               <CardTitle className="text-3xl">{formatCurrency(saldoMes)}</CardTitle>
             </CardHeader>
           </Card>
@@ -187,9 +187,9 @@ export function FluxoCaixaSimplesManager() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Comparativo do mes</CardTitle>
+            <CardTitle>Comparativo do mês</CardTitle>
             <CardDescription>
-              Uma comparacao visual simples entre entradas e saidas previstas.
+              Uma comparação visual simples entre entradas e saídas previstas.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -227,7 +227,7 @@ export function FluxoCaixaSimplesManager() {
             <CardHeader>
               <CardTitle>Despesas previstas</CardTitle>
               <CardDescription>
-                Todas as despesas do mes, ordenadas por vencimento.
+                Todas as despesas do mês, ordenadas por vencimento.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -239,7 +239,7 @@ export function FluxoCaixaSimplesManager() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Descricao</TableHead>
+                      <TableHead>Descrição</TableHead>
                       <TableHead>Categoria</TableHead>
                       <TableHead>Vencimento</TableHead>
                       <TableHead className="text-right">Valor</TableHead>
@@ -260,7 +260,7 @@ export function FluxoCaixaSimplesManager() {
                 </Table>
               ) : (
                 <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
-                  Nenhuma despesa prevista para este mes.
+                  Nenhuma despesa prevista para este mês.
                 </div>
               )}
 
@@ -275,7 +275,7 @@ export function FluxoCaixaSimplesManager() {
             <CardHeader>
               <CardTitle>Receitas previstas</CardTitle>
               <CardDescription>
-                Todas as receitas do mes, ordenadas por data prevista de recebimento.
+                Todas as receitas do mês, ordenadas por data prevista de recebimento.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -287,7 +287,7 @@ export function FluxoCaixaSimplesManager() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Descricao</TableHead>
+                      <TableHead>Descrição</TableHead>
                       <TableHead>Categoria</TableHead>
                       <TableHead>Recebimento</TableHead>
                       <TableHead className="text-right">Valor</TableHead>
@@ -308,7 +308,7 @@ export function FluxoCaixaSimplesManager() {
                 </Table>
               ) : (
                 <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
-                  Nenhuma receita prevista para este mes.
+                  Nenhuma receita prevista para este mês.
                 </div>
               )}
 
@@ -322,9 +322,9 @@ export function FluxoCaixaSimplesManager() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Saldo final do mes</CardTitle>
+            <CardTitle>Saldo final do mês</CardTitle>
             <CardDescription>
-              Conferencia final consolidada usando os lancamentos do mes selecionado.
+              Conferência final consolidada usando os lançamentos do mês selecionado.
             </CardDescription>
           </CardHeader>
           <CardContent>

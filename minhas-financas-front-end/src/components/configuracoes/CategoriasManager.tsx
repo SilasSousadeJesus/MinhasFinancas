@@ -87,7 +87,7 @@ function getTipoBadgeLabel(tipo: TipoCategoria) {
     case 2:
       return "Investimento";
     default:
-      return "Transferencia";
+      return "Transferência";
   }
 }
 
@@ -138,7 +138,7 @@ export function CategoriasManager() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel carregar as categorias.");
+        setErrorMessage("Não foi possível carregar as categorias.");
       }
     } finally {
       setIsLoading(false);
@@ -195,7 +195,7 @@ export function CategoriasManager() {
 
   async function salvarCategoria() {
     if (!session?.usuario.id || !session.token) {
-      setErrorMessage("Sessao invalida. Faca login novamente.");
+      setErrorMessage("Sessão inválida. Faça login novamente.");
       return;
     }
 
@@ -233,7 +233,7 @@ export function CategoriasManager() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel salvar a categoria.");
+        setErrorMessage("Não foi possível salvar a categoria.");
       }
     } finally {
       setIsSubmitting(false);
@@ -242,7 +242,7 @@ export function CategoriasManager() {
 
   async function salvarSubCategoria() {
     if (!session?.usuario.id || !session.token || !subCategoriaPai) {
-      setErrorMessage("Sessao invalida. Faca login novamente.");
+      setErrorMessage("Sessão inválida. Faça login novamente.");
       return;
     }
 
@@ -290,7 +290,7 @@ export function CategoriasManager() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel salvar a subcategoria.");
+        setErrorMessage("Não foi possível salvar a subcategoria.");
       }
     } finally {
       setIsSubmitting(false);
@@ -309,7 +309,7 @@ export function CategoriasManager() {
 
       if (deleteTarget.kind === "categoria") {
         await deletarCategoria(session.usuario.id, deleteTarget.categoriaId, session.token);
-        setSuccessMessage("Categoria excluida com sucesso.");
+        setSuccessMessage("Categoria excluída com sucesso.");
       } else {
         await deletarSubCategoria(
           session.usuario.id,
@@ -317,7 +317,7 @@ export function CategoriasManager() {
           deleteTarget.subCategoriaId,
           session.token
         );
-        setSuccessMessage("Subcategoria excluida com sucesso.");
+        setSuccessMessage("Subcategoria excluída com sucesso.");
       }
 
       setDeleteTarget(null);
@@ -326,7 +326,7 @@ export function CategoriasManager() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel concluir a exclusao.");
+        setErrorMessage("Não foi possível concluir a exclusão.");
       }
     } finally {
       setIsSubmitting(false);
@@ -349,7 +349,7 @@ export function CategoriasManager() {
                 variant={activeSection === "usuario" ? "default" : "outline"}
                 onClick={() => setActiveSection("usuario")}
               >
-                Informacoes do Usuario
+                Informações do Usuário
               </Button>
             </div>
           </CardHeader>
@@ -375,8 +375,8 @@ export function CategoriasManager() {
                   <div>
                     <CardTitle className="text-3xl">Categorias e subcategorias</CardTitle>
                     <CardDescription className="mt-2 max-w-2xl text-base">
-                      Organize os tipos de lancamento do usuario. As categorias criadas aqui
-                      alimentam o modal de novo lancamento e a base inicial do produto.
+                      Organize os tipos de lançamento do usuário. As categorias criadas aqui
+                      alimentam o modal de novo lançamento e a base inicial do produto.
                     </CardDescription>
                   </div>
                   <Button onClick={() => abrirNovaCategoria(Number(activeTab) as TipoCategoria)}>
@@ -402,7 +402,7 @@ export function CategoriasManager() {
               </Card>
               <Card>
                 <CardHeader className="pb-3">
-                  <CardDescription>Categorias padrao</CardDescription>
+                  <CardDescription>Categorias padrão</CardDescription>
                   <CardTitle className="text-3xl">JSON + CRUD</CardTitle>
                 </CardHeader>
               </Card>
@@ -569,9 +569,9 @@ export function CategoriasManager() {
                   <UserRound className="h-5 w-5" />
                 </div>
                 <div>
-                  <CardTitle>Informacoes do Usuario</CardTitle>
+                  <CardTitle>Informações do Usuário</CardTitle>
                   <CardDescription>
-                    Esta secao concentra os dados principais da conta e abre caminho para futuras configuracoes.
+                    Esta seção concentra os dados principais da conta e abre caminho para futuras configurações.
                   </CardDescription>
                 </div>
               </div>
@@ -579,16 +579,16 @@ export function CategoriasManager() {
             <CardContent className="grid gap-4 md:grid-cols-2">
               <div className="rounded-lg border px-4 py-4">
                 <p className="text-sm text-muted-foreground">Nome</p>
-                <p className="mt-1 text-base font-medium">{session?.usuario.nome ?? "Nao informado"}</p>
+                <p className="mt-1 text-base font-medium">{session?.usuario.nome ?? "Não informado"}</p>
               </div>
               <div className="rounded-lg border px-4 py-4">
                 <p className="text-sm text-muted-foreground">Email</p>
-                <p className="mt-1 text-base font-medium">{session?.usuario.email ?? "Nao informado"}</p>
+                <p className="mt-1 text-base font-medium">{session?.usuario.email ?? "Não informado"}</p>
               </div>
               <div className="rounded-lg border px-4 py-4 md:col-span-2">
                 <p className="text-sm text-muted-foreground">Status</p>
                 <p className="mt-1 text-base font-medium">
-                  Esta area esta preparada para futuras edicoes de perfil, seguranca e preferencias.
+                  Esta área está preparada para futuras edições de perfil, segurança e preferências.
                 </p>
               </div>
             </CardContent>
@@ -603,7 +603,7 @@ export function CategoriasManager() {
               {categoriaDialogMode === "create" ? "Nova categoria" : "Editar categoria"}
             </DialogTitle>
             <DialogDescription>
-              O icone continua sendo definido automaticamente pelo tipo da categoria.
+              O ícone continua sendo definido automaticamente pelo tipo da categoria.
             </DialogDescription>
           </DialogHeader>
 
@@ -614,7 +614,7 @@ export function CategoriasManager() {
                 id="categoria-nome"
                 value={categoriaNome}
                 onChange={(event) => setCategoriaNome(event.target.value)}
-                placeholder="Ex: Alimentacao, Salario, Reserva"
+                placeholder="Ex: Alimentação, Salário, Reserva"
               />
             </div>
 
@@ -670,7 +670,7 @@ export function CategoriasManager() {
                 id="subcategoria-nome"
                 value={subCategoriaNome}
                 onChange={(event) => setSubCategoriaNome(event.target.value)}
-                placeholder="Ex: Mercado, Farmacia, Combustivel"
+                placeholder="Ex: Mercado, Farmácia, Combustível"
               />
             </div>
           </div>
@@ -689,10 +689,10 @@ export function CategoriasManager() {
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusao</AlertDialogTitle>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
               {deleteTarget
-                ? `Tem certeza que deseja excluir ${deleteTarget.nome}? Essa acao nao pode ser desfeita.`
+                ? `Tem certeza que deseja excluir ${deleteTarget.nome}? Essa ação não pode ser desfeita.`
                 : ""}
             </AlertDialogDescription>
           </AlertDialogHeader>

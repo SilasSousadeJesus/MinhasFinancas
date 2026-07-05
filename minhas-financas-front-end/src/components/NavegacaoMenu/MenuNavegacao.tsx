@@ -24,7 +24,6 @@ import {
   ProjectionIcon,
   SettingsIcon,
 } from "../Icons/Icons";
-import { useEffect, useState } from "react";
 
 interface MenuNavegacaoProps {
   isSidebarExpanded: boolean;
@@ -32,74 +31,69 @@ interface MenuNavegacaoProps {
 
 const components: { title: string; href: string; description: string }[] = [
   {
-    title: "Relatorio Patrimonial",
+    title: "Relatório patrimonial",
     href: "relatorios/relatorio-patrimonial",
-    description:
-      "Relatorio sobre o desenvolvimento patrimonial ao logo do tempo.",
+    description: "Acompanhe a evolução do seu patrimônio ao longo do tempo.",
   },
   {
-    title: "Relatorio Anual",
+    title: "Relatório anual",
     href: "relatorios/relatorio-anual",
-    description:
-      "Relatorio sobre o desenvolvimento financeiro por ano.",
+    description: "Visualize a evolução financeira consolidada por ano.",
   },
   {
-    title: "Relatorio Por Categoria",
+    title: "Relatório por categoria",
     href: "relatorios/relatorio-por-categoria",
-    description:
-      "Relatorio sobre o desenvolvimento financeiro por categoria.",
+    description: "Entenda como suas finanças se distribuem por categoria.",
   },
   {
-    title: "Relatorio Por Saldo / Investimento / Despesas",
+    title: "Relatório de saldos e investimentos",
     href: "relatorios/relatorio-saldo-investimento-despesa",
-    description:
-      "Relatorio sobre os saldos, investimento e despesas.",
-  }
+    description: "Consulte saldos, investimentos e despesas em um só lugar.",
+  },
 ];
 
-export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
-  const [windowWidth, setWindowWidth] = useState(0);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
+export function MenuNavegacao({
+  isSidebarExpanded = true,
+}: MenuNavegacaoProps) {
   return (
     <NavigationMenu className="">
-      <NavigationMenuList className="flex flex-col ">
-        <NavigationMenuItem className="w-full ">
+      <NavigationMenuList className="flex flex-col">
+        <NavigationMenuItem className="w-full">
           <Link href="/dashboard" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                " justify-center space-x-2 text-lg",
+                "justify-center space-x-2 text-lg",
                 navigationMenuTriggerStyle()
               )}
             >
-              <LayoutDashboardIcon
-                className={`w-5 h-5 `}
-              />
-              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Dashboard</span>
+              <LayoutDashboardIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Dashboard
+              </span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className="w-full" >
+        <NavigationMenuItem className="w-full">
           <Link href="/contas-e-cartoes" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                " justify-center space-x-2 text-lg",
+                "justify-center space-x-2 text-lg",
                 navigationMenuTriggerStyle()
               )}
             >
-              <CreditCardIcon className="w-5 h-5" />
-              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Contas e Cartões</span>
+              <CreditCardIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Contas e cartões
+              </span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -108,12 +102,18 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
           <Link href="/lancamentos" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                " justify-center space-x-2 text-lg",
+                "justify-center space-x-2 text-lg",
                 navigationMenuTriggerStyle()
               )}
             >
-              <DownloadIcon className="w-5 h-5" />
-              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Lançamentos</span>
+              <DownloadIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Lançamentos
+              </span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -122,13 +122,17 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
           <Link href="/fluxo-de-caixa-simples" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                " justify-center space-x-2 text-lg",
+                "justify-center space-x-2 text-lg",
                 navigationMenuTriggerStyle()
               )}
             >
-              <CurrencyIcon className="w-5 h-5" />
-              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>
-                Fluxo de Caixa
+              <CurrencyIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Fluxo de caixa
               </span>
             </NavigationMenuLink>
           </Link>
@@ -138,12 +142,18 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
           <Link href="/orcamento" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                " justify-center space-x-2 text-lg",
+                "justify-center space-x-2 text-lg",
                 navigationMenuTriggerStyle()
               )}
             >
-              <PocketIcon className="w-5 h-5" />
-              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Orçamento</span>
+              <PocketIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Orçamento
+              </span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -152,12 +162,18 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
           <Link href="/projecao" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                " justify-center space-x-2 text-lg",
+                "justify-center space-x-2 text-lg",
                 navigationMenuTriggerStyle()
               )}
             >
-              <ProjectionIcon className="w-5 h-5" />
-              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Projeçoes</span>
+              <ProjectionIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Projeções
+              </span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -166,24 +182,35 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
           <Link href="/metas" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                " justify-center space-x-2 text-lg",
+                "justify-center space-x-2 text-lg",
                 navigationMenuTriggerStyle()
               )}
             >
-              <GoalIcon className="w-5 h-5" />
-              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Metas</span>
+              <GoalIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Metas
+              </span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full">
-          <NavigationMenuTrigger className=" justify-center space-x-2 text-lg ">
-            {" "}
-            <FilesIcon className="w-5 h-5" />
-            <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Relatórios</span>
+          <NavigationMenuTrigger className="justify-center space-x-2 text-lg">
+            <FilesIcon className="h-5 w-5" />
+            <span
+              className={`space-x-2 text-lg ${
+                !isSidebarExpanded && "hidden"
+              }`}
+            >
+              Relatórios
+            </span>
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {components.map((component) => (
                 <ListItem
                   key={component.title}
@@ -201,12 +228,18 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
           <Link href="/configuracoes" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                " justify-center space-x-2 text-lg",
+                "justify-center space-x-2 text-lg",
                 navigationMenuTriggerStyle()
               )}
             >
-              <SettingsIcon className="w-5 h-5" />
-              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Configurações</span>
+              <SettingsIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Configurações
+              </span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

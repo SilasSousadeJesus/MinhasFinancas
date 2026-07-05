@@ -68,14 +68,14 @@ namespace MinhasFinancas.Application.Services
                 {
                     Sucesso = true,
                     HttpStatusCode = HttpStatusCode.OK,
-                    MensagemSistema = $"{lista.Count} projecao(oes) encontrada(s)",
-                    MensagemUsuario = $"{lista.Count} projecao(oes) encontrada(s)",
+                    MensagemSistema = $"{lista.Count} projeção(ões) encontrada(s)",
+                    MensagemUsuario = $"{lista.Count} projeção(ões) encontrada(s)",
                     Dados = lista
                 };
             }
             catch (Exception ex)
             {
-                return CriarErro(ex, "Nao foi possivel listar as projecoes.");
+                return CriarErro(ex, "Não foi possível listar as projeções.");
             }
         }
 
@@ -147,7 +147,7 @@ namespace MinhasFinancas.Application.Services
             }
             catch (Exception ex)
             {
-                return CriarErro(ex, "Nao foi possivel buscar a projecao.");
+                return CriarErro(ex, "Não foi possível buscar a projeção.");
             }
         }
 
@@ -175,7 +175,7 @@ namespace MinhasFinancas.Application.Services
             }
             catch (Exception ex)
             {
-                return CriarErro(ex, "Nao foi possivel cadastrar a projecao.");
+                return CriarErro(ex, "Não foi possível cadastrar a projeção.");
             }
         }
 
@@ -203,7 +203,7 @@ namespace MinhasFinancas.Application.Services
             }
             catch (Exception ex)
             {
-                return CriarErro(ex, "Nao foi possivel editar a projecao.");
+                return CriarErro(ex, "Não foi possível editar a projeção.");
             }
         }
 
@@ -230,7 +230,7 @@ namespace MinhasFinancas.Application.Services
             }
             catch (Exception ex)
             {
-                return CriarErro(ex, "Nao foi possivel excluir a projecao.");
+                return CriarErro(ex, "Não foi possível excluir a projeção.");
             }
         }
 
@@ -286,7 +286,7 @@ namespace MinhasFinancas.Application.Services
             }
             catch (Exception ex)
             {
-                return CriarErro(ex, "Nao foi possivel calcular a projecao.");
+                return CriarErro(ex, "Não foi possível calcular a projeção.");
             }
         }
 
@@ -320,7 +320,7 @@ namespace MinhasFinancas.Application.Services
             }
             catch (Exception ex)
             {
-                return CriarErro(ex, "Nao foi possivel calcular a projecao.");
+                return CriarErro(ex, "Não foi possível calcular a projeção.");
             }
         }
 
@@ -430,7 +430,7 @@ namespace MinhasFinancas.Application.Services
         {
             if (string.IsNullOrWhiteSpace(projecao.Nome))
             {
-                return CriarRetornoValidacao("A projecao precisa ter um nome.", "Informe o nome da projecao.");
+                return CriarRetornoValidacao("A projeção precisa ter um nome.", "Informe o nome da projeção.");
             }
 
             if (projecao.ValorObjetivo <= decimal.Zero)

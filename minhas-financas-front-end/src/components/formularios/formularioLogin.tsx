@@ -29,8 +29,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
-  email: z.string().email("Digite seu email de login."),
-  senha: z.string().nonempty("Digite seu senha."),
+  email: z.string().email("Digite seu e-mail de login."),
+  senha: z.string().nonempty("Digite sua senha."),
 });
 
 export function FormularioLogin({ cardWidth = "w-[500px]" }) {
@@ -88,7 +88,7 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
       <CardHeader className="flex justify-center">
         <Image
           src="/assets/img/logo/logo02.webp"
-          alt=""
+          alt="Logo Minhas Finanças"
           width={100}
           height={100}
           className="mx-auto"
@@ -108,7 +108,7 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>E-mail</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="nome@exemplo.com"
@@ -142,26 +142,26 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
           </form>
         </Form>
         <div className="flex flex-col justify-center">
-          <span className="text-center text-gray-500 text-sm whitespace-nowrap mt-2">
+          <span className="mt-2 whitespace-nowrap text-center text-sm text-gray-500">
             <Link href="/cadastro" passHref>
-              <Button variant="link">Esqueceu sua senha?</Button>
+              <Button variant="link">Criar conta</Button>
             </Link>
           </span>
 
-          <div className="flex justify-between mt-5">
+          <div className="mt-5 flex justify-between">
             <div className="flex items-center">
               <Separator className="flex-grow" />
-              <span className="mx-2 text-gray-500 text-sm whitespace-nowrap">
+              <span className="mx-2 whitespace-nowrap text-sm text-gray-500">
                 OU CONTINUE COM
               </span>
               <Separator className="flex-grow" />
             </div>
           </div>
 
-          <div className="flex justify-evenly mt-5 mb-5">
+          <div className="mb-5 mt-5 flex justify-evenly">
             <Button variant="outline" className="w-40">
               <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
+                className="h-6 w-6 text-gray-800 dark:text-white"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -178,7 +178,7 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
             </Button>
             <Button variant="outline" className="w-40">
               <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
+                className="h-6 w-6 text-gray-800 dark:text-white"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -195,15 +195,15 @@ export function FormularioLogin({ cardWidth = "w-[500px]" }) {
             </Button>
           </div>
 
-          <span className="text-center mx-2 text-gray-500 text-sm whitespace-nowrap">
+          <span className="mx-2 whitespace-nowrap text-center text-sm text-gray-500">
             Ainda não tem conta?{" "}
             <Link href="/cadastro" passHref>
-              <Button variant="link">Click aqui e Cadastre-se</Button>
+              <Button variant="link">Clique aqui e cadastre-se</Button>
             </Link>
           </span>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-row"></CardFooter>
+      <CardFooter className="flex flex-row" />
     </div>
   );
 }

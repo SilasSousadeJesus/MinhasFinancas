@@ -319,7 +319,7 @@ export function LancamentosManager() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel carregar os lancamentos.");
+        setErrorMessage("Não foi possível carregar os lançamentos.");
       }
     } finally {
       if (requisicaoAtual === ultimaRequisicaoRef.current) {
@@ -461,7 +461,7 @@ export function LancamentosManager() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel excluir o lancamento.");
+        setErrorMessage("Não foi possível excluir o lançamento.");
       }
     } finally {
       setIsDeleting(false);
@@ -489,7 +489,7 @@ export function LancamentosManager() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel efetivar o lancamento.");
+        setErrorMessage("Não foi possível efetivar o lançamento.");
       }
     } finally {
       setEfetivandoId(null);
@@ -510,10 +510,10 @@ export function LancamentosManager() {
             <CardHeader className="px-0 pt-0">
               <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <CardTitle className="text-3xl">Lancamentos</CardTitle>
+                  <CardTitle className="text-3xl">Lançamentos</CardTitle>
                   <CardDescription className="mt-2 max-w-2xl text-base">
-                    Visualize, ajuste e remova os lancamentos criados. Essa tela fecha o
-                    ciclo iniciado no modal de novo lancamento.
+                    Visualize, ajuste e remova os lançamentos criados. Esta tela fecha o
+                    ciclo iniciado no modal de novo lançamento.
                   </CardDescription>
                 </div>
                 <NovoLancamentoModal onCreated={carregarLancamentos} />
@@ -524,25 +524,25 @@ export function LancamentosManager() {
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <Card>
               <CardHeader className="pb-3">
-                <CardDescription>Total filtrado de lancamentos</CardDescription>
+                <CardDescription>Total filtrado de lançamentos</CardDescription>
                 <CardTitle className="text-3xl">{totalItens}</CardTitle>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader className="pb-3">
-                <CardDescription>Receitas na pagina</CardDescription>
+                <CardDescription>Receitas na página</CardDescription>
                 <CardTitle className="text-3xl">{formatCurrency(resumo.receitas)}</CardTitle>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader className="pb-3">
-                <CardDescription>Despesas na pagina</CardDescription>
+                <CardDescription>Despesas na página</CardDescription>
                 <CardTitle className="text-3xl">{formatCurrency(resumo.despesas)}</CardTitle>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader className="pb-3">
-                <CardDescription>Saldo liquido da pagina</CardDescription>
+                <CardDescription>Saldo líquido da página</CardDescription>
                 <CardTitle className="text-3xl">
                   {formatCurrency(resumo.receitas - resumo.despesas)}
                 </CardTitle>
@@ -566,7 +566,7 @@ export function LancamentosManager() {
             <CardHeader>
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <CardTitle>Lista de lancamentos</CardTitle>
+                  <CardTitle>Lista de lançamentos</CardTitle>
                   <CardDescription>
                     Filtre, edite e exclua os itens ja registrados no sistema.
                   </CardDescription>
@@ -584,12 +584,12 @@ export function LancamentosManager() {
                       Pesquisa
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      Local para encontrar rapidamente um lancamento especifico.
+                      Local para encontrar rapidamente um lançamento específico.
                     </p>
                   </div>
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     <div className="space-y-2 xl:col-span-2">
-                      <p className="text-sm font-medium">Descricao</p>
+                      <p className="text-sm font-medium">Descrição</p>
                       <Input
                         type="text"
                         value={filtrosEmEdicao.buscaDescricao}
@@ -605,10 +605,10 @@ export function LancamentosManager() {
                 <section className="space-y-4">
                   <div className="space-y-1">
                     <h3 className="text-sm font-semibold tracking-wide text-foreground">
-                      Classificacao
+                      Classificação
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      Filtros ligados a natureza e ao enquadramento do lancamento.
+                      Filtros ligados à natureza e ao enquadramento do lançamento.
                     </p>
                   </div>
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
@@ -709,10 +709,10 @@ export function LancamentosManager() {
                         }}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Todos os cartoes" />
+                          <SelectValue placeholder="Todos os cartões" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">Todos os cartoes</SelectItem>
+                          <SelectItem value="all">Todos os cartões</SelectItem>
                           {cartoesDisponiveis.map((cartao) => (
                             <SelectItem key={cartao.id} value={cartao.id}>
                               {cartao.nome}
@@ -727,7 +727,7 @@ export function LancamentosManager() {
                 <section className="space-y-4">
                   <div className="space-y-1">
                     <h3 className="text-sm font-semibold tracking-wide text-foreground">
-                      Periodos
+                      Períodos
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       Escolha com clareza qual janela temporal deseja analisar.
@@ -736,7 +736,7 @@ export function LancamentosManager() {
 
                   <div className="grid gap-6 xl:grid-cols-3">
                     <div className="space-y-3">
-                      <h4 className="text-sm font-medium text-foreground">Periodo do lancamento</h4>
+                      <h4 className="text-sm font-medium text-foreground">Período do lançamento</h4>
                       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
                         <div className="space-y-2">
                           <p className="text-sm font-medium">Inicial</p>
@@ -762,7 +762,7 @@ export function LancamentosManager() {
                     </div>
 
                     <div className="space-y-3">
-                      <h4 className="text-sm font-medium text-foreground">Periodo de vencimento</h4>
+                      <h4 className="text-sm font-medium text-foreground">Período de vencimento</h4>
                       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
                         <div className="space-y-2">
                           <p className="text-sm font-medium">Inicial</p>
@@ -788,7 +788,7 @@ export function LancamentosManager() {
                     </div>
 
                     <div className="space-y-3">
-                      <h4 className="text-sm font-medium text-foreground">Periodo de efetivacao</h4>
+                      <h4 className="text-sm font-medium text-foreground">Período de efetivação</h4>
                       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
                         <div className="space-y-2">
                           <p className="text-sm font-medium">Inicial</p>
@@ -818,7 +818,7 @@ export function LancamentosManager() {
                 <section className="space-y-4">
                   <div className="space-y-1">
                     <h3 className="text-sm font-semibold tracking-wide text-foreground">
-                      Ordenacao
+                      Ordenação
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       Defina como a lista deve ser organizada na tela.
@@ -862,7 +862,7 @@ export function LancamentosManager() {
                 <section className="space-y-4">
                   <div className="space-y-1">
                     <h3 className="text-sm font-semibold tracking-wide text-foreground">
-                      Acoes
+                      Ações
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       Aplique ou limpe os filtros mantendo todas as opcoes visiveis.
@@ -884,33 +884,33 @@ export function LancamentosManager() {
 
               {isLoading ? (
                 <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
-                  Carregando lancamentos...
+                  Carregando lançamentos...
                 </div>
               ) : lancamentos.length === 0 ? (
                 <div className="rounded-lg border border-dashed px-6 py-10 text-center">
                   <Plus className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground">
-                    Ainda nao existem lancamentos cadastrados para esta conta.
+                    Ainda não existem lançamentos cadastrados para esta conta.
                   </p>
                 </div>
               ) : totalItens === 0 ? (
                 <div className="rounded-lg border border-dashed px-6 py-10 text-center">
                   <p className="text-sm text-muted-foreground">
-                    Nenhum lancamento encontrado com os filtros atuais.
+                    Nenhum lançamento encontrado com os filtros atuais.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Descricao</TableHead>
+                      <TableHead>Descrição</TableHead>
                       <TableHead>Tipo</TableHead>
                       <TableHead>Categoria</TableHead>
                       <TableHead>Valor</TableHead>
                       <TableHead>Vencimento</TableHead>
                       <TableHead>Efetivacao</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Acoes</TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -920,7 +920,7 @@ export function LancamentosManager() {
                           <div>
                             <p className="font-medium">{lancamento.descricao}</p>
                             <p className="text-xs text-muted-foreground">
-                              Lancado em {formatDate(lancamento.dataLancamento)}
+                              Lançado em {formatDate(lancamento.dataLancamento)}
                             </p>
                           </div>
                         </TableCell>
@@ -978,7 +978,7 @@ export function LancamentosManager() {
               {!isLoading && totalItens > 0 ? (
                 <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm text-muted-foreground">Itens por pagina</span>
+                    <span className="text-sm text-muted-foreground">Itens por página</span>
                     <Select
                       value={String(tamanhoPagina)}
                       onValueChange={(value) => atualizarTamanhoPagina(Number(value))}
@@ -1088,10 +1088,10 @@ export function LancamentosManager() {
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Excluir lancamento</AlertDialogTitle>
+            <AlertDialogTitle>Excluir lançamento</AlertDialogTitle>
             <AlertDialogDescription>
               {deleteTarget
-                ? `Tem certeza que deseja excluir "${deleteTarget.descricao}"? Essa acao nao pode ser desfeita.`
+                ? `Tem certeza que deseja excluir "${deleteTarget.descricao}"? Esta ação não pode ser desfeita.`
                 : ""}
             </AlertDialogDescription>
           </AlertDialogHeader>

@@ -36,14 +36,14 @@ import { Textarea } from "@/components/ui/textarea";
 const formSchema = z.object({
   nomeCartao: z
     .string()
-    .min(2, "Informe o nome do cartao.")
-    .max(20, "O nome do cartao deve ter no maximo 20 caracteres."),
-  instituicao: z.string().min(2, "Informe a instituicao."),
+    .min(2, "Informe o nome do cartão.")
+    .max(20, "O nome do cartão deve ter no máximo 20 caracteres."),
+  instituicao: z.string().min(2, "Informe a instituição."),
   tipo: z.string(),
   bandeira: z.string().min(2, "Informe a bandeira."),
   ultimos4Digitos: z
     .string()
-    .regex(/^\d{4}$/, "Informe exatamente 4 digitos."),
+    .regex(/^\d{4}$/, "Informe exatamente 4 dígitos."),
   diaFechamento: z.string().min(1, "Informe o dia de fechamento."),
   diaVencimento: z.string().min(1, "Informe o dia de vencimento."),
   contaPadraoPagamento: z.string().optional(),
@@ -130,7 +130,7 @@ export function CartaoModal({
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel salvar o cartao.");
+        setErrorMessage("Não foi possível salvar o cartão.");
       }
     } finally {
       setIsSubmitting(false);
@@ -141,9 +141,9 @@ export function CartaoModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{mode === "create" ? "Novo cartao" : "Editar cartao"}</DialogTitle>
+          <DialogTitle>{mode === "create" ? "Novo cartão" : "Editar cartão"}</DialogTitle>
           <DialogDescription>
-            Cadastre e ajuste os cartoes utilizados no controle financeiro.
+            Cadastre e gerencie os cartões utilizados no seu controle financeiro.
           </DialogDescription>
         </DialogHeader>
 
@@ -155,7 +155,7 @@ export function CartaoModal({
                 name="nomeCartao"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome do cartao</FormLabel>
+                    <FormLabel>Nome do cartão</FormLabel>
                     <FormControl>
                       <Input placeholder="Ex: Visa principal" {...field} />
                     </FormControl>
@@ -168,9 +168,9 @@ export function CartaoModal({
                 name="instituicao"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Instituicao</FormLabel>
+                    <FormLabel>Instituição</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: Nubank, Itau" {...field} />
+                      <Input placeholder="Ex: Nubank, Itaú" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -192,8 +192,8 @@ export function CartaoModal({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="0">Credito</SelectItem>
-                        <SelectItem value="1">Debito</SelectItem>
+                        <SelectItem value="0">Crédito</SelectItem>
+                        <SelectItem value="1">Débito</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -218,7 +218,7 @@ export function CartaoModal({
                 name="ultimos4Digitos"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ultimos 4 digitos</FormLabel>
+                    <FormLabel>Últimos 4 dígitos</FormLabel>
                     <FormControl>
                       <Input maxLength={4} placeholder="1234" {...field} />
                     </FormControl>
@@ -234,7 +234,7 @@ export function CartaoModal({
                 name="diaFechamento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dia fechamento</FormLabel>
+                    <FormLabel>Dia de fechamento</FormLabel>
                     <FormControl>
                       <Input placeholder="Ex: 10" {...field} />
                     </FormControl>
@@ -247,7 +247,7 @@ export function CartaoModal({
                 name="diaVencimento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dia vencimento</FormLabel>
+                    <FormLabel>Dia de vencimento</FormLabel>
                     <FormControl>
                       <Input placeholder="Ex: 15" {...field} />
                     </FormControl>
@@ -275,7 +275,7 @@ export function CartaoModal({
               name="contaPadraoPagamento"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Conta padrao pagamento</FormLabel>
+                  <FormLabel>Conta padrão para pagamento</FormLabel>
                   <FormControl>
                     <Input placeholder="Ex: Conta principal" {...field} />
                   </FormControl>
@@ -289,9 +289,9 @@ export function CartaoModal({
               name="descricao"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descricao</FormLabel>
+                  <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Observacoes sobre o cartao" {...field} />
+                    <Textarea placeholder="Observações sobre o cartão" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -309,7 +309,7 @@ export function CartaoModal({
                 Cancelar
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Salvando..." : "Salvar cartao"}
+                {isSubmitting ? "Salvando..." : "Salvar cartão"}
               </Button>
             </DialogFooter>
           </form>

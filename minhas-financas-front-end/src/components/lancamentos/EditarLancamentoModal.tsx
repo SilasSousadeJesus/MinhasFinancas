@@ -56,10 +56,10 @@ const formSchema = z
   .object({
     tipo: z.string(),
     valor: z.coerce.number().positive("Informe um valor maior que zero."),
-    descricao: z.string().min(2, "Informe uma descricao."),
+    descricao: z.string().min(2, "Informe uma descrição."),
     observacao: z.string().optional(),
     dataVencimento: z.string().min(1, "Informe a data de vencimento."),
-    dataLancamento: z.string().min(1, "Informe a data de lancamento."),
+    dataLancamento: z.string().min(1, "Informe a data de lançamento."),
     dataEfetivacao: z.string().optional(),
     statusLancamento: z.string(),
     frequenciaLancamento: z.string(),
@@ -76,7 +76,7 @@ const formSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["dataEfetivacao"],
-        message: "Informe a data de efetivacao para lancamentos pagos ou recebidos.",
+        message: "Informe a data de efetivação para lançamentos pagos ou recebidos.",
       });
     }
 
@@ -84,7 +84,7 @@ const formSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["statusLancamento"],
-        message: "Receitas nao podem assumir o status Pago.",
+        message: "Receitas não podem assumir o status Pago.",
       });
     }
 
@@ -92,7 +92,7 @@ const formSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["statusLancamento"],
-        message: "Despesas nao podem assumir o status Recebido.",
+        message: "Despesas não podem assumir o status Recebido.",
       });
     }
   });
@@ -179,7 +179,7 @@ export function EditarLancamentoModal({
         setCategorias(categoriasResponse.dados ?? []);
 
         if (!lancamento) {
-          setErrorMessage("Nao foi possivel carregar o lancamento selecionado.");
+          setErrorMessage("Não foi possível carregar o lançamento selecionado.");
           return;
         }
 
@@ -213,7 +213,7 @@ export function EditarLancamentoModal({
         if (error instanceof ApiError) {
           setErrorMessage(error.message);
         } else {
-          setErrorMessage("Nao foi possivel carregar os dados do lancamento.");
+          setErrorMessage("Não foi possível carregar os dados do lançamento.");
         }
       } finally {
         setIsLoadingData(false);
@@ -346,7 +346,7 @@ export function EditarLancamentoModal({
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel salvar o lancamento.");
+        setErrorMessage("Não foi possível salvar o lançamento.");
       }
     } finally {
       setIsSubmitting(false);
@@ -357,9 +357,9 @@ export function EditarLancamentoModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Editar Lancamento</DialogTitle>
+          <DialogTitle>Editar lançamento</DialogTitle>
           <DialogDescription>
-            Atualize os dados do lancamento selecionado.
+            Atualize os dados do lançamento selecionado.
           </DialogDescription>
         </DialogHeader>
 
@@ -392,7 +392,7 @@ export function EditarLancamentoModal({
                 name="frequenciaLancamento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Frequencia do lancamento</FormLabel>
+                    <FormLabel>Frequência do lançamento</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -408,7 +408,7 @@ export function EditarLancamentoModal({
                           Parcelado
                         </SelectItem>
                         <SelectItem value={FREQUENCIA_DIA_UTIL} disabled>
-                          Dia util
+                          Dia útil
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -437,13 +437,13 @@ export function EditarLancamentoModal({
                 name="descricao"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descricao</FormLabel>
+                    <FormLabel>Descrição</FormLabel>
                     <FormControl>
                       <Input
                         placeholder={
                           tipoSelecionado === TIPO_DESPESA
-                            ? "Ex: Mercado, aluguel, farmacia"
-                            : "Ex: Salario, freelance, comissao"
+                            ? "Ex: Mercado, aluguel, farmácia"
+                            : "Ex: Salário, freelance, comissão"
                         }
                         {...field}
                       />
@@ -459,10 +459,10 @@ export function EditarLancamentoModal({
               name="observacao"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Observacao</FormLabel>
+                  <FormLabel>Observação</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Observacoes adicionais sobre o lancamento"
+                      placeholder="Observações adicionais sobre o lançamento"
                       {...field}
                     />
                   </FormControl>
@@ -490,7 +490,7 @@ export function EditarLancamentoModal({
                 name="dataLancamento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Data do lancamento</FormLabel>
+                    <FormLabel>Data do lançamento</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -506,7 +506,7 @@ export function EditarLancamentoModal({
                 name="statusLancamento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status do lancamento</FormLabel>
+                    <FormLabel>Status do lançamento</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -533,7 +533,7 @@ export function EditarLancamentoModal({
                 name="dataEfetivacao"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Data de efetivacao</FormLabel>
+                    <FormLabel>Data de efetivação</FormLabel>
                     <FormControl>
                       <Input
                         type="date"
@@ -589,7 +589,7 @@ export function EditarLancamentoModal({
                 name="cartaoId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cartao</FormLabel>
+                    <FormLabel>Cartão</FormLabel>
                     <Select
                       onValueChange={(value) => {
                         field.onChange(value);
@@ -601,11 +601,11 @@ export function EditarLancamentoModal({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um cartao" />
+                          <SelectValue placeholder="Selecione um cartão" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={SELECT_NONE}>Nao utilizado agora</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Não utilizar agora</SelectItem>
                         {cartoes.map((cartao) => (
                           <SelectItem key={cartao.id} value={cartao.id}>
                             {cartao.nomeCartao} - {cartao.instituicao}
@@ -614,7 +614,7 @@ export function EditarLancamentoModal({
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-muted-foreground">
-                      Ao escolher um cartao, a conta fica avulsa automaticamente.
+                      Ao escolher um cartão, a conta fica avulsa automaticamente.
                     </p>
                     <FormMessage />
                   </FormItem>
@@ -696,7 +696,7 @@ export function EditarLancamentoModal({
                 Cancelar
               </Button>
               <Button type="submit" disabled={isSubmitting || isLoadingData}>
-                {isSubmitting ? "Salvando..." : "Salvar alteracoes"}
+                {isSubmitting ? "Salvando..." : "Salvar alterações"}
               </Button>
             </DialogFooter>
           </form>

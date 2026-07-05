@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Card,
   CardHeader,
   CardTitle,
   CardDescription,
@@ -30,14 +29,16 @@ import { useState } from "react";
 
 const FormSchema = z
   .object({
-    nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
-    email: z.string().email("E-mail inválido"),
-    senha: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
-    confirmacaoSenha: z.string().min(6, "Confirmação de senha é obrigatória"),
+    nome: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
+    email: z.string().email("E-mail inválido."),
+    senha: z.string().min(6, "A senha deve ter pelo menos 6 caracteres."),
+    confirmacaoSenha: z
+      .string()
+      .min(6, "A confirmação de senha é obrigatória."),
   })
   .refine((data) => data.senha === data.confirmacaoSenha, {
-    message: "As senhas não coincidem",
-    path: ["confirmacaoSenha"], // Define o campo onde o erro será mostrado
+    message: "As senhas não coincidem.",
+    path: ["confirmacaoSenha"],
   });
 
 export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
@@ -62,7 +63,9 @@ export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
       setErrorMessage("");
       setSuccessMessage("");
       await registerUser(data);
-      setSuccessMessage("Cadastro realizado com sucesso. Redirecionando para o login...");
+      setSuccessMessage(
+        "Cadastro realizado com sucesso. Redirecionando para o login..."
+      );
       form.reset();
       window.setTimeout(() => {
         router.push("/");
@@ -71,7 +74,9 @@ export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Não foi possível concluir o cadastro agora. Tente novamente.");
+        setErrorMessage(
+          "Não foi possível concluir o cadastro agora. Tente novamente."
+        );
       }
     } finally {
       setIsSubmitting(false);
@@ -79,7 +84,7 @@ export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
   }
 
   return (
-    <div className={`${cardWidth} flex flex-col justify-center  border-white`}>
+    <div className={`${cardWidth} flex flex-col justify-center border-white`}>
       <CardHeader className="flex justify-center">
         <CardTitle className="text-center">Cadastre-se</CardTitle>
         <CardDescription className="text-center">
@@ -110,7 +115,7 @@ export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>E-mail</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="nome@exemplo.com"
@@ -140,7 +145,7 @@ export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
               name="confirmacaoSenha"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirmação da Senha</FormLabel>
+                  <FormLabel>Confirmação da senha</FormLabel>
                   <FormControl>
                     <Input placeholder="*********" {...field} type="password" />
                   </FormControl>
@@ -155,20 +160,22 @@ export function FormularioCadastro({ cardWidth = "w-[500px]" }) {
               <p className="text-sm font-medium text-destructive">{errorMessage}</p>
             ) : null}
             {successMessage ? (
-              <p className="text-sm font-medium text-green-600">{successMessage}</p>
+              <p className="text-sm font-medium text-green-600">
+                {successMessage}
+              </p>
             ) : null}
           </form>
         </Form>
-        <div className="flex flex-col justify-center mt-5">
-          <span className="text-center mx-2 text-gray-500 text-sm whitespace-nowrap">
-           Já tem conta?{" "}
+        <div className="mt-5 flex flex-col justify-center">
+          <span className="mx-2 whitespace-nowrap text-center text-sm text-gray-500">
+            Já tem conta?{" "}
             <Link href="/" passHref>
-              <Button variant="link">Click aqui e faça o login</Button>
+              <Button variant="link">Clique aqui e faça login</Button>
             </Link>
           </span>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-row"></CardFooter>
+      <CardFooter className="flex flex-row" />
     </div>
   );
 }

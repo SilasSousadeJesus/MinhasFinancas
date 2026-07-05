@@ -55,8 +55,8 @@ const contaSchema = z.object({
 const cartaoSchema = z.object({
   nomeCartao: z
     .string()
-    .min(2, "Informe o nome do cartao.")
-    .max(20, "O nome do cartao deve ter no maximo 20 caracteres."),
+    .min(2, "Informe o nome do cartão.")
+    .max(20, "O nome do cartão deve ter no máximo 20 caracteres."),
   instituicao: z.string().min(2, "Informe a instituicao."),
   tipo: z.string(),
   bandeira: z.string().min(2, "Informe a bandeira."),
@@ -149,7 +149,7 @@ export function GerenciarContasCartoesModal({
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel cadastrar a conta.");
+        setErrorMessage("Não foi possível cadastrar a conta.");
       }
     } finally {
       setIsSubmittingConta(false);
@@ -190,7 +190,7 @@ export function GerenciarContasCartoesModal({
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel cadastrar o cartao.");
+        setErrorMessage("Não foi possível cadastrar o cartão.");
       }
     } finally {
       setIsSubmittingCartao(false);
@@ -209,11 +209,11 @@ export function GerenciarContasCartoesModal({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="outline">Gerenciar contas e cartoes</Button>
+        <Button variant="outline">Gerenciar contas e cartões</Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Gerenciar contas e cartoes</DialogTitle>
+          <DialogTitle>Gerenciar contas e cartões</DialogTitle>
           <DialogDescription>
             Escolha o tipo de cadastro que deseja fazer e conclua tudo aqui mesmo.
           </DialogDescription>
@@ -229,7 +229,7 @@ export function GerenciarContasCartoesModal({
         >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="contas">Contas</TabsTrigger>
-            <TabsTrigger value="cartoes">Cartoes</TabsTrigger>
+            <TabsTrigger value="cartoes">Cartões</TabsTrigger>
           </TabsList>
 
           <TabsContent value="contas">
@@ -257,7 +257,7 @@ export function GerenciarContasCartoesModal({
                     name="instituicao"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Instituicao</FormLabel>
+                        <FormLabel>Instituição</FormLabel>
                         <FormControl>
                           <Input placeholder="Ex: Nubank, Itau" {...field} />
                         </FormControl>
@@ -282,7 +282,7 @@ export function GerenciarContasCartoesModal({
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="0">Corrente</SelectItem>
-                            <SelectItem value="1">Poupanca</SelectItem>
+                            <SelectItem value="1">Poupança</SelectItem>
                             <SelectItem value="2">Investimento</SelectItem>
                           </SelectContent>
                         </Select>
@@ -323,9 +323,9 @@ export function GerenciarContasCartoesModal({
                   name="descricao"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Descricao</FormLabel>
+                      <FormLabel>Descrição</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Observacoes sobre a conta" {...field} />
+                        <Textarea placeholder="Observações sobre a conta" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -362,7 +362,7 @@ export function GerenciarContasCartoesModal({
                     name="nomeCartao"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nome do cartao</FormLabel>
+                          <FormLabel>Nome do cartão</FormLabel>
                         <FormControl>
                           <Input placeholder="Ex: Visa principal" {...field} />
                         </FormControl>
@@ -375,7 +375,7 @@ export function GerenciarContasCartoesModal({
                     name="instituicao"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Instituicao</FormLabel>
+                          <FormLabel>Instituição</FormLabel>
                         <FormControl>
                           <Input placeholder="Ex: Nubank, Itau" {...field} />
                         </FormControl>
@@ -399,8 +399,8 @@ export function GerenciarContasCartoesModal({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="0">Credito</SelectItem>
-                            <SelectItem value="1">Debito</SelectItem>
+                            <SelectItem value="0">Crédito</SelectItem>
+                            <SelectItem value="1">Débito</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -496,9 +496,9 @@ export function GerenciarContasCartoesModal({
                   name="descricao"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Descricao</FormLabel>
+                      <FormLabel>Descrição</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Observacoes sobre o cartao" {...field} />
+                        <Textarea placeholder="Observações sobre o cartão" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -516,7 +516,7 @@ export function GerenciarContasCartoesModal({
                     Cancelar
                   </Button>
                   <Button type="submit" disabled={isSubmittingCartao}>
-                    {isSubmittingCartao ? "Salvando..." : "Salvar cartao"}
+                    {isSubmittingCartao ? "Salvando..." : "Salvar cartão"}
                   </Button>
                 </div>
               </form>

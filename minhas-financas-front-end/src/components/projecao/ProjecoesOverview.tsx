@@ -47,7 +47,7 @@ function formatCurrency(value: number) {
 
 function formatMonth(value?: string | null) {
   if (!value) {
-    return "Nao calculada";
+    return "Não calculada";
   }
 
   const [year, month] = value.split("-");
@@ -80,7 +80,7 @@ export function ProjecoesOverview() {
 
   async function carregarProjecoes() {
     if (!session?.usuario.id || !session.token) {
-      setErrorMessage("Sessao invalida. Faca login novamente.");
+      setErrorMessage("Sessão inválida. Faça login novamente.");
       setIsLoading(false);
       return;
     }
@@ -94,7 +94,7 @@ export function ProjecoesOverview() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel carregar as projeçoes.");
+        setErrorMessage("Não foi possível carregar as projeções.");
       }
     } finally {
       setIsLoading(false);
@@ -108,12 +108,12 @@ export function ProjecoesOverview() {
 
   async function handleCriarProjecao() {
     if (!session?.usuario.id || !session.token) {
-      setErrorMessage("Sessao invalida. Faca login novamente.");
+      setErrorMessage("Sessão inválida. Faça login novamente.");
       return;
     }
 
     if (!novoNome.trim()) {
-      setErrorMessage("Informe um nome para a projeçao.");
+      setErrorMessage("Informe um nome para a projeção.");
       return;
     }
 
@@ -130,7 +130,7 @@ export function ProjecoesOverview() {
           valorObjetivo: 0,
           mesesLimite: 60,
           atreladaADespesas: novaAtreladaADespesas,
-          rendas: [{ nome: "Salario principal", valorMensal: 0 }],
+          rendas: [{ nome: "Salário principal", valorMensal: 0 }],
           rendasExtrasMensais: [],
           dividasManuaisMensais: [],
         },
@@ -152,7 +152,7 @@ export function ProjecoesOverview() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel criar a projeçao.");
+        setErrorMessage("Não foi possível criar a projeção.");
       }
     } finally {
       setIsSubmitting(false);
@@ -174,7 +174,7 @@ export function ProjecoesOverview() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel excluir a projeçao.");
+        setErrorMessage("Não foi possível excluir a projeção.");
       }
     } finally {
       setIsSubmitting(false);
@@ -185,16 +185,16 @@ export function ProjecoesOverview() {
     <main className="relative flex-1 px-6 py-8 md:px-8">
       <ProjecaoLoadingOverlay
         visible={isLoading || isSubmitting}
-        message={isLoading ? "Carregando projeçoes..." : "Salvando projeçao..."}
+        message={isLoading ? "Carregando projeções..." : "Salvando projeção..."}
       />
 
       <div className="mx-auto max-w-7xl space-y-6">
         <Card className="border-0 shadow-none">
           <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-3xl">Projeçoes</CardTitle>
+            <CardTitle className="text-3xl">Projeções</CardTitle>
             <CardDescription className="mt-2 max-w-3xl text-base">
-              Crie cenarios independentes para simular objetivos diferentes e abra cada card
-              para editar os dados completos da projecao.
+              Crie cenários independentes para simular objetivos diferentes e abra cada card
+              para editar os dados completos da projeção.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -202,7 +202,7 @@ export function ProjecoesOverview() {
         <div className="flex justify-end">
           <Button onClick={() => setCreateDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Criar projeçoes
+            Criar projeções
           </Button>
         </div>
 
@@ -222,15 +222,15 @@ export function ProjecoesOverview() {
           <Card>
             <CardContent className="flex min-h-[220px] flex-col items-center justify-center gap-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-xl font-semibold">Nenhuma projeçao criada</h2>
+                <h2 className="text-xl font-semibold">Nenhuma projeção criada</h2>
                 <p className="max-w-xl text-sm text-muted-foreground">
-                  Crie sua primeira projeçao para acompanhar quando cada objetivo pode
-                  ser alcancado com base nas suas rendas e nos lancamentos ja existentes.
+                  Crie sua primeira projeção para acompanhar quando cada objetivo pode
+                  ser alcançado com base nas suas rendas e nos lançamentos já existentes.
                 </p>
               </div>
               <Button onClick={() => setCreateDialogOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
-                Criar primeira projeçao
+                Criar primeira projeção
               </Button>
             </CardContent>
           </Card>
@@ -246,7 +246,7 @@ export function ProjecoesOverview() {
                     <div className="space-y-1">
                       <CardTitle className="text-2xl">{projecao.nome}</CardTitle>
                       <CardDescription>
-                        Inicio em {formatMonth(projecao.dataInicial.slice(0, 7))}
+                        Início em {formatMonth(projecao.dataInicial.slice(0, 7))}
                       </CardDescription>
                     </div>
                     <Button
@@ -281,7 +281,7 @@ export function ProjecoesOverview() {
                     <div className="flex items-center justify-between">
                       <span>Atrelada a despesas</span>
                       <span className="font-medium text-foreground">
-                        {projecao.atreladaADespesas ? "Sim" : "Nao"}
+                        {projecao.atreladaADespesas ? "Sim" : "Não"}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -299,13 +299,13 @@ export function ProjecoesOverview() {
                           ? projecao.resultadoAtual.objetivoAlcancado
                             ? `Atinge em ${formatMonth(projecao.resultadoAtual.mesObjetivo)}`
                             : `Falta ${formatCurrency(projecao.resultadoAtual.valorRestanteParaObjetivo)}`
-                          : "Complete a configuraçao"}
+                          : "Complete a configuração"}
                       </span>
                     </div>
                   </div>
 
                   <Button asChild className="w-full">
-                    <Link href={`/projecao/${projecao.id}`}>Abrir projeçao</Link>
+                    <Link href={`/projecao/${projecao.id}`}>Abrir projeção</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -317,7 +317,7 @@ export function ProjecoesOverview() {
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Nova projeçao</DialogTitle>
+            <DialogTitle>Nova projeção</DialogTitle>
             <DialogDescription>
               Crie o card agora e depois configure rendas, objetivo e acumulado na tela detalhada.
             </DialogDescription>
@@ -325,11 +325,11 @@ export function ProjecoesOverview() {
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Nome da projeçao</label>
+              <label className="text-sm font-medium">Nome da projeção</label>
               <Input
                 value={novoNome}
                 onChange={(event) => setNovoNome(event.target.value)}
-                placeholder="Ex: Reserva de emergencia, carro, viagem"
+                placeholder="Ex: reserva de emergência, carro, viagem"
               />
             </div>
 
@@ -337,7 +337,7 @@ export function ProjecoesOverview() {
               <div className="space-y-1">
                 <p className="text-sm font-medium">Atrelada a despesas</p>
                 <p className="text-xs text-muted-foreground">
-                  Se desligar, a coluna de dividas sera preenchida manualmente na tabela.
+                  Se desligar, a coluna de dívidas será preenchida manualmente na tabela.
                 </p>
               </div>
               <Switch
@@ -352,7 +352,7 @@ export function ProjecoesOverview() {
               Cancelar
             </Button>
             <Button type="button" onClick={handleCriarProjecao} disabled={isSubmitting}>
-              {isSubmitting ? "Criando..." : "Criar projeçoes"}
+              {isSubmitting ? "Criando..." : "Criar projeções"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -361,9 +361,9 @@ export function ProjecoesOverview() {
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Excluir projeçao</AlertDialogTitle>
+            <AlertDialogTitle>Excluir projeção</AlertDialogTitle>
             <AlertDialogDescription>
-              Essa acao remove a projeçao e todas as rendas vinculadas a ela.
+              Esta ação remove a projeção e todas as rendas vinculadas a ela.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

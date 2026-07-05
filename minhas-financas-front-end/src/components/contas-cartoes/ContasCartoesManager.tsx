@@ -61,7 +61,7 @@ function getTipoContaLabel(tipo: number) {
     case 0:
       return "Corrente";
     case 1:
-      return "Poupanca";
+      return "Poupança";
     case 2:
       return "Investimento";
     default:
@@ -72,9 +72,9 @@ function getTipoContaLabel(tipo: number) {
 function getTipoCartaoLabel(tipo: number) {
   switch (tipo) {
     case 0:
-      return "Credito";
+      return "Crédito";
     case 1:
-      return "Debito";
+      return "Débito";
     default:
       return "Outro";
   }
@@ -134,7 +134,7 @@ export function ContasCartoesManager() {
         mensagensErro.push(
           contasResponse.reason instanceof ApiError
             ? `Contas: ${contasResponse.reason.message}`
-            : "Contas: nao foi possivel carregar."
+            : "Contas: não foi possível carregar."
         );
       }
 
@@ -144,14 +144,14 @@ export function ContasCartoesManager() {
         setCartoes([]);
         mensagensErro.push(
           cartoesResponse.reason instanceof ApiError
-            ? `Cartoes: ${cartoesResponse.reason.message}`
-            : "Cartoes: nao foi possivel carregar."
+            ? `Cartões: ${cartoesResponse.reason.message}`
+            : "Cartões: não foi possível carregar."
         );
       }
 
       setErrorMessage(mensagensErro.join(" "));
     } catch {
-      setErrorMessage("Nao foi possivel carregar contas e cartoes.");
+      setErrorMessage("Não foi possível carregar contas e cartões.");
     } finally {
       setIsLoading(false);
     }
@@ -217,7 +217,7 @@ export function ContasCartoesManager() {
 
     if (cartaoModalMode === "create") {
       await cadastrarCartao({ ...payload, usuarioId: session.usuario.id }, session.token);
-      setSuccessMessage("Cartao criado com sucesso.");
+      setSuccessMessage("Cartão criado com sucesso.");
     } else if (selectedCartao) {
       await editarCartao(
         session.usuario.id,
@@ -225,7 +225,7 @@ export function ContasCartoesManager() {
         { ...payload, usuarioId: session.usuario.id },
         session.token
       );
-      setSuccessMessage("Cartao atualizado com sucesso.");
+      setSuccessMessage("Cartão atualizado com sucesso.");
     }
 
     await carregarDados();
@@ -242,10 +242,10 @@ export function ContasCartoesManager() {
 
       if (deleteTarget.kind === "conta") {
         await deletarConta(session.usuario.id, deleteTarget.item.id, session.token);
-        setSuccessMessage("Conta excluida com sucesso.");
+        setSuccessMessage("Conta excluída com sucesso.");
       } else {
         await deletarCartao(session.usuario.id, deleteTarget.item.id, session.token);
-        setSuccessMessage("Cartao excluido com sucesso.");
+        setSuccessMessage("Cartão excluído com sucesso.");
       }
 
       setDeleteTarget(null);
@@ -254,7 +254,7 @@ export function ContasCartoesManager() {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel concluir a exclusao.");
+        setErrorMessage("Não foi possível concluir a exclusão.");
       }
     } finally {
       setIsDeleting(false);
@@ -294,14 +294,14 @@ export function ContasCartoesManager() {
             <CardHeader className="px-0 pt-0">
               <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <CardTitle className="text-3xl">Contas e Cartoes</CardTitle>
+                  <CardTitle className="text-3xl">Contas e cartões</CardTitle>
                   <CardDescription className="mt-2 max-w-2xl text-base">
-                    Cadastre e mantenha as contas e cartoes que estruturam o restante do fluxo financeiro.
+                    Cadastre e gerencie as contas e os cartões utilizados no seu controle financeiro.
                   </CardDescription>
                 </div>
                 <Button onClick={activeTab === "contas" ? abrirNovaConta : abrirNovoCartao}>
                   <Plus className="mr-2 h-4 w-4" />
-                  {activeTab === "contas" ? "Nova conta" : "Novo cartao"}
+                  {activeTab === "contas" ? "Nova conta" : "Novo cartão"}
                 </Button>
               </div>
             </CardHeader>
@@ -322,7 +322,7 @@ export function ContasCartoesManager() {
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ActiveTab)} className="space-y-4">
             <TabsList>
               <TabsTrigger value="contas">Contas</TabsTrigger>
-              <TabsTrigger value="cartoes">Cartoes</TabsTrigger>
+              <TabsTrigger value="cartoes">Cartões</TabsTrigger>
             </TabsList>
 
             <TabsContent value="contas" className="space-y-4">
@@ -352,7 +352,7 @@ export function ContasCartoesManager() {
                   <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div>
                       <CardTitle>Lista de contas</CardTitle>
-                      <CardDescription>Gerencie saldos, instituicoes e tipos de conta.</CardDescription>
+                      <CardDescription>Gerencie saldos, instituições e tipos de conta.</CardDescription>
                     </div>
                     <Button variant="outline" onClick={carregarDados}>
                       Atualizar lista
@@ -368,7 +368,7 @@ export function ContasCartoesManager() {
                     <div className="rounded-lg border border-dashed px-6 py-10 text-center">
                       <Landmark className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
                       <p className="text-sm text-muted-foreground">
-                        Ainda nao existem contas cadastradas.
+                        Ainda não existem contas cadastradas.
                       </p>
                     </div>
                   ) : (
@@ -376,11 +376,11 @@ export function ContasCartoesManager() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>Conta</TableHead>
-                          <TableHead>Instituicao</TableHead>
+                          <TableHead>Instituição</TableHead>
                           <TableHead>Tipo</TableHead>
                           <TableHead>Saldo</TableHead>
                           <TableHead>Investimento</TableHead>
-                          <TableHead className="text-right">Acoes</TableHead>
+                          <TableHead className="text-right">Ações</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -389,7 +389,7 @@ export function ContasCartoesManager() {
                             <TableCell>
                               <div>
                                 <p className="font-medium">{conta.nomeConta}</p>
-                                <p className="text-xs text-muted-foreground">{conta.descricao || "Sem descricao"}</p>
+                                <p className="text-xs text-muted-foreground">{conta.descricao || "Sem descrição"}</p>
                               </div>
                             </TableCell>
                             <TableCell>{conta.instituicao}</TableCell>
@@ -426,19 +426,19 @@ export function ContasCartoesManager() {
               <div className="grid gap-4 md:grid-cols-3">
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardDescription>Total de cartoes</CardDescription>
+                    <CardDescription>Total de cartões</CardDescription>
                     <CardTitle className="text-3xl">{cartoes.length}</CardTitle>
                   </CardHeader>
                 </Card>
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardDescription>Cartoes de credito</CardDescription>
+                    <CardDescription>Cartões de crédito</CardDescription>
                     <CardTitle className="text-3xl">{resumoCartoes.credito}</CardTitle>
                   </CardHeader>
                 </Card>
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardDescription>Saldo total dos cartoes</CardDescription>
+                    <CardDescription>Saldo total dos cartões</CardDescription>
                     <CardTitle className="text-3xl">{formatCurrency(resumoCartoes.saldo)}</CardTitle>
                   </CardHeader>
                 </Card>
@@ -448,8 +448,8 @@ export function ContasCartoesManager() {
                 <CardHeader>
                   <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div>
-                      <CardTitle>Lista de cartoes</CardTitle>
-                      <CardDescription>Gerencie bandeira, vencimento e demais dados do cartao.</CardDescription>
+                      <CardTitle>Lista de cartões</CardTitle>
+                      <CardDescription>Gerencie bandeira, vencimento e demais dados do cartão.</CardDescription>
                     </div>
                     <Button variant="outline" onClick={carregarDados}>
                       Atualizar lista
@@ -459,25 +459,25 @@ export function ContasCartoesManager() {
                 <CardContent>
                   {isLoading ? (
                     <div className="rounded-lg border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">
-                      Carregando cartoes...
+                      Carregando cartões...
                     </div>
                   ) : cartoes.length === 0 ? (
                     <div className="rounded-lg border border-dashed px-6 py-10 text-center">
                       <CreditCard className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
                       <p className="text-sm text-muted-foreground">
-                        Ainda nao existem cartoes cadastrados.
+                        Ainda não existem cartões cadastrados.
                       </p>
                     </div>
                   ) : (
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Cartao</TableHead>
-                          <TableHead>Instituicao</TableHead>
+                          <TableHead>Cartão</TableHead>
+                          <TableHead>Instituição</TableHead>
                           <TableHead>Tipo</TableHead>
                           <TableHead>Bandeira</TableHead>
                           <TableHead>Fechamento / Venc.</TableHead>
-                          <TableHead className="text-right">Acoes</TableHead>
+                          <TableHead className="text-right">Ações</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -546,10 +546,10 @@ export function ContasCartoesManager() {
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusao</AlertDialogTitle>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
               {deleteTarget
-                ? `Tem certeza que deseja excluir ${deleteTarget.kind === "conta" ? "a conta" : "o cartao"} "${getDeleteTargetName(deleteTarget)}"?`
+                ? `Tem certeza que deseja excluir ${deleteTarget.kind === "conta" ? "a conta" : "o cartão"} "${getDeleteTargetName(deleteTarget)}"?`
                 : ""}
             </AlertDialogDescription>
           </AlertDialogHeader>

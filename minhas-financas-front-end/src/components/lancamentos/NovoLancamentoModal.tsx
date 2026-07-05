@@ -59,10 +59,10 @@ const formSchema = z
   .object({
     tipo: z.string(),
     valor: z.coerce.number().positive("Informe um valor maior que zero."),
-    descricao: z.string().min(2, "Informe uma descricao."),
+    descricao: z.string().min(2, "Informe uma descrição."),
     observacao: z.string().optional(),
     dataVencimento: z.string().min(1, "Informe a data de vencimento."),
-    dataLancamento: z.string().min(1, "Informe a data de lancamento."),
+    dataLancamento: z.string().min(1, "Informe a data de lançamento."),
     frequenciaLancamento: z.string(),
     quantidadeParcelas: z.coerce.number().nullable().optional(),
     numeroDiaUtil: z.coerce.number().nullable().optional(),
@@ -90,7 +90,7 @@ const formSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["numeroDiaUtil"],
-        message: "Informe um numero de dia util maior que zero.",
+        message: "Informe um número de dia útil maior que zero.",
       });
     }
   });
@@ -103,13 +103,13 @@ function getToday() {
 
 function getDataVencimentoLabel(frequencia: string) {
   return frequencia === FREQUENCIA_DIA_UTIL
-    ? "Data inicial da programacao"
+    ? "Data inicial da programação"
     : "Data de vencimento";
 }
 
 function getDataVencimentoHint(frequencia: string) {
   return frequencia === FREQUENCIA_DIA_UTIL
-    ? "O sistema usa esta data apenas como mes inicial e calcula automaticamente o N-esimo dia util de cada mes."
+    ? "O sistema usa esta data apenas como mês inicial e calcula automaticamente o N-ésimo dia útil de cada mês."
     : "";
 }
 
@@ -169,7 +169,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
         if (error instanceof ApiError) {
           setErrorMessage(error.message);
         } else {
-          setErrorMessage("Nao foi possivel carregar os dados do lancamento.");
+          setErrorMessage("Não foi possível carregar os dados do lançamento.");
         }
       } finally {
         setIsLoadingData(false);
@@ -230,7 +230,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
 
   async function onSubmit(values: FormValues) {
     if (!session?.usuario.id || !session.token) {
-      setErrorMessage("Sessao invalida. Faca login novamente.");
+      setErrorMessage("Sessão inválida. Faça login novamente.");
       return;
     }
 
@@ -297,7 +297,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel cadastrar o lancamento.");
+        setErrorMessage("Não foi possível cadastrar o lançamento.");
       }
     } finally {
       setIsSubmitting(false);
@@ -307,13 +307,13 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">Novo Lancamento</Button>
+        <Button variant="default">Novo lançamento</Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Novo Lancamento</DialogTitle>
+          <DialogTitle>Novo lançamento</DialogTitle>
           <DialogDescription>
-            Primeiro fluxo de lancamento simples para receita e despesa.
+            Primeiro fluxo de lançamento simples para receita e despesa.
           </DialogDescription>
         </DialogHeader>
 
@@ -346,7 +346,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 name="frequenciaLancamento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Frequencia do lancamento</FormLabel>
+                    <FormLabel>Frequência do lançamento</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -362,7 +362,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                           Parcelado
                         </SelectItem>
                         <SelectItem value={FREQUENCIA_DIA_UTIL}>
-                          Dia util
+                          Dia útil
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -392,7 +392,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                       />
                     </FormControl>
                     <p className="text-xs text-muted-foreground">
-                      O sistema vai gerar todas as parcelas mensalmente de uma vez.
+                      O sistema vai gerar todas as parcelas mensais de uma única vez.
                     </p>
                     <FormMessage />
                   </FormItem>
@@ -406,7 +406,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 name="numeroDiaUtil"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Numero do dia util</FormLabel>
+                    <FormLabel>Número do dia útil</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -420,7 +420,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                       />
                     </FormControl>
                     <p className="text-xs text-muted-foreground">
-                      Exemplo: 5 para gerar sempre no 5o dia util de cada mes.
+                      Exemplo: 5 para gerar sempre no 5º dia útil de cada mês.
                     </p>
                     <FormMessage />
                   </FormItem>
@@ -447,13 +447,13 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 name="descricao"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descricao</FormLabel>
+                    <FormLabel>Descrição</FormLabel>
                     <FormControl>
                       <Input
                         placeholder={
                           tipoSelecionado === TIPO_DESPESA
-                            ? "Ex: Mercado, aluguel, farmacia"
-                            : "Ex: Salario, freelance, comissao"
+                            ? "Ex: Mercado, aluguel, farmácia"
+                            : "Ex: Salário, freelance, comissão"
                         }
                         {...field}
                       />
@@ -469,10 +469,10 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
               name="observacao"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Observacao</FormLabel>
+                  <FormLabel>Observação</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Observacoes adicionais sobre o lancamento"
+                      placeholder="Observações adicionais sobre o lançamento"
                       {...field}
                     />
                   </FormControl>
@@ -505,7 +505,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 name="dataLancamento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Data do lancamento</FormLabel>
+                    <FormLabel>Data do lançamento</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -554,7 +554,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 name="cartaoId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cartao</FormLabel>
+                    <FormLabel>Cartão</FormLabel>
                     <Select
                       onValueChange={(value) => {
                         field.onChange(value);
@@ -566,11 +566,11 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um cartao" />
+                          <SelectValue placeholder="Selecione um cartão" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={SELECT_NONE}>Nao utilizado agora</SelectItem>
+                        <SelectItem value={SELECT_NONE}>Não utilizar agora</SelectItem>
                         {cartoes.map((cartao) => (
                           <SelectItem key={cartao.id} value={cartao.id}>
                             {cartao.nomeCartao} - {cartao.instituicao}
@@ -579,7 +579,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-muted-foreground">
-                      Ao escolher um cartao, a conta fica avulsa automaticamente.
+                      Ao escolher um cartão, a conta fica avulsa automaticamente.
                     </p>
                     <FormMessage />
                   </FormItem>
@@ -653,7 +653,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
             <div className="rounded-md border p-4">
               <p className="text-sm font-medium">Status inicial</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Todo novo lancamento nasce como pendente. A efetivacao acontece depois, quando ele for pago ou recebido.
+                Todo novo lançamento nasce como pendente. A efetivação acontece depois, quando ele for pago ou recebido.
               </p>
             </div>
 
@@ -668,7 +668,7 @@ export function NovoLancamentoModal({ onCreated }: NovoLancamentoModalProps) {
                 Cancelar
               </Button>
               <Button type="submit" disabled={isSubmitting || isLoadingData}>
-                {isSubmitting ? "Salvando..." : "Salvar lancamento"}
+                {isSubmitting ? "Salvando..." : "Salvar lançamento"}
               </Button>
             </DialogFooter>
           </form>

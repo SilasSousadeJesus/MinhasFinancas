@@ -9,7 +9,6 @@ import {
 } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "../ui/separator";
-import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   ChartTooltipContent,
@@ -25,33 +24,36 @@ import { useAuth } from "@/providers/auth-provider";
 export function Sidebar() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const { session, logout } = useAuth();
+
   useEffect(() => {
     const handleResize = () => {
       setIsSidebarExpanded(window.innerWidth >= 1024);
     };
+
     window.addEventListener("resize", handleResize);
     handleResize();
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   return (
-    <div className="flex min-h-screen ">
+    <div className="flex min-h-screen">
       <aside
         className={`border-r transition-all duration-300 ${
           isSidebarExpanded ? "w-64" : "w-24"
         }`}
       >
-        <div className="flex items-center justify-between h-16 border-b px-4">
+        <div className="flex h-16 items-center justify-between border-b px-4">
           <div className="flex items-center">
-            {/* // LOGO DA EMPRESA */}
-            <LogInIcon className="w-8 h-8" />
+            <LogInIcon className="h-8 w-8" />
             <span
               className={`ml-2 text-xl font-bold ${
                 !isSidebarExpanded && "hidden"
               }`}
             >
-              MinhasFinanças
+              Minhas Finanças
             </span>
           </div>
           <Button
@@ -59,16 +61,16 @@ export function Sidebar() {
             size="icon"
             onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
           >
-            <SquareChevronLeftIcon className="w-5 h-5" />
-            <span className="sr-only">Toggle sidebar</span>
+            <SquareChevronLeftIcon className="h-5 w-5" />
+            <span className="sr-only">Alternar menu lateral</span>
           </Button>
         </div>
-        <nav className="flex flex-col content-center items-center justify-center p-4 space-y-4">
-          <MenuNavegacao isSidebarExpanded={isSidebarExpanded}/>
+        <nav className="flex flex-col items-center justify-center space-y-4 p-4">
+          <MenuNavegacao isSidebarExpanded={isSidebarExpanded} />
         </nav>
         <BotaoTrocaTema />
-        <Separator className="flex-grow mt-[330px]" />
-        <div className="p-4 mt-auto flex items-center justify-between">
+        <Separator className="mt-[330px] flex-grow" />
+        <div className="mt-auto flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
             <Avatar>
               <AvatarImage
@@ -86,7 +88,7 @@ export function Sidebar() {
                 {session?.usuario.nome || "Usuário"}
               </p>
               <p
-                className={`text-xs text-gray-600 truncate max-w-[ch-19] ${
+                className={`max-w-[ch-19] truncate text-xs text-gray-600 ${
                   !isSidebarExpanded && "sr-only"
                 }`}
                 style={{
@@ -100,11 +102,11 @@ export function Sidebar() {
           <Button
             variant="ghost"
             size="icon"
-            className={`rounded-full ${!isSidebarExpanded && "w-8 h-8"}`}
+            className={`rounded-full ${!isSidebarExpanded && "h-8 w-8"}`}
             onClick={logout}
           >
             <PowerIcon
-              className={`w-5 h-5 ${!isSidebarExpanded && "sr-only"}`}
+              className={`h-5 w-5 ${!isSidebarExpanded && "sr-only"}`}
             />
           </Button>
         </div>
@@ -112,7 +114,6 @@ export function Sidebar() {
     </div>
   );
 }
-
 
 function LinechartChart(
   props: JSX.IntrinsicAttributes &

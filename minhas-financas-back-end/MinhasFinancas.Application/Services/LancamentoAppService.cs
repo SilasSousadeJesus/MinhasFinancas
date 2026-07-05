@@ -207,7 +207,7 @@ namespace MinhasFinancas.Application.Services
                 {
                     retorno.Sucesso = false;
                     retorno.HttpStatusCode = HttpStatusCode.BadRequest;
-                    retorno.MensagemSistema = "Mes informado fora do intervalo permitido.";
+                    retorno.MensagemSistema = "Mês informado fora do intervalo permitido.";
                     retorno.MensagemUsuario = "Informe um mes valido.";
                     retorno.Dados = null;
                     return retorno;
@@ -276,7 +276,7 @@ namespace MinhasFinancas.Application.Services
                 retorno.Sucesso = false;
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
-                retorno.MensagemUsuario = "Nao foi possivel carregar o fluxo de caixa simples.";
+                retorno.MensagemUsuario = "Não foi possível carregar o fluxo de caixa simples.";
                 retorno.Dados = null;
                 return retorno;
             }
@@ -292,8 +292,8 @@ namespace MinhasFinancas.Application.Services
 
                 retorno.Sucesso = lancamento != null ? true : false;
                 retorno.HttpStatusCode = lancamento != null ? HttpStatusCode.OK : HttpStatusCode.NotFound;
-                retorno.MensagemSistema = lancamento != null ? "lancamento Encontrado" : "lancamento não Encontrado";
-                retorno.MensagemUsuario = lancamento != null ? "lancamento Encontrado" : "lancamento não Encontrado";
+                retorno.MensagemSistema = lancamento != null ? "Lançamento encontrado" : "Lançamento não encontrado";
+                retorno.MensagemUsuario = lancamento != null ? "Lançamento encontrado" : "Lançamento não encontrado";
                 retorno.Dados = lancamento;
                 return retorno;
             }
@@ -766,7 +766,7 @@ namespace MinhasFinancas.Application.Services
                 retorno.MensagemSistema = $"{ex}";
                 retorno.MensagemUsuario = ex is InvalidOperationException
                     ? ex.Message
-                    : "Nao foi possivel efetivar o lancamento";
+                    : "Não foi possível efetivar o lançamento";
                 retorno.Dados = null;
                 return retorno;
             }

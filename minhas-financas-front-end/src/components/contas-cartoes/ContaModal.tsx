@@ -38,11 +38,11 @@ const formSchema = z.object({
   nomeConta: z
     .string()
     .min(2, "Informe o nome da conta.")
-    .max(20, "O nome da conta deve ter no maximo 20 caracteres."),
+    .max(20, "O nome da conta deve ter no máximo 20 caracteres."),
   instituicao: z
     .string()
-    .min(2, "Informe a instituicao.")
-    .max(20, "A instituicao deve ter no maximo 20 caracteres."),
+    .min(2, "Informe a instituição.")
+    .max(20, "A instituição deve ter no máximo 20 caracteres."),
   tipo: z.string(),
   saldo: z.coerce.number(),
   saldoInvestimento: z.coerce.number(),
@@ -116,7 +116,7 @@ export function ContaModal({
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Nao foi possivel salvar a conta.");
+        setErrorMessage("Não foi possível salvar a conta.");
       }
     } finally {
       setIsSubmitting(false);
@@ -129,7 +129,7 @@ export function ContaModal({
         <DialogHeader>
           <DialogTitle>{mode === "create" ? "Nova conta" : "Editar conta"}</DialogTitle>
           <DialogDescription>
-            Cadastre e ajuste as contas que alimentam os lancamentos e o dashboard.
+            Cadastre e gerencie as contas que alimentam os lançamentos e o dashboard.
           </DialogDescription>
         </DialogHeader>
 
@@ -154,9 +154,9 @@ export function ContaModal({
                 name="instituicao"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Instituicao</FormLabel>
+                    <FormLabel>Instituição</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: Nubank, Itau" {...field} />
+                      <Input placeholder="Ex: Nubank, Itaú" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -179,7 +179,7 @@ export function ContaModal({
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="0">Corrente</SelectItem>
-                        <SelectItem value="1">Poupanca</SelectItem>
+                        <SelectItem value="1">Poupança</SelectItem>
                         <SelectItem value="2">Investimento</SelectItem>
                       </SelectContent>
                     </Select>
@@ -205,7 +205,7 @@ export function ContaModal({
                 name="saldoInvestimento"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Saldo investimento</FormLabel>
+                    <FormLabel>Saldo em investimentos</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.01" {...field} />
                     </FormControl>
@@ -220,9 +220,9 @@ export function ContaModal({
               name="descricao"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descricao</FormLabel>
+                  <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Observacoes sobre a conta" {...field} />
+                    <Textarea placeholder="Observações sobre a conta" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
