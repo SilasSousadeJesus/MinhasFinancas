@@ -51,7 +51,7 @@ const rendaSchema = z.object({
 });
 
 const formSchema = z.object({
-  nome: z.string().min(2, "Informe o nome da projeÃ§Ã£o."),
+  nome: z.string().min(2, "Informe o nome da projeção."),
   dataInicial: z.string().optional(),
   valorAcumuladoInicial: z.coerce.number().min(0, "O acumulado nao pode ser negativo."),
   valorObjetivo: z.coerce.number().min(0, "Informe um valor valido."),
@@ -64,7 +64,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const progressChartConfig = {
   concluido: {
-    label: "ConcluÃ­do",
+    label: "Concluído",
     color: "hsl(150 59% 42%)",
   },
   restante: {
@@ -285,7 +285,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
       const dados = response.dados;
 
       if (!dados) {
-        setErrorMessage("ProjeÃ§Ã£o nÃ£o encontrada.");
+        setErrorMessage("Projeção não encontrada.");
         return;
       }
 
@@ -309,7 +309,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("NÃ£o foi possÃ­vel carregar a projeÃ§Ã£o.");
+        setErrorMessage("Não foi possível carregar a projeção.");
       }
     } finally {
       setIsLoading(false);
@@ -377,7 +377,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
       } else if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("NÃ£o foi possÃ­vel salvar a projeÃ§Ã£o.");
+        setErrorMessage("Não foi possível salvar a projeção.");
       }
     } finally {
       setIsSaving(false);
@@ -410,7 +410,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
       } else if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("NÃ£o foi possÃ­vel calcular a projeÃ§Ã£o.");
+        setErrorMessage("Não foi possível calcular a projeção.");
       }
     } finally {
       setIsCalculating(false);
@@ -425,10 +425,10 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
         visible={isBusy}
         message={
           isLoading
-            ? "Carregando projeÃ§Ã£o..."
+            ? "Carregando projeção..."
             : isCalculating
-              ? "Salvando e gerando projeÃ§Ã£o..."
-              : "Salvando projeÃ§Ã£o..."
+              ? "Salvando e gerando projeção..."
+              : "Salvando projeção..."
         }
       />
 
@@ -440,15 +440,15 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                 <Button asChild variant="ghost" className="w-fit px-0 text-muted-foreground">
                   <Link href="/projecao">
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    Voltar para ProjeÃ§Ãµes
+                    Voltar para Projeções
                   </Link>
                 </Button>
                 <div>
-                  <CardTitle className="text-3xl">ProjeÃ§Ã£o detalhada</CardTitle>
+                  <CardTitle className="text-3xl">Projeção detalhada</CardTitle>
                   <CardDescription className="mt-2 max-w-3xl text-base">
-                    A renda base fica no cadastro da projeÃ§Ã£o. Preencha a renda extra
-                    diretamente em cada mÃªs e, se a projeÃ§Ã£o nÃ£o estiver atrelada a despesas,
-                    edite tambÃ©m as dÃ­vidas mensais.
+                    A renda base fica no cadastro da projeção. Preencha a renda extra
+                    diretamente em cada mês e, se a projeção não estiver atrelada a despesas,
+                    edite também as dívidas mensais.
                   </CardDescription>
                 </div>
               </div>
@@ -461,11 +461,11 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                   disabled={isBusy}
                 >
                   <Save className="mr-2 h-4 w-4" />
-                  {isSaving ? "Salvando..." : "Salvar alteraÃ§Ãµes"}
+                  {isSaving ? "Salvando..." : "Salvar alterações"}
                 </Button>
                 <Button type="button" onClick={handleSalvarECalcular} disabled={isBusy}>
                   <Sparkles className="mr-2 h-4 w-4" />
-                  {isCalculating ? "Calculando..." : "Salvar e gerar ProjeÃ§Ã£o"}
+                  {isCalculating ? "Calculando..." : "Salvar e gerar Projeção"}
                 </Button>
               </div>
             </div>
@@ -504,9 +504,9 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
         <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
           <Card>
             <CardHeader>
-              <CardTitle>Dados da projeÃ§Ã£o</CardTitle>
+              <CardTitle>Dados da projeção</CardTitle>
               <CardDescription>
-                Some salÃ¡rio, aluguel, comissÃ£o e outras entradas recorrentes da projeÃ§Ã£o.
+                Some salário, aluguel, comissão e outras entradas recorrentes da projeção.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -518,9 +518,9 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                       name="nome"
                       render={({ field }) => (
                         <FormItem className="xl:col-span-2">
-                          <FormLabel>Nome da projeÃ§Ã£o</FormLabel>
+                          <FormLabel>Nome da projeção</FormLabel>
                           <FormControl>
-                            <Input placeholder="Ex: Reserva de emergÃªncia" {...field} />
+                            <Input placeholder="Ex: Reserva de emergência" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -531,7 +531,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                       name="dataInicial"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>MÃªs inicial</FormLabel>
+                          <FormLabel>Mês inicial</FormLabel>
                           <FormControl>
                             <Input type="month" {...field} />
                           </FormControl>
@@ -590,8 +590,8 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                           <div className="space-y-1">
                             <FormLabel>Atrelada a despesas</FormLabel>
                             <p className="text-sm text-muted-foreground">
-                              Se estiver em &quot;Sim&quot;, a projeÃ§Ã£o usa as despesas dos lanÃ§amentos.
-                              Se estiver em &quot;NÃ£o&quot;, a coluna de dÃ­vidas fica livre para ediÃ§Ã£o.
+                              Se estiver em &quot;Sim&quot;, a projeção usa as despesas dos lançamentos.
+                              Se estiver em &quot;Não&quot;, a coluna de dívidas fica livre para edição.
                             </p>
                           </div>
                           <FormControl>
@@ -607,7 +607,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                       <div>
                         <h3 className="text-lg font-semibold">Rendas base</h3>
                         <p className="text-sm text-muted-foreground">
-                          Some salÃ¡rio, aluguel, comissÃ£o e outras entradas recorrentes da projeÃ§Ã£o.
+                          Some salário, aluguel, comissão e outras entradas recorrentes da projeção.
                         </p>
                       </div>
                       <Button
@@ -634,7 +634,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                                 <FormLabel>Nome da renda</FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Ex: salÃ¡rio, freelance, aluguel"
+                                    placeholder="Ex: salário, freelance, aluguel"
                                     {...rendaField}
                                   />
                                 </FormControl>
@@ -686,7 +686,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
             <CardHeader>
               <CardTitle>Progresso do objetivo</CardTitle>
               <CardDescription>
-                Uma leitura visual do quanto falta para atingir a meta desta projeÃ§Ã£o.
+                Uma leitura visual do quanto falta para atingir a meta desta projeção.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -699,7 +699,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
                         hideLabel
                         formatter={(value, name) => (
                           <div className="flex min-w-[120px] items-center justify-between gap-3">
-                            <span>{name === "concluido" ? "ConcluÃ­do" : "Restante"}</span>
+                            <span>{name === "concluido" ? "Concluído" : "Restante"}</span>
                             <span className="font-medium">{Number(value).toFixed(1)}%</span>
                           </div>
                         )}
@@ -723,7 +723,7 @@ export function ProjecaoManager({ projecaoId }: ProjecaoManagerProps) {
 
               <div className="space-y-3 rounded-2xl border bg-muted/20 p-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">ConcluÃ­do</span>
+                  <span className="text-muted-foreground">Concluído</span>
                   <span className="font-semibold">{percentualConcluidoAtual.toFixed(1)}%</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
