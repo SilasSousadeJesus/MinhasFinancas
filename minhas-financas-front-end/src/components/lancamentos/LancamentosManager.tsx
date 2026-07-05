@@ -16,6 +16,7 @@ import { buscarCartoes, buscarContas } from "@/services/api/finance";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { NovoLancamentoModal } from "@/components/lancamentos/NovoLancamentoModal";
 import { EditarLancamentoModal } from "@/components/lancamentos/EditarLancamentoModal";
+import { GerenciarParcelamentoModal } from "@/components/lancamentos/GerenciarParcelamentoModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -324,7 +325,9 @@ export function LancamentosManager() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [selectedLancamentoId, setSelectedLancamentoId] = useState<string | null>(null);
+  const [selectedGrupoParcelamentoId, setSelectedGrupoParcelamentoId] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [parcelamentoOpen, setParcelamentoOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<LancamentoResumo | null>(null);
   const [filtrosEmEdicao, setFiltrosEmEdicao] = useState<FiltrosEdicaoLancamentos>(
     criarFiltrosIniciais
@@ -581,6 +584,11 @@ export function LancamentosManager() {
   function abrirEdicao(lancamentoId: string) {
     setSelectedLancamentoId(lancamentoId);
     setEditOpen(true);
+  }
+
+  function abrirGerenciamentoParcelamento(grupoParcelamentoId: string) {
+    setSelectedGrupoParcelamentoId(grupoParcelamentoId);
+    setParcelamentoOpen(true);
   }
 
   async function exportarExcel() {
@@ -1157,6 +1165,17 @@ export function LancamentosManager() {
                             <Button variant="ghost" size="icon" onClick={() => abrirEdicao(lancamento.id)}>
                               <Pencil className="h-4 w-4" />
                             </Button>
+                            {lancamento.grupoParcelamentoId ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  abrirGerenciamentoParcelamento(lancamento.grupoParcelamentoId as string)
+                                }
+                              >
+                                Gerenciar parcelamento
+                              </Button>
+                            ) : null}
                             <Button
                               variant="ghost"
                               size="icon"
@@ -1278,6 +1297,20 @@ export function LancamentosManager() {
           token={session.token}
           onSaved={async () => {
             setSuccessMessage("Lancamento atualizado com sucesso.");
+            await carregarLancamentos();
+          }}
+        />
+      ) : null}
+
+      {session?.usuario.id && session?.token ? (
+        <GerenciarParcelamentoModal
+          grupoParcelamentoId={selectedGrupoParcelamentoId}
+          open={parcelamentoOpen}
+          onOpenChange={setParcelamentoOpen}
+          usuarioId={session.usuario.id}
+          token={session.token}
+          onSaved={async () => {
+            setSuccessMessage("Parcelamento atualizado com sucesso.");
             await carregarLancamentos();
           }}
         />

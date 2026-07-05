@@ -80,3 +80,41 @@ export interface EditarLancamentoPayload {
   categoriaId: string | null;
   subCategoriaId: string | null;
 }
+
+export interface ParcelaDetalhe {
+  id: string;
+  descricao: string;
+  numeroParcela: number;
+  totalParcelas: number;
+  valor: number;
+  dataVencimento: string;
+  statusLancamento: number;
+  dataEfetivacao: string | null;
+}
+
+export interface DetalheParcelamento {
+  grupoParcelamentoId: string;
+  descricaoBase: string;
+  observacao: string;
+  contaId: string | null;
+  cartaoId: string | null;
+  categoriaId: string | null;
+  subCategoriaId: string | null;
+  dataInicialParcelamento: string;
+  totalParcelas: number;
+  possuiParcelasEfetivadas: boolean;
+  quantidadeParcelasEfetivadas: number;
+  tipo: number;
+  parcelas: ParcelaDetalhe[];
+}
+
+export interface EditarParcelamentoEmLotePayload {
+  descricaoBase: string;
+  observacao: string;
+  contaId: string | null;
+  cartaoId: string | null;
+  categoriaId: string | null;
+  subCategoriaId: string | null;
+  dataInicialParcelamento: string;
+  alterarParcelasEfetivadas: boolean;
+}

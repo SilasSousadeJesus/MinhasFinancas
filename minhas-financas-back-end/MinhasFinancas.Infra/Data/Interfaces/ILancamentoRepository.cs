@@ -6,6 +6,8 @@ namespace MinhasFinancas.Infra.Data.Interfaces
     {
         Task<List<Lancamento>> BuscarLancamentosPorCategoriaAsync(string usuarioId);
         Task<List<Lancamento>> BuscarPorPeriodoVencimentoAsync(string usuarioId, DateTime dataInicial, DateTime dataFinal);
+        Task<List<Lancamento>> BuscarPorGrupoParcelamentoAsync(string usuarioId, Guid grupoParcelamentoId);
         Task CadastrarElementosAsync(List<Lancamento> elementos);
+        Task EditarElementosAsync(List<Lancamento> elementos);
     }
 }

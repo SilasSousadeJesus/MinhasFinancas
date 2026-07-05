@@ -227,6 +227,7 @@ ObservaÃ§Ã£o importante:
 - efetivaÃ§Ã£o rÃ¡pida de receitas e despesas
 - suporte a lanÃ§amento Ãºnico, parcelado, fixo e por dia Ãºtil
 - rastreabilidade com agrupadores de parcelamento e programaÃ§Ã£o
+- parcelamentos podem ser gerenciados em grupo por `GrupoParcelamentoId`, com visualizaÃ§Ã£o das parcelas e ediÃ§Ã£o em lote dos campos comuns
 
 ### Dashboard
 

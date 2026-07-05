@@ -62,6 +62,7 @@ Este arquivo não substitui:
 - efetiva rapidamente pagamentos e recebimentos
 - filtra, ordena e pagina a listagem
 - exporta os resultados filtrados para Excel
+- gerencia parcelamentos em lote a partir de qualquer parcela vinculada ao grupo
 
 ### Dados gerados ou mantidos
 - receitas
@@ -88,6 +89,7 @@ Este arquivo não substitui:
 - exportação para Excel respeitando os filtros aplicados e usando a infraestrutura compartilhada de relatórios
 - efetivação rápida
 - lançamentos únicos, parcelados, fixos e por dia útil
+- gestão de parcelamentos por grupo, com visualização das parcelas e recálculo dos vencimentos das parcelas elegíveis
 
 ### Evoluções futuras
 - visualização agrupada de parcelas

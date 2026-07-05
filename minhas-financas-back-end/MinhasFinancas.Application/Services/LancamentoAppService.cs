@@ -341,6 +341,187 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
+        public async Task<RetornoGenerico> BuscarParcelamentoAsync(string usuarioId, Guid grupoParcelamentoId)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+
+                if (!buscaPorUsuario.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorUsuario.Sucesso;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = buscaPorUsuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorUsuario.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var parcelas = await _lancamentoRepository.BuscarPorGrupoParcelamentoAsync(usuarioId, grupoParcelamentoId);
+
+                if (parcelas.Count == 0)
+                {
+                    retorno.Sucesso = false;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = "Grupo de parcelamento não encontrado.";
+                    retorno.MensagemUsuario = "Parcelamento não encontrado.";
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var primeiraParcela = parcelas
+                    .OrderBy(x => x.NumeroParcela ?? int.MaxValue)
+                    .ThenBy(x => x.DataVencimento)
+                    .First();
+
+                var parcelasEfetivadas = parcelas
+                    .Count(x => x.StatusLancamento == EnumStatusLancamento.Pago || x.StatusLancamento == EnumStatusLancamento.Recebido);
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = "Parcelamento carregado com sucesso.";
+                retorno.MensagemUsuario = "Parcelamento carregado com sucesso.";
+                retorno.Dados = new DetalheParcelamentoDTO
+                {
+                    GrupoParcelamentoId = grupoParcelamentoId,
+                    DescricaoBase = ExtrairDescricaoBaseParcelamento(
+                        primeiraParcela.Descricao,
+                        primeiraParcela.NumeroParcela,
+                        primeiraParcela.TotalParcelas),
+                    Observacao = primeiraParcela.Observacao ?? string.Empty,
+                    ContaId = primeiraParcela.ContaId,
+                    CartaoId = primeiraParcela.CartaoId,
+                    CategoriaId = primeiraParcela.CategoriaId,
+                    SubCategoriaId = primeiraParcela.SubCategoriaId,
+                    DataInicialParcelamento = primeiraParcela.DataVencimento.Date,
+                    TotalParcelas = primeiraParcela.TotalParcelas ?? parcelas.Count,
+                    PossuiParcelasEfetivadas = parcelasEfetivadas > 0,
+                    QuantidadeParcelasEfetivadas = parcelasEfetivadas,
+                    Tipo = primeiraParcela.Tipo,
+                    Parcelas = parcelas.Select(x => new ParcelaDetalheDTO
+                    {
+                        Id = x.Id,
+                        Descricao = x.Descricao,
+                        NumeroParcela = x.NumeroParcela ?? 0,
+                        TotalParcelas = x.TotalParcelas ?? parcelas.Count,
+                        Valor = x.Valor,
+                        DataVencimento = x.DataVencimento,
+                        StatusLancamento = x.StatusLancamento,
+                        DataEfetivacao = x.DataEfetivacao,
+                    }).ToList(),
+                };
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possível carregar o parcelamento.";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
+        public async Task<RetornoGenerico> EditarParcelamentoEmLoteAsync(string usuarioId, Guid grupoParcelamentoId, EditarParcelamentoEmLoteDTO dto)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+
+                if (!buscaPorUsuario.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorUsuario.Sucesso;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = buscaPorUsuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorUsuario.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var parcelas = await _lancamentoRepository.BuscarPorGrupoParcelamentoAsync(usuarioId, grupoParcelamentoId);
+
+                if (parcelas.Count == 0)
+                {
+                    retorno.Sucesso = false;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = "Grupo de parcelamento não encontrado.";
+                    retorno.MensagemUsuario = "Parcelamento não encontrado.";
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                ValidarEdicaoLoteParcelamento(dto, parcelas);
+
+                var parcelasAtualizadas = new List<Lancamento>();
+
+                foreach (var parcela in parcelas)
+                {
+                    if (!PodeEditarParcelaDoGrupo(parcela, dto.AlterarParcelasEfetivadas))
+                    {
+                        continue;
+                    }
+
+                    var numeroParcela = parcela.NumeroParcela ?? 0;
+                    var totalParcelas = parcela.TotalParcelas ?? parcelas.Count;
+                    var descricaoBase = dto.DescricaoBase.Trim();
+
+                    parcela.Descricao = $"{descricaoBase} {numeroParcela}/{totalParcelas}";
+                    parcela.Observacao = dto.Observacao?.Trim() ?? string.Empty;
+                    parcela.CategoriaId = dto.CategoriaId;
+                    parcela.SubCategoriaId = dto.SubCategoriaId;
+                    parcela.ContaId = dto.ContaId;
+                    parcela.CartaoId = dto.CartaoId;
+                    parcela.Vinculo = DeterminarVinculo(dto.ContaId, dto.CartaoId);
+                    parcela.DataVencimento = dto.DataInicialParcelamento.Date.AddMonths(numeroParcela - 1);
+
+                    parcelasAtualizadas.Add(parcela);
+                }
+
+                if (parcelasAtualizadas.Count == 0)
+                {
+                    retorno.Sucesso = false;
+                    retorno.HttpStatusCode = HttpStatusCode.BadRequest;
+                    retorno.MensagemSistema = "Nenhuma parcela elegível para atualização.";
+                    retorno.MensagemUsuario = "Nenhuma parcela elegível para atualização.";
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                await _lancamentoRepository.EditarElementosAsync(parcelasAtualizadas);
+
+                var parcelasEfetivadasIgnoradas = parcelas.Any(x =>
+                    !PodeEditarParcelaDoGrupo(x, dto.AlterarParcelasEfetivadas) &&
+                    (x.StatusLancamento == EnumStatusLancamento.Pago || x.StatusLancamento == EnumStatusLancamento.Recebido));
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = "Parcelamento atualizado com sucesso.";
+                retorno.MensagemUsuario = parcelasEfetivadasIgnoradas && !dto.AlterarParcelasEfetivadas
+                    ? "Parcelamento atualizado. Parcelas efetivadas foram preservadas."
+                    : "Parcelamento atualizado com sucesso.";
+                retorno.Dados = null;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = ex is InvalidOperationException
+                    ? HttpStatusCode.BadRequest
+                    : HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = ex is InvalidOperationException
+                    ? ex.Message
+                    : "Não foi possível atualizar o parcelamento.";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
         public async Task<RetornoGenerico> CadastrarElementoAsync(CadastrarLancamentoDTO elementoDTO)
         {
             var retorno = new RetornoGenerico();
@@ -1093,6 +1274,77 @@ namespace MinhasFinancas.Application.Services
                 EnumStatusLancamento.Cancelado => "Cancelado",
                 _ => "Pendente",
             };
+        }
+
+        private static string ExtrairDescricaoBaseParcelamento(string descricao, int? numeroParcela, int? totalParcelas)
+        {
+            if (string.IsNullOrWhiteSpace(descricao) || !numeroParcela.HasValue || !totalParcelas.HasValue)
+            {
+                return descricao?.Trim() ?? string.Empty;
+            }
+
+            var sufixo = $" {numeroParcela.Value}/{totalParcelas.Value}";
+            return descricao.EndsWith(sufixo, StringComparison.OrdinalIgnoreCase)
+                ? descricao[..^sufixo.Length].Trim()
+                : descricao.Trim();
+        }
+
+        private static bool PodeEditarParcelaDoGrupo(Lancamento parcela, bool alterarParcelasEfetivadas)
+        {
+            if (parcela.StatusLancamento == EnumStatusLancamento.Cancelado)
+            {
+                return false;
+            }
+
+            if (parcela.StatusLancamento == EnumStatusLancamento.Pago || parcela.StatusLancamento == EnumStatusLancamento.Recebido)
+            {
+                return alterarParcelasEfetivadas;
+            }
+
+            return parcela.StatusLancamento == EnumStatusLancamento.Pendente;
+        }
+
+        private static void ValidarEdicaoLoteParcelamento(EditarParcelamentoEmLoteDTO dto, List<Lancamento> parcelas)
+        {
+            if (string.IsNullOrWhiteSpace(dto.DescricaoBase))
+            {
+                throw new InvalidOperationException("Informe a descrição base do parcelamento.");
+            }
+
+            if (dto.DataInicialParcelamento == default)
+            {
+                throw new InvalidOperationException("Informe a data inicial do parcelamento.");
+            }
+
+            if (dto.ContaId.HasValue && dto.CartaoId.HasValue)
+            {
+                throw new InvalidOperationException("Selecione apenas conta ou cartão para o parcelamento.");
+            }
+
+            if (dto.SubCategoriaId.HasValue && !dto.CategoriaId.HasValue)
+            {
+                throw new InvalidOperationException("Selecione uma categoria antes da subcategoria.");
+            }
+
+            if (parcelas.Any(x => !x.GrupoParcelamentoId.HasValue))
+            {
+                throw new InvalidOperationException("O grupo informado contém lançamentos sem vínculo de parcelamento.");
+            }
+        }
+
+        private static EnumVinculoLancamento DeterminarVinculo(Guid? contaId, Guid? cartaoId)
+        {
+            if (cartaoId.HasValue && cartaoId != Guid.Empty)
+            {
+                return EnumVinculoLancamento.CartaoCredito;
+            }
+
+            if (contaId.HasValue && contaId != Guid.Empty)
+            {
+                return EnumVinculoLancamento.Conta;
+            }
+
+            return EnumVinculoLancamento.Avulso;
         }
 
     }

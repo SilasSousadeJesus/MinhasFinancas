@@ -1,6 +1,8 @@
 import { apiRequest, downloadRequest } from "./http";
 import {
+  DetalheParcelamento,
   EditarLancamentoPayload,
+  EditarParcelamentoEmLotePayload,
   FiltroLancamentosParams,
   LancamentoResumo,
   RespostaLancamentos,
@@ -114,6 +116,36 @@ export function deletarLancamento(usuarioId: string, lancamentoId: string, token
     method: "DELETE",
     token,
   });
+}
+
+export function buscarParcelamento(
+  usuarioId: string,
+  grupoParcelamentoId: string,
+  token: string
+) {
+  return apiRequest<DetalheParcelamento>(
+    `/Lancamento/Parcelamentos/${usuarioId}/${grupoParcelamentoId}`,
+    {
+      method: "GET",
+      token,
+    }
+  );
+}
+
+export function editarParcelamentoEmLote(
+  usuarioId: string,
+  grupoParcelamentoId: string,
+  payload: EditarParcelamentoEmLotePayload,
+  token: string
+) {
+  return apiRequest<null>(
+    `/Lancamento/Parcelamentos/${usuarioId}/${grupoParcelamentoId}/EditarEmLote`,
+    {
+      method: "PUT",
+      token,
+      body: JSON.stringify(payload),
+    }
+  );
 }
 
 export function exportarLancamentosExcel(

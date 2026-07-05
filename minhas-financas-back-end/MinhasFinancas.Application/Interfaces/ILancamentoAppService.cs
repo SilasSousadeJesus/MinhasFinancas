@@ -12,5 +12,7 @@ namespace MinhasFinancas.Application.Interfaces
         Task<RetornoGenerico> BuscarFluxoCaixaSimplesAsync(string usuarioId, int ano, int mes);
         Task<RetornoGenerico> ExportarLancamentosExcelAsync(string usuarioId, FiltroListagemLancamentoDTO filtro);
         Task<RetornoGenerico> ExportarFluxoCaixaSimplesExcelAsync(string usuarioId, ExportarFluxoCaixaSimplesExcelDTO filtro);
+        Task<RetornoGenerico> BuscarParcelamentoAsync(string usuarioId, Guid grupoParcelamentoId);
+        Task<RetornoGenerico> EditarParcelamentoEmLoteAsync(string usuarioId, Guid grupoParcelamentoId, EditarParcelamentoEmLoteDTO dto);
     }
 }

@@ -194,6 +194,53 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [Authorize]
+        [HttpGet("Parcelamentos/{usuarioId}/{grupoParcelamentoId}")]
+        public async Task<IActionResult> BuscarParcelamento([FromRoute] string usuarioId, [FromRoute] Guid grupoParcelamentoId)
+        {
+            var dados = await _appService.BuscarParcelamentoAsync(usuarioId, grupoParcelamentoId);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+
+        [Authorize]
+        [HttpPut("Parcelamentos/{usuarioId}/{grupoParcelamentoId}/EditarEmLote")]
+        public async Task<IActionResult> EditarParcelamentoEmLote(
+            [FromRoute] string usuarioId,
+            [FromRoute] Guid grupoParcelamentoId,
+            [FromBody] EditarParcelamentoEmLoteDTO editarParcelamento)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var dados = await _appService.EditarParcelamentoEmLoteAsync(usuarioId, grupoParcelamentoId, editarParcelamento);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+
+        [Authorize]
         [HttpGet("BuscarUmLancamento/{usuarioId}/{faturamentoId}")]
         public async Task<IActionResult> BuscarUmCartao([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId)
         {

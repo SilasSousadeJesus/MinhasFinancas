@@ -37,6 +37,18 @@ namespace MinhasFinancas.Infra.Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Lancamento>> BuscarPorGrupoParcelamentoAsync(string usuarioId, Guid grupoParcelamentoId)
+        {
+            return await _context.Set<Lancamento>()
+                .AsNoTracking()
+                .Where(x => x.UsuarioId == usuarioId && x.GrupoParcelamentoId == grupoParcelamentoId)
+                .Include(x => x.Categoria)
+                .Include(x => x.SubCategoria)
+                .OrderBy(x => x.NumeroParcela)
+                .ThenBy(x => x.DataVencimento)
+                .ToListAsync();
+        }
+
         public async Task<List<Lancamento>> BuscarTodosOsElementosAsync(string id)
         {
             return await _context.Set<Lancamento>()
@@ -74,6 +86,8 @@ namespace MinhasFinancas.Infra.Data.Repositories
 
         public async Task EditarElementoAsync(Lancamento elemento)
         {
+            LimparNavegacoesParaPersistencia(elemento);
+
             var existingEntity = _context.Set<Lancamento>().Local.FirstOrDefault(b => b.Id == elemento.Id);
             if (existingEntity != null)
             {
@@ -82,6 +96,33 @@ namespace MinhasFinancas.Infra.Data.Repositories
 
             _context.Set<Lancamento>().Update(elemento);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task EditarElementosAsync(List<Lancamento> elementos)
+        {
+            foreach (var elemento in elementos)
+            {
+                LimparNavegacoesParaPersistencia(elemento);
+
+                var existingEntity = _context.Set<Lancamento>().Local.FirstOrDefault(b => b.Id == elemento.Id);
+                if (existingEntity != null)
+                {
+                    _context.Entry(existingEntity).State = EntityState.Detached;
+                }
+            }
+
+            _context.Set<Lancamento>().UpdateRange(elementos);
+            await _context.SaveChangesAsync();
+        }
+
+        private static void LimparNavegacoesParaPersistencia(Lancamento elemento)
+        {
+            elemento.Conta = null;
+            elemento.Cartao = null;
+            elemento.Categoria = null;
+            elemento.SubCategoria = null;
+            elemento.LancamentosFixo = null;
+            elemento.LancamentoParcelado = null;
         }
     }
 }
