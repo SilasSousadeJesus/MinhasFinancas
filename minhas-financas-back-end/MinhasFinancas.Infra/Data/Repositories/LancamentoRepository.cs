@@ -23,6 +23,20 @@ namespace MinhasFinancas.Infra.Data.Repositories
                                            .ToListAsync();
         }
 
+        public async Task<List<Lancamento>> BuscarPorPeriodoVencimentoAsync(string usuarioId, DateTime dataInicial, DateTime dataFinal)
+        {
+            return await _context.Set<Lancamento>()
+                .AsNoTracking()
+                .Where(x =>
+                    x.UsuarioId == usuarioId &&
+                    x.DataVencimento.Date >= dataInicial.Date &&
+                    x.DataVencimento.Date <= dataFinal.Date)
+                .Include(x => x.Categoria)
+                .OrderBy(x => x.DataVencimento)
+                .ThenBy(x => x.Descricao)
+                .ToListAsync();
+        }
+
         public async Task<List<Lancamento>> BuscarTodosOsElementosAsync(string id)
         {
             return await _context.Set<Lancamento>()

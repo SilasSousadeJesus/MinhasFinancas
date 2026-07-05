@@ -153,13 +153,31 @@ export function PainelDashboard() {
   }, [dashboard]);
 
   const pieChartData = useMemo(() => {
-    const data =
-      dashboard?.lancamentosPorCategoriaDeDespesaDashboard
-        .map((categoria) => ({
-          category: categoria.nome,
-          total: categoria.lancamentos.reduce((sum, lancamento) => sum + lancamento.valor, 0),
-        }))
-        .filter((categoria) => categoria.total > 0) ?? [];
+    const totalsByCategory = new Map<string, number>();
+
+    dashboard?.lancamentosPorCategoriaDeDespesaDashboard.forEach((categoria) => {
+      const totalCategoria = categoria.lancamentos.reduce(
+        (sum, lancamento) => sum + lancamento.valor,
+        0
+      );
+
+      if (totalCategoria <= 0) {
+        return;
+      }
+
+      const nomeCategoria = categoria.nome?.trim() || "Sem categoria";
+      totalsByCategory.set(
+        nomeCategoria,
+        (totalsByCategory.get(nomeCategoria) ?? 0) + totalCategoria
+      );
+    });
+
+    const data = Array.from(totalsByCategory.entries())
+      .map(([category, total]) => ({
+        category,
+        total,
+      }))
+      .sort((a, b) => b.total - a.total);
 
     if (data.length > 0) {
       return data;

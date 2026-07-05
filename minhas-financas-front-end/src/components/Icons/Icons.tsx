@@ -12,8 +12,6 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
 } from "../ui/chart";
 
 interface LineChartItem {
@@ -335,11 +333,13 @@ export function PiechartcustomChart(
       ...item,
       fill: item.fill ?? PIE_COLORS[index % PIE_COLORS.length],
     })) ?? [];
-  const { data: _data, ...rest } = props;
+  const hasMeaningfulData = data.some((item) => item.total > 0);
+  const { data: _data, className, ...rest } = props;
 
   return (
-    <div {...rest}>
+    <div {...rest} className="space-y-4">
       <ChartContainer
+        className={className}
         config={Object.fromEntries(
           data.map((item, index) => [
             item.category,
@@ -351,7 +351,6 @@ export function PiechartcustomChart(
         )}
       >
         <PieChart>
-          <ChartLegend content={<ChartLegendContent nameKey="category" />} />
           <ChartTooltip
             cursor={false}
             content={
@@ -371,13 +370,38 @@ export function PiechartcustomChart(
               />
             }
           />
-          <Pie data={data} dataKey="total" nameKey="category">
+          <Pie
+            data={data}
+            dataKey="total"
+            nameKey="category"
+            cx="50%"
+            cy="50%"
+            outerRadius="80%"
+            isAnimationActive={false}
+          >
             {data.map((entry) => (
               <Cell key={entry.category} fill={entry.fill} />
             ))}
           </Pie>
         </PieChart>
       </ChartContainer>
+      {hasMeaningfulData ? (
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+          {data.map((item, index) => (
+            <div
+              key={`${item.category}-${index}`}
+              className="flex max-w-[10rem] items-center gap-2"
+              title={`${item.category}: ${formatCurrency(item.total)}`}
+            >
+              <div
+                className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                style={{ backgroundColor: item.fill }}
+              />
+              <span className="truncate">{item.category}</span>
+            </div>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -107,6 +107,27 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [Authorize]
+        [HttpGet("FluxoCaixaSimples/{usuarioId}")]
+        public async Task<IActionResult> BuscarFluxoCaixaSimples([FromRoute] string usuarioId, [FromQuery] int ano, [FromQuery] int mes)
+        {
+            var dados = await _appService.BuscarFluxoCaixaSimplesAsync(usuarioId, ano, mes);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            return Ok(dados);
+        }
+
+        [Authorize]
         [HttpGet("BuscarUmLancamento/{usuarioId}/{faturamentoId}")]
         public async Task<IActionResult> BuscarUmCartao([FromRoute] string usuarioId, [FromRoute] Guid faturamentoId)
         {

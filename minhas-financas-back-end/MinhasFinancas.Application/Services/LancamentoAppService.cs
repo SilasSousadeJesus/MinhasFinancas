@@ -7,6 +7,7 @@ using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -191,6 +192,91 @@ namespace MinhasFinancas.Application.Services
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
                 retorno.MensagemUsuario = "Não foi possivel buscar a lista de lançamentos";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
+        public async Task<RetornoGenerico> BuscarFluxoCaixaSimplesAsync(string usuarioId, int ano, int mes)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                if (mes < 1 || mes > 12)
+                {
+                    retorno.Sucesso = false;
+                    retorno.HttpStatusCode = HttpStatusCode.BadRequest;
+                    retorno.MensagemSistema = "Mes informado fora do intervalo permitido.";
+                    retorno.MensagemUsuario = "Informe um mes valido.";
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+
+                if (!buscaPorUsuario.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorUsuario.Sucesso;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = buscaPorUsuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorUsuario.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var dataInicial = new DateTime(ano, mes, 1);
+                var dataFinal = dataInicial.AddMonths(1).AddDays(-1);
+
+                var lancamentosDoMes = await _lancamentoRepository.BuscarPorPeriodoVencimentoAsync(
+                    usuarioId,
+                    dataInicial,
+                    dataFinal);
+
+                var lancamentosValidos = lancamentosDoMes
+                    .Where(x => x.StatusLancamento != EnumStatusLancamento.Cancelado)
+                    .ToList();
+
+                var receitas = lancamentosValidos
+                    .Where(x => x.Tipo == EnumTipoLancamento.Receita)
+                    .OrderBy(x => x.DataVencimento)
+                    .ThenBy(x => x.Descricao)
+                    .Select(MapearItemFluxoCaixaSimples)
+                    .ToList();
+
+                var despesas = lancamentosValidos
+                    .Where(x => x.Tipo == EnumTipoLancamento.Despesa)
+                    .OrderBy(x => x.DataVencimento)
+                    .ThenBy(x => x.Descricao)
+                    .Select(MapearItemFluxoCaixaSimples)
+                    .ToList();
+
+                var resultado = new FluxoCaixaSimplesDTO
+                {
+                    Ano = ano,
+                    Mes = mes,
+                    ReceitasTotal = receitas.Sum(x => x.Valor),
+                    DespesasTotal = despesas.Sum(x => x.Valor),
+                    SaldoMes = receitas.Sum(x => x.Valor) - despesas.Sum(x => x.Valor),
+                    Receitas = receitas,
+                    Despesas = despesas,
+                };
+
+                var referencia = dataInicial.ToString("MMMM yyyy", new CultureInfo("pt-BR"));
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = $"Fluxo de caixa simples carregado para {referencia}.";
+                retorno.MensagemUsuario = $"Fluxo de caixa simples carregado para {referencia}.";
+                retorno.Dados = resultado;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Nao foi possivel carregar o fluxo de caixa simples.";
                 retorno.Dados = null;
                 return retorno;
             }
@@ -722,6 +808,18 @@ namespace MinhasFinancas.Application.Services
                 retorno.Dados = null;
                 return retorno;
             }
+        }
+
+        private static FluxoCaixaSimplesItemDTO MapearItemFluxoCaixaSimples(Lancamento lancamento)
+        {
+            return new FluxoCaixaSimplesItemDTO
+            {
+                Id = lancamento.Id,
+                Descricao = lancamento.Descricao,
+                Categoria = lancamento.Categoria?.NomeCategoria,
+                Valor = lancamento.Valor,
+                DataVencimento = lancamento.DataVencimento,
+            };
         }
 
     }

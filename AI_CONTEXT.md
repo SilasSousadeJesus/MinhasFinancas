@@ -47,6 +47,7 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - CRUD de lancamentos
 - suporte a lancamento pontual, fixo, parcelado e dia util com geracao imediata de registros reais
 - filtros de lancamentos por tipo, periodo de lancamento, periodo de vencimento, categoria, conta, cartao, status do lancamento, texto, ordenacao e paginacao
+- consolidacao mensal de fluxo de caixa simples por mes de vencimento, derivada exclusivamente dos lancamentos
 - dashboard agregado
 - radar financeiro no dashboard com proximos vencimentos, contas atrasadas, alertas objetivos e fluxo de caixa dos proximos 30 dias
 - CRUD de metas
@@ -71,6 +72,7 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - CRUD de categorias e subcategorias com boa UX
 - CRUD de lancamentos com modal de criacao e edicao
 - filtros, ordenacao e paginacao de lancamentos
+- tela de fluxo de caixa simples com navegacao mensal, resumo, comparativo e listas separadas de receitas e despesas
 - CRUD de contas e cartoes
 - selecao real de conta/cartao/categoria/subcategoria no modal de lancamento
 - tela de projecoes com overview em cards
@@ -732,6 +734,7 @@ Leitura financeira baseada apenas em eventos que ja ocorreram de fato, usando a 
 ### Como sao calculados os totais
 
 - dashboard usa `DataVencimento` para leituras previstas e `DataEfetivacao` para leituras realizadas quando aplicavel
+- fluxo de caixa simples usa exclusivamente `DataVencimento` para decidir a qual mes cada lancamento pertence
 - filtros de lancamento por periodo de lancamento usam `DataLancamento`
 - filtros de lancamento por periodo de vencimento usam `DataVencimento`
 - filtros de lancamento por periodo de efetivacao usam `DataEfetivacao`
@@ -884,6 +887,7 @@ Leitura financeira baseada apenas em eventos que ja ocorreram de fato, usando a 
 
 - `POST /api/Lancamento/CadastrarLancamento`
 - `GET /api/Lancamento/BuscarTodosOsLancamento/{usuarioId}`
+- `GET /api/Lancamento/FluxoCaixaSimples/{usuarioId}?ano=2026&mes=7`
 - `GET /api/Lancamento/BuscarUmLancamento/{usuarioId}/{faturamentoId}`
 - `PUT /api/Lancamento/EditarLancamento/{usuarioId}/{faturamentoId}`
 - `POST /api/Lancamento/EfetivarLancamento/{usuarioId}/{faturamentoId}`
@@ -1343,11 +1347,31 @@ Registrar melhorias estruturais que beneficiam toda a aplicacao.
   - `BemPatrimonial`
 - Decisoes tomadas:
   - filtros, ordenacao e paginacao no backend
+  - fluxo de caixa simples ganhou endpoint mensal consolidado por `DataVencimento`, sem criar novas tabelas e sem duplicar dados
   - selecao real de conta/cartao/categoria/subcategoria no front
   - parte dos tipos atualiza saldo/patrimonio
   - recorrencia nao usa tabela separada por enquanto; `Fixo` e `Parcelado` geram registros reais em `Lancamento`
   - parcelamentos possuem `GrupoParcelamentoId`, `NumeroParcela` e `TotalParcelas` para agrupamento futuro no frontend
   - lancamentos programados (`Fixo` e `DiaUtil`) possuem `GrupoLancamentoProgramadoId` e `TipoProgramacao` para rastreabilidade futura
+
+### Fluxo de Caixa Simples
+
+- Objetivo: oferecer uma conferencia mensal rapida de receitas, despesas e saldo sem substituir dashboard nem a tela completa de lancamentos.
+- Arquivos envolvidos:
+  - `LancamentoController`
+  - `LancamentoAppService`
+  - `ILancamentoRepository` / `LancamentoRepository`
+  - `FluxoCaixaSimplesManager.tsx`
+  - `fluxo-caixa-simples.ts`
+- Entidades impactadas:
+  - `Lancamento`
+- Decisoes tomadas:
+  - a tela reutiliza exclusivamente os lancamentos ja cadastrados
+  - a consolidacao considera apenas `Receita` e `Despesa`
+  - o pertencimento ao mes e decidido por `DataVencimento`
+  - `DataEfetivacao` nao participa da leitura porque essa tela e de planejamento financeiro
+  - lancamentos com status `Cancelado` ficam fora da consolidacao
+  - a navegacao mensal do frontend foi limitada inicialmente a 12 meses para tras e 12 meses para frente
 
 ### Dashboard
 

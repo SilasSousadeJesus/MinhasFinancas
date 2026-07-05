@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import {
   CreditCardIcon,
+  CurrencyIcon,
   DownloadIcon,
   FilesIcon,
   GoalIcon,
@@ -113,6 +114,22 @@ export function MenuNavegacao({ isSidebarExpanded = true}: MenuNavegacaoProps) {
             >
               <DownloadIcon className="w-5 h-5" />
               <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>Lançamentos</span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
+          <Link href="/fluxo-de-caixa-simples" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                " justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <CurrencyIcon className="w-5 h-5" />
+              <span className={`space-x-2 text-lg ${!isSidebarExpanded && "hidden"}`}>
+                Fluxo de Caixa
+              </span>
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
