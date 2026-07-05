@@ -1,28 +1,28 @@
 # Project Rules
 
-Use este arquivo para registrar acordos operacionais e arquiteturais do projeto.
+Use este arquivo para registrar apenas regras permanentes de desenvolvimento do projeto.
+
+Não registrar roadmap, histórico de funcionalidades ou changelog neste documento.
 
 ## Filosofia do projeto
 
-- Toda regra de negócio fica na camada `Application`.
+- Toda regra de negócio fica prioritariamente na camada `Application`.
 
-# Regras Permanentes do Projeto
+## Princípios gerais
 
-## Princípios Gerais
-
-- Toda implementação deve priorizar rastreabilidade, organização, histórico e controle financeiro.
+- Toda implementação deve priorizar rastreabilidade, histórico, clareza e controle financeiro.
 - Evitar soluções improvisadas que resolvem apenas o problema imediato.
 - Sempre que possível, modelar os dados pensando em consultas futuras, auditoria, agrupamento e relatórios.
-- Não apagar informações financeiras importantes sem deixar histórico ou rastreabilidade.
-- Preferir modelos explícitos em vez de regras escondidas em texto, descrição ou convenções frágeis.
+- Não apagar informações financeiras relevantes sem preservar rastreabilidade.
+- Preferir modelos explícitos em vez de regras escondidas em descrições ou convenções frágeis.
 
 ## Arquitetura
 
 - `Controller` não deve conter regra de negócio.
-- `Services/Application` devem concentrar as regras de negócio.
-- `Repository` deve ser responsável por acesso a dados, não por decisões de negócio.
+- `Application/Services` devem concentrar a regra de negócio operacional.
+- `Repository` deve cuidar de acesso a dados, não de decisões de negócio.
 - Evitar duplicação de lógica entre frontend e backend.
-- Regras críticas devem ser validadas no backend, mesmo que também existam validações no frontend.
+- Regras críticas devem ser validadas no backend, mesmo quando existirem no frontend.
 - Infraestruturas globais devem ser reutilizáveis, desacopladas e não específicas de uma tela.
 
 ## Evolução incremental
@@ -39,7 +39,7 @@ Use este arquivo para registrar acordos operacionais e arquiteturais do projeto.
 - Filtros devem deixar explícito qual campo estão filtrando.
 - Toda operação demorada deve dar feedback visual ao usuário.
 
-## Organização da Interface
+## Organização da interface
 
 - Toda tela deve ser organizada de acordo com o fluxo mental do usuário, e não pela ordem em que as funcionalidades foram implementadas.
 - Campos relacionados devem permanecer agrupados visualmente.
@@ -50,9 +50,9 @@ Use este arquivo para registrar acordos operacionais e arquiteturais do projeto.
   4. Ordenação
   5. Ações
 - Evitar distribuir informações relacionadas em regiões diferentes da tela.
-- A interface deve permitir que o usuário compreenda rapidamente onde encontrar determinada informação, reduzindo o esforço cognitivo e melhorando a produtividade.
+- A interface deve reduzir esforço cognitivo e facilitar produtividade.
 
-## Padronização de Interface
+## Padronização de interface
 
 - Toda interface deve utilizar português brasileiro.
 - Todos os textos devem possuir acentuação correta.
@@ -64,34 +64,27 @@ Use este arquivo para registrar acordos operacionais e arquiteturais do projeto.
 ## Encoding dos arquivos
 
 - Todos os arquivos de código-fonte, componentes, arquivos de configuração e documentos devem ser salvos em UTF-8.
-- Nunca remover acentos para evitar problemas de encoding.
-- Caso seja identificado problema de codificação, a solução deve ser corrigir o encoding do arquivo, e não alterar a grafia das palavras.
+- Nunca remover acentos para contornar problema de encoding.
+- Caso exista problema de codificação, corrigir o encoding do arquivo em vez de alterar a grafia.
 
-## Dados Financeiros
+## Dados financeiros
 
 - Lançamentos gerados automaticamente devem manter vínculo com sua origem.
 - Lançamentos parcelados devem possuir identificador de grupo, número da parcela e total de parcelas.
 - Lançamentos fixos ou programados devem permitir rastrear que foram gerados a partir de uma mesma configuração.
 - Alterações em lançamentos financeiros devem preservar o máximo possível de contexto histórico.
-- Campos importantes para relatórios futuros devem ser estruturados, não derivados apenas da descrição.
+- Campos importantes para relatórios futuros devem ser estruturados, não derivados apenas de descrição.
 
 ## Manutenção com IA
 
 - Antes de implementar qualquer feature, ler `AI_CONTEXT.md` e `PROJECT_RULES.md`.
-- Sempre que uma regra de negócio, entidade, fluxo ou infraestrutura mudar, avaliar se `AI_CONTEXT.md` precisa ser atualizado.
-- `AI_CONTEXT.md` deve refletir o estado atual do sistema.
-- `PROJECT_RULES.md` deve conter apenas regras permanentes do projeto.
-- Ao final de cada implementação, informar se `AI_CONTEXT.md` ou `PROJECT_RULES.md` foram atualizados.
-- O arquivo `AI_CONTEXT.md` será a principal documentação técnica deste projeto e deve ser tratado como um documento vivo.
-- Sempre que uma funcionalidade for implementada, removida ou alterada de forma relevante, este arquivo deve ser atualizado para refletir o estado atual do sistema.
-- Ao implementar qualquer feature, além das alterações de código, verificar se é necessário atualizar o `AI_CONTEXT.md`.
-- Nunca deixar o documento desatualizado em relação ao projeto.
+- Ao alterar arquitetura, fluxo técnico, infraestrutura ou padrão estrutural, avaliar atualização do `AI_CONTEXT.md`.
+- Ao surgir nova regra permanente de desenvolvimento, atualizar `PROJECT_RULES.md`.
+- Ao final de cada implementação, informar se a documentação foi atualizada.
 
-## Roadmap e Evolução
+## Documentação viva
 
-- Ideias de funcionalidades futuras devem ser registradas no `AI_CONTEXT.md`, em uma seção específica chamada `Roadmap do Projeto`.
-- O Roadmap deve conter apenas funcionalidades futuras e nunca o estado atual do sistema.
-- O Roadmap deve ser organizado por módulo, como Dashboard, Lançamentos, Projeções, Metas, Patrimônio, Cartões etc.
-- Funcionalidades ainda não implementadas devem ficar claramente marcadas como futuras.
-- Ao implementar uma funcionalidade listada no Roadmap, removê-la da lista de pendências e atualizar a documentação técnica nas demais seções do `AI_CONTEXT.md`.
-- O histórico da implementação não pertence ao Roadmap; ele deve ser registrado no `CHANGELOG.md`.
+- Toda implementação relevante deve atualizar a documentação correspondente.
+- Não utilizar o `AI_CONTEXT.md` como repositório de todas as informações do projeto.
+- Cada informação deve ser registrada apenas no documento responsável por aquele assunto.
+- A documentação faz parte do código e deve evoluir junto com ele.
