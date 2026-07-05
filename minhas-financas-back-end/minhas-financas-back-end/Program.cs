@@ -7,11 +7,13 @@ using MinhasFinancas.API.Extensions;
 using MinhasFinancas.Application.Configurations;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Application.Services;
+using MinhasFinancas.CrossCutting.Reports;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra;
 using MinhasFinancas.Infra.Data.config.configMigrate;
 using MinhasFinancas.Infra.Data.Interfaces;
 using MinhasFinancas.Infra.Data.Repositories;
+using MinhasFinancas.Infra.Reports.Excel;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
@@ -60,6 +62,10 @@ namespace minhas_financas_back_end
 
             builder.Services.AddScoped<ILancamentoAppService, LancamentoAppService>();
             builder.Services.AddScoped<ILancamentoRepository, LancamentoRepository>();
+            builder.Services.AddScoped<ExcelWorkbookFactory>();
+            builder.Services.AddScoped<ExcelStyleHelper>();
+            builder.Services.AddScoped<IExcelReport<LancamentosExcelReportData>, LancamentosExcelReport>();
+            builder.Services.AddScoped<IExcelReport<FluxoCaixaSimplesExcelReportData>, FluxoCaixaSimplesExcelReport>();
 
             builder.Services.AddScoped<IDashboardAppService, DashboardAppService>();
             builder.Services.AddScoped<IRelatoriosAppService, RelatoriosAppService>();

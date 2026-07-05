@@ -49,3 +49,46 @@ export async function apiRequest<T>(
     finalizarLoading();
   }
 }
+
+export async function downloadRequest(
+  path: string,
+  { token, headers, loading, ...init }: RequestOptions = {}
+): Promise<Blob> {
+  const finalizarLoading = startGlobalLoading(loading);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      ...init,
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+      },
+    });
+
+    if (!response.ok) {
+      const rawBody = await response.text();
+      let data: RetornoGenerico | null = null;
+
+      if (rawBody) {
+        try {
+          data = JSON.parse(rawBody) as RetornoGenerico;
+        } catch {
+          data = null;
+        }
+      }
+
+      throw new ApiError(
+        data?.mensagemUsuario ||
+          data?.mensagemSistema ||
+          rawBody ||
+          "Erro ao baixar o arquivo.",
+        response.status,
+        data ?? undefined
+      );
+    }
+
+    return await response.blob();
+  } finally {
+    finalizarLoading();
+  }
+}

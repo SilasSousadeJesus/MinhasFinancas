@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.CrossCutting.Reports;
 using System.Globalization;
 
 namespace MinhasFinancas.API.Controllers
@@ -125,6 +126,71 @@ namespace MinhasFinancas.API.Controllers
             }
 
             return Ok(dados);
+        }
+
+        [Authorize]
+        [HttpGet("ExportarExcel/{usuarioId}")]
+        public async Task<IActionResult> ExportarExcel([FromRoute] string usuarioId, [FromQuery] FiltroListagemLancamentoDTO filtro)
+        {
+            filtro.DataInicialLancamento ??= ParseQueryDate(Request.Query["DataInicialLancamento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataInicialLancamento"].FirstOrDefault());
+            filtro.DataFinalLancamento ??= ParseQueryDate(Request.Query["DataFinalLancamento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataFinalLancamento"].FirstOrDefault());
+            filtro.DataInicialVencimento ??= ParseQueryDate(Request.Query["DataInicialVencimento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataInicialVencimento"].FirstOrDefault());
+            filtro.DataFinalVencimento ??= ParseQueryDate(Request.Query["DataFinalVencimento"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataFinalVencimento"].FirstOrDefault());
+            filtro.DataInicialEfetivacao ??= ParseQueryDate(Request.Query["DataInicialEfetivacao"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataInicialEfetivacao"].FirstOrDefault());
+            filtro.DataFinalEfetivacao ??= ParseQueryDate(Request.Query["DataFinalEfetivacao"].FirstOrDefault())
+                ?? ParseQueryDate(Request.Query["dataFinalEfetivacao"].FirstOrDefault());
+
+            var dados = await _appService.ExportarLancamentosExcelAsync(usuarioId, filtro);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            if (dados.Dados is not ArquivoRelatorioDTO arquivo)
+            {
+                return StatusCode(500, "Arquivo de relatório não encontrado.");
+            }
+
+            return File(arquivo.Conteudo, arquivo.ContentType, arquivo.NomeArquivo);
+        }
+
+        [Authorize]
+        [HttpGet("ExportarFluxoCaixaSimplesExcel/{usuarioId}")]
+        public async Task<IActionResult> ExportarFluxoCaixaSimplesExcel([FromRoute] string usuarioId, [FromQuery] ExportarFluxoCaixaSimplesExcelDTO filtro)
+        {
+            var dados = await _appService.ExportarFluxoCaixaSimplesExcelAsync(usuarioId, filtro);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    System.Net.HttpStatusCode.NotFound => NotFound(dados),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(dados),
+                    System.Net.HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            if (dados.Dados is not ArquivoRelatorioDTO arquivo)
+            {
+                return StatusCode(500, "Arquivo de relatório não encontrado.");
+            }
+
+            return File(arquivo.Conteudo, arquivo.ContentType, arquivo.NomeArquivo);
         }
 
         [Authorize]

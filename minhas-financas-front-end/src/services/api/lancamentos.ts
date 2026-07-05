@@ -1,4 +1,4 @@
-import { apiRequest } from "./http";
+import { apiRequest, downloadRequest } from "./http";
 import {
   EditarLancamentoPayload,
   FiltroLancamentosParams,
@@ -12,30 +12,27 @@ const requisicoesLancamentosEmAndamento = new Map<
   Promise<RetornoGenerico<RespostaLancamentos>>
 >();
 
-export function buscarLancamentos(
-  usuarioId: string,
-  token: string,
-  filtros: FiltroLancamentosParams = {}
-) {
+const keyMap: Record<string, string> = {
+  buscaDescricao: "BuscaDescricao",
+  tipo: "Tipo",
+  categoriaId: "CategoriaId",
+  contaId: "ContaId",
+  cartaoId: "CartaoId",
+  statusLancamento: "StatusLancamento",
+  dataInicialLancamento: "DataInicialLancamento",
+  dataFinalLancamento: "DataFinalLancamento",
+  dataInicialVencimento: "DataInicialVencimento",
+  dataFinalVencimento: "DataFinalVencimento",
+  dataInicialEfetivacao: "DataInicialEfetivacao",
+  dataFinalEfetivacao: "DataFinalEfetivacao",
+  ordenarPor: "OrdenarPor",
+  direcao: "Direcao",
+  pagina: "Pagina",
+  tamanhoPagina: "TamanhoPagina",
+};
+
+export function buildLancamentosQueryString(filtros: FiltroLancamentosParams = {}) {
   const searchParams = new URLSearchParams();
-  const keyMap: Record<string, string> = {
-    buscaDescricao: "BuscaDescricao",
-    tipo: "Tipo",
-    categoriaId: "CategoriaId",
-    contaId: "ContaId",
-    cartaoId: "CartaoId",
-    statusLancamento: "StatusLancamento",
-    dataInicialLancamento: "DataInicialLancamento",
-    dataFinalLancamento: "DataFinalLancamento",
-    dataInicialVencimento: "DataInicialVencimento",
-    dataFinalVencimento: "DataFinalVencimento",
-    dataInicialEfetivacao: "DataInicialEfetivacao",
-    dataFinalEfetivacao: "DataFinalEfetivacao",
-    ordenarPor: "OrdenarPor",
-    direcao: "Direcao",
-    pagina: "Pagina",
-    tamanhoPagina: "TamanhoPagina",
-  };
 
   Object.entries(filtros).forEach(([key, value]) => {
     if (value === undefined || value === null || value === "") {
@@ -46,7 +43,15 @@ export function buscarLancamentos(
     searchParams.set(queryKey, String(value));
   });
 
-  const queryString = searchParams.toString();
+  return searchParams.toString();
+}
+
+export function buscarLancamentos(
+  usuarioId: string,
+  token: string,
+  filtros: FiltroLancamentosParams = {}
+) {
+  const queryString = buildLancamentosQueryString(filtros);
   const path = `/Lancamento/BuscarTodosOsLancamento/${usuarioId}${
     queryString ? `?${queryString}` : ""
   }`;
@@ -109,4 +114,24 @@ export function deletarLancamento(usuarioId: string, lancamentoId: string, token
     method: "DELETE",
     token,
   });
+}
+
+export function exportarLancamentosExcel(
+  usuarioId: string,
+  token: string,
+  filtros: FiltroLancamentosParams = {}
+) {
+  const queryString = buildLancamentosQueryString({
+    ...filtros,
+    pagina: undefined,
+    tamanhoPagina: undefined,
+  });
+
+  return downloadRequest(
+    `/Lancamento/ExportarExcel/${usuarioId}${queryString ? `?${queryString}` : ""}`,
+    {
+      method: "GET",
+      token,
+    }
+  );
 }

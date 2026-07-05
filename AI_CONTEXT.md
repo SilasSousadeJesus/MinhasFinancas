@@ -1,26 +1,28 @@
-# AI Context - Minhas Finanças
+﻿# AI Context - Minhas FinanÃ§as
 
-Este documento existe para dar a uma IA visão rápida e confiável do estado técnico atual do projeto.
+Este documento existe para dar a uma IA visÃ£o rÃ¡pida e confiÃ¡vel do estado tÃ©cnico atual do projeto.
 
-Ele deve permanecer enxuto, arquitetural e orientado a implementação.
+Ele deve permanecer enxuto, arquitetural e orientado a implementaÃ§Ã£o.
 
-Informações de produto, roadmap, changelog e glossário de domínio ficam em documentos próprios dentro de `docs/`.
+InformaÃ§Ãµes de produto, roadmap, changelog e glossÃ¡rio de domÃ­nio ficam em documentos prÃ³prios dentro de `docs/`.
 
-## Arquitetura da solução
+`docs/MODULE_GUIDE.md` contém a explicação funcional dos módulos e seus impactos no restante do sistema.
 
-O backend segue uma arquitetura em camadas próxima de `Clean Architecture` / `Onion`, sem rigidez acadêmica absoluta:
+## Arquitetura da soluÃ§Ã£o
 
-- `API`: entrada HTTP, autenticação, configuração, DI e controllers
-- `Application`: casos de uso, DTOs, interfaces, orquestração e a maior parte das regras de negócio
-- `Domain`: entidades persistidas e serviços de cálculo
+O backend segue uma arquitetura em camadas prÃ³xima de `Clean Architecture` / `Onion`, sem rigidez acadÃªmica absoluta:
+
+- `API`: entrada HTTP, autenticaÃ§Ã£o, configuraÃ§Ã£o, DI e controllers
+- `Application`: casos de uso, DTOs, interfaces, orquestraÃ§Ã£o e a maior parte das regras de negÃ³cio
+- `Domain`: entidades persistidas e serviÃ§os de cÃ¡lculo
 - `Infra`: EF Core, `ApplicationDbContext`, repositories e migrations
-- `CrossCutting`: enums, utilitários e `RetornoGenerico`
+- `CrossCutting`: enums, utilitÃ¡rios e `RetornoGenerico`
 
-Observação importante:
+ObservaÃ§Ã£o importante:
 
-- No estado atual do projeto, a regra de negócio está majoritariamente em `Application/Services`
+- No estado atual do projeto, a regra de negÃ³cio estÃ¡ majoritariamente em `Application/Services`
 - `Controller` deve permanecer fino
-- `Repository` deve cuidar de acesso a dados, não de decisão de negócio
+- `Repository` deve cuidar de acesso a dados, nÃ£o de decisÃ£o de negÃ³cio
 
 ## Estrutura dos projetos
 
@@ -31,11 +33,11 @@ Observação importante:
 - `MinhasFinancas.Application`
   - app services, DTOs, interfaces, recursos e mapeamentos
 - `MinhasFinancas.Domain`
-  - entidades e serviços de domínio
+  - entidades e serviÃ§os de domÃ­nio
 - `MinhasFinancas.Infra`
   - contexto EF Core, repositories e migrations
 - `MinhasFinancas.CrossCutting`
-  - enums, utilitários e tipos compartilhados
+  - enums, utilitÃ¡rios e tipos compartilhados
 - `Minhas-Financas-Hangfire`
   - projeto auxiliar de jobs
 - `Minhas-Financas-hangfire.Infra`
@@ -50,15 +52,15 @@ Observação importante:
 - `minhas-financas-front-end/src/pages`
   - rotas legadas de login e cadastro
 - `minhas-financas-front-end/src/components`
-  - componentes visuais e telas por módulo
+  - componentes visuais e telas por mÃ³dulo
 - `minhas-financas-front-end/src/providers`
-  - autenticação, tema e infraestrutura global
+  - autenticaÃ§Ã£o, tema e infraestrutura global
 - `minhas-financas-front-end/src/services/api`
-  - cliente HTTP e serviços por domínio
+  - cliente HTTP e serviÃ§os por domÃ­nio
 - `minhas-financas-front-end/src/types`
   - contratos TypeScript
 - `minhas-financas-front-end/src/lib`
-  - helpers e utilitários transversais
+  - helpers e utilitÃ¡rios transversais
 
 ## Tecnologias utilizadas
 
@@ -91,62 +93,62 @@ Observação importante:
 - lucide-react
 - date-fns
 
-## Organização das camadas
+## OrganizaÃ§Ã£o das camadas
 
 ### API
 
-- expõe endpoints
-- aplica autenticação/autorização
+- expÃµe endpoints
+- aplica autenticaÃ§Ã£o/autorizaÃ§Ã£o
 - delega tudo para `Application`
 
 ### Application
 
-- valida usuário
-- valida consistência da operação
+- valida usuÃ¡rio
+- valida consistÃªncia da operaÃ§Ã£o
 - orquestra repositories
-- chama serviços de domínio quando necessário
+- chama serviÃ§os de domÃ­nio quando necessÃ¡rio
 - devolve `RetornoGenerico`
 
 ### Domain
 
 - modela entidades persistidas
-- concentra cálculos agregados e financeiros reutilizáveis
+- concentra cÃ¡lculos agregados e financeiros reutilizÃ¡veis
 
 ### Infra
 
-- persistência com EF Core
-- relações entre entidades
-- queries específicas de leitura
+- persistÃªncia com EF Core
+- relaÃ§Ãµes entre entidades
+- queries especÃ­ficas de leitura
 - migrations
 
 ### CrossCutting
 
 - enums compartilhados
-- contratos utilitários
+- contratos utilitÃ¡rios
 
-## Fluxo técnico padrão
+## Fluxo tÃ©cnico padrÃ£o
 
 1. O frontend chama `apiRequest` em `src/services/api/http.ts`.
 2. O request entra no controle global de loading.
-3. O token JWT é enviado quando existe sessão.
+3. O token JWT Ã© enviado quando existe sessÃ£o.
 4. O controller recebe a rota.
 5. O controller delega para um `AppService`.
-6. O `AppService` valida usuário, DTO e estado de negócio.
+6. O `AppService` valida usuÃ¡rio, DTO e estado de negÃ³cio.
 7. O repository consulta ou persiste via `ApplicationDbContext`.
-8. Se houver cálculo agregado, `Application` usa `Domain`.
+8. Se houver cÃ¡lculo agregado, `Application` usa `Domain`.
 9. A resposta volta em `RetornoGenerico`.
 10. O frontend interpreta `sucesso`, `mensagemUsuario` e `dados`.
 
-## Padrões adotados
+## PadrÃµes adotados
 
-- contrato padrão de resposta: `RetornoGenerico`
+- contrato padrÃ£o de resposta: `RetornoGenerico`
 - controllers finos
-- app services como eixo principal da regra de negócio
-- repositories específicos por módulo quando a query exige comportamento extra
-- DTOs organizados por módulo
-- validações de formulário no front com `react-hook-form + zod`
-- autenticação no front persistida em `localStorage`
-- `usuarioId` ainda é passado em grande parte das rotas, mesmo com JWT
+- app services como eixo principal da regra de negÃ³cio
+- repositories especÃ­ficos por mÃ³dulo quando a query exige comportamento extra
+- DTOs organizados por mÃ³dulo
+- validaÃ§Ãµes de formulÃ¡rio no front com `react-hook-form + zod`
+- autenticaÃ§Ã£o no front persistida em `localStorage`
+- `usuarioId` ainda Ã© passado em grande parte das rotas, mesmo com JWT
 
 ## Estrutura de pastas relevantes
 
@@ -155,117 +157,118 @@ Observação importante:
 - `Controllers`
   - endpoints HTTP
 - `Application/DTOs`
-  - contratos de entrada e saída
+  - contratos de entrada e saÃ­da
 - `Application/Interfaces`
   - contratos de app services
 - `Application/Services`
-  - regra de negócio
+  - regra de negÃ³cio
 - `Application/Resources`
   - seeds e recursos auxiliares
 - `Domain/Entities`
   - entidades persistidas
 - `Domain/Services`
-  - serviços de cálculo
+  - serviÃ§os de cÃ¡lculo
 - `Infra/Data/Interfaces`
   - contratos de repository
 - `Infra/Data/Repositories`
-  - implementações de acesso a dados
+  - implementaÃ§Ãµes de acesso a dados
 - `Infra/Migrations`
-  - histórico do schema
+  - histÃ³rico do schema
 
 ### Frontend
 
 - `src/app/(authenticated)`
-  - área protegida
+  - Ã¡rea protegida
 - `src/components/dashboard`
   - dashboard e radar financeiro
 - `src/components/lancamentos`
-  - listagem, filtros e modais de lançamentos
+  - listagem, filtros e modais de lanÃ§amentos
 - `src/components/contas-cartoes`
-  - CRUD de contas e cartões
+  - CRUD de contas e cartÃµes
 - `src/components/configuracoes`
   - categorias e subcategorias
 - `src/components/projecao`
-  - overview e detalhe de projeções
+  - overview e detalhe de projeÃ§Ãµes
 - `src/components/patrimonio`
-  - visão patrimonial, modais e gráfico
+  - visÃ£o patrimonial, modais e grÃ¡fico
 - `src/components/simulacao-financeira`
-  - overview, edição e resultado das simulações
+  - overview, ediÃ§Ã£o e resultado das simulaÃ§Ãµes
 - `src/services/api`
-  - cliente HTTP, loading global e serviços de integração
+  - cliente HTTP, loading global e serviÃ§os de integraÃ§Ã£o
 
-## Principais módulos existentes
+## Principais mÃ³dulos existentes
 
-### Autenticação
+### AutenticaÃ§Ã£o
 
 - login real com JWT
 - cadastro real
 - leitura do `usuarioId` a partir do token
-- proteção de rotas autenticadas no frontend
+- proteÃ§Ã£o de rotas autenticadas no frontend
 
 ### Categorias e subcategorias
 
 - CRUD completo
-- seed inicial por usuário no cadastro
-- suporte ponta a ponta no cadastro de lançamentos
+- seed inicial por usuÃ¡rio no cadastro
+- suporte ponta a ponta no cadastro de lanÃ§amentos
 
-### Contas e cartões
+### Contas e cartÃµes
 
 - CRUD completo
-- seleção real no modal de lançamento
-- modal rápido de gerenciamento no dashboard
+- seleÃ§Ã£o real no modal de lanÃ§amento
+- modal rÃ¡pido de gerenciamento no dashboard
 
-### Lançamentos
+### LanÃ§amentos
 
 - CRUD completo
 - filtros
-- ordenação
-- paginação
-- exportação para Excel
-- efetivação rápida de receitas e despesas
-- suporte a lançamento único, parcelado, fixo e por dia útil
-- rastreabilidade com agrupadores de parcelamento e programação
+- ordenaÃ§Ã£o
+- paginaÃ§Ã£o
+- exportaÃ§Ã£o para Excel via endpoint backend e infraestrutura compartilhada de relatÃ³rios
+- efetivaÃ§Ã£o rÃ¡pida de receitas e despesas
+- suporte a lanÃ§amento Ãºnico, parcelado, fixo e por dia Ãºtil
+- rastreabilidade com agrupadores de parcelamento e programaÃ§Ã£o
 
 ### Dashboard
 
 - agregados financeiros
-- gráficos principais
+- grÃ¡ficos principais
 - radar financeiro
 
 ### Fluxo de Caixa Simples
 
-- consolidação mensal por `DataVencimento`
+- consolidaÃ§Ã£o mensal por `DataVencimento`
 - resumo, comparativo e listas de receitas/despesas
+- exportaÃ§Ã£o para Excel do mÃªs atual, intervalo de meses ou ano inteiro, com uma aba por mÃªs
 
-### Projeções
+### ProjeÃ§Ãµes
 
-- múltiplas projeções por usuário
+- mÃºltiplas projeÃ§Ãµes por usuÃ¡rio
 - renda base
 - renda extra mensal
 - objetivo
 - acumulado inicial
 - modo atrelado a despesas ou manual
 
-### Patrimônio
+### PatrimÃ´nio
 
 - ativos patrimoniais
 - passivos
 - snapshots manuais
-- evolução patrimonial
+- evoluÃ§Ã£o patrimonial
 
-### Simulações Financeiras
+### SimulaÃ§Ãµes Financeiras
 
-- cenários hipotéticos persistidos por usuário
-- ações simuladas independentes dos dados reais
-- cálculo mensal usando lançamentos reais como base
+- cenÃ¡rios hipotÃ©ticos persistidos por usuÃ¡rio
+- aÃ§Ãµes simuladas independentes dos dados reais
+- cÃ¡lculo mensal usando lanÃ§amentos reais como base
 
 ### Perfil Financeiro
 
-- parâmetros financeiros pessoais por usuário
-- histórico de configurações vigentes e anteriores
+- parÃ¢metros financeiros pessoais por usuÃ¡rio
+- histÃ³rico de configuraÃ§Ãµes vigentes e anteriores
 - base futura para indicadores, dashboard, alertas e insights
 
-## Infraestrutura e integrações existentes
+## Infraestrutura e integraÃ§Ãµes existentes
 
 ### Banco de dados
 
@@ -275,18 +278,27 @@ Observação importante:
 
 ### Cliente HTTP
 
-- `apiRequest` centraliza autenticação, tratamento de erro e loading global
-- toda requisição integrada por esse cliente participa automaticamente do overlay global
+- `apiRequest` centraliza autenticaÃ§Ã£o, tratamento de erro e loading global
+- toda requisiÃ§Ã£o integrada por esse cliente participa automaticamente do overlay global
+- `downloadRequest` centraliza downloads binÃ¡rios autenticados, reaproveitando loading global e tratamento consistente de erro
+
+### Infraestrutura de relatÃ³rios
+
+- existe uma infraestrutura reutilizÃ¡vel de exportaÃ§Ã£o em `MinhasFinancas.Infra/Reports`
+- a implementaÃ§Ã£o inicial cobre Excel em `Reports/Excel`
+- `ExcelWorkbookFactory`, `ExcelStyleHelper`, `ExcelExtensions` e `ExcelReportBase` concentram criaÃ§Ã£o de workbook, estilos, formatos e layout compartilhado
+- cada relatÃ³rio fornece apenas os dados e delega a apresentaÃ§Ã£o para a infraestrutura comum
+- contratos de exportaÃ§Ã£o ficam em `MinhasFinancas.CrossCutting/Reports` para evitar acoplamento circular entre camadas
 
 ### Loading global
 
 - implementado com provider/gerenciador compartilhado
-- usa contador interno de requisições ativas
-- possui debounce e tempo mínimo de exibição para evitar flicker
+- usa contador interno de requisiÃ§Ãµes ativas
+- possui debounce e tempo mÃ­nimo de exibiÃ§Ã£o para evitar flicker
 
 ### Seed inicial
 
-- ao cadastrar usuário, o sistema cria:
+- ao cadastrar usuÃ¡rio, o sistema cria:
   - categorias e subcategorias iniciais
   - bens patrimoniais base
 
@@ -294,89 +306,89 @@ Observação importante:
 
 - existe infraestrutura de Hangfire
 - existe projeto SignalR
-- hoje ambos ainda não estão integrados ao fluxo principal do usuário
+- hoje ambos ainda nÃ£o estÃ£o integrados ao fluxo principal do usuÃ¡rio
 
-## Decisões arquiteturais relevantes
+## DecisÃµes arquiteturais relevantes
 
 ### Por que `RetornoGenerico`
 
 - padronizar o contrato da API
 - simplificar consumo no frontend
-- manter consistência de mensagens de negócio
+- manter consistÃªncia de mensagens de negÃ³cio
 
 ### Por que Repository
 
-- isolar acesso a dados da camada de aplicação
+- isolar acesso a dados da camada de aplicaÃ§Ã£o
 - manter controllers e services sem EF Core direto
-- permitir queries específicas por módulo
+- permitir queries especÃ­ficas por mÃ³dulo
 
 ### Por que AutoMapper
 
-- reduzir repetição de mapeamento DTO -> entidade
-- concentrar conversões comuns no `MappingProfile`
+- reduzir repetiÃ§Ã£o de mapeamento DTO -> entidade
+- concentrar conversÃµes comuns no `MappingProfile`
 
-### Onde fica a regra de negócio
+### Onde fica a regra de negÃ³cio
 
 - no projeto atual, a maior parte da regra mora em `Application/Services`
-- `Domain` é usado principalmente para entidades e cálculos reutilizáveis
+- `Domain` Ã© usado principalmente para entidades e cÃ¡lculos reutilizÃ¡veis
 
-## Convenções operacionais do código
+## ConvenÃ§Ãµes operacionais do cÃ³digo
 
 - controllers com sufixo `Controller`
 - services com sufixo `AppService`
 - repositories com sufixo `Repository`
-- DTOs separados por módulo
-- validações críticas no backend, mesmo quando já existem no frontend
-- formulários do frontend preferem `react-hook-form + zod`
+- DTOs separados por mÃ³dulo
+- validaÃ§Ãµes crÃ­ticas no backend, mesmo quando jÃ¡ existem no frontend
+- formulÃ¡rios do frontend preferem `react-hook-form + zod`
 
-## Pontos de atenção
+## Pontos de atenÃ§Ã£o
 
 - preserve o contrato `RetornoGenerico`
-- não assuma que JWT elimina a necessidade de `usuarioId` na rota
-- não mova regra para controller
-- parte da nomenclatura ainda é legada e inconsistente
+- nÃ£o assuma que JWT elimina a necessidade de `usuarioId` na rota
+- nÃ£o mova regra para controller
+- parte da nomenclatura ainda Ã© legada e inconsistente
 - `src/app` e `src/pages` coexistem no frontend
 - o backend executa `app.MigrateDatabase()` no startup
-- filtros de lançamentos ainda têm parte da lógica aplicada após o carregamento da lista
-- o dashboard retorna alguns valores monetários já formatados em string
-- projeções fazem preview local adicional no frontend
+- filtros de lanÃ§amentos ainda tÃªm parte da lÃ³gica aplicada apÃ³s o carregamento da lista
+- o dashboard retorna alguns valores monetÃ¡rios jÃ¡ formatados em string
+- projeÃ§Ãµes fazem preview local adicional no frontend
 
-## Dívida técnica atual
+## DÃ­vida tÃ©cnica atual
 
-- repetição de validação de usuário em vários app services
-- repetição de montagem manual de `RetornoGenerico`
-- parte da lógica de lançamentos mistura persistência, saldo e patrimônio no mesmo service
-- filtragem e paginação de lançamentos ainda podem evoluir para consultas mais orientadas ao banco
+- repetiÃ§Ã£o de validaÃ§Ã£o de usuÃ¡rio em vÃ¡rios app services
+- repetiÃ§Ã£o de montagem manual de `RetornoGenerico`
+- parte da lÃ³gica de lanÃ§amentos mistura persistÃªncia, saldo e patrimÃ´nio no mesmo service
+- filtragem e paginaÃ§Ã£o de lanÃ§amentos ainda podem evoluir para consultas mais orientadas ao banco
 - nomenclaturas legadas como `BancoId`, `faturamentoId` e `idPatrono`
-- coexistência de `src/pages` com App Router
+- coexistÃªncia de `src/pages` com App Router
 - warnings antigos de compatibilidade/vulnerabilidade em alguns pacotes do backend
 
 ## Estado Atual
 
-### Data da última atualização
+### Data da Ãºltima atualizaÃ§Ã£o
 
 - 05/07/2026
 
-### Módulos concluídos
+### MÃ³dulos concluÃ­dos
 
-- autenticação
+- autenticaÃ§Ã£o
 - categorias e subcategorias
-- contas e cartões
-- lançamentos
+- contas e cartÃµes
+- lanÃ§amentos
 - dashboard
 - fluxo de caixa simples
-- projeções
-- patrimônio
-- simulações financeiras
+- projeÃ§Ãµes
+- patrimÃ´nio
+- simulaÃ§Ãµes financeiras
 - perfil financeiro
 
-### Módulos em desenvolvimento
+### MÃ³dulos em desenvolvimento
 
 - metas no frontend
-- relatórios no frontend
-- orçamento
-- integrações reais com Hangfire e SignalR
+- relatÃ³rios no frontend
+- orÃ§amento
+- integraÃ§Ãµes reais com Hangfire e SignalR
 
-### Próxima implementação prevista
+### PrÃ³xima implementaÃ§Ã£o prevista
 
-- fechamento do módulo de metas no frontend e evolução dos relatórios
+- fechamento do mÃ³dulo de metas no frontend e evoluÃ§Ã£o dos relatÃ³rios

@@ -5,7 +5,12 @@ import { Check, Pencil, Plus, Trash2 } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
 import { ApiError } from "@/types/api";
 import { FiltroLancamentosParams, LancamentoResumo } from "@/types/lancamentos";
-import { buscarLancamentos, deletarLancamento, efetivarLancamento } from "@/services/api/lancamentos";
+import {
+  buscarLancamentos,
+  deletarLancamento,
+  efetivarLancamento,
+  exportarLancamentosExcel,
+} from "@/services/api/lancamentos";
 import { buscarCategorias } from "@/services/api/categories";
 import { buscarCartoes, buscarContas } from "@/services/api/finance";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
@@ -583,10 +588,37 @@ export function LancamentosManager() {
       return;
     }
 
+    const usuarioId = session.usuario.id;
+    const token = session.token;
+
     try {
       setIsExporting(true);
       setErrorMessage("");
       setSuccessMessage("");
+
+      const blob = await exportarLancamentosExcel(
+        usuarioId,
+        token,
+        converterFiltrosParaBusca(
+          filtrosAplicados,
+          paginaAtual,
+          tamanhoPagina,
+          ordenarPor,
+          direcaoOrdenacao
+        )
+      );
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "lancamentos.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+
+      setSuccessMessage("Relatório de lançamentos exportado com sucesso.");
+      return;
 
       const tamanhoPaginaExportacao = 500;
       let pagina = 1;
@@ -595,8 +627,8 @@ export function LancamentosManager() {
 
       do {
         const response = await buscarLancamentos(
-          session.usuario.id,
-          session.token,
+          usuarioId,
+          token,
           converterFiltrosParaBusca(
             filtrosAplicados,
             pagina,
@@ -612,10 +644,14 @@ export function LancamentosManager() {
               itens: dados,
               totalPaginas: 1,
             }
-          : dados;
+          : (dados as { itens?: LancamentoResumo[]; totalPaginas?: number } | null);
 
-        todosLancamentos.push(...(dadosNormalizados?.itens ?? []));
-        totalPaginasBusca = Math.max(dadosNormalizados?.totalPaginas ?? 1, 1);
+        const itensExportacao = (dadosNormalizados?.itens as LancamentoResumo[] | undefined) ?? [];
+        const totalPaginasExportacao =
+          (dadosNormalizados?.totalPaginas as number | undefined) ?? 1;
+
+        todosLancamentos.push(...itensExportacao);
+        totalPaginasBusca = Math.max(totalPaginasExportacao, 1);
         pagina += 1;
       } while (pagina <= totalPaginasBusca);
 
@@ -626,19 +662,19 @@ export function LancamentosManager() {
       );
 
       const conteudo = gerarConteudoExcelLancamentos(lancamentosOrdenados);
-      const blob = new Blob([conteudo], {
+      const blobArquivo = new Blob([conteudo], {
         type: "application/vnd.ms-excel;charset=utf-8;",
       });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
+      const urlArquivo = URL.createObjectURL(blobArquivo);
+      const linkArquivo = document.createElement("a");
       const dataArquivo = formatDateInput(new Date());
 
-      link.href = url;
-      link.download = `lancamentos-${dataArquivo}.xls`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+      linkArquivo.href = urlArquivo;
+      linkArquivo.download = `lancamentos-${dataArquivo}.xls`;
+      document.body.appendChild(linkArquivo);
+      linkArquivo.click();
+      linkArquivo.remove();
+      URL.revokeObjectURL(urlArquivo);
 
       setSuccessMessage(
         `${lancamentosOrdenados.length} lançamento(s) exportado(s) para Excel com sucesso.`

@@ -75,6 +75,14 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Alterações em lançamentos financeiros devem preservar o máximo possível de contexto histórico.
 - Campos importantes para relatórios futuros devem ser estruturados, não derivados apenas de descrição.
 
+## Infraestrutura de relatórios
+
+- Toda exportação do sistema deve utilizar uma infraestrutura reutilizável.
+- Cada relatório deve fornecer apenas os dados.
+- A responsabilidade pela apresentação deve permanecer centralizada.
+- Evitar duplicação de código de formatação.
+- Toda melhoria realizada na infraestrutura de relatórios deve beneficiar automaticamente todas as exportações do sistema.
+
 ## Histórico e rastreabilidade analítica
 
 - Sempre que uma informação puder ser útil para análise futura, comparação temporal, auditoria, geração de indicadores ou uso por IA analítica, preferir preservar histórico em vez de sobrescrever o dado.

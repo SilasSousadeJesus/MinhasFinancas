@@ -1,5 +1,6 @@
-﻿using MinhasFinancas.Application.DTOs.Lancamento;
+using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces.baseInterface;
+using MinhasFinancas.CrossCutting;
 
 namespace MinhasFinancas.Application.Interfaces
 {
@@ -9,5 +10,7 @@ namespace MinhasFinancas.Application.Interfaces
         Task<RetornoGenerico> BuscarLancamentosPorCategoriaAsync(string usuarioId);
         Task<RetornoGenerico> EfetivarLancamentoAsync(string usuarioId, Guid lancamentoId);
         Task<RetornoGenerico> BuscarFluxoCaixaSimplesAsync(string usuarioId, int ano, int mes);
+        Task<RetornoGenerico> ExportarLancamentosExcelAsync(string usuarioId, FiltroListagemLancamentoDTO filtro);
+        Task<RetornoGenerico> ExportarFluxoCaixaSimplesExcelAsync(string usuarioId, ExportarFluxoCaixaSimplesExcelDTO filtro);
     }
 }

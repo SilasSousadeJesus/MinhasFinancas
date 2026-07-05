@@ -2,6 +2,7 @@
 using MinhasFinancas.Application.DTOs.Banco;
 using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.CrossCutting.Reports;
 using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
@@ -19,13 +20,17 @@ namespace MinhasFinancas.Application.Services
         private readonly IContaAppService _contaAppService;
         private readonly IUsuarioAppService _usuarioAppService;
         private readonly IBemPatrimonialAppService  _bemPatrimonialAppService;
-        public LancamentoAppService(IMapper mapper, ILancamentoRepository lancamentoRepository, IUsuarioAppService usuarioAppService, IContaAppService contaAppService, IBemPatrimonialAppService bemPatrimonialAppService)
+        private readonly IExcelReport<LancamentosExcelReportData> _lancamentosExcelReport;
+        private readonly IExcelReport<FluxoCaixaSimplesExcelReportData> _fluxoCaixaSimplesExcelReport;
+        public LancamentoAppService(IMapper mapper, ILancamentoRepository lancamentoRepository, IUsuarioAppService usuarioAppService, IContaAppService contaAppService, IBemPatrimonialAppService bemPatrimonialAppService, IExcelReport<LancamentosExcelReportData> lancamentosExcelReport, IExcelReport<FluxoCaixaSimplesExcelReportData> fluxoCaixaSimplesExcelReport)
         {
             _mapper = mapper;
             _lancamentoRepository = lancamentoRepository;
             _usuarioAppService = usuarioAppService;
             _contaAppService = contaAppService;
-            _bemPatrimonialAppService = bemPatrimonialAppService;   
+            _bemPatrimonialAppService = bemPatrimonialAppService;
+            _lancamentosExcelReport = lancamentosExcelReport;
+            _fluxoCaixaSimplesExcelReport = fluxoCaixaSimplesExcelReport;
         }
 
         public async Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id)
@@ -84,85 +89,8 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var lista = await _lancamentoRepository.BuscarTodosOsElementosAsync(id);
-                var query = lista.AsQueryable();
-
-                if (!string.IsNullOrWhiteSpace(filtro.BuscaDescricao))
-                {
-                    var busca = filtro.BuscaDescricao.Trim().ToLower();
-                    query = query.Where(x => x.Descricao.ToLower().Contains(busca));
-                }
-
-                if (filtro.Tipo.HasValue)
-                {
-                    query = query.Where(x => (int)x.Tipo == filtro.Tipo.Value);
-                }
-
-                if (filtro.CategoriaId.HasValue)
-                {
-                    query = query.Where(x => x.CategoriaId == filtro.CategoriaId.Value);
-                }
-
-                if (filtro.ContaId.HasValue)
-                {
-                    query = query.Where(x => x.ContaId == filtro.ContaId.Value);
-                }
-
-                if (filtro.CartaoId.HasValue)
-                {
-                    query = query.Where(x => x.CartaoId == filtro.CartaoId.Value);
-                }
-
-                if (filtro.StatusLancamento.HasValue)
-                {
-                    query = query.Where(x => (int)x.StatusLancamento == filtro.StatusLancamento.Value);
-                }
-
-                if (filtro.DataInicialLancamento.HasValue)
-                {
-                    var dataInicial = filtro.DataInicialLancamento.Value.Date;
-                    query = query.Where(x => x.DataLancamento.Date >= dataInicial);
-                }
-
-                if (filtro.DataFinalLancamento.HasValue)
-                {
-                    var dataFinal = filtro.DataFinalLancamento.Value.Date;
-                    query = query.Where(x => x.DataLancamento.Date <= dataFinal);
-                }
-
-                if (filtro.DataInicialVencimento.HasValue)
-                {
-                    var dataInicialVencimento = filtro.DataInicialVencimento.Value.Date;
-                    query = query.Where(x => x.DataVencimento.Date >= dataInicialVencimento);
-                }
-
-                if (filtro.DataFinalVencimento.HasValue)
-                {
-                    var dataFinalVencimento = filtro.DataFinalVencimento.Value.Date;
-                    query = query.Where(x => x.DataVencimento.Date <= dataFinalVencimento);
-                }
-
-                if (filtro.DataInicialEfetivacao.HasValue)
-                {
-                    var dataInicialEfetivacao = filtro.DataInicialEfetivacao.Value.Date;
-                    query = query.Where(x => x.DataEfetivacao.HasValue && x.DataEfetivacao.Value.Date >= dataInicialEfetivacao);
-                }
-
-                if (filtro.DataFinalEfetivacao.HasValue)
-                {
-                    var dataFinalEfetivacao = filtro.DataFinalEfetivacao.Value.Date;
-                    query = query.Where(x => x.DataEfetivacao.HasValue && x.DataEfetivacao.Value.Date <= dataFinalEfetivacao);
-                }
-
-                var ordenarPor = filtro.OrdenarPor.Trim().ToLower();
-                var direcao = filtro.Direcao.Trim().ToLower();
-                var asc = direcao == "asc";
-
-                query = ordenarPor switch
-                {
-                    "valor" => asc ? query.OrderBy(x => x.Valor) : query.OrderByDescending(x => x.Valor),
-                    _ => asc ? query.OrderBy(x => x.DataVencimento) : query.OrderByDescending(x => x.DataVencimento),
-                };
+                var query = (await CriarQueryFiltradaLancamentosAsync(id, filtro)).AsQueryable();
+                query = AplicarOrdenacao(query, filtro);
 
                 var pagina = filtro.Pagina < 1 ? 1 : filtro.Pagina;
                 var tamanhoPagina = filtro.TamanhoPagina < 1 ? 10 : filtro.TamanhoPagina;
@@ -226,41 +154,7 @@ namespace MinhasFinancas.Application.Services
                 }
 
                 var dataInicial = new DateTime(ano, mes, 1);
-                var dataFinal = dataInicial.AddMonths(1).AddDays(-1);
-
-                var lancamentosDoMes = await _lancamentoRepository.BuscarPorPeriodoVencimentoAsync(
-                    usuarioId,
-                    dataInicial,
-                    dataFinal);
-
-                var lancamentosValidos = lancamentosDoMes
-                    .Where(x => x.StatusLancamento != EnumStatusLancamento.Cancelado)
-                    .ToList();
-
-                var receitas = lancamentosValidos
-                    .Where(x => x.Tipo == EnumTipoLancamento.Receita)
-                    .OrderBy(x => x.DataVencimento)
-                    .ThenBy(x => x.Descricao)
-                    .Select(MapearItemFluxoCaixaSimples)
-                    .ToList();
-
-                var despesas = lancamentosValidos
-                    .Where(x => x.Tipo == EnumTipoLancamento.Despesa)
-                    .OrderBy(x => x.DataVencimento)
-                    .ThenBy(x => x.Descricao)
-                    .Select(MapearItemFluxoCaixaSimples)
-                    .ToList();
-
-                var resultado = new FluxoCaixaSimplesDTO
-                {
-                    Ano = ano,
-                    Mes = mes,
-                    ReceitasTotal = receitas.Sum(x => x.Valor),
-                    DespesasTotal = despesas.Sum(x => x.Valor),
-                    SaldoMes = receitas.Sum(x => x.Valor) - despesas.Sum(x => x.Valor),
-                    Receitas = receitas,
-                    Despesas = despesas,
-                };
+                var resultado = await MontarFluxoCaixaSimplesAsync(usuarioId, ano, mes);
 
                 var referencia = dataInicial.ToString("MMMM yyyy", new CultureInfo("pt-BR"));
 
@@ -277,6 +171,145 @@ namespace MinhasFinancas.Application.Services
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
                 retorno.MensagemUsuario = "Não foi possível carregar o fluxo de caixa simples.";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
+        public async Task<RetornoGenerico> ExportarLancamentosExcelAsync(string usuarioId, FiltroListagemLancamentoDTO filtro)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+
+                if (!buscaPorUsuario.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorUsuario.Sucesso;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = buscaPorUsuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorUsuario.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var itens = (await CriarQueryFiltradaLancamentosAsync(usuarioId, filtro))
+                    .OrderBy(x => x.DataVencimento)
+                    .ThenBy(x => x.Tipo)
+                    .ThenBy(x => x.Descricao)
+                    .ToList();
+
+                var mesReferencia = filtro.DataInicialVencimento?.ToString("yyyy-MM")
+                    ?? filtro.DataInicialLancamento?.ToString("yyyy-MM")
+                    ?? DateTime.Now.ToString("yyyy-MM");
+
+                var arquivo = _lancamentosExcelReport.Gerar(new LancamentosExcelReportData
+                {
+                    NomeArquivo = $"Lancamentos_{mesReferencia}.xlsx",
+                    Subtitulo = $"Gerado em {DateTime.Now:dd/MM/yyyy HH:mm} • {itens.Count} lançamento(s)",
+                    Itens = itens.Select(x => new LancamentoExcelReportRow
+                    {
+                        Descricao = x.Descricao,
+                        Tipo = ObterDescricaoTipoLancamento(x.Tipo),
+                        Valor = x.Valor,
+                        DataVencimento = x.DataVencimento,
+                        DataEfetivacao = x.DataEfetivacao,
+                        Status = ObterDescricaoStatusLancamento(x.StatusLancamento),
+                        DataLancamento = x.DataLancamento,
+                    }).ToList(),
+                });
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = "Relatório de lançamentos gerado com sucesso.";
+                retorno.MensagemUsuario = "Relatório de lançamentos gerado com sucesso.";
+                retorno.Dados = arquivo;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = "Não foi possível exportar os lançamentos.";
+                retorno.Dados = null;
+                return retorno;
+            }
+        }
+
+        public async Task<RetornoGenerico> ExportarFluxoCaixaSimplesExcelAsync(string usuarioId, ExportarFluxoCaixaSimplesExcelDTO filtro)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+
+                if (!buscaPorUsuario.Sucesso)
+                {
+                    retorno.Sucesso = buscaPorUsuario.Sucesso;
+                    retorno.HttpStatusCode = HttpStatusCode.NotFound;
+                    retorno.MensagemSistema = buscaPorUsuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorUsuario.MensagemUsuario;
+                    retorno.Dados = null;
+                    return retorno;
+                }
+
+                var periodos = ConstruirPeriodosFluxoCaixa(filtro);
+                var meses = new List<FluxoCaixaSimplesExcelSheetData>();
+
+                foreach (var periodo in periodos)
+                {
+                    var fluxo = await MontarFluxoCaixaSimplesAsync(usuarioId, periodo.Year, periodo.Month);
+
+                    meses.Add(new FluxoCaixaSimplesExcelSheetData
+                    {
+                        NomeAba = periodo.ToString("MMMM yyyy", new CultureInfo("pt-BR")),
+                        Referencia = periodo.ToString("MMMM yyyy", new CultureInfo("pt-BR")),
+                        ReceitasTotal = fluxo.ReceitasTotal,
+                        DespesasTotal = fluxo.DespesasTotal,
+                        SaldoMes = fluxo.SaldoMes,
+                        Receitas = fluxo.Receitas.Select(x => new FluxoCaixaSimplesExcelItemData
+                        {
+                            Descricao = x.Descricao,
+                            Categoria = x.Categoria ?? "-",
+                            DataVencimento = x.DataVencimento,
+                            Valor = x.Valor,
+                        }).ToList(),
+                        Despesas = fluxo.Despesas.Select(x => new FluxoCaixaSimplesExcelItemData
+                        {
+                            Descricao = x.Descricao,
+                            Categoria = x.Categoria ?? "-",
+                            DataVencimento = x.DataVencimento,
+                            Valor = x.Valor,
+                        }).ToList(),
+                    });
+                }
+
+                var arquivo = _fluxoCaixaSimplesExcelReport.Gerar(new FluxoCaixaSimplesExcelReportData
+                {
+                    NomeArquivo = ConstruirNomeArquivoFluxoCaixa(filtro, periodos),
+                    Meses = meses,
+                });
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = "Relatório de fluxo de caixa gerado com sucesso.";
+                retorno.MensagemUsuario = "Relatório de fluxo de caixa gerado com sucesso.";
+                retorno.Dados = arquivo;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                retorno.Sucesso = false;
+                retorno.HttpStatusCode = ex is InvalidOperationException || ex is ArgumentOutOfRangeException
+                    ? HttpStatusCode.BadRequest
+                    : HttpStatusCode.InternalServerError;
+                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemUsuario = ex is InvalidOperationException || ex is ArgumentOutOfRangeException
+                    ? ex.Message
+                    : "Não foi possível exportar o fluxo de caixa simples.";
                 retorno.Dados = null;
                 return retorno;
             }
@@ -819,6 +852,246 @@ namespace MinhasFinancas.Application.Services
                 Categoria = lancamento.Categoria?.NomeCategoria,
                 Valor = lancamento.Valor,
                 DataVencimento = lancamento.DataVencimento,
+            };
+        }
+
+        private async Task<List<Lancamento>> CriarQueryFiltradaLancamentosAsync(string usuarioId, FiltroListagemLancamentoDTO filtro)
+        {
+            var lista = await _lancamentoRepository.BuscarTodosOsElementosAsync(usuarioId);
+            var query = lista.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filtro.BuscaDescricao))
+            {
+                var busca = filtro.BuscaDescricao.Trim().ToLower();
+                query = query.Where(x => x.Descricao.ToLower().Contains(busca));
+            }
+
+            if (filtro.Tipo.HasValue)
+            {
+                query = query.Where(x => (int)x.Tipo == filtro.Tipo.Value);
+            }
+
+            if (filtro.CategoriaId.HasValue)
+            {
+                query = query.Where(x => x.CategoriaId == filtro.CategoriaId.Value);
+            }
+
+            if (filtro.ContaId.HasValue)
+            {
+                query = query.Where(x => x.ContaId == filtro.ContaId.Value);
+            }
+
+            if (filtro.CartaoId.HasValue)
+            {
+                query = query.Where(x => x.CartaoId == filtro.CartaoId.Value);
+            }
+
+            if (filtro.StatusLancamento.HasValue)
+            {
+                query = query.Where(x => (int)x.StatusLancamento == filtro.StatusLancamento.Value);
+            }
+
+            if (filtro.DataInicialLancamento.HasValue)
+            {
+                var dataInicial = filtro.DataInicialLancamento.Value.Date;
+                query = query.Where(x => x.DataLancamento.Date >= dataInicial);
+            }
+
+            if (filtro.DataFinalLancamento.HasValue)
+            {
+                var dataFinal = filtro.DataFinalLancamento.Value.Date;
+                query = query.Where(x => x.DataLancamento.Date <= dataFinal);
+            }
+
+            if (filtro.DataInicialVencimento.HasValue)
+            {
+                var dataInicialVencimento = filtro.DataInicialVencimento.Value.Date;
+                query = query.Where(x => x.DataVencimento.Date >= dataInicialVencimento);
+            }
+
+            if (filtro.DataFinalVencimento.HasValue)
+            {
+                var dataFinalVencimento = filtro.DataFinalVencimento.Value.Date;
+                query = query.Where(x => x.DataVencimento.Date <= dataFinalVencimento);
+            }
+
+            if (filtro.DataInicialEfetivacao.HasValue)
+            {
+                var dataInicialEfetivacao = filtro.DataInicialEfetivacao.Value.Date;
+                query = query.Where(x => x.DataEfetivacao.HasValue && x.DataEfetivacao.Value.Date >= dataInicialEfetivacao);
+            }
+
+            if (filtro.DataFinalEfetivacao.HasValue)
+            {
+                var dataFinalEfetivacao = filtro.DataFinalEfetivacao.Value.Date;
+                query = query.Where(x => x.DataEfetivacao.HasValue && x.DataEfetivacao.Value.Date <= dataFinalEfetivacao);
+            }
+
+            return query.ToList();
+        }
+
+        private static IQueryable<Lancamento> AplicarOrdenacao(IQueryable<Lancamento> query, FiltroListagemLancamentoDTO filtro)
+        {
+            var ordenarPor = filtro.OrdenarPor.Trim().ToLower();
+            var direcao = filtro.Direcao.Trim().ToLower();
+            var asc = direcao == "asc";
+
+            return ordenarPor switch
+            {
+                "valor" => asc ? query.OrderBy(x => x.Valor) : query.OrderByDescending(x => x.Valor),
+                _ => asc ? query.OrderBy(x => x.DataVencimento) : query.OrderByDescending(x => x.DataVencimento),
+            };
+        }
+
+        private async Task<FluxoCaixaSimplesDTO> MontarFluxoCaixaSimplesAsync(string usuarioId, int ano, int mes)
+        {
+            var dataInicial = new DateTime(ano, mes, 1);
+            var dataFinal = dataInicial.AddMonths(1).AddDays(-1);
+
+            var lancamentosDoMes = await _lancamentoRepository.BuscarPorPeriodoVencimentoAsync(
+                usuarioId,
+                dataInicial,
+                dataFinal);
+
+            var lancamentosValidos = lancamentosDoMes
+                .Where(x => x.StatusLancamento != EnumStatusLancamento.Cancelado)
+                .ToList();
+
+            var receitas = lancamentosValidos
+                .Where(x => x.Tipo == EnumTipoLancamento.Receita)
+                .OrderBy(x => x.DataVencimento)
+                .ThenBy(x => x.Descricao)
+                .Select(MapearItemFluxoCaixaSimples)
+                .ToList();
+
+            var despesas = lancamentosValidos
+                .Where(x => x.Tipo == EnumTipoLancamento.Despesa)
+                .OrderBy(x => x.DataVencimento)
+                .ThenBy(x => x.Descricao)
+                .Select(MapearItemFluxoCaixaSimples)
+                .ToList();
+
+            return new FluxoCaixaSimplesDTO
+            {
+                Ano = ano,
+                Mes = mes,
+                ReceitasTotal = receitas.Sum(x => x.Valor),
+                DespesasTotal = despesas.Sum(x => x.Valor),
+                SaldoMes = receitas.Sum(x => x.Valor) - despesas.Sum(x => x.Valor),
+                Receitas = receitas,
+                Despesas = despesas,
+            };
+        }
+
+        private static List<DateTime> ConstruirPeriodosFluxoCaixa(ExportarFluxoCaixaSimplesExcelDTO filtro)
+        {
+            var tipoPeriodo = (filtro.TipoPeriodo ?? "mes-atual").Trim().ToLowerInvariant();
+            var periodos = new List<DateTime>();
+
+            if (tipoPeriodo == "ano")
+            {
+                if (!filtro.Ano.HasValue)
+                {
+                    throw new InvalidOperationException("Informe o ano para exportação anual.");
+                }
+
+                for (var mes = 1; mes <= 12; mes++)
+                {
+                    periodos.Add(new DateTime(filtro.Ano.Value, mes, 1));
+                }
+
+                return periodos;
+            }
+
+            if (tipoPeriodo == "intervalo")
+            {
+                if (!filtro.AnoInicial.HasValue || !filtro.MesInicial.HasValue || !filtro.AnoFinal.HasValue || !filtro.MesFinal.HasValue)
+                {
+                    throw new InvalidOperationException("Informe o período inicial e final para exportação por intervalo.");
+                }
+
+                var dataInicial = new DateTime(filtro.AnoInicial.Value, filtro.MesInicial.Value, 1);
+                var dataFinal = new DateTime(filtro.AnoFinal.Value, filtro.MesFinal.Value, 1);
+
+                if (dataFinal < dataInicial)
+                {
+                    throw new InvalidOperationException("O período final não pode ser anterior ao período inicial.");
+                }
+
+                var cursor = dataInicial;
+                while (cursor <= dataFinal)
+                {
+                    periodos.Add(cursor);
+                    cursor = cursor.AddMonths(1);
+                }
+
+                if (periodos.Count > 12)
+                {
+                    throw new InvalidOperationException("A exportação permite no máximo 12 meses por vez.");
+                }
+
+                return periodos;
+            }
+
+            if (!filtro.Ano.HasValue || !filtro.Mes.HasValue)
+            {
+                throw new InvalidOperationException("Informe o mês atual selecionado para exportação.");
+            }
+
+            periodos.Add(new DateTime(filtro.Ano.Value, filtro.Mes.Value, 1));
+            return periodos;
+        }
+
+        private static string ConstruirNomeArquivoFluxoCaixa(ExportarFluxoCaixaSimplesExcelDTO filtro, IReadOnlyList<DateTime> periodos)
+        {
+            var tipoPeriodo = (filtro.TipoPeriodo ?? "mes-atual").Trim().ToLowerInvariant();
+
+            if (tipoPeriodo == "ano")
+            {
+                return $"FluxoCaixa_{filtro.Ano}.xlsx";
+            }
+
+            if (tipoPeriodo == "intervalo" && periodos.Count > 1)
+            {
+                return $"FluxoCaixa_{periodos.First():yyyy-MM}_{periodos.Last():yyyy-MM}.xlsx";
+            }
+
+            var nomeMes = periodos[0].ToString("MMMM_yyyy", new CultureInfo("pt-BR"));
+            nomeMes = nomeMes
+                .Replace("ç", "c")
+                .Replace("ã", "a")
+                .Replace("á", "a")
+                .Replace("é", "e")
+                .Replace("í", "i")
+                .Replace("ó", "o")
+                .Replace("ú", "u");
+
+            return $"FluxoCaixa_{nomeMes}.xlsx";
+        }
+
+        private static string ObterDescricaoTipoLancamento(EnumTipoLancamento tipo)
+        {
+            return tipo switch
+            {
+                EnumTipoLancamento.Despesa => "Despesa",
+                EnumTipoLancamento.Receita => "Receita",
+                EnumTipoLancamento.InvestimentoDeposito => "Investimento",
+                EnumTipoLancamento.InvestimentoSaque => "Saque investimento",
+                EnumTipoLancamento.Transferencia => "Transferência",
+                EnumTipoLancamento.Saque => "Saque",
+                EnumTipoLancamento.Deposito => "Depósito",
+                _ => "Outro",
+            };
+        }
+
+        private static string ObterDescricaoStatusLancamento(EnumStatusLancamento status)
+        {
+            return status switch
+            {
+                EnumStatusLancamento.Pago => "Pago",
+                EnumStatusLancamento.Recebido => "Recebido",
+                EnumStatusLancamento.Cancelado => "Cancelado",
+                _ => "Pendente",
             };
         }
 

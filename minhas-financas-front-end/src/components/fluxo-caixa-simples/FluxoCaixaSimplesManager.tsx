@@ -4,7 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
 import { ApiError } from "@/types/api";
-import { buscarFluxoCaixaSimples } from "@/services/api/fluxo-caixa-simples";
+import {
+  buscarFluxoCaixaSimples,
+  exportarFluxoCaixaSimplesExcel,
+} from "@/services/api/fluxo-caixa-simples";
 import { FluxoCaixaSimplesResumo } from "@/types/fluxo-caixa-simples";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +17,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -54,18 +66,49 @@ function formatarReferenciaMes(data: Date) {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
+function formatMonthInput(data: Date) {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  return `${ano}-${mes}`;
+}
+
+function parseMonthInput(value: string) {
+  const [ano, mes] = value.split("-").map(Number);
+
+  if (!ano || !mes) {
+    return null;
+  }
+
+  return new Date(ano, mes - 1, 1);
+}
+
 export function FluxoCaixaSimplesManager() {
   const { session } = useAuth();
   const [mesOffset, setMesOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [fluxoCaixa, setFluxoCaixa] = useState<FluxoCaixaSimplesResumo | null>(null);
+  const [tipoExportacao, setTipoExportacao] = useState<"mes-atual" | "intervalo" | "ano">(
+    "mes-atual"
+  );
 
   const referenciaBase = useMemo(criarDataBaseMesAtual, []);
   const referenciaAtual = useMemo(
     () => adicionarMeses(referenciaBase, mesOffset),
     [mesOffset, referenciaBase]
   );
+  const [mesInicialExportacao, setMesInicialExportacao] = useState(formatMonthInput(referenciaAtual));
+  const [mesFinalExportacao, setMesFinalExportacao] = useState(formatMonthInput(referenciaAtual));
+  const [anoExportacao, setAnoExportacao] = useState(String(referenciaAtual.getFullYear()));
+
+  useEffect(() => {
+    const referencia = formatMonthInput(referenciaAtual);
+    setMesInicialExportacao(referencia);
+    setMesFinalExportacao(referencia);
+    setAnoExportacao(String(referenciaAtual.getFullYear()));
+  }, [referenciaAtual]);
 
   const carregarFluxoCaixa = useCallback(async () => {
     if (!session?.usuario.id || !session.token) {
@@ -117,6 +160,92 @@ export function FluxoCaixaSimplesManager() {
     },
   ];
 
+  async function exportarExcel() {
+    if (!session?.usuario.id || !session.token) {
+      return;
+    }
+
+    try {
+      setIsExporting(true);
+      setErrorMessage("");
+
+      let blob: Blob;
+
+      if (tipoExportacao === "ano") {
+        blob = await exportarFluxoCaixaSimplesExcel(
+          session.usuario.id,
+          {
+            tipoPeriodo: "ano",
+            ano: Number(anoExportacao),
+          },
+          session.token
+        );
+      } else if (tipoExportacao === "intervalo") {
+        const dataInicial = parseMonthInput(mesInicialExportacao);
+        const dataFinal = parseMonthInput(mesFinalExportacao);
+
+        if (!dataInicial || !dataFinal) {
+          throw new Error("Informe o intervalo de meses para exportação.");
+        }
+
+        const quantidadeMeses =
+          (dataFinal.getFullYear() - dataInicial.getFullYear()) * 12 +
+          (dataFinal.getMonth() - dataInicial.getMonth()) +
+          1;
+
+        if (quantidadeMeses < 1) {
+          throw new Error("O período final não pode ser anterior ao período inicial.");
+        }
+
+        if (quantidadeMeses > 12) {
+          throw new Error("A exportação permite no máximo 12 meses por vez.");
+        }
+
+        blob = await exportarFluxoCaixaSimplesExcel(
+          session.usuario.id,
+          {
+            tipoPeriodo: "intervalo",
+            anoInicial: dataInicial.getFullYear(),
+            mesInicial: dataInicial.getMonth() + 1,
+            anoFinal: dataFinal.getFullYear(),
+            mesFinal: dataFinal.getMonth() + 1,
+          },
+          session.token
+        );
+      } else {
+        blob = await exportarFluxoCaixaSimplesExcel(
+          session.usuario.id,
+          {
+            tipoPeriodo: "mes-atual",
+            ano: referenciaAtual.getFullYear(),
+            mes: referenciaAtual.getMonth() + 1,
+          },
+          session.token
+        );
+      }
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "fluxo-caixa.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setIsExportDialogOpen(false);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrorMessage(error.message);
+      } else if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Não foi possível exportar o fluxo de caixa simples.");
+      }
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
   return (
     <div className="flex-1 px-6 py-8 md:px-8">
       <div className="mx-auto max-w-6xl space-y-6">
@@ -131,26 +260,32 @@ export function FluxoCaixaSimplesManager() {
                 </CardDescription>
               </div>
 
-              <div className="flex items-center gap-3 rounded-full border bg-background px-3 py-2 shadow-sm">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setMesOffset((current) => current - 1)}
-                  disabled={mesOffset <= -LIMITE_MESES}
-                >
-                  <ChevronLeft className="h-4 w-4" />
+              <div className="flex flex-col gap-3 md:items-end">
+                <Button variant="outline" onClick={() => setIsExportDialogOpen(true)}>
+                  Exportar Excel
                 </Button>
-                <div className="min-w-[11rem] text-center text-sm font-semibold">
-                  {formatarReferenciaMes(referenciaAtual)}
+
+                <div className="flex items-center gap-3 rounded-full border bg-background px-3 py-2 shadow-sm">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setMesOffset((current) => current - 1)}
+                    disabled={mesOffset <= -LIMITE_MESES}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <div className="min-w-[11rem] text-center text-sm font-semibold">
+                    {formatarReferenciaMes(referenciaAtual)}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setMesOffset((current) => current + 1)}
+                    disabled={mesOffset >= LIMITE_MESES}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setMesOffset((current) => current + 1)}
-                  disabled={mesOffset >= LIMITE_MESES}
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
               </div>
             </div>
           </CardHeader>
@@ -344,6 +479,94 @@ export function FluxoCaixaSimplesManager() {
             </div>
           </CardContent>
         </Card>
+        <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Exportar Excel</DialogTitle>
+              <DialogDescription>
+                Escolha se deseja exportar o mês selecionado, um intervalo de meses ou um ano inteiro.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant={tipoExportacao === "mes-atual" ? "default" : "outline"}
+                  onClick={() => setTipoExportacao("mes-atual")}
+                >
+                  Mês atual
+                </Button>
+                <Button
+                  type="button"
+                  variant={tipoExportacao === "intervalo" ? "default" : "outline"}
+                  onClick={() => setTipoExportacao("intervalo")}
+                >
+                  Intervalo de meses
+                </Button>
+                <Button
+                  type="button"
+                  variant={tipoExportacao === "ano" ? "default" : "outline"}
+                  onClick={() => setTipoExportacao("ano")}
+                >
+                  Ano inteiro
+                </Button>
+              </div>
+
+              {tipoExportacao === "mes-atual" ? (
+                <div className="rounded-lg border bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
+                  Será exportado o mês atualmente exibido na tela:{" "}
+                  <span className="font-medium text-foreground">
+                    {formatarReferenciaMes(referenciaAtual)}
+                  </span>
+                </div>
+              ) : null}
+
+              {tipoExportacao === "intervalo" ? (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">Mês inicial</p>
+                    <Input
+                      type="month"
+                      value={mesInicialExportacao}
+                      onChange={(event) => setMesInicialExportacao(event.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">Mês final</p>
+                    <Input
+                      type="month"
+                      value={mesFinalExportacao}
+                      onChange={(event) => setMesFinalExportacao(event.target.value)}
+                    />
+                  </div>
+                </div>
+              ) : null}
+
+              {tipoExportacao === "ano" ? (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Ano</p>
+                  <Input
+                    type="number"
+                    min="2000"
+                    max="2100"
+                    value={anoExportacao}
+                    onChange={(event) => setAnoExportacao(event.target.value)}
+                  />
+                </div>
+              ) : null}
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsExportDialogOpen(false)}>
+                Cancelar
+              </Button>
+              <Button onClick={exportarExcel} disabled={isExporting}>
+                {isExporting ? "Exportando..." : "Exportar Excel"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
