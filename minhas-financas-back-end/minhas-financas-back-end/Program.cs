@@ -74,6 +74,8 @@ namespace minhas_financas_back_end
 
             builder.Services.AddScoped<IMetaAppService, MetaAppService>();
             builder.Services.AddScoped<IMetaRepository, MetaRepository>();
+            builder.Services.AddScoped<IPerfilFinanceiroAppService, PerfilFinanceiroAppService>();
+            builder.Services.AddScoped<IPerfilFinanceiroRepository, PerfilFinanceiroRepository>();
 
             builder.Services.AddScoped<ISorteiosAppService, SorteiosAppService>();
 

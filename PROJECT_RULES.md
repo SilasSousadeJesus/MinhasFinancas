@@ -75,6 +75,12 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Alterações em lançamentos financeiros devem preservar o máximo possível de contexto histórico.
 - Campos importantes para relatórios futuros devem ser estruturados, não derivados apenas de descrição.
 
+## Histórico e rastreabilidade analítica
+
+- Sempre que uma informação puder ser útil para análise futura, comparação temporal, auditoria, geração de indicadores ou uso por IA analítica, preferir preservar histórico em vez de sobrescrever o dado.
+- O sistema deve priorizar rastreabilidade, histórico e capacidade de cruzamento de informações.
+- Nem toda alteração precisa gerar histórico, mas alterações com significado financeiro ou analítico devem ser preservadas.
+
 ## Manutenção com IA
 
 - Antes de implementar qualquer feature, ler `AI_CONTEXT.md` e `PROJECT_RULES.md`.

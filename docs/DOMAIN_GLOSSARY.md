@@ -137,6 +137,26 @@ Simulação orientada a objetivo financeiro, com acumulado inicial, renda base, 
 
 Cenário hipotético persistido por usuário para testar decisões futuras sem alterar dados reais.
 
+## Perfil Financeiro
+
+Conjunto de parâmetros pessoais usados para definir como o usuário deseja medir e avaliar sua própria saúde financeira.
+
+## Parâmetro Financeiro
+
+Valor configurado pelo usuário para servir de referência em análises, indicadores, alertas e comparações futuras.
+
+## Configuração vigente
+
+Registro atualmente ativo dentro de um histórico de configurações.
+
+Em módulos históricos, representa a configuração que deve ser considerada como referência atual do usuário.
+
+## Histórico do Perfil Financeiro
+
+Conjunto temporal de configurações anteriores do perfil financeiro do usuário.
+
+Permite saber quais critérios estavam válidos em cada período.
+
 ## Ação de Simulação
 
 Evento hipotético dentro de uma simulação financeira.

@@ -259,6 +259,12 @@ Observação importante:
 - ações simuladas independentes dos dados reais
 - cálculo mensal usando lançamentos reais como base
 
+### Perfil Financeiro
+
+- parâmetros financeiros pessoais por usuário
+- histórico de configurações vigentes e anteriores
+- base futura para indicadores, dashboard, alertas e insights
+
 ## Infraestrutura e integrações existentes
 
 ### Banco de dados
@@ -362,6 +368,7 @@ Observação importante:
 - projeções
 - patrimônio
 - simulações financeiras
+- perfil financeiro
 
 ### Módulos em desenvolvimento
 

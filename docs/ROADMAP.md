@@ -32,6 +32,7 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 
 - projeções financeiras
 - simulações financeiras
+- perfil financeiro
 
 ### Patrimônio
 
@@ -82,6 +83,13 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 
 - experiência completa de uso no frontend
 - leitura consolidada junto ao dashboard e ao planejamento financeiro
+
+### Perfil Financeiro
+
+- integração do Perfil Financeiro aos indicadores financeiros
+- integração do Perfil Financeiro ao dashboard
+- criação de score de saúde financeira
+- geração de insights com base no histórico
 
 ## Ideias futuras
 

@@ -25,6 +25,8 @@ namespace MinhasFinancas.Infra
         public DbSet<PermanenciaBemMaterial> PermanenciaBemMaterial { get; set; }
         public DbSet<Passivo> Passivo { get; set; }
         public DbSet<SnapshotPatrimonial> SnapshotPatrimonial { get; set; }
+        public DbSet<PerfilFinanceiro> PerfilFinanceiro { get; set; }
+        public DbSet<ConfiguracaoPerfilFinanceiro> ConfiguracaoPerfilFinanceiro { get; set; }
         public DbSet<Projecao> Projecao { get; set; }
         public DbSet<RendaProjecao> RendaProjecao { get; set; }
         public DbSet<RendaExtraProjecaoMensal> RendaExtraProjecaoMensal { get; set; }
@@ -72,6 +74,12 @@ namespace MinhasFinancas.Infra
                 .HasMany(x => x.DividasManuaisMensais)
                 .WithOne(x => x.Projecao)
                 .HasForeignKey(x => x.ProjecaoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PerfilFinanceiro>()
+                .HasMany(x => x.Configuracoes)
+                .WithOne(x => x.PerfilFinanceiro)
+                .HasForeignKey(x => x.PerfilFinanceiroId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<SimulacaoFinanceira>()

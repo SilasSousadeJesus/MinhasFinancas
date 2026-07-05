@@ -199,6 +199,26 @@ export function MenuNavegacao({
         </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full">
+          <Link href="/perfil-financeiro" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                "justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <GoalIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Perfil financeiro
+              </span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
           <Link href="/simulacoes-financeiras" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
