@@ -54,6 +54,7 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - atualizacao do andamento de meta por aporte
 - CRUD de bens patrimoniais
 - CRUD de passivos
+- snapshots patrimoniais manuais e visao agregada de patrimonio liquido
 - relatorios por categoria
 - relatorios por ano
 - calculo de potencial de compra de imovel
@@ -77,13 +78,13 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - tela de fluxo de caixa simples com navegacao mensal, resumo, comparativo e listas separadas de receitas e despesas
 - CRUD de contas e cartoes
 - selecao real de conta/cartao/categoria/subcategoria no modal de lancamento
+- modulo de patrimonio com resumo, CRUD de ativos, CRUD de passivos, snapshots manuais e grafico de evolucao patrimonial
 - tela de projecoes com overview em cards
 - tela detalhada de projecao com renda base, renda extra por mes, modo atrelado a despesas ou manual
 
 ### Funcionalidades parcialmente implementadas ou ainda sem fechamento completo
 
 - metas: backend pronto, frontend ainda nao aparece como modulo integrado final
-- bens patrimoniais e passivos: backend pronto, frontend nao foi identificado como fluxo completo
 - relatorios: backend pronto, frontend ainda esta em pagina placeholder
 - orcamento: rota existe no front, ainda sem implementacao de negocio
 - SignalR e Hangfire: projetos existem, mas nao aparecem integrados ao fluxo principal atual
@@ -307,6 +308,8 @@ Fluxo tipico:
   - categorias e subcategorias
 - `src/components/projecao`
   - overview e detalhe de projecoes
+- `src/components/patrimonio`
+  - tela, modais e grafico de evolucao patrimonial
 - `src/providers`
   - autenticacao e tema
 - `src/services/api`
@@ -392,6 +395,31 @@ Leitura financeira baseada em eventos ainda nao efetivados, usando as datas prev
 ### Fluxo de Caixa Realizado
 
 Leitura financeira baseada apenas em eventos que ja ocorreram de fato, usando a data de efetivacao para representar o comportamento real do caixa.
+
+### Ativo patrimonial
+
+Bem ou recurso que compoe positivamente o patrimonio do usuario. O valor atual exibido no sistema vem da ultima `PermanenciaBemMaterial` registrada para aquele ativo.
+
+### Passivo patrimonial
+
+Obrigacao financeira que reduz o patrimonio liquido do usuario. O valor atual exibido no sistema vem da ultima `PermanenciaPassivo` registrada para aquele passivo.
+
+### Patrimonio liquido
+
+Resultado de `Total de ativos - Total de passivos`. Esta e a leitura patrimonial principal da aplicacao.
+
+### Snapshot patrimonial
+
+Fotografia congelada do patrimonio em uma data de referencia especifica.
+
+- guarda `TotalAtivos`
+- guarda `TotalPassivos`
+- guarda `PatrimonioLiquido`
+- nao deve ser recalculado automaticamente depois de salvo
+
+### Evolucao patrimonial
+
+Leitura historica construida a partir dos snapshots patrimoniais salvos manualmente pelo usuario.
 
 ## Entidades
 
@@ -570,19 +598,24 @@ Leitura financeira baseada apenas em eventos que ja ocorreram de fato, usando a 
 - Principais propriedades:
   - `NomeBemPatrimonial`
   - `Descricao`
+  - `Ativo`
   - `Permanencia`
   - `DataCadastro`
+  - `DataAquisicao`
   - `Tipo`
 - Regras importantes:
   - no cadastro de usuario sao criados ao menos:
     - `Dinheiro em Conta`
     - `Investimento em Conta`
+  - o valor atual do ativo nao fica duplicado em coluna propria; ele e derivado da ultima `PermanenciaBemMaterial`
+  - a exclusao operacional da tela foi transformada em inativacao logica via `Ativo = false`
 
 ### PermanenciaBemMaterial
 
 - Finalidade: historico temporal do valor de um bem patrimonial.
 - Regras importantes:
   - usada pelo sistema para consolidacoes patrimoniais e ajustes por lancamento
+  - cada alteracao relevante de valor pode gerar uma nova permanencia, preservando historico do ativo
 
 ### Passivo
 
@@ -593,13 +626,37 @@ Leitura financeira baseada apenas em eventos que ja ocorreram de fato, usando a 
 - Principais propriedades:
   - `NomePassivo`
   - `Descricao`
+  - `Ativo`
   - `Permanencia`
   - `DataCadastro`
+  - `DataInicio`
+  - `DataFim`
   - `Tipo`
+- Regras importantes:
+  - o valor atual do passivo nao fica duplicado em coluna propria; ele e derivado da ultima `PermanenciaPassivo`
+  - a exclusao operacional da tela foi transformada em inativacao logica via `Ativo = false`
 
 ### PermanenciaPassivo
 
 - Finalidade: historico temporal do valor de um passivo.
+- Regras importantes:
+  - cada alteracao relevante de valor pode gerar uma nova permanencia, preservando historico do passivo
+
+### SnapshotPatrimonial
+
+- Finalidade: congelar o resumo patrimonial em uma data especifica.
+- Relacionamentos:
+  - pertence a `Usuario`
+- Principais propriedades:
+  - `DataReferencia`
+  - `TotalAtivos`
+  - `TotalPassivos`
+  - `PatrimonioLiquido`
+  - `Observacao`
+  - `DataCriacao`
+- Regras importantes:
+  - snapshots antigos nao mudam quando ativos ou passivos sao editados depois
+  - o grafico de evolucao patrimonial do frontend e alimentado por esta entidade
 
 ### Projecao
 
@@ -1209,7 +1266,9 @@ Transformar o modulo de lancamentos em um sistema completo de gestao financeira,
 
 #### Pendencias
 
-- (Adicionar futuras melhorias deste modulo)
+- [ ] Integracao automatica entre patrimonio e modulos de contas, cartoes e lancamentos
+- [ ] Geracao automatica de snapshots por periodo
+- [ ] Relatorio patrimonial dedicado reutilizando os snapshots historicos
 
 ### Metas
 
@@ -1429,18 +1488,29 @@ Registrar melhorias estruturais que beneficiam toda a aplicacao.
 
 ### Patrimonio
 
-- Objetivo: registrar ativos e acompanhar permanencia historica.
+- Objetivo: registrar ativos, passivos e acompanhar a evolucao do patrimonio liquido ao longo do tempo.
 - Arquivos envolvidos:
   - `BemMaterialController`
   - `BemPatrimonialAppService`
   - `BemPatrimonial`
   - `PermanenciaBemMaterial`
+  - `PassivoController`
+  - `PassivoAppService`
+  - `PatrimonioController`
+  - `PatrimonioAppService`
+  - `SnapshotPatrimonial`
+  - `PatrimonioManager.tsx`
 - Entidades impactadas:
   - `BemPatrimonial`
   - `PermanenciaBemMaterial`
+  - `Passivo`
+  - `PermanenciaPassivo`
+  - `SnapshotPatrimonial`
 - Decisoes tomadas:
   - criar ativos base automaticamente no cadastro
-  - usar historico de permanencia para relatorios/evolucao
+  - usar historico de permanencia para manter rastreabilidade do valor atual de ativos e passivos
+  - criar snapshots patrimoniais manuais para congelar o estado de um momento sem recalcular historico
+  - evitar duplicar o valor atual em coluna separada quando ele pode ser derivado da ultima permanencia
 
 ### Passivos
 

@@ -179,6 +179,26 @@ export function MenuNavegacao({
         </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full">
+          <Link href="/patrimonio" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                "justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <PocketIcon className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Patrimônio
+              </span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
           <Link href="/metas" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(

@@ -5,6 +5,9 @@
         Imovel = 0,
         Automovel = 1,
         Investimento = 2,
-        DinheiroEmConta = 3
+        DinheiroEmConta = 3,
+        Equipamento = 4,
+        InstrumentoMusical = 5,
+        Outro = 6
     }
 }

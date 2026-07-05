@@ -12,6 +12,8 @@ namespace MinhasFinancas.Domain.Entities
         public virtual List<Lancamento>? Lancamentos { get; set; }
         public virtual List<Categoria>? Categorias { get; set; }
         public virtual List<BemPatrimonial>? BensPatrimoniais { get; set; }
+        public virtual List<Passivo>? Passivos { get; set; }
+        public virtual List<SnapshotPatrimonial>? SnapshotsPatrimoniais { get; set; }
         public virtual List<Meta>? Metas { get; set; }
         public virtual List<Projecao>? Projecoes { get; set; }
     }

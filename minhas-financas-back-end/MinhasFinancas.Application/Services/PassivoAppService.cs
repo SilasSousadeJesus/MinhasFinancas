@@ -115,9 +115,36 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var bemPatrimonial = _mapper.Map<Passivo>(elementoDTO);
+                var passivo = new Passivo
+                {
+                    Id = Guid.NewGuid(),
+                    NomePassivo = elementoDTO.NomeBemPatrimonial,
+                    Descricao = elementoDTO.Descricao,
+                    Tipo = elementoDTO.Tipo,
+                    UsuarioId = elementoDTO.UsuarioId,
+                    DataCadastro = DateTime.Now,
+                    DataInicio = elementoDTO.DataInicio,
+                    DataFim = elementoDTO.DataFim,
+                    Permanencia = true,
+                    Ativo = true,
+                    DataPermanencia = new List<PermanenciaPassivo>
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            PassivoId = Guid.Empty,
+                            DataPermanencia = elementoDTO.DataInicio ?? DateTime.Now,
+                            Valor = elementoDTO.ValorAtual
+                        }
+                    }
+                };
 
-                await _passivoRepository.CadastrarElementoAsync(bemPatrimonial);
+                foreach (var permanencia in passivo.DataPermanencia ?? new List<PermanenciaPassivo>())
+                {
+                    permanencia.PassivoId = passivo.Id;
+                }
+
+                await _passivoRepository.CadastrarElementoAsync(passivo);
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
@@ -156,7 +183,10 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                await _passivoRepository.DeletarElementoAsync(buscaPorCartao.Dados);
+                Passivo passivo = buscaPorCartao.Dados;
+                passivo.Ativo = false;
+
+                await _passivoRepository.EditarElementoAsync(passivo);
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
@@ -195,11 +225,31 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var bem = _mapper.Map<Passivo>(elementoDTO);
-                bem.Id = elementoId;
-                bem.UsuarioId = idPatrono;
+                Passivo passivoAtual = buscaPorBanco.Dados;
+                passivoAtual.NomePassivo = elementoDTO.NomeBemPatrimonial;
+                passivoAtual.Descricao = elementoDTO.Descricao;
+                passivoAtual.Tipo = elementoDTO.Tipo;
+                passivoAtual.UsuarioId = idPatrono;
+                passivoAtual.DataInicio = elementoDTO.DataInicio;
+                passivoAtual.DataFim = elementoDTO.DataFim;
+                passivoAtual.Ativo = true;
 
-                await _passivoRepository.EditarElementoAsync(bem);
+                await _passivoRepository.EditarElementoAsync(passivoAtual);
+
+                var ultimaPermanencia = passivoAtual.DataPermanencia?
+                    .OrderByDescending(x => x.DataPermanencia)
+                    .FirstOrDefault();
+
+                if (ultimaPermanencia == null || ultimaPermanencia.Valor != elementoDTO.ValorAtual)
+                {
+                    await _passivoRepository.CadastrarPermanenciaAsync(new PermanenciaPassivo
+                    {
+                        Id = Guid.NewGuid(),
+                        PassivoId = elementoId,
+                        DataPermanencia = DateTime.Now,
+                        Valor = elementoDTO.ValorAtual,
+                    });
+                }
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;

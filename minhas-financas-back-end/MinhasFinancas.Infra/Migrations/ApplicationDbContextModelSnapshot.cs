@@ -164,6 +164,12 @@ namespace MinhasFinancas.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("DataAquisicao")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("datetime(6)");
 
@@ -514,7 +520,16 @@ namespace MinhasFinancas.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataFim")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataInicio")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Descricao")
@@ -532,9 +547,11 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UsuarioId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Passivo");
                 });
@@ -668,6 +685,41 @@ namespace MinhasFinancas.Infra.Migrations
                     b.HasIndex("ProjecaoId");
 
                     b.ToTable("RendaProjecao");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.SnapshotPatrimonial", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataReferencia")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Observacao")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("PatrimonioLiquido")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalAtivos")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalPassivos")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("SnapshotPatrimonial");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.SubCategoria", b =>
@@ -853,6 +905,13 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.Passivo", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
+                        .WithMany("Passivos")
+                        .HasForeignKey("UsuarioId");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.PermanenciaBemMaterial", b =>
                 {
                     b.HasOne("MinhasFinancas.Domain.Entities.BemPatrimonial", null)
@@ -902,6 +961,13 @@ namespace MinhasFinancas.Infra.Migrations
                         .IsRequired();
 
                     b.Navigation("Projecao");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.SnapshotPatrimonial", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
+                        .WithMany("SnapshotsPatrimoniais")
+                        .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.SubCategoria", b =>
@@ -968,7 +1034,11 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.Navigation("Metas");
 
+                    b.Navigation("Passivos");
+
                     b.Navigation("Projecoes");
+
+                    b.Navigation("SnapshotsPatrimoniais");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,12 +9,15 @@ namespace MinhasFinancas.CrossCutting.Util.Dicionary
         public DicionarybemPatrimonial()
         {
             bemPatrimonialDict = new Dictionary<EnumBemPatrimonial, string>
-        {
+            {
             { EnumBemPatrimonial.Imovel, "Imovel" },
             { EnumBemPatrimonial.Automovel, "Automovel" },
             { EnumBemPatrimonial.Investimento, "Investimento" },
-            { EnumBemPatrimonial.DinheiroEmConta, "Dinheiro Em Conta" }
-        };
+            { EnumBemPatrimonial.DinheiroEmConta, "Dinheiro Em Conta" },
+            { EnumBemPatrimonial.Equipamento, "Equipamento" },
+            { EnumBemPatrimonial.InstrumentoMusical, "Instrumento Musical" },
+            { EnumBemPatrimonial.Outro, "Outro" }
+            };
         }
 
         public string PegarBemPatrimonialName(EnumBemPatrimonial key)

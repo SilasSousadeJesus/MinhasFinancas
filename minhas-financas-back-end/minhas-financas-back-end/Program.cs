@@ -69,6 +69,8 @@ namespace minhas_financas_back_end
 
             builder.Services.AddScoped<IPassivoAppService, PassivoAppService>();
             builder.Services.AddScoped<IPassivoRepository, PassivoRepository>();
+            builder.Services.AddScoped<IPatrimonioAppService, PatrimonioAppService>();
+            builder.Services.AddScoped<IPatrimonioRepository, PatrimonioRepository>();
 
             builder.Services.AddScoped<IMetaAppService, MetaAppService>();
             builder.Services.AddScoped<IMetaRepository, MetaRepository>();

@@ -19,7 +19,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
             var listaDeBens =await _context.Set<BemPatrimonial>()
                 .AsNoTracking()
                 .Include(x => x.DataPermanencia)
-                 .Where(b => b.UsuarioId == id)
+                 .Where(b => b.UsuarioId == id && b.Ativo)
                  .ToListAsync();
 
             return listaDeBens;
@@ -80,6 +80,12 @@ namespace MinhasFinancas.Infra.Data.Repositories
             }
 
             _context.Set<PermanenciaBemMaterial>().Update(ultimaDataPermanencia);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CadastrarPermanenciaAsync(PermanenciaBemMaterial permanencia)
+        {
+            await _context.Set<PermanenciaBemMaterial>().AddAsync(permanencia);
             await _context.SaveChangesAsync();
         }
     }

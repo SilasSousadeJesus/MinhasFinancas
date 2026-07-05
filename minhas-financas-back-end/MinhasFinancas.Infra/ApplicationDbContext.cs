@@ -24,6 +24,7 @@ namespace MinhasFinancas.Infra
         public DbSet<Meta> Meta { get; set; }
         public DbSet<PermanenciaBemMaterial> PermanenciaBemMaterial { get; set; }
         public DbSet<Passivo> Passivo { get; set; }
+        public DbSet<SnapshotPatrimonial> SnapshotPatrimonial { get; set; }
         public DbSet<Projecao> Projecao { get; set; }
         public DbSet<RendaProjecao> RendaProjecao { get; set; }
         public DbSet<RendaExtraProjecaoMensal> RendaExtraProjecaoMensal { get; set; }

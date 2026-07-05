@@ -17,7 +17,7 @@ namespace MinhasFinancas.Infra.Data.Repositories
             var listaDeBens = await _context.Set<Passivo>()
                 .AsNoTracking()
                 .Include(x => x.DataPermanencia)
-                 .Where(b => b.UsuarioId == id)
+                 .Where(b => b.UsuarioId == id && b.Ativo)
                  .ToListAsync();
 
             return listaDeBens;
@@ -52,6 +52,12 @@ namespace MinhasFinancas.Infra.Data.Repositories
             }
 
             _context.Set<Passivo>().Update(elemento);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CadastrarPermanenciaAsync(PermanenciaPassivo permanencia)
+        {
+            await _context.Set<PermanenciaPassivo>().AddAsync(permanencia);
             await _context.SaveChangesAsync();
         }
     }

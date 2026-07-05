@@ -6,6 +6,7 @@ using MinhasFinancas.Application.DTOs.Categoria;
 using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.DTOs.Meta;
 using MinhasFinancas.Application.DTOs.Passivo;
+using MinhasFinancas.Application.DTOs.Patrimonio;
 using MinhasFinancas.Application.DTOs.Projecao;
 using MinhasFinancas.Domain.Entities;
 
@@ -32,8 +33,12 @@ namespace MinhasFinancas.Application.Configurations
             CreateMap<CadastrarBemPatrimonialDTO, BemPatrimonial>();
             CreateMap<EditarBemPatrimonialDTO, BemPatrimonial>();
 
-            CreateMap<CadastrarPassivoDTO, Passivo>();
-            CreateMap<EditarPassivoDTO, Passivo>();
+            CreateMap<CadastrarPassivoDTO, Passivo>()
+                .ForMember(dest => dest.NomePassivo, opt => opt.MapFrom(src => src.NomeBemPatrimonial));
+            CreateMap<EditarPassivoDTO, Passivo>()
+                .ForMember(dest => dest.NomePassivo, opt => opt.MapFrom(src => src.NomeBemPatrimonial));
+
+            CreateMap<CadastrarSnapshotPatrimonialDTO, SnapshotPatrimonial>();
 
 
             CreateMap<CadastrarMetaDTO, Meta>();

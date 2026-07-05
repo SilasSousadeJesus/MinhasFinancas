@@ -116,7 +116,34 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var bemPatrimonial = _mapper.Map<BemPatrimonial>(elementoDTO);
+                var dataReferencia = elementoDTO.DataAquisicao ?? DateTime.Now;
+                var bemPatrimonial = new BemPatrimonial
+                {
+                    Id = Guid.NewGuid(),
+                    NomeBemPatrimonial = elementoDTO.NomeBemPatrimonial,
+                    Descricao = elementoDTO.Descricao,
+                    Tipo = elementoDTO.Tipo,
+                    UsuarioId = elementoDTO.UsuarioId,
+                    DataCadastro = DateTime.Now,
+                    DataAquisicao = elementoDTO.DataAquisicao,
+                    Permanencia = true,
+                    Ativo = true,
+                    DataPermanencia = new List<PermanenciaBemMaterial>
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            BemPatrimonialId = Guid.Empty,
+                            DataPermanencia = dataReferencia,
+                            Valor = elementoDTO.ValorAtual
+                        }
+                    }
+                };
+
+                foreach (var permanencia in bemPatrimonial.DataPermanencia)
+                {
+                    permanencia.BemPatrimonialId = bemPatrimonial.Id;
+                }
 
                 await _bemMaterialRepository.CadastrarElementoAsync(bemPatrimonial);
 
@@ -157,7 +184,10 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                await _bemMaterialRepository.DeletarElementoAsync(buscaPorCartao.Dados);
+                BemPatrimonial bemPatrimonial = buscaPorCartao.Dados;
+                bemPatrimonial.Ativo = false;
+
+                await _bemMaterialRepository.EditarElementoAsync(bemPatrimonial);
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
@@ -196,11 +226,30 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var bem = _mapper.Map<BemPatrimonial>(elementoDTO);
-                bem.Id = elementoId;
-                bem.UsuarioId = idPatrono;
+                BemPatrimonial bemAtual = buscaPorBanco.Dados;
+                bemAtual.NomeBemPatrimonial = elementoDTO.NomeBemPatrimonial;
+                bemAtual.Descricao = elementoDTO.Descricao;
+                bemAtual.Tipo = elementoDTO.Tipo;
+                bemAtual.UsuarioId = idPatrono;
+                bemAtual.DataAquisicao = elementoDTO.DataAquisicao;
+                bemAtual.Ativo = true;
 
-                await _bemMaterialRepository.EditarElementoAsync(bem);
+                await _bemMaterialRepository.EditarElementoAsync(bemAtual);
+
+                var ultimaPermanencia = bemAtual.DataPermanencia?
+                    .OrderByDescending(x => x.DataPermanencia)
+                    .FirstOrDefault();
+
+                if (ultimaPermanencia == null || ultimaPermanencia.Valor != elementoDTO.ValorAtual)
+                {
+                    await _bemMaterialRepository.CadastrarPermanenciaAsync(new PermanenciaBemMaterial
+                    {
+                        Id = Guid.NewGuid(),
+                        BemPatrimonialId = elementoId,
+                        DataPermanencia = DateTime.Now,
+                        Valor = elementoDTO.ValorAtual,
+                    });
+                }
 
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;

@@ -728,13 +728,6 @@ export function LancamentosManager() {
                   <Button variant="outline" onClick={carregarLancamentos}>
                     Atualizar lista
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={exportarExcel}
-                    disabled={isExporting || totalItens === 0}
-                  >
-                    {isExporting ? "Exportando..." : "Exportar Excel"}
-                  </Button>
                 </div>
               </div>
             </CardHeader>
@@ -1035,6 +1028,13 @@ export function LancamentosManager() {
                       {totalItens} resultado(s) encontrado(s).
                     </p>
                     <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={exportarExcel}
+                        disabled={isExporting || totalItens === 0}
+                      >
+                        {isExporting ? "Exportando..." : "Exportar Excel"}
+                      </Button>
                       <Button variant="outline" onClick={limparFiltros}>
                         Limpar filtros
                       </Button>

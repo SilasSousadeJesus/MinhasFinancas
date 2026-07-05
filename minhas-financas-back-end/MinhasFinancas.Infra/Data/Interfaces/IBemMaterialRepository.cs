@@ -9,5 +9,6 @@ namespace MinhasFinancas.Infra.Data.Interfaces
         Task<PermanenciaBemMaterial> BuscarUltimaDataPermanencia(Guid bemMaterialId);
 
         Task EditarUltimaDataPermanencia(PermanenciaBemMaterial ultimaDataPermanencia);
+        Task CadastrarPermanenciaAsync(PermanenciaBemMaterial permanencia);
     }
 }
