@@ -205,7 +205,7 @@ Fluxo tipico:
 - .NET 8
 - ASP.NET Core Web API
 - Entity Framework Core
-- SQL Server
+- MySQL
 - Microsoft.AspNetCore.Identity
 - JWT Bearer Authentication
 - AutoMapper
@@ -251,9 +251,10 @@ Fluxo tipico:
 
 ### Banco de dados
 
-- SQL Server
+- MySQL
+- provider EF Core oficial: `Pomelo.EntityFrameworkCore.MySql`
 - string de conexao padrao em `appsettings.json`
-- migrations em `MinhasFinancas.Infra/Migrations`
+- a base atual utiliza migrations compativeis com MySQL em `MinhasFinancas.Infra/Migrations`
 
 ## Estrutura das Pastas
 
@@ -1061,6 +1062,8 @@ Leitura financeira baseada apenas em eventos que ja ocorreram de fato, usando a 
 - `src/app` e `src/pages` coexistem no front; qualquer alteracao de login/cadastro precisa respeitar ambos.
 - O build do front pode quebrar com problemas de casing/import por causa do Windows + Next.
 - O backend executa migracao automatica no startup via `app.MigrateDatabase()`.
+- Como o banco oficial passou a ser MySQL, a primeira inicializacao depende de existir uma migration MySQL valida aplicada/gerada para o estado atual das entidades.
+- Na infraestrutura atual, o nome oficial do banco MySQL da aplicacao e `minhasfinancas`.
 - Filtros de lancamento sao aplicados apos carregar a lista completa; cuidado com performance se o volume crescer.
 - O dashboard trabalha com strings monetarias formatadas no backend, nao com decimais crus.
 - O frontend de projecao faz preview local adicional alem do calculo do backend.
@@ -1484,7 +1487,7 @@ Registrar melhorias estruturais que beneficiam toda a aplicacao.
 
 ## Resumo Executivo
 
-`Minhas Financas` e um sistema de gestao financeira pessoal com backend em ASP.NET Core e frontend em Next.js. O backend esta organizado em camadas claras, com controllers finos, AppServices como eixo principal da regra de negocio, entities e calculos de dominio, alem de repositories EF Core para persistencia em SQL Server. O frontend evoluiu de um estado inicialmente visual para uma aplicacao funcional em modulos centrais como autenticacao, dashboard, categorias, lancamentos, contas/cartoes e projecoes.
+`Minhas Financas` e um sistema de gestao financeira pessoal com backend em ASP.NET Core e frontend em Next.js. O backend esta organizado em camadas claras, com controllers finos, AppServices como eixo principal da regra de negocio, entities e calculos de dominio, alem de repositories EF Core para persistencia em MySQL via Pomelo. O frontend evoluiu de um estado inicialmente visual para uma aplicacao funcional em modulos centrais como autenticacao, dashboard, categorias, lancamentos, contas/cartoes e projecoes.
 
 O fluxo tecnico principal parte de login com JWT. O token e decodificado no frontend para extrair `usuarioId`, nome e email, persistindo a sessao em `localStorage`. Esse `usuarioId` e essencial porque a API, mesmo autenticada, ainda depende fortemente de rotas com identificador explicito do usuario. O contrato padrao da API e `RetornoGenerico`, que deve ser preservado em qualquer extensao do sistema.
 

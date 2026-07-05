@@ -1,5 +1,6 @@
-
+ï»¿
 using Hangfire;
+using Hangfire.MySql;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Minhas_Financas_Hangfire.Interfaces;
@@ -19,7 +20,7 @@ namespace Minhas_Financas_Hangfire
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
 
@@ -36,7 +37,12 @@ namespace Minhas_Financas_Hangfire
                  configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                               .UseSimpleAssemblyNameTypeSerializer()
                               .UseRecommendedSerializerSettings()
-                              .UseSqlServerStorage(connectionString));
+                              .UseStorage(new MySqlStorage(
+                                  connectionString,
+                                  new MySqlStorageOptions
+                                  {
+                                      PrepareSchemaIfNecessary = true
+                                  })));
             //Server
             builder.Services.AddHangfireServer();
 
@@ -64,11 +70,12 @@ namespace Minhas_Financas_Hangfire
 
             app.UseHangfireDashboard("/backgroundJobs");
 
-            //0 0 1 1 * significa que a tarefa será executada à meia-noite, no dia 1º de janeiro, independentemente do dia da semana.
+            //0 0 1 1 * significa que a tarefa serÃ¡ executada Ã  meia-noite, no dia 1Âº de janeiro, independentemente do dia da semana.
             RecurringJob.AddOrUpdate<IBemPatrimonialJobs>(x => x.FilaJobs(), "0 0 1 1 *");
 
             app.Run();
         }
     }
 }
+
 

@@ -35,7 +35,7 @@ namespace minhas_financas_back_end
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
             // Add services to the container.

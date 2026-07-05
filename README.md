@@ -7,7 +7,7 @@
 - ASP.NET Core Web API
 - .NET
 - Entity Framework Core
-- SQL Server
+- MySQL
 - Microsoft.AspNetCore.Identity
 - JWT Bearer Authentication
 - AutoMapper
@@ -148,7 +148,7 @@ O fluxo natural do projeto foca em três camadas:
 
 - Interface do usuário no navegador, feita em Next.js e com componentes modernos.
 - Uma API REST em ASP.NET Core que centraliza a lógica de autenticação, validação, persistência e retorno de resultados.
-- Uma camada de dados baseada em Entity Framework Core e SQL Server para gravar informações financeiras estruturadas.
+- Uma camada de dados baseada em Entity Framework Core e MySQL para gravar informações financeiras estruturadas.
 
 Esse conjunto permite que o aplicativo evolua para uma solução híbrida onde o usuário entra no sistema, registra dados e visualiza indicadores relevantes sem sair do fluxo.
 
@@ -205,7 +205,7 @@ A API disponibiliza controladores para os principais módulos do sistema:
   - Conta, Cartao, Categoria, SubCategoria, Lancamento
   - LancamentoFixo, LancamentoParcelado, BemPatrimonial, Meta, Passivo
 - O mapeamento de relacionamentos e regras de exclusão está em `OnModelCreating`.
-- A conexão do SQL Server está configurada em `appsettings.json`.
+- A conexão do MySQL está configurada em `appsettings.json`.
 
 #### 4.2.4 Camada de aplicação
 
@@ -240,7 +240,7 @@ A API disponibiliza controladores para os principais módulos do sistema:
 3. O backend valida o login e retorna um token JWT.
 4. O frontend armazena o token e envia em `Authorization: Bearer {token}` para chamadas subsequentes.
 5. O backend recebe o token e permite acesso a endpoints protegidos como `api/Lancamento`, `api/Usuario`, `api/Dashboard`.
-6. Os endpoints usam services e repositórios para consultar e gravar no banco SQL Server.
+6. Os endpoints usam services e repositórios para consultar e gravar no banco MySQL.
 7. O resultado é retornado ao frontend, que atualiza a interface e exibe gráficos, tabelas e valores.
 
 ### 4.5 Como rodar o projeto
@@ -248,9 +248,35 @@ A API disponibiliza controladores para os principais módulos do sistema:
 #### Backend
 
 1. Abra a solução em Visual Studio ou VS Code.
-2. Atualize `ConnectionStrings:ConnectionMinhasFinancas` em `minhas-financas-back-end/minhas-financas-back-end/appsettings.json` para apontar ao seu SQL Server.
-3. Execute `minhas-financas-back-end/minhas-financas-back-end`.
-4. A API expõe Swagger em modo Development em `/swagger`.
+2. Suba um MySQL local ou ajuste `ConnectionStrings:ConnectionMinhasFinancas` em `minhas-financas-back-end/minhas-financas-back-end/appsettings.json`.
+3. Gere a migration inicial MySQL.
+4. Aplique a migration no banco.
+5. Execute `minhas-financas-back-end/minhas-financas-back-end`.
+6. A API expõe Swagger em modo Development em `/swagger`.
+
+### 4.5.1 Setup do MySQL
+
+Connection string base usada no projeto:
+
+`Server=localhost;Port=3306;Database=minhasfinancas;User=root;Password=senha;Allow User Variables=True`
+
+Se quiser subir localmente com Docker:
+
+```bash
+docker compose up -d
+```
+
+Comandos para gerar e aplicar migrations MySQL:
+
+```bash
+dotnet ef migrations add InitialMySql --project minhas-financas-back-end/MinhasFinancas.Infra/MinhasFinancas.Infra.csproj --startup-project minhas-financas-back-end/minhas-financas-back-end/MinhasFinancas.API.csproj
+dotnet ef database update --project minhas-financas-back-end/MinhasFinancas.Infra/MinhasFinancas.Infra.csproj --startup-project minhas-financas-back-end/minhas-financas-back-end/MinhasFinancas.API.csproj
+```
+
+Observação:
+
+- O histórico antigo de migrations legadas foi removido.
+- O projeto agora espera uma nova migration inicial compatível com MySQL.
 
 #### Frontend
 

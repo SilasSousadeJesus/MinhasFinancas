@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: minhas-financas-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: senha
+      MYSQL_DATABASE: minhasfinancas
+    ports:
+      - "3306:3306"
+    volumes:
+      - minhas-financas-mysql-data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+
+volumes:
+  minhas-financas-mysql-data:
