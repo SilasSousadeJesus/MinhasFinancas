@@ -80,6 +80,9 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IPotencialCompraImovelAppService, PotencialCompraImovelAppService>();
             builder.Services.AddScoped<IProjecaoAppService, ProjecaoAppService>();
             builder.Services.AddScoped<IProjecaoRepository, ProjecaoRepository>();
+            builder.Services.AddScoped<ISimulacaoFinanceiraAppService, SimulacaoFinanceiraAppService>();
+            builder.Services.AddScoped<ISimulacaoFinanceiraRepository, SimulacaoFinanceiraRepository>();
+            builder.Services.AddScoped<SimulacaoFinanceiraEngine>();
 
             // Add authentication services
             AuthenticationSetup.AddAuthentication(builder.Services, builder.Configuration);

@@ -59,6 +59,8 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - relatorios por ano
 - calculo de potencial de compra de imovel
 - CRUD e calculo de projecoes
+- CRUD de simulacoes financeiras
+- motor de simulacao financeira baseado em lancamentos reais por mes de vencimento
 - seed inicial de categorias e bens patrimoniais quando o usuario e criado
 
 #### Frontend
@@ -81,6 +83,7 @@ O projeto centraliza dados financeiros dispersos e transforma movimentacoes em l
 - modulo de patrimonio com resumo, CRUD de ativos, CRUD de passivos, snapshots manuais e grafico de evolucao patrimonial
 - tela de projecoes com overview em cards
 - tela detalhada de projecao com renda base, renda extra por mes, modo atrelado a despesas ou manual
+- modulo de simulacoes financeiras com overview em cards, edicao detalhada e resultado mensal sem alterar dados reais
 
 ### Funcionalidades parcialmente implementadas ou ainda sem fechamento completo
 
@@ -310,6 +313,8 @@ Fluxo tipico:
   - overview e detalhe de projecoes
 - `src/components/patrimonio`
   - tela, modais e grafico de evolucao patrimonial
+- `src/components/simulacao-financeira`
+  - overview, edicao e resultado de simulacoes financeiras
 - `src/providers`
   - autenticacao e tema
 - `src/services/api`
@@ -421,6 +426,32 @@ Fotografia congelada do patrimonio em uma data de referencia especifica.
 
 Leitura historica construida a partir dos snapshots patrimoniais salvos manualmente pelo usuario.
 
+### Simulacao financeira
+
+Cenario hipotetico persistido por usuario, criado para testar decisoes futuras sem gerar lancamentos reais e sem alterar patrimonio, metas, projecoes ou qualquer outro modulo operacional.
+
+### Acao de simulacao financeira
+
+Evento hipotetico que compoe uma simulacao.
+
+- pode representar receita unica
+- pode representar despesa unica
+- pode representar receita recorrente mensal
+- pode representar despesa recorrente mensal
+- pode representar despesa parcelada
+
+### Resultado simulado
+
+Consolidacao mes a mes que combina a base real de lancamentos com as acoes hipoteticas da simulacao, sem persistir novos lancamentos.
+
+### Saldo real
+
+Resultado mensal derivado apenas dos lancamentos reais do usuario, agrupados por `DataVencimento` e desconsiderando lancamentos cancelados.
+
+### Saldo simulado
+
+Resultado mensal obtido ao somar receitas simuladas e subtrair despesas simuladas sobre a base real do periodo.
+
 ## Entidades
 
 ### Usuario
@@ -435,6 +466,7 @@ Leitura historica construida a partir dos snapshots patrimoniais salvos manualme
   - bens patrimoniais
   - metas
   - projecoes
+  - simulacoes financeiras
 - Principais propriedades:
   - `Id`
   - `Nome`
@@ -678,6 +710,46 @@ Leitura historica construida a partir dos snapshots patrimoniais salvos manualme
   - se `AtreladaADespesas = false`, usa dividas manuais por mes
   - exige pelo menos uma renda base maior que zero
 
+### SimulacaoFinanceira
+
+- Finalidade: representar um cenario hipotetico independente para comparar o fluxo real com um fluxo ajustado por acoes simuladas.
+- Relacionamentos:
+  - pertence a `Usuario`
+  - possui varias `AcaoSimulacaoFinanceira`
+- Principais propriedades:
+  - `Nome`
+  - `Descricao`
+  - `DataInicial`
+  - `QuantidadeMeses`
+  - `Ativa`
+  - `DataCriacao`
+  - `DataAtualizacao`
+- Regras importantes:
+  - nao cria, edita ou remove lancamentos reais
+  - a janela maxima da V1 e de 12 meses
+  - o calculo usa os lancamentos reais do usuario como base por `DataVencimento`
+  - a inativacao e logica, preservando historico
+
+### AcaoSimulacaoFinanceira
+
+- Finalidade: representar um evento hipotetico dentro de uma simulacao.
+- Relacionamentos:
+  - pertence a `SimulacaoFinanceira`
+- Principais propriedades:
+  - `TipoAcao`
+  - `Descricao`
+  - `Valor`
+  - `DataInicial`
+  - `DataFinal`
+  - `QuantidadeParcelas`
+  - `Observacao`
+  - `Ativa`
+- Regras importantes:
+  - `DespesaParcelada` exige `QuantidadeParcelas > 1`
+  - acoes recorrentes podem ter `DataFinal` opcional
+  - receitas e despesas unicas afetam apenas o mes inicial
+  - acoes inativas nao entram no calculo
+
 ### RendaProjecao
 
 - Finalidade: renda base recorrente da projecao.
@@ -772,6 +844,31 @@ Leitura historica construida a partir dos snapshots patrimoniais salvos manualme
 - se o objetivo for atingido em algum mes, esse mes vira `MesObjetivo`
 - `PercentualConcluido` considera o acumulado inicial em relacao ao objetivo
 - `ValorRestanteParaObjetivo` no backend e calculado a partir do acumulado inicial quando o resultado e montado; no frontend a tabela detalhada tambem faz preview local por linha
+
+### Como funciona uma simulacao financeira
+
+- a simulacao e um agregado proprio e independente dos modulos operacionais
+- o usuario cria um cenario com nome, descricao, data inicial e quantidade de meses
+- dentro desse cenario ele cadastra acoes hipoteticas
+- a base real vem dos lancamentos do usuario agrupados por `DataVencimento`
+- lancamentos com status `Cancelado` ficam fora da base
+- o motor calcula, para cada mes:
+  - `ReceitasReais`
+  - `DespesasReais`
+  - `SaldoReal`
+  - `ReceitasSimuladas`
+  - `DespesasSimuladas`
+  - `SaldoSimulado`
+  - `Diferenca`
+- `SaldoSimulado` representa o saldo final do mes considerando base real mais acoes da simulacao
+- `Diferenca` representa o quanto a simulacao melhora ou piora o saldo real
+- nenhuma acao da simulacao persiste em `Lancamento`
+- a V1 suporta:
+  - receita unica
+  - despesa unica
+  - receita recorrente mensal
+  - despesa recorrente mensal
+  - despesa parcelada
 
 ### Como funciona o dashboard
 
@@ -892,6 +989,15 @@ Leitura historica construida a partir dos snapshots patrimoniais salvos manualme
 4. O backend retorna `ResultadoProjecaoDTO`.
 5. O front tambem calcula preview local por linha para refletir edicoes imediatamente.
 
+### Fluxo de simulacoes financeiras
+
+1. Front cria uma simulacao no overview.
+2. A tela detalhada permite definir o cenario e montar uma lista de acoes hipoteticas.
+3. O backend persiste a simulacao e sua colecao de acoes sem gerar lancamentos reais.
+4. Ao abrir ou recalcular a simulacao, o backend busca os lancamentos reais do usuario no periodo.
+5. `SimulacaoFinanceiraEngine` combina base real e acoes hipoteticas para montar o resultado mensal.
+6. O frontend apenas renderiza cards de resumo e tabela consolidada, sem recalcular regra de negocio principal.
+
 ## API
 
 ### Padrao geral
@@ -959,6 +1065,21 @@ Leitura historica construida a partir dos snapshots patrimoniais salvos manualme
 - `GET /api/Dashboard/{usuarioId}`
   - retorna agregados gerais e o bloco `radarFinanceiro`
 
+#### SimulacaoFinanceira
+
+- `GET /api/SimulacaoFinanceira/BuscarTodas/{usuarioId}`
+  - lista simulacoes ativas com resumo e ultimo resultado calculado
+- `GET /api/SimulacaoFinanceira/BuscarUma/{usuarioId}/{simulacaoId}`
+  - devolve dados completos da simulacao e resultado atual
+- `POST /api/SimulacaoFinanceira/Cadastrar`
+  - cria uma simulacao com suas acoes
+- `PUT /api/SimulacaoFinanceira/Editar/{usuarioId}/{simulacaoId}`
+  - atualiza a simulacao e substitui a colecao de acoes
+- `DELETE /api/SimulacaoFinanceira/Inativar/{usuarioId}/{simulacaoId}`
+  - inativa a simulacao sem apagar historico
+- `GET /api/SimulacaoFinanceira/Calcular/{usuarioId}/{simulacaoId}`
+  - recalcula o consolidado mensal da simulacao
+
 #### Meta
 
 - `POST /api/Meta/Cadastrar`
@@ -1017,11 +1138,14 @@ Leitura historica construida a partir dos snapshots patrimoniais salvos manualme
 - `RendaProjecao`
 - `RendaExtraProjecaoMensal`
 - `DividaManualProjecaoMensal`
+- `SimulacaoFinanceira`
+- `AcaoSimulacaoFinanceira`
 
 ### Relacionamentos relevantes
 
 - `Usuario 1:N Conta`
 - `Usuario 1:N Cartao`
+- `Usuario 1:N SimulacaoFinanceira`
 - `Usuario 1:N Categoria`
 - `Categoria 1:N SubCategoria`
 - `Usuario 1:N Lancamento`
@@ -1037,6 +1161,7 @@ Leitura historica construida a partir dos snapshots patrimoniais salvos manualme
 - `Projecao 1:N RendaProjecao`
 - `Projecao 1:N RendaExtraProjecaoMensal`
 - `Projecao 1:N DividaManualProjecaoMensal`
+- `SimulacaoFinanceira 1:N AcaoSimulacaoFinanceira`
 
 ### Configuracoes importantes no `ApplicationDbContext`
 
@@ -1045,6 +1170,8 @@ Leitura historica construida a partir dos snapshots patrimoniais salvos manualme
   - `Rendas`
   - `RendasExtrasMensais`
   - `DividasManuaisMensais`
+- `SimulacaoFinanceira` tem cascade delete para:
+  - `Acoes`
 - `Lancamento -> Categoria` e `Lancamento -> SubCategoria` usam `DeleteBehavior.NoAction`
 
 ## Convencoes do Projeto
@@ -1261,6 +1388,21 @@ Transformar o modulo de lancamentos em um sistema completo de gestao financeira,
 #### Pendencias
 
 - (Adicionar futuras melhorias deste modulo)
+
+### Simulacoes Financeiras
+
+#### Objetivo
+
+Permitir testes de cenarios hipoteticos sem tocar nos dados reais do usuario, preparando a base para simulacoes comparativas mais avancadas.
+
+#### Pendencias
+
+- [ ] Comparacao entre multiplas simulacoes lado a lado
+- [ ] Aplicacao parcial de uma simulacao aos dados reais mediante confirmacao explicita
+- [ ] Simulacao de impacto em patrimonio liquido
+- [ ] Simulacao de impacto em metas
+- [ ] Importacao de acoes simuladas a partir de um conjunto selecionado de lancamentos reais
+- [ ] Duplicacao rapida de simulacoes existentes
 
 ### Patrimonio
 
@@ -1543,6 +1685,27 @@ Registrar melhorias estruturais que beneficiam toda a aplicacao.
   - flag `AtreladaADespesas`
   - modo manual de dividas mensais
   - preview local no front para refletir alteracoes imediatamente
+
+### Simulacoes Financeiras
+
+- Objetivo: testar cenarios financeiros hipoteticos sem alterar lancamentos, patrimonio ou outros dados reais.
+- Arquivos envolvidos:
+  - `SimulacaoFinanceiraController`
+  - `ISimulacaoFinanceiraAppService`
+  - `SimulacaoFinanceiraAppService`
+  - `SimulacaoFinanceiraEngine`
+  - `ISimulacaoFinanceiraRepository` / `SimulacaoFinanceiraRepository`
+  - `SimulacoesFinanceirasOverview.tsx`
+  - `SimulacaoFinanceiraManager.tsx`
+- Entidades impactadas:
+  - `SimulacaoFinanceira`
+  - `AcaoSimulacaoFinanceira`
+  - `Usuario`
+- Decisoes tomadas:
+  - usar os lancamentos reais do usuario apenas como base de leitura, sem reaproveitar o modulo de projecoes
+  - concentrar o calculo mensal em um motor dedicado para evitar regra espalhada entre controller, service e frontend
+  - limitar a primeira versao a 12 meses para manter a leitura rapida e o custo de processamento previsivel
+  - persistir a simulacao e suas acoes, mas nao os resultados mensais, que sao sempre recalculados sob demanda
 
 ### Relatorios
 
