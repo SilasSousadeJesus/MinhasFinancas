@@ -168,6 +168,7 @@ ObservaÃ§Ã£o importante:
   - entidades persistidas
 - `Domain/Services`
   - serviÃ§os de cÃ¡lculo
+  - inclui `AnaliseFinanceira`, responsÃ¡vel pela camada analÃ­tica reutilizÃ¡vel do sistema
 - `Infra/Data/Interfaces`
   - contratos de repository
 - `Infra/Data/Repositories`
@@ -234,6 +235,46 @@ ObservaÃ§Ã£o importante:
 - agregados financeiros
 - grÃ¡ficos principais
 - radar financeiro
+- indicadores financeiros calculados pela camada analÃ­tica
+- resumo de saÃºde financeira consumido do endpoint dedicado, sem recalcular nada na tela
+
+### Camada AnalÃ­tica
+
+- localizada em `MinhasFinancas.Domain/Services/AnaliseFinanceira`
+- `IndicadoresFinanceirosService` orquestra os cÃ¡lculos e devolve um painel reutilizÃ¡vel
+- cada indicador possui responsabilidade Ãºnica e implementaÃ§Ã£o isolada
+- V1 implementada:
+  - economia mensal
+  - percentual de economia
+  - reserva de emergÃªncia atual
+  - reserva de emergÃªncia ideal
+  - comprometimento da renda
+  - endividamento
+  - patrimÃ´nio lÃ­quido atual
+  - percentual do patrimÃ´nio alvo
+- a camada consome apenas dados jÃ¡ existentes:
+  - lanÃ§amentos
+  - bens patrimoniais
+  - passivos
+- configuraÃ§Ã£o vigente do perfil financeiro
+- `SaudeFinanceiraService` interpreta os indicadores e gera pontuaÃ§Ã£o, classificaÃ§Ã£o e pontos de atenÃ§Ã£o
+- `InsightsFinanceirosService` transforma indicadores e saÃºde financeira em alertas, oportunidades, destaques positivos e orientaÃ§Ãµes acionÃ¡veis
+- `ResumoFinanceiroIAService` consolida saÃºde financeira, indicadores e insights em um payload Ãºnico pronto para consumo por interfaces e futuras integraÃ§Ãµes com IA
+- o dashboard consome essa camada e nÃ£o deve recalcular indicadores diretamente
+- a inteligÃªncia financeira deve evoluir respeitando a cadeia `Dados -> Indicadores -> SaÃºde Financeira -> Insights -> ResumoFinanceiroIA`
+
+### SaÃºde Financeira
+
+- tela dedicada para leitura consolidada da situaÃ§Ã£o financeira do usuÃ¡rio
+- consome o endpoint `api/SaudeFinanceira/{usuarioId}`
+- mostra pontuaÃ§Ã£o geral, classificaÃ§Ã£o textual, pontos de atenÃ§Ã£o e todos os indicadores
+- usa a mesma base analÃ­tica do dashboard
+
+### InteligÃªncia Financeira
+
+- `InteligenciaFinanceiraAppService` reaproveita os indicadores e a saÃºde financeira jÃ¡ existentes para montar as camadas seguintes, sem duplicar cÃ¡lculos
+- o endpoint `api/InsightsFinanceiros/{usuarioId}` devolve a primeira versÃ£o dos insights financeiros
+- o endpoint `api/ResumoFinanceiroIA/{usuarioId}` devolve um resumo consolidado com prioridades imediatas, destaques positivos, indicadores, saÃºde financeira e texto executivo
 
 ### Fluxo de Caixa Simples
 
@@ -368,7 +409,7 @@ ObservaÃ§Ã£o importante:
 
 ### Data da Ãºltima atualizaÃ§Ã£o
 
-- 05/07/2026
+- 06/07/2026
 
 ### MÃ³dulos concluÃ­dos
 

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { HeartPulse } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -73,6 +74,26 @@ export function MenuNavegacao({
                 }`}
               >
                 Dashboard
+              </span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
+          <Link href="/saude-financeira" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                "justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <HeartPulse className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Saúde financeira
               </span>
             </NavigationMenuLink>
           </Link>

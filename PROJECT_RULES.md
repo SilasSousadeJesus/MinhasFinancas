@@ -25,6 +25,27 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Regras críticas devem ser validadas no backend, mesmo quando existirem no frontend.
 - Infraestruturas globais devem ser reutilizáveis, desacopladas e não específicas de uma tela.
 
+## Idioma padrão do projeto
+
+- Todo código, documentação, nomes de classes, métodos, propriedades, pastas, componentes, telas, labels e mensagens devem utilizar português brasileiro.
+- Evitar nomes em inglês, salvo quando forem termos técnicos inevitáveis, nomes de bibliotecas, APIs externas ou padrões consolidados da plataforma.
+- A linguagem do domínio deve permanecer em português para manter consistência e legibilidade do projeto.
+
+## Camada analítica
+
+- Toda regra analítica deve ser implementada na camada `AnaliseFinanceira`.
+- Dashboards, telas, exportações e APIs nunca devem recalcular indicadores diretamente.
+- Toda informação analítica deve ser consumida dessa camada.
+
+## Dados x Informação x Inteligência
+
+- O projeto deve manter uma separação clara entre três níveis:
+- Dados: entidades persistidas (`Lançamentos`, `Patrimônio`, `Metas`, `Perfil Financeiro` etc.).
+- Informação: cálculos e indicadores derivados dos dados (`AnaliseFinanceira`).
+- Inteligência: interpretações e recomendações construídas sobre os indicadores (`Saúde Financeira`, insights, IA).
+- Cada nível deve consumir apenas o nível anterior, evitando duplicação de regras de negócio.
+- Exemplo: `Dados -> Indicadores -> Saúde Financeira -> Insights -> IA`.
+
 ## Evolução incremental
 
 - Sempre que uma funcionalidade fizer parte de um plano maior, implementar primeiro uma versão simples, porém arquiteturalmente correta.
@@ -92,6 +113,8 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 ## Manutenção com IA
 
 - Antes de implementar qualquer feature, ler `AI_CONTEXT.md` e `PROJECT_RULES.md`.
+- Ao evoluir a inteligência do sistema, revisar primeiro a implementação já existente antes de criar novas classes, serviços, modelos ou cálculos.
+- Consolidar e completar a arquitetura atual sempre que possível, evitando duplicação desnecessária.
 - Ao alterar arquitetura, fluxo técnico, infraestrutura ou padrão estrutural, avaliar atualização do `AI_CONTEXT.md`.
 - Ao surgir nova regra permanente de desenvolvimento, atualizar `PROJECT_RULES.md`.
 - Ao final de cada implementação, informar se a documentação foi atualizada.

@@ -81,6 +81,30 @@ export interface DashboardRadarFinanceiro {
   fluxoCaixaProximos30Dias: DashboardFluxoCaixaProximos30Dias;
 }
 
+export interface DashboardIndicadorFinanceiro {
+  codigo: number;
+  nome: string;
+  valorAtual: number;
+  valorIdeal: number;
+  percentual: number;
+  status: number;
+  descricao: string;
+  observacao: string;
+  formato: number;
+}
+
+export interface DashboardIndicadoresFinanceiros {
+  economiaMensal: DashboardIndicadorFinanceiro;
+  percentualEconomia: DashboardIndicadorFinanceiro;
+  reservaEmergenciaAtual: DashboardIndicadorFinanceiro;
+  reservaEmergenciaIdeal: DashboardIndicadorFinanceiro;
+  comprometimentoRenda: DashboardIndicadorFinanceiro;
+  endividamento: DashboardIndicadorFinanceiro;
+  patrimonioLiquidoAtual: DashboardIndicadorFinanceiro;
+  percentualPatrimonioAlvo: DashboardIndicadorFinanceiro;
+  todos: DashboardIndicadorFinanceiro[];
+}
+
 export interface DashboardData {
   receita: DashboardReceita;
   despesa: DashboardDespesa;
@@ -91,6 +115,7 @@ export interface DashboardData {
   lancamentosPorCategoriaDeDespesaDashboard: DashboardCategoriaDespesa[];
   contasApagarDashboard: unknown;
   radarFinanceiro: DashboardRadarFinanceiro;
+  indicadoresFinanceiros: DashboardIndicadoresFinanceiros;
 }
 
 export type DashboardPeriodo = "ano" | "mesAtual" | "mesPassado";

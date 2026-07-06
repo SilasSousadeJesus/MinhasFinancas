@@ -52,6 +52,20 @@ Queremos construir uma plataforma de inteligência financeira pessoal com foco e
 - Evitar funcionalidades que apenas armazenem dados sem produzir leitura útil.
 - Sempre que possível, conectar números a contexto e consequência prática.
 
+## Progressão de valor entre camadas
+
+Cada camada do sistema deve agregar valor à anterior.
+
+- Os dados registram fatos.
+- Os indicadores resumem esses fatos.
+- A saúde financeira interpreta os indicadores.
+- Os insights destacam oportunidades, riscos e prioridades.
+- O `ResumoFinanceiroIA` organiza esse conhecimento para consumo por interfaces e por futuros modelos de IA.
+
+Nenhuma camada deve substituir a anterior.
+
+Cada uma existe para enriquecer a compreensão da situação financeira do usuário.
+
 ## Direção do produto
 
 O produto caminha para se tornar um centro pessoal de inteligência financeira com quatro pilares:

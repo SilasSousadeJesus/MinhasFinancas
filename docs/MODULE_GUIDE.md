@@ -29,26 +29,62 @@ Este arquivo não substitui:
 ### Dados gerados ou mantidos
 - não é um módulo de cadastro principal
 - consome dados agregados de lançamentos, contas, cartões e categorias
-- poderá consumir parâmetros do perfil financeiro para contextualizar indicadores
+- consome indicadores calculados pela camada analítica
+- consome parâmetros do perfil financeiro para contextualizar indicadores
 
 ### Impacto no restante do sistema
 - depende fortemente de lançamentos, contas, cartões e categorias
 - deverá consumir dados de patrimônio para mostrar patrimônio líquido e evolução patrimonial
-- deverá consumir dados do perfil financeiro para alertas e leituras de saúde financeira
+- já consome dados do perfil financeiro para calcular indicadores e deverá ampliar esse uso em alertas e leituras de saúde financeira
 - poderá consumir metas, projeções e simulações para mostrar risco, progresso e cenário futuro
 
 ### O que já está funcional
 - agregados principais
 - gráficos do dashboard
 - radar financeiro com próximos vencimentos, contas atrasadas, alertas e fluxo de caixa próximo
+- indicadores financeiros via camada analítica, com leitura baseada em perfil financeiro quando houver configuração vigente
 - atalhos operacionais
 
 ### Evoluções futuras
-- KPIs de saúde financeira
 - patrimônio líquido e evolução patrimonial no dashboard
 - saldo projetado
 - metas em risco
 - resumo financeiro inteligente
+
+## Saúde Financeira
+
+### Finalidade
+É a tela que traduz os indicadores da análise financeira em uma leitura clara da situação atual do usuário.
+
+### O que o usuário faz aqui
+- visualiza a pontuação geral da saúde financeira
+- entende a classificação atual
+- identifica os principais pontos de atenção
+- acompanha todos os indicadores com valor atual, valor ideal, status e observação
+
+### Dados gerados ou mantidos
+- não cria dados próprios
+- consome o painel de indicadores financeiros
+- consome o resumo interpretativo da saúde financeira
+
+### Impacto no restante do sistema
+- reutiliza a mesma camada analítica do dashboard
+- reforça o uso do perfil financeiro como régua pessoal
+- já serve de base para a primeira versão de insights financeiros e do ResumoFinanceiroIA
+- continuará servindo de base para relatórios, alertas e leituras futuras de saúde financeira
+
+### O que já está funcional
+- tela dedicada de saúde financeira
+- pontuação geral de 0 a 100
+- classificação textual
+- pontos de atenção
+- cards com todos os indicadores calculados
+- geração backend de insights financeiros e de resumo consolidado para futuras interfaces e consumo por IA
+
+### Evoluções futuras
+- explicações mais profundas por indicador
+- recomendações automáticas
+- integração com relatórios e insights inteligentes
 
 ## Lançamentos
 
@@ -267,7 +303,8 @@ Serve para testar cenários hipotéticos sem alterar os dados reais do usuário.
 - parâmetros pessoais de leitura financeira
 
 ### Impacto no restante do sistema
-- será consumido pelo dashboard para contextualizar indicadores
+- já é consumido pela camada analítica para calcular indicadores financeiros
+- já é consumido pelo dashboard para contextualizar indicadores
 - será consumido pelo radar financeiro para alertas personalizados
 - poderá ser consumido por patrimônio para comparar patrimônio atual com patrimônio alvo
 - poderá ser consumido por fluxo de caixa simples para comparar saldo do mês com a economia desejada
@@ -281,6 +318,9 @@ Serve para testar cenários hipotéticos sem alterar os dados reais do usuário.
 - atualização do perfil
 - histórico de vigência
 - leitura da configuração vigente
+- consumo inicial pelos indicadores financeiros do dashboard
+- consumo real pela tela de Saúde Financeira
+- consumo pelos insights financeiros e pelo resumo consolidado da inteligência do sistema
 
 ### Evoluções futuras
 - integração real com dashboard

@@ -141,6 +141,56 @@ Cenário hipotético persistido por usuário para testar decisões futuras sem a
 
 Conjunto de parâmetros pessoais usados para definir como o usuário deseja medir e avaliar sua própria saúde financeira.
 
+## Indicador Financeiro
+
+Informação derivada dos dados financeiros do sistema para mostrar desempenho, risco, equilíbrio ou progresso do usuário.
+
+Não é um dado bruto persistido.
+
+É resultado de cálculo sobre lançamentos, patrimônio, perfil financeiro, metas, projeções ou outras bases existentes.
+
+## Análise Financeira
+
+Módulo responsável por transformar dados em indicadores reutilizáveis.
+
+Essa camada não deve depender de tela específica.
+
+Ela existe para servir dashboard, relatórios, exportações, APIs, módulos de saúde financeira e futuras integrações.
+
+## Saúde Financeira
+
+Leitura interpretativa construída a partir dos indicadores financeiros e dos parâmetros definidos no perfil financeiro do usuário.
+
+## Pontuação de Saúde Financeira
+
+Medida sintética de 0 a 100 calculada a partir do conjunto de indicadores financeiros.
+
+Ela resume, de forma simples, o equilíbrio financeiro atual do usuário.
+
+## Insight Financeiro
+
+Leitura acionável gerada a partir dos indicadores e da saúde financeira.
+
+Pode representar:
+
+- alerta
+- oportunidade
+- destaque positivo
+- necessidade de configuração
+
+## ResumoFinanceiroIA
+
+Objeto consolidado da inteligência financeira do sistema.
+
+Ele organiza, em um único payload:
+
+- indicadores
+- saúde financeira
+- insights
+- prioridades imediatas
+- destaques positivos
+- resumo executivo textual
+
 ## Parâmetro Financeiro
 
 Valor configurado pelo usuário para servir de referência em análises, indicadores, alertas e comparações futuras.

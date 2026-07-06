@@ -1,6 +1,6 @@
-﻿using MinhasFinancas.Application.Interfaces;
-using MinhasFinancas.Domain.Entities;
+using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Domain.Services.DashBoard;
+using MinhasFinancas.Infra.Data.Interfaces;
 using System.Net;
 
 namespace MinhasFinancas.Application.Services
@@ -8,13 +8,17 @@ namespace MinhasFinancas.Application.Services
     public class DashboardAppService : IDashboardAppService
     {
         private readonly IUsuarioAppService _usuarioAppService;
-        private readonly ILancamentoAppService _lancamentoAppService;
+        private readonly ILancamentoRepository _lancamentoRepository;
+        private readonly IAnaliseFinanceiraAppService _analiseFinanceiraAppService;
 
-
-        public DashboardAppService(IUsuarioAppService usuarioAppService, ILancamentoAppService lancamentoAppService)
+        public DashboardAppService(
+            IUsuarioAppService usuarioAppService,
+            ILancamentoRepository lancamentoRepository,
+            IAnaliseFinanceiraAppService analiseFinanceiraAppService)
         {
             _usuarioAppService = usuarioAppService;
-            _lancamentoAppService = lancamentoAppService;   
+            _lancamentoRepository = lancamentoRepository;
+            _analiseFinanceiraAppService = analiseFinanceiraAppService;
         }
 
         public async Task<RetornoGenerico> BuscarInformacoesDashboard(string usuarioId)
@@ -23,35 +27,27 @@ namespace MinhasFinancas.Application.Services
 
             try
             {
-                var buscaPorusuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
 
-                if (!buscaPorusuario.Sucesso)
+                if (!buscaPorUsuario.Sucesso)
                 {
-                    retorno.Sucesso = buscaPorusuario.Sucesso;
+                    retorno.Sucesso = buscaPorUsuario.Sucesso;
                     retorno.HttpStatusCode = HttpStatusCode.NotFound;
-                    retorno.MensagemSistema = buscaPorusuario.MensagemSistema;
-                    retorno.MensagemUsuario = buscaPorusuario.MensagemUsuario;
+                    retorno.MensagemSistema = buscaPorUsuario.MensagemSistema;
+                    retorno.MensagemUsuario = buscaPorUsuario.MensagemUsuario;
                     retorno.Dados = null;
                     return retorno;
                 }
 
-                var listaLancamentos = await _lancamentoAppService.BuscarTodosOsElementosAsync(usuarioId);
+                var listaLancamentos = await _lancamentoRepository.BuscarTodosOsElementosAsync(usuarioId);
+                var indicadoresFinanceiros = await _analiseFinanceiraAppService.BuscarPainelIndicadoresInternoAsync(usuarioId);
 
-                if (!listaLancamentos.Sucesso) {
+                var dashboard = new Dashboard(listaLancamentos, indicadoresFinanceiros);
 
-                    retorno.Sucesso = listaLancamentos.Sucesso;
-                    retorno.HttpStatusCode = listaLancamentos.HttpStatusCode;
-                    retorno.MensagemSistema = listaLancamentos.MensagemSistema;
-                    retorno.MensagemUsuario = listaLancamentos.MensagemUsuario;
-                    retorno.Dados = null;
-                }
-
-                var dashboard = new Dashboard(listaLancamentos.Dados);
-
-                retorno.Sucesso = dashboard != null ? true : false;
-                retorno.HttpStatusCode = dashboard != null ? HttpStatusCode.OK : HttpStatusCode.NotFound;
-                retorno.MensagemSistema = dashboard != null ? "Dashboard construido com sucesso" : "Informações não encontradas";
-                retorno.MensagemUsuario = dashboard != null ? "Dashboard construido com sucesso" : "Informações não encontradas";
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = "Dashboard construido com sucesso";
+                retorno.MensagemUsuario = "Dashboard construido com sucesso";
                 retorno.Dados = dashboard;
                 return retorno;
             }
@@ -60,11 +56,10 @@ namespace MinhasFinancas.Application.Services
                 retorno.Sucesso = false;
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
                 retorno.MensagemSistema = $"{ex}";
-                retorno.MensagemUsuario = "Não foi possivel encontrar o banco";
+                retorno.MensagemUsuario = "Não foi possivel encontrar o dashboard";
                 retorno.Dados = null;
                 return retorno;
             }
         }
-   
     }
 }

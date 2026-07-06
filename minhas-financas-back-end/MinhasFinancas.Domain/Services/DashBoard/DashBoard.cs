@@ -1,5 +1,6 @@
 ﻿using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
+using MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos;
 using MinhasFinancas.Domain.Services.DashBoard.ClassesDoDashboard;
 using System.Globalization;
 
@@ -11,11 +12,12 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         private int mesCorrente;
         private int mesAnterior;
 
-        public Dashboard(List<Lancamento> listaLancamentos)
+        public Dashboard(List<Lancamento> listaLancamentos, PainelIndicadoresFinanceiros? indicadoresFinanceiros = null)
         {
             anoCorrente = DateTime.Now.Year;
             mesCorrente = DateTime.Now.Month;
             mesAnterior = mesCorrente == 1 ? 12 : mesCorrente - 1;
+            IndicadoresFinanceiros = indicadoresFinanceiros ?? new PainelIndicadoresFinanceiros();
 
             Calcular(listaLancamentos);
         }
@@ -29,6 +31,7 @@ namespace MinhasFinancas.Domain.Services.DashBoard
         public List<InvestimentoMensal> AcumuloInvestimentoMensal { get; set; }
         public List<LancamentosPorCategoriaDashboard> LancamentosPorCategoriaDeDespesaDashboard { get; set; }
         public RadarFinanceiroDashboard RadarFinanceiro { get; set; }
+        public PainelIndicadoresFinanceiros IndicadoresFinanceiros { get; set; }
 
         private void Calcular(List<Lancamento> listaLancamentos)
         {

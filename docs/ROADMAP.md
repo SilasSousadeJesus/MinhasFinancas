@@ -27,6 +27,9 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 - dashboard
 - radar financeiro
 - fluxo de caixa simples
+- saúde financeira
+- insights financeiros básicos
+- ResumoFinanceiroIA
 
 ### Planejamento
 
@@ -62,7 +65,6 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 - patrimônio líquido no dashboard
 - evolução patrimonial no dashboard
 - saldo projetado
-- KPIs de saúde financeira
 - metas em risco
 - resumo financeiro inteligente
 
@@ -86,9 +88,6 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 
 ### Perfil Financeiro
 
-- integração do Perfil Financeiro aos indicadores financeiros
-- integração do Perfil Financeiro ao dashboard
-- criação de score de saúde financeira
 - geração de insights com base no histórico
 
 ## Ideias futuras
