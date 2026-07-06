@@ -313,3 +313,25 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o c
 - melhorias de observabilidade
 - melhorias de auditoria
 - melhor aproveitamento de Hangfire e SignalR
+
+## Atualização da Fase 4.2
+
+Esta seção registra o estado oficial mais recente da evolução do Assistente Financeiro.
+
+- a **Fase 4.2 — Primeira Análise Financeira com IA** está **iniciada**
+- a **Fase 4.1 — Integração Técnica com IA** permanece **concluída**
+- a próxima evolução dentro da fase atual é o refinamento da experiência da análise executiva gerada pela IA
+
+### Entregas já iniciadas na Fase 4.2
+
+- criação do documento oficial `docs/AI_DESIGN.md`
+- formalização da filosofia da IA do projeto
+- formalização do fluxo oficial `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> OpenAIProvider -> Relatório Executivo`
+- implementação do primeiro prompt oficial consultivo da Fase 4.2
+
+### Evolução futura relacionada
+
+- `Interpretador Financeiro`
+  - permanece como melhoria arquitetural futura
+  - não faz parte da Fase 4.2
+  - deverá ficar entre `Saúde Financeira` e `Insights Financeiros`

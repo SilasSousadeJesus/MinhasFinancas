@@ -503,3 +503,10 @@ ObservaÃ§Ã£o importante:
 
 - Fase 4.2 â€” Primeira AnÃ¡lise Financeira com IA do roadmap de InteligÃªncia Financeira
 - evoluÃ§Ã£o do prompt oficial, do formato do relatÃ³rio e da experiÃªncia final do assistente, mantendo `ResumoFinanceiroIA` como Ãºnica fonte de contexto
+
+## Atualização da documentação de IA
+
+- `docs/AI_DESIGN.md` passou a ser o documento oficial de design da camada de IA
+- a Fase 4.2 foi iniciada com a formalização do fluxo de análise executiva com IA
+- o primeiro prompt oficial da Fase 4.2 foi implementado em `MinhasFinancas.Infra/IA/Prompts/PromptAnaliseFinanceira.md`
+- a cadeia oficial continua sendo `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`

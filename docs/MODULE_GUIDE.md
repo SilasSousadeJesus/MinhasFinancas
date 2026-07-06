@@ -538,3 +538,14 @@ SerÃ¡ o mÃ³dulo responsÃ¡vel por definir limites planejados de gasto e acompanha
 - definiÃ§Ã£o formal da regra de negÃ³cio
 - integraÃ§Ã£o com dashboard e lanÃ§amentos
 - comparativo entre planejado e realizado
+
+## Atualização do módulo Assistente Financeiro
+
+A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design documentada em `docs/AI_DESIGN.md`.
+
+### Complemento funcional
+
+- a infraestrutura técnica da Fase 4.1 permanece a mesma
+- a Fase 4.2 iniciou a formalização do comportamento textual da IA
+- o primeiro prompt oficial foi estruturado para gerar uma análise consultiva, prudente, educativa e organizada em: diagnóstico, principais riscos, pontos positivos, recomendações, plano de ação e conclusão
+- a IA continua consumindo exclusivamente o contexto consolidado derivado de `ResumoFinanceiroIA`
