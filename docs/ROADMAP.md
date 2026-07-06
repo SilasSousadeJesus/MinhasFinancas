@@ -8,7 +8,7 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 
 O projeto se encontra atualmente na **Fase 3 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
-A **próxima etapa oficial** é a **Fase 4 — Integração com IA**.
+A **próxima etapa oficial** é a **Fase 4.1 — Integração Técnica com IA**.
 
 ## Roadmap da Inteligência Financeira / Assistente Financeiro
 
@@ -75,16 +75,47 @@ Ao final da tela existirá um botão:
 
 `Gerar análise aprofundada com IA`
 
-Esse botão pode permanecer desabilitado até a Fase 4.
+Esse botão pode permanecer desabilitado até a Fase 4.1.
 
-### Fase 4 — Integração com IA
+### Fase 4.1 — Integração Técnica com IA
 
 **Status:** futura
 
 **Objetivo:**
-Integrar o primeiro provedor (`OpenAI`).
+Implementar apenas a comunicação técnica com o primeiro provedor de IA.
 
-**Fluxo:**
+**Escopo:**
+
+- configuração segura da API Key
+- implementação definitiva do `OpenAIProvider`
+- comunicação HTTP com a API
+- tratamento de erros
+- timeout
+- retry
+- configuração do modelo
+- controle de tokens
+- configuração por ambiente
+- logs técnicos
+
+**Importante:**
+
+- esta fase não altera a experiência do usuário
+- esta fase não melhora os textos
+- esta fase não cria inteligência nova
+- ela apenas faz a infraestrutura preparada na Fase 2 funcionar de verdade
+
+**Resultado esperado:**
+
+Ao final desta fase, o botão `Gerar análise aprofundada com IA` deverá conseguir chamar a IA e obter uma resposta técnica.
+
+### Fase 4.2 — Primeira Análise Financeira com IA
+
+**Status:** futura
+
+**Objetivo:**
+Criar a primeira experiência real de análise financeira utilizando IA.
+
+**Fluxo oficial:**
 
 `ResumoFinanceiroIA`
 ↓
@@ -96,11 +127,25 @@ Integrar o primeiro provedor (`OpenAI`).
 ↓
 `Relatório Executivo`
 
+**Nesta fase serão definidos:**
+
+- prompt oficial
+- formato do relatório
+- estilo de escrita
+- tom do assistente
+- regras de segurança
+- contexto enviado
+- comportamento esperado da IA
+
 **Regra central:**
 
 A IA nunca consulta diretamente o banco.
 
 Ela recebe exclusivamente o `ResumoFinanceiroIA`.
+
+**Resultado esperado:**
+
+Transformar o `ResumoFinanceiroIA` em um parecer financeiro muito mais rico do que o produzido apenas pelas regras do sistema.
 
 ### Fase 5 — Especialistas
 
@@ -197,7 +242,8 @@ Permitir que o usuário converse com o Assistente Financeiro utilizando todo o c
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4 — Integração com IA
+- Fase 4.1 — Integração Técnica com IA
+- Fase 4.2 — Primeira Análise Financeira com IA
 - Interpretador Financeiro
   - criar uma camada entre `Saúde Financeira` e `Insights Financeiros`
   - objetivo: transformar indicadores em interpretações humanas baseadas exclusivamente em regras de negócio
@@ -210,13 +256,13 @@ Permitir que o usuário converse com o Assistente Financeiro utilizando todo o c
     - `Insights Financeiros`
     - `ResumoFinanceiroIA`
     - `Assistente Financeiro`
-    - `IA (quando utilizada)`
+    - `IA`
   - responsabilidades esperadas:
-    - traduzir indicadores em interpretações humanas
-    - explicar o impacto dos números na vida financeira
-    - produzir frases contextualizadas sem uso de IA generativa
-    - evitar que `Insights` e `ResumoFinanceiroIA` reutilizem textos técnicos dos indicadores
-    - servir como camada de conhecimento para futuras integrações com IA
+    - traduzir indicadores em linguagem natural
+    - explicar impacto financeiro
+    - produzir interpretações baseadas em regras
+    - reduzir repetição textual
+    - servir como base ainda melhor para futuras integrações com IA
   - esta melhoria é uma evolução futura independente e não faz parte da Fase 4
 
 ### Dashboard

@@ -138,7 +138,9 @@ Este arquivo não substitui:
 - o provedor atual permanece simulado, sem chamada real
 
 ### Evoluções futuras
-- integração real com provedor externo na fase apropriada
+- Fase 4.1: ativação da comunicação técnica real com o primeiro provedor de IA, sem mudar a experiência textual do módulo
+- Fase 4.2: construção da primeira análise financeira aprofundada com IA, usando `ResumoFinanceiroIA` como única base de contexto
+- futura camada de `Interpretador Financeiro` entre `Saúde Financeira` e `Insights Financeiros` para qualificar ainda mais a linguagem natural baseada em regras
 - especialistas temáticos reutilizando a mesma infraestrutura
 - conversa contínua com contexto financeiro consolidado
 

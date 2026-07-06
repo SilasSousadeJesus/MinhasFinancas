@@ -66,6 +66,20 @@ Nenhuma camada deve substituir a anterior.
 
 Cada uma existe para enriquecer a compreensão da situação financeira do usuário.
 
+## Integração com IA como evolução em duas etapas
+
+A evolução do Assistente Financeiro com IA foi oficialmente separada em duas responsabilidades diferentes:
+
+- primeiro, fazer a infraestrutura técnica de integração funcionar de verdade
+- depois, construir a primeira experiência real de análise financeira com IA
+
+Essa separação existe para evitar confusão entre:
+
+- conectar com um provedor externo
+- melhorar a qualidade analítica da experiência entregue ao usuário
+
+O sistema só deve considerar a IA como evolução de experiência quando a base técnica e de contexto estiver madura, segura e controlada.
+
 ## Direção do produto
 
 O produto caminha para se tornar um centro pessoal de inteligência financeira com quatro pilares:

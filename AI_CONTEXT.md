@@ -325,6 +325,9 @@ ObservaÃ§Ã£o importante:
 - nenhum token Ã© consumido
 - nenhuma chave de API Ã© versionada
 - a cadeia prevista para integraÃ§Ã£o futura Ã© `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- o roadmap passou a separar a evoluÃ§Ã£o futura em duas subfases:
+  - `Fase 4.1`, focada apenas na integraÃ§Ã£o tÃ©cnica real com o provedor
+  - `Fase 4.2`, focada na primeira experiÃªncia real de anÃ¡lise financeira com IA
 
 ### Assistente Financeiro
 
@@ -353,6 +356,7 @@ ObservaÃ§Ã£o importante:
 - nÃ£o recalcula indicadores no frontend
 - possui card final de anÃ¡lise aprofundada com IA com botÃ£o desabilitado nesta fase
 - continua sem qualquer chamada real para IA
+- a futura ativaÃ§Ã£o desse botÃ£o depende primeiro da `Fase 4.1 â€” IntegraÃ§Ã£o TÃ©cnica com IA`
 
 ## Infraestrutura e integraÃ§Ãµes existentes
 
@@ -478,5 +482,5 @@ ObservaÃ§Ã£o importante:
 
 ### PrÃ³xima implementaÃ§Ã£o prevista
 
-- Fase 4 â€” IntegraÃ§Ã£o real com IA do roadmap de InteligÃªncia Financeira
-- substituiÃ§Ã£o do provedor simulado por integraÃ§Ã£o real, mantendo `ResumoFinanceiroIA` como Ãºnica fonte de contexto
+- Fase 4.1 â€” IntegraÃ§Ã£o TÃ©cnica com IA do roadmap de InteligÃªncia Financeira
+- ativaÃ§Ã£o da comunicaÃ§Ã£o real com o provedor, mantendo `ResumoFinanceiroIA` como Ãºnica fonte de contexto
