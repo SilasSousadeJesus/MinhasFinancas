@@ -6,9 +6,9 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 3 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 4.1 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
-A **próxima etapa oficial** é a **Fase 4.1 — Integração Técnica com IA**.
+A **próxima etapa oficial** é a **Fase 4.2 — Primeira Análise Financeira com IA**.
 
 ## Roadmap da Inteligência Financeira / Assistente Financeiro
 
@@ -79,7 +79,7 @@ Esse botão pode permanecer desabilitado até a Fase 4.1.
 
 ### Fase 4.1 — Integração Técnica com IA
 
-**Status:** futura
+**Status:** concluída
 
 **Objetivo:**
 Implementar apenas a comunicação técnica com o primeiro provedor de IA.
@@ -106,7 +106,7 @@ Implementar apenas a comunicação técnica com o primeiro provedor de IA.
 
 **Resultado esperado:**
 
-Ao final desta fase, o botão `Gerar análise aprofundada com IA` deverá conseguir chamar a IA e obter uma resposta técnica.
+Ao final desta fase, o backend já consegue chamar a IA e obter uma resposta técnica quando a chave estiver configurada corretamente no ambiente.
 
 ### Fase 4.2 — Primeira Análise Financeira com IA
 

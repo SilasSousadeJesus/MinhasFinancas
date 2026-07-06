@@ -135,10 +135,10 @@ Este arquivo não substitui:
 - próximas prioridades
 - card final de análise aprofundada com IA com botão desabilitado
 - a infraestrutura backend da Fase 2 continua preparada para uso futuro com provedores externos
-- o provedor atual permanece simulado, sem chamada real
+- o backend já possui integração técnica real com OpenAI quando a chave estiver configurada no ambiente
+- existe endpoint técnico para geração da análise, sem mudança obrigatória na experiência visual desta fase
 
 ### Evoluções futuras
-- Fase 4.1: ativação da comunicação técnica real com o primeiro provedor de IA, sem mudar a experiência textual do módulo
 - Fase 4.2: construção da primeira análise financeira aprofundada com IA, usando `ResumoFinanceiroIA` como única base de contexto
 - futura camada de `Interpretador Financeiro` entre `Saúde Financeira` e `Insights Financeiros` para qualificar ainda mais a linguagem natural baseada em regras
 - especialistas temáticos reutilizando a mesma infraestrutura

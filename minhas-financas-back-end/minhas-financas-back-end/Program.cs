@@ -41,6 +41,19 @@ namespace minhas_financas_back_end
 
             var connectionString = builder.Configuration.GetConnectionString("ConnectionMinhasFinancas");
             builder.Services.Configure<ConfiguracaoOpenAI>(builder.Configuration.GetSection("OpenAI"));
+            builder.Services.AddHttpClient<IProvedorIA, OpenAIProvider>((serviceProvider, client) =>
+            {
+                var configuracao = serviceProvider
+                    .GetRequiredService<Microsoft.Extensions.Options.IOptions<ConfiguracaoOpenAI>>()
+                    .Value;
+
+                var baseUrl = string.IsNullOrWhiteSpace(configuracao.BaseUrl)
+                    ? "https://api.openai.com/v1/"
+                    : configuracao.BaseUrl;
+
+                client.BaseAddress = new Uri(baseUrl);
+                client.Timeout = Timeout.InfiniteTimeSpan;
+            });
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -82,11 +95,11 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IInsightsFinanceirosService, InsightsFinanceirosService>();
             builder.Services.AddScoped<IResumoFinanceiroIAService, ResumoFinanceiroIAService>();
             builder.Services.AddScoped<IAnaliseFinanceiraAppService, AnaliseFinanceiraAppService>();
+            builder.Services.AddScoped<IAssistenteFinanceiroAppService, AssistenteFinanceiroAppService>();
             builder.Services.AddScoped<ISaudeFinanceiraAppService, SaudeFinanceiraAppService>();
             builder.Services.AddScoped<IInteligenciaFinanceiraAppService, InteligenciaFinanceiraAppService>();
             builder.Services.AddScoped<ConstrutorContextoIA>();
             builder.Services.AddScoped<ConstrutorPromptIA>();
-            builder.Services.AddScoped<IProvedorIA, OpenAIProvider>();
             builder.Services.AddScoped<AssistenteFinanceiroService>();
             builder.Services.AddScoped<ExcelWorkbookFactory>();
             builder.Services.AddScoped<ExcelStyleHelper>();

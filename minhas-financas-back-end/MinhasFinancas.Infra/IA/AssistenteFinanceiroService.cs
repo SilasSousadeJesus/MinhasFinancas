@@ -32,13 +32,21 @@ namespace MinhasFinancas.Infra.IA
             return _construtorPromptIA.Construir(contexto);
         }
 
-        public Task<RespostaIA> GerarRespostaSimuladaAsync(
+        public Task<RespostaIA> GerarRespostaAsync(
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
             CancellationToken cancellationToken = default)
         {
             var requisicao = PrepararRequisicao(resumoFinanceiroIA, perguntaUsuario);
             return _provedorIA.GerarRespostaAsync(requisicao, cancellationToken);
+        }
+
+        public Task<RespostaIA> GerarRespostaSimuladaAsync(
+            ResumoFinanceiroIA resumoFinanceiroIA,
+            string? perguntaUsuario = null,
+            CancellationToken cancellationToken = default)
+        {
+            return GerarRespostaAsync(resumoFinanceiroIA, perguntaUsuario, cancellationToken);
         }
     }
 }

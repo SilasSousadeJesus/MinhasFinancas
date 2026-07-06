@@ -320,19 +320,25 @@ ObservaÃ§Ã£o importante:
 - `ConstrutorContextoIA` transforma `ResumoFinanceiroIA` em contexto textual estruturado e seguro para consumo externo
 - `ConstrutorPromptIA` monta a requisiÃ§Ã£o final a partir do contexto preparado e do prompt base versionado em arquivo
 - `IProvedorIA` abstrai provedores externos para evitar acoplamento com uma implementaÃ§Ã£o especÃ­fica
-- `OpenAIProvider` existe apenas como infraestrutura preparada e hoje devolve resposta simulada
-- nesta fase nÃ£o existe chamada HTTP real para IA
-- nenhum token Ã© consumido
-- nenhuma chave de API Ã© versionada
+- `OpenAIProvider` agora possui implementaÃ§Ã£o real via HTTP para a API da OpenAI
+- a chamada externa usa apenas `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- o provedor trata timeout, retry simples, respostas vazias, autenticaÃ§Ã£o invÃ¡lida e falhas transitÃ³rias
+- logs tÃ©cnicos existem, mas nÃ£o devem registrar API Key, prompt completo nem resposta completa da IA
+- a chave de API nÃ£o deve ser versionada
+- a configuraÃ§Ã£o oficial fica na seÃ§Ã£o `OpenAI`, com placeholders em `appsettings` e valor real vindo de `user-secrets` ou variÃ¡vel de ambiente `OpenAI__ApiKey`
+- exemplo de configuraÃ§Ã£o local segura:
+  - `dotnet user-secrets set "OpenAI:ApiKey" "sua-chave"` no projeto `minhas-financas-back-end/minhas-financas-back-end`
+  - ou variÃ¡vel de ambiente `OpenAI__ApiKey`
 - a cadeia prevista para integraÃ§Ã£o futura Ã© `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 - o roadmap passou a separar a evoluÃ§Ã£o futura em duas subfases:
-  - `Fase 4.1`, focada apenas na integraÃ§Ã£o tÃ©cnica real com o provedor
+  - `Fase 4.1`, agora implementada para ativaÃ§Ã£o tÃ©cnica real com o provedor
   - `Fase 4.2`, focada na primeira experiÃªncia real de anÃ¡lise financeira com IA
 
 ### Assistente Financeiro
 
 - tela dedicada no frontend em `src/app/(authenticated)/assistente-financeiro`
 - consome exclusivamente o endpoint `api/ResumoFinanceiroIA/{usuarioId}`
+- o backend tambÃ©m expÃµe `POST api/AssistenteFinanceiro/GerarAnalise/{usuarioId}` para execuÃ§Ã£o tÃ©cnica da anÃ¡lise via IA
 - exibe um Ãºnico card principal de resumo executivo
 - dentro desse resumo, organiza a leitura em seÃ§Ãµes com tÃ­tulos:
   - resumo
@@ -356,7 +362,7 @@ ObservaÃ§Ã£o importante:
 - nÃ£o recalcula indicadores no frontend
 - possui card final de anÃ¡lise aprofundada com IA com botÃ£o desabilitado nesta fase
 - continua sem qualquer chamada real para IA
-- a futura ativaÃ§Ã£o desse botÃ£o depende primeiro da `Fase 4.1 â€” IntegraÃ§Ã£o TÃ©cnica com IA`
+- a integraÃ§Ã£o tÃ©cnica real do backend jÃ¡ existe, mas a qualidade final da experiÃªncia e do relatÃ³rio continua reservada para a `Fase 4.2`
 
 ## Infraestrutura e integraÃ§Ãµes existentes
 
@@ -482,5 +488,5 @@ ObservaÃ§Ã£o importante:
 
 ### PrÃ³xima implementaÃ§Ã£o prevista
 
-- Fase 4.1 â€” IntegraÃ§Ã£o TÃ©cnica com IA do roadmap de InteligÃªncia Financeira
-- ativaÃ§Ã£o da comunicaÃ§Ã£o real com o provedor, mantendo `ResumoFinanceiroIA` como Ãºnica fonte de contexto
+- Fase 4.2 â€” Primeira AnÃ¡lise Financeira com IA do roadmap de InteligÃªncia Financeira
+- evoluÃ§Ã£o do prompt oficial, do formato do relatÃ³rio e da experiÃªncia final do assistente, mantendo `ResumoFinanceiroIA` como Ãºnica fonte de contexto

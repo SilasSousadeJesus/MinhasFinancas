@@ -96,6 +96,12 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
+        public async Task<ResumoFinanceiroIA?> BuscarResumoFinanceiroIAInternoAsync(string usuarioId)
+        {
+            var inteligencia = await MontarInteligenciaAsync(usuarioId);
+            return inteligencia?.Resumo;
+        }
+
         private async Task<(PainelInsightsFinanceiros Insights, ResumoFinanceiroIA Resumo)?> MontarInteligenciaAsync(string usuarioId)
         {
             var painelIndicadores = await _analiseFinanceiraAppService.BuscarPainelIndicadoresInternoAsync(usuarioId);
