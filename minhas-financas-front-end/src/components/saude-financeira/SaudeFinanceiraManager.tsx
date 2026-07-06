@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+
 import { Sidebar } from "@/components/Sidebar/Sidebar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/providers/auth-provider";
+import { buscarResumoFinanceiroIA } from "@/services/api/resumo-financeiro-ia";
 import { buscarSaudeFinanceira } from "@/services/api/saude-financeira";
 import { ApiError } from "@/types/api";
+import { ResumoFinanceiroIAData } from "@/types/resumo-financeiro-ia";
 import { IndicadorFinanceiroSaude, SaudeFinanceiraData } from "@/types/saude-financeira";
 
 const FORMATO_MOEDA = 0;
@@ -18,13 +21,21 @@ const STATUS_BOM = 1;
 const STATUS_ATENCAO = 2;
 const STATUS_CRITICO = 3;
 
+const TIPO_ALERTA = 0;
+const TIPO_OPORTUNIDADE = 1;
+const TIPO_DESTAQUE_POSITIVO = 2;
+const TIPO_CONFIGURACAO = 3;
+
+const PRIORIDADE_ALTA = 0;
+const PRIORIDADE_MEDIA = 1;
+
 function formatarValorIndicador(valor: number, formato: number) {
   if (formato === FORMATO_PERCENTUAL) {
     return `${valor.toFixed(1)}%`;
   }
 
   if (formato === FORMATO_MESES) {
-    return `${valor.toFixed(1)} mês(es)`;
+    return `${valor.toFixed(1)} mes(es)`;
   }
 
   return new Intl.NumberFormat("pt-BR", {
@@ -40,9 +51,9 @@ function obterTextoStatus(status: number) {
     case STATUS_BOM:
       return "Bom";
     case STATUS_CRITICO:
-      return "Crítico";
+      return "Critico";
     default:
-      return "Atenção";
+      return "Atencao";
   }
 }
 
@@ -72,9 +83,47 @@ function obterVariantClassificacao(classificacao: string): "default" | "secondar
   }
 }
 
+function obterTextoTipoInsight(tipo: number) {
+  switch (tipo) {
+    case TIPO_ALERTA:
+      return "Alerta";
+    case TIPO_OPORTUNIDADE:
+      return "Oportunidade";
+    case TIPO_DESTAQUE_POSITIVO:
+      return "Positivo";
+    case TIPO_CONFIGURACAO:
+      return "Configuracao";
+    default:
+      return "Informacao";
+  }
+}
+
+function obterTextoPrioridade(prioridade: number) {
+  switch (prioridade) {
+    case PRIORIDADE_ALTA:
+      return "Critico";
+    case PRIORIDADE_MEDIA:
+      return "Atencao";
+    default:
+      return "Informacao";
+  }
+}
+
+function obterVariantPrioridade(prioridade: number): "default" | "secondary" | "destructive" | "outline" {
+  switch (prioridade) {
+    case PRIORIDADE_ALTA:
+      return "destructive";
+    case PRIORIDADE_MEDIA:
+      return "default";
+    default:
+      return "outline";
+  }
+}
+
 export function SaudeFinanceiraManager() {
   const { session } = useAuth();
   const [saudeFinanceira, setSaudeFinanceira] = useState<SaudeFinanceiraData | null>(null);
+  const [resumoFinanceiroIA, setResumoFinanceiroIA] = useState<ResumoFinanceiroIAData | null>(null);
   const [mensagemErro, setMensagemErro] = useState("");
 
   useEffect(() => {
@@ -85,13 +134,18 @@ export function SaudeFinanceiraManager() {
 
       try {
         setMensagemErro("");
-        const response = await buscarSaudeFinanceira(session.usuario.id, session.token);
-        setSaudeFinanceira(response.dados);
+        const [responseSaude, responseResumo] = await Promise.all([
+          buscarSaudeFinanceira(session.usuario.id, session.token),
+          buscarResumoFinanceiroIA(session.usuario.id, session.token),
+        ]);
+
+        setSaudeFinanceira(responseSaude.dados);
+        setResumoFinanceiroIA(responseResumo.dados);
       } catch (error) {
         if (error instanceof ApiError) {
           setMensagemErro(error.message);
         } else {
-          setMensagemErro("Não foi possível carregar a saúde financeira.");
+          setMensagemErro("Nao foi possivel carregar a saude financeira.");
         }
       }
     }
@@ -105,6 +159,10 @@ export function SaudeFinanceiraManager() {
     ).filter((indicador): indicador is IndicadorFinanceiroSaude => Boolean(indicador?.nome));
   }, [saudeFinanceira]);
 
+  const insights = useMemo(() => {
+    return resumoFinanceiroIA?.insights.todos ?? [];
+  }, [resumoFinanceiroIA]);
+
   return (
     <div className="flex flex-row">
       <Sidebar />
@@ -112,7 +170,7 @@ export function SaudeFinanceiraManager() {
         <div className="space-y-2">
           <h1 className="text-2xl font-bold">Saúde Financeira</h1>
           <p className="text-sm text-muted-foreground">
-            Uma leitura simples da sua situação financeira atual com base nos indicadores da análise financeira.
+            Leitura analítica detalhada dos indicadores, insights e sinais de evolução financeira.
           </p>
         </div>
 
@@ -222,6 +280,80 @@ export function SaudeFinanceiraManager() {
               </Card>
             ))}
           </div>
+        </section>
+
+        <section className="mt-8">
+          <div className="mb-4 space-y-1">
+            <h2 className="text-xl font-semibold">Insights financeiros</h2>
+            <p className="text-sm text-muted-foreground">
+              Leituras priorizadas pelo sistema para explicar oportunidades, riscos e ajustes de configuração.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+            {insights.length ? (
+              insights.map((insight) => (
+                <Card key={`${insight.titulo}-${insight.prioridade}-${insight.tipo}`}>
+                  <CardHeader className="space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <CardTitle className="text-base">{insight.titulo}</CardTitle>
+                        <CardDescription className="mt-1">{obterTextoTipoInsight(insight.tipo)}</CardDescription>
+                      </div>
+                      <Badge variant={obterVariantPrioridade(insight.prioridade)}>
+                        {obterTextoPrioridade(insight.prioridade)}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm text-muted-foreground">{insight.descricao}</p>
+                    {insight.acaoSugerida ? (
+                      <div className="rounded-xl border border-border/60 bg-background/70 p-3 text-sm">
+                        <span className="font-medium">Ação sugerida:</span> {insight.acaoSugerida}
+                      </div>
+                    ) : null}
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Card className="xl:col-span-2">
+                <CardContent className="p-6 text-sm text-muted-foreground">
+                  O backend ainda não retornou insights financeiros para o contexto atual.
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </section>
+
+        <section className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Gráficos</CardTitle>
+              <CardDescription>
+                Espaço centralizado da saúde financeira para evolução patrimonial, economia mensal e reserva de emergência.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-2xl border border-dashed border-border/70 bg-background/70 p-5">
+                <p className="text-sm font-medium">Evolução patrimonial</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Aguardando série histórica consolidada para exibição gráfica.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-dashed border-border/70 bg-background/70 p-5">
+                <p className="text-sm font-medium">Economia mensal</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Área reservada para leitura visual sem criar cálculo novo no frontend.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-dashed border-border/70 bg-background/70 p-5">
+                <p className="text-sm font-medium">Reserva de emergência</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Será exibida aqui quando o backend expuser histórico suficiente.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </section>
       </main>
     </div>

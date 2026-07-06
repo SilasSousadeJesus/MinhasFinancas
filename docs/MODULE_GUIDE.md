@@ -42,8 +42,7 @@ Este arquivo não substitui:
 - agregados principais
 - gráficos do dashboard
 - radar financeiro com próximos vencimentos, contas atrasadas, alertas e fluxo de caixa próximo
-- indicadores financeiros via camada analítica, com leitura baseada em perfil financeiro quando houver configuração vigente
-- resumo de saúde financeira consumido da mesma infraestrutura analítica
+- o dashboard deixou de repetir a leitura analítica detalhada da saúde financeira
 - atalhos operacionais
 
 ### Evoluções futuras
@@ -55,13 +54,15 @@ Este arquivo não substitui:
 ## Saúde Financeira
 
 ### Finalidade
-É a tela que traduz os indicadores da análise financeira em uma leitura clara da situação atual do usuário.
+É a tela analítica da saúde financeira. Seu papel é traduzir os indicadores da análise financeira em uma leitura detalhada da situação atual do usuário.
 
 ### O que o usuário faz aqui
 - visualiza a pontuação geral da saúde financeira
 - entende a classificação atual
 - identifica os principais pontos de atenção
 - acompanha todos os indicadores com valor atual, valor ideal, status e observação
+- consulta insights financeiros centralizados na própria tela
+- enxerga a área preparada para gráficos analíticos futuros
 
 ### Dados gerados ou mantidos
 - não cria dados próprios
@@ -80,6 +81,9 @@ Este arquivo não substitui:
 - classificação textual
 - pontos de atenção
 - cards com todos os indicadores calculados
+- valor atual, valor ideal, status e observação por indicador
+- insights financeiros centralizados nesta tela
+- área reservada para gráficos de evolução patrimonial, economia mensal e reserva de emergência
 - geração backend de insights financeiros e de resumo consolidado para futuras interfaces e consumo por IA
 
 ### Evoluções futuras
@@ -90,12 +94,12 @@ Este arquivo não substitui:
 ## Assistente Financeiro
 
 ### Finalidade
-Será a interface que organizará toda a inteligência financeira do sistema em uma experiência única para leitura, acompanhamento e, futuramente, análise aprofundada com IA.
+É a tela executiva da inteligência financeira. Seu papel é organizar a situação atual do usuário em formato de prioridades, destaques e direcionamento prático para tomada de decisão.
 
 ### O que o usuário faz aqui
-- acompanhará a saúde financeira consolidada
-- visualizará indicadores e insights em um único lugar
-- consultará tendências e recomendações geradas pelo próprio sistema
+- acompanha a saúde financeira consolidada em formato executivo
+- lê um resumo corrido com prioridades, principais indicadores e leitura estratégica
+- usa links para aprofundar a análise completa em Saúde Financeira
 - futuramente poderá solicitar uma análise aprofundada com IA
 
 ### Dados gerados ou mantidos
@@ -111,14 +115,13 @@ Será a interface que organizará toda a inteligência financeira do sistema em 
 ### O que já está funcional
 - tela executiva do Assistente Financeiro já implementada
 - consumo exclusivo de `ResumoFinanceiroIA`
-- resumo executivo
-- saúde financeira consolidada
-- indicadores financeiros em cards
-- pontos fortes
-- pontos de atenção
-- insights financeiros
+- um único bloco principal de resumo executivo
+- saúde financeira consolidada com pontuação e classificação em destaque
+- seções internas por título: resumo, prioridades, principais indicadores e leitura estratégica
+- principais indicadores em formato textual
+- leitura estratégica com pontos fortes e pontos de atenção em formato textual
+- link para a análise completa em `Saúde Financeira`
 - próximas prioridades
-- área reservada para gráficos futuros
 - card final de análise aprofundada com IA com botão desabilitado
 - a infraestrutura backend da Fase 2 continua preparada para uso futuro com provedores externos
 - o provedor atual permanece simulado, sem chamada real

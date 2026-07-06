@@ -235,8 +235,7 @@ ObservaÃ§Ã£o importante:
 - agregados financeiros
 - grÃ¡ficos principais
 - radar financeiro
-- indicadores financeiros calculados pela camada analÃ­tica
-- resumo de saÃºde financeira consumido do endpoint dedicado, sem recalcular nada na tela
+- o dashboard deixou de concentrar a leitura analÃ­tica detalhada da saÃºde financeira para evitar duplicidade com as telas especializadas
 
 ### Camada AnalÃ­tica
 
@@ -268,6 +267,8 @@ ObservaÃ§Ã£o importante:
 - tela dedicada para leitura consolidada da situaÃ§Ã£o financeira do usuÃ¡rio
 - consome o endpoint `api/SaudeFinanceira/{usuarioId}`
 - mostra pontuaÃ§Ã£o geral, classificaÃ§Ã£o textual, pontos de atenÃ§Ã£o e todos os indicadores
+- centraliza os insights financeiros do `ResumoFinanceiroIA`
+- possui Ã¡rea reservada para grÃ¡ficos analÃ­ticos futuros, como evoluÃ§Ã£o patrimonial, economia mensal e reserva de emergÃªncia
 - usa a mesma base analÃ­tica do dashboard
 
 ### InteligÃªncia Financeira
@@ -327,9 +328,15 @@ ObservaÃ§Ã£o importante:
 
 - tela dedicada no frontend em `src/app/(authenticated)/assistente-financeiro`
 - consome exclusivamente o endpoint `api/ResumoFinanceiroIA/{usuarioId}`
-- exibe resumo executivo, saÃºde financeira, indicadores, pontos fortes, pontos de atenÃ§Ã£o, insights e prioridades imediatas
+- exibe um Ãºnico card principal de resumo executivo
+- dentro desse resumo, organiza a leitura em seÃ§Ãµes com tÃ­tulos:
+  - resumo
+  - prioridades
+  - principais indicadores
+  - leitura estratÃ©gica
+- `principais indicadores` e `leitura estratÃ©gica` sÃ£o exibidos em formato textual
+- usa links para levar o usuÃ¡rio para a anÃ¡lise completa em `SaÃºde Financeira`
 - nÃ£o recalcula indicadores no frontend
-- possui Ã¡rea visual reservada para grÃ¡ficos futuros, sem criar sÃ©ries artificiais
 - possui card final de anÃ¡lise aprofundada com IA com botÃ£o desabilitado nesta fase
 - continua sem qualquer chamada real para IA
 

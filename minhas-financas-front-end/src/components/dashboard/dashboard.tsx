@@ -12,21 +12,10 @@ import {
 import { Badge } from "../ui/badge";
 import { useAuth } from "@/providers/auth-provider";
 import { buscarDashboard } from "@/services/api/dashboard";
-import { buscarSaudeFinanceira } from "@/services/api/saude-financeira";
 import { ApiError } from "@/types/api";
-import { DashboardData, DashboardIndicadorFinanceiro, DashboardPeriodo } from "@/types/dashboard";
-import { SaudeFinanceiraData } from "@/types/saude-financeira";
+import { DashboardData, DashboardPeriodo } from "@/types/dashboard";
 import { NovoLancamentoModal } from "@/components/lancamentos/NovoLancamentoModal";
 import { GerenciarContasCartoesModal } from "@/components/contas-cartoes/GerenciarContasCartoesModal";
-
-const INDICATOR_FORMAT_CURRENCY = 0;
-const INDICATOR_FORMAT_PERCENTAGE = 1;
-const INDICATOR_FORMAT_MONTHS = 2;
-
-const INDICATOR_STATUS_EXCELENTE = 0;
-const INDICATOR_STATUS_BOM = 1;
-const INDICATOR_STATUS_ATENCAO = 2;
-const INDICATOR_STATUS_CRITICO = 3;
 
 function parseCurrencyString(value: string) {
   const normalized = value
@@ -53,64 +42,6 @@ function formatMonthLabel(value: string) {
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("pt-BR").format(new Date(value));
-}
-
-function formatIndicatorValue(value: number, format: number) {
-  if (format === INDICATOR_FORMAT_PERCENTAGE) {
-    return `${value.toFixed(1)}%`;
-  }
-
-  if (format === INDICATOR_FORMAT_MONTHS) {
-    return `${value.toFixed(1)} mês(es)`;
-  }
-
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value ?? 0);
-}
-
-function getIndicatorStatusLabel(status: number) {
-  switch (status) {
-    case INDICATOR_STATUS_EXCELENTE:
-      return "Excelente";
-    case INDICATOR_STATUS_BOM:
-      return "Bom";
-    case INDICATOR_STATUS_CRITICO:
-      return "Crítico";
-    default:
-      return "Atenção";
-  }
-}
-
-function getIndicatorStatusVariant(
-  status: number
-): "default" | "secondary" | "destructive" | "outline" {
-  switch (status) {
-    case INDICATOR_STATUS_EXCELENTE:
-      return "secondary";
-    case INDICATOR_STATUS_BOM:
-      return "outline";
-    case INDICATOR_STATUS_CRITICO:
-      return "destructive";
-    default:
-      return "default";
-  }
-}
-
-function getHealthClassificationVariant(
-  classificacao: string
-): "default" | "secondary" | "destructive" | "outline" {
-  switch (classificacao) {
-    case "Excelente":
-      return "secondary";
-    case "Boa":
-      return "outline";
-    case "Crítica":
-      return "destructive";
-    default:
-      return "default";
-  }
 }
 
 function getAlertBadgeVariant(severidade: string): "default" | "secondary" | "destructive" | "outline" {
@@ -145,7 +76,6 @@ export function PainelDashboard() {
   const { session } = useAuth();
   const [periodo, setPeriodo] = useState<DashboardPeriodo>("ano");
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
-  const [saudeFinanceira, setSaudeFinanceira] = useState<SaudeFinanceiraData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [reloadToken, setReloadToken] = useState(0);
@@ -159,13 +89,8 @@ export function PainelDashboard() {
       try {
         setIsLoading(true);
         setErrorMessage("");
-        const [responseDashboard, responseSaudeFinanceira] = await Promise.all([
-          buscarDashboard(session.usuario.id, session.token),
-          buscarSaudeFinanceira(session.usuario.id, session.token),
-        ]);
-
+        const responseDashboard = await buscarDashboard(session.usuario.id, session.token);
         setDashboard(responseDashboard.dados);
-        setSaudeFinanceira(responseSaudeFinanceira.dados);
       } catch (error) {
         if (error instanceof ApiError) {
           setErrorMessage(error.message);
@@ -266,12 +191,6 @@ export function PainelDashboard() {
     ];
   }, [dashboard]);
 
-  const indicadoresFinanceiros = useMemo(() => {
-    return (
-      dashboard?.indicadoresFinanceiros?.todos ?? []
-    ).filter((indicador): indicador is DashboardIndicadorFinanceiro => Boolean(indicador?.nome));
-  }, [dashboard]);
-
   return (
     <main className="flex-1 bg-gray-50 p-6 dark:bg-[#020817]">
       <div className="flex items-center justify-between">
@@ -332,7 +251,7 @@ export function PainelDashboard() {
             </div>
             <p className="mt-2 text-lg font-medium">Investimentos</p>
             <p className="text-2xl font-bold">{isLoading ? "..." : resumo.investimento}</p>
-            <p className="text-sm text-gray-600">Orcado R$ 0,00</p>
+            <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
           </CardContent>
         </Card>
         <Card>
@@ -342,7 +261,7 @@ export function PainelDashboard() {
             </div>
             <p className="mt-2 text-lg font-medium">Despesas</p>
             <p className="text-2xl font-bold">{isLoading ? "..." : resumo.despesa}</p>
-            <p className="text-sm text-gray-600">Orcado R$ 0,00</p>
+            <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
           </CardContent>
         </Card>
         <Card>
@@ -352,94 +271,10 @@ export function PainelDashboard() {
             </div>
             <p className="mt-2 text-lg font-medium">Resultado</p>
             <p className="text-2xl font-bold">{isLoading ? "..." : resumo.resultado}</p>
-            <p className="text-sm text-gray-600">Orcado R$ 0,00</p>
+            <p className="text-sm text-gray-600">Orçado R$ 0,00</p>
           </CardContent>
         </Card>
       </div>
-
-      <section className="mt-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Saúde Financeira</CardTitle>
-            <CardDescription>
-              Resumo rápido consumindo a mesma leitura usada na tela completa de Saúde Financeira.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4 lg:grid-cols-[280px_1fr]">
-            <div className="rounded-2xl border border-border/70 bg-background/70 p-5">
-              <p className="text-sm text-muted-foreground">Pontuação geral</p>
-              <p className="mt-2 text-4xl font-bold">{saudeFinanceira?.resumo.pontuacaoGeral ?? 0}</p>
-              <div className="mt-3">
-                <Badge variant={getHealthClassificationVariant(saudeFinanceira?.resumo.classificacao ?? "Atenção")}>
-                  {saudeFinanceira?.resumo.classificacao ?? "Atenção"}
-                </Badge>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <p className="text-sm font-medium">Principais pontos de atenção</p>
-              {saudeFinanceira?.resumo.pontosAtencao.length ? (
-                saudeFinanceira.resumo.pontosAtencao.slice(0, 3).map((ponto) => (
-                  <div key={ponto.nome} className="rounded-xl border border-border/70 bg-background/70 p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="font-medium">{ponto.nome}</p>
-                      <Badge variant={getIndicatorStatusVariant(ponto.status)}>
-                        {getIndicatorStatusLabel(ponto.status)}
-                      </Badge>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">{ponto.descricao}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="rounded-xl border border-dashed border-border/70 bg-background/70 p-4 text-sm text-muted-foreground">
-                  Nenhum ponto de atenção relevante no momento.
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      <section className="mt-6 space-y-4">
-        <div>
-          <h2 className="text-xl font-semibold">Indicadores Financeiros</h2>
-          <p className="text-sm text-muted-foreground">
-            Leitura analítica centralizada da saúde financeira com base em lançamentos, patrimônio e perfil financeiro.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {indicadoresFinanceiros.map((indicador) => (
-            <Card key={indicador.codigo}>
-              <CardHeader className="space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <CardTitle className="text-base">{indicador.nome}</CardTitle>
-                  <Badge variant={getIndicatorStatusVariant(indicador.status)}>
-                    {getIndicatorStatusLabel(indicador.status)}
-                  </Badge>
-                </div>
-                <CardDescription>{indicador.descricao}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <p className="text-2xl font-bold">
-                    {formatIndicatorValue(indicador.valorAtual, indicador.formato)}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Ideal: {formatIndicatorValue(indicador.valorIdeal, indicador.formato)}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-border/60 px-3 py-2 text-sm text-muted-foreground">
-                  Progresso analítico: {indicador.percentual.toFixed(1)}%
-                </div>
-                {indicador.observacao ? (
-                  <p className="text-sm text-muted-foreground">{indicador.observacao}</p>
-                ) : null}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
 
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card>

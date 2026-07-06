@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { BrainCircuit, CheckCircle2, ChevronRight, HeartPulse, Info, Sparkles, TriangleAlert } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, HeartPulse } from "lucide-react";
 
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { Badge } from "@/components/ui/badge";
@@ -21,14 +22,12 @@ const STATUS_BOM = 1;
 const STATUS_ATENCAO = 2;
 const STATUS_CRITICO = 3;
 
-const PRIORIDADE_ALTA = 0;
-const PRIORIDADE_MEDIA = 1;
-const PRIORIDADE_BAIXA = 2;
-
-const TIPO_ALERTA = 0;
-const TIPO_OPORTUNIDADE = 1;
-const TIPO_DESTAQUE_POSITIVO = 2;
-const TIPO_CONFIGURACAO = 3;
+const INDICADOR_ECONOMIA_MENSAL = 0;
+const INDICADOR_PERCENTUAL_ECONOMIA = 1;
+const INDICADOR_RESERVA_EMERGENCIA_ATUAL = 2;
+const INDICADOR_ENDIVIDAMENTO = 5;
+const INDICADOR_PATRIMONIO_LIQUIDO_ATUAL = 6;
+const INDICADOR_PERCENTUAL_PATRIMONIO_ALVO = 7;
 
 function formatarValorIndicador(valor: number, formato: number) {
   if (formato === FORMATO_PERCENTUAL) {
@@ -36,7 +35,7 @@ function formatarValorIndicador(valor: number, formato: number) {
   }
 
   if (formato === FORMATO_MESES) {
-    return `${valor.toFixed(1)} mês(es)`;
+    return `${valor.toFixed(1)} mes(es)`;
   }
 
   return new Intl.NumberFormat("pt-BR", {
@@ -52,9 +51,9 @@ function obterTextoStatus(status: number) {
     case STATUS_BOM:
       return "Bom";
     case STATUS_CRITICO:
-      return "Crítico";
+      return "Critico";
     default:
-      return "Atenção";
+      return "Atencao";
   }
 }
 
@@ -84,58 +83,6 @@ function obterVariantClassificacao(classificacao: string): "default" | "secondar
   }
 }
 
-function obterTituloPrioridade(prioridade: number) {
-  switch (prioridade) {
-    case PRIORIDADE_ALTA:
-      return "Crítico";
-    case PRIORIDADE_MEDIA:
-      return "Atenção";
-    default:
-      return "Informação";
-  }
-}
-
-function obterVariantPrioridade(prioridade: number): "default" | "secondary" | "destructive" | "outline" {
-  switch (prioridade) {
-    case PRIORIDADE_ALTA:
-      return "destructive";
-    case PRIORIDADE_MEDIA:
-      return "default";
-    default:
-      return "outline";
-  }
-}
-
-function obterTextoTipoInsight(tipo: number) {
-  switch (tipo) {
-    case TIPO_ALERTA:
-      return "Alerta";
-    case TIPO_OPORTUNIDADE:
-      return "Oportunidade";
-    case TIPO_DESTAQUE_POSITIVO:
-      return "Positivo";
-    case TIPO_CONFIGURACAO:
-      return "Configuração";
-    default:
-      return "Informação";
-  }
-}
-
-function obterIconeTipoInsight(tipo: number) {
-  switch (tipo) {
-    case TIPO_ALERTA:
-      return TriangleAlert;
-    case TIPO_OPORTUNIDADE:
-      return Sparkles;
-    case TIPO_DESTAQUE_POSITIVO:
-      return CheckCircle2;
-    case TIPO_CONFIGURACAO:
-      return Info;
-    default:
-      return BrainCircuit;
-  }
-}
-
 function formatarDataReferencia(dataReferencia: string) {
   return new Intl.DateTimeFormat("pt-BR", {
     month: "long",
@@ -162,7 +109,7 @@ export function AssistenteFinanceiroManager() {
         if (error instanceof ApiError) {
           setMensagemErro(error.message);
         } else {
-          setMensagemErro("Não foi possível carregar o Assistente Financeiro.");
+          setMensagemErro("Nao foi possivel carregar o Assistente Financeiro.");
         }
       }
     }
@@ -175,6 +122,45 @@ export function AssistenteFinanceiroManager() {
       (indicador): indicador is IndicadorResumoFinanceiroIA => Boolean(indicador?.nome)
     );
   }, [resumo]);
+
+  const principaisIndicadores = useMemo(() => {
+    const preferencia = [
+      INDICADOR_PERCENTUAL_ECONOMIA,
+      INDICADOR_ECONOMIA_MENSAL,
+      INDICADOR_RESERVA_EMERGENCIA_ATUAL,
+      INDICADOR_ENDIVIDAMENTO,
+      INDICADOR_PATRIMONIO_LIQUIDO_ATUAL,
+      INDICADOR_PERCENTUAL_PATRIMONIO_ALVO,
+    ];
+
+    const selecionados: IndicadorResumoFinanceiroIA[] = [];
+
+    preferencia.forEach((codigo) => {
+      const indicador = indicadores.find((item) => item.codigo === codigo);
+
+      if (!indicador) {
+        return;
+      }
+
+      const jaExiste = selecionados.some((item) => item.codigo === indicador.codigo);
+
+      if (!jaExiste && selecionados.length < 4) {
+        selecionados.push(indicador);
+      }
+    });
+
+    if (selecionados.length < 4) {
+      indicadores.forEach((indicador) => {
+        const jaExiste = selecionados.some((item) => item.codigo === indicador.codigo);
+
+        if (!jaExiste && selecionados.length < 4) {
+          selecionados.push(indicador);
+        }
+      });
+    }
+
+    return selecionados;
+  }, [indicadores]);
 
   const pontosAtencao = useMemo(() => {
     return indicadores.filter(
@@ -192,10 +178,6 @@ export function AssistenteFinanceiroManager() {
     return resumo?.insights.destaquesPositivos.map((insight) => insight.titulo).slice(0, 3) ?? [];
   }, [resumo]);
 
-  const insights = useMemo(() => {
-    return resumo?.insights.todos ?? [];
-  }, [resumo]);
-
   const prioridades = useMemo(() => {
     return resumo?.prioridadesImediatas.slice(0, 3) ?? [];
   }, [resumo]);
@@ -206,7 +188,7 @@ export function AssistenteFinanceiroManager() {
       <main className="flex-1 bg-gray-50 p-6 dark:bg-[#020817]">
         <div className="space-y-2">
           <h1 className="text-2xl font-bold">Assistente Financeiro</h1>
-          <p className="text-sm text-muted-foreground">Resumo da sua situação financeira.</p>
+          <p className="text-sm text-muted-foreground">Resumo executivo da sua situação financeira.</p>
         </div>
 
         {mensagemErro ? (
@@ -215,250 +197,151 @@ export function AssistenteFinanceiroManager() {
           </div>
         ) : null}
 
-        <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-[1.35fr_0.65fr]">
+        <section className="mt-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Resumo executivo</CardTitle>
-              <CardDescription>
-                Leitura consolidada de {resumo ? formatarDataReferencia(resumo.dataReferencia) : "sua base atual"}.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-2xl border border-border/70 bg-background/70 p-5">
-                <p className="text-base leading-7 text-foreground/90">
-                  {resumo?.resumoExecutivo ?? "Seu resumo executivo aparecerá aqui assim que o backend retornar o ResumoFinanceiroIA."}
-                </p>
+            <CardHeader className="space-y-4">
+              <div className="space-y-1">
+                <CardTitle>Resumo executivo</CardTitle>
+                <CardDescription>
+                  Leitura consolidada de {resumo ? formatarDataReferencia(resumo.dataReferencia) : "sua base atual"}.
+                </CardDescription>
               </div>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Saúde Financeira</CardTitle>
-              <CardDescription>Pontuação geral e classificação atual.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="rounded-2xl border border-border/70 bg-background/70 p-5 text-center">
-                <p className="text-sm text-muted-foreground">Pontuação</p>
-                <p className="mt-2 text-5xl font-bold tracking-tight">
-                  {resumo?.saudeFinanceira.pontuacaoGeral ?? 0}
-                  <span className="text-xl text-muted-foreground"> / 100</span>
-                </p>
-              </div>
-              <div className="rounded-2xl border border-border/70 bg-background/70 p-5">
-                <p className="text-sm text-muted-foreground">Classificação</p>
-                <div className="mt-3">
-                  <Badge variant={obterVariantClassificacao(resumo?.saudeFinanceira.classificacao ?? "Atenção")}>
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex items-end gap-3">
+                  <p className="text-5xl font-bold tracking-tight">
+                    {resumo?.saudeFinanceira.pontuacaoGeral ?? 0}
+                    <span className="text-xl text-muted-foreground">/100</span>
+                  </p>
+                  <Badge
+                    variant={obterVariantClassificacao(resumo?.saudeFinanceira.classificacao ?? "Atenção")}
+                    className="mb-1"
+                  >
                     {resumo?.saudeFinanceira.classificacao ?? "Atenção"}
                   </Badge>
                 </div>
-                <p className="mt-4 text-sm text-muted-foreground">
-                  A leitura executiva abaixo sempre reutiliza a mesma base analítica do sistema.
+
+                <p className="max-w-md text-sm text-muted-foreground">
+                  O detalhamento completo dos indicadores e gráficos fica centralizado em Saúde Financeira.
                 </p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </CardHeader>
 
-        <section className="mt-8">
-          <div className="mb-4 space-y-1">
-            <h2 className="text-xl font-semibold">Indicadores Financeiros</h2>
-            <p className="text-sm text-muted-foreground">
-              Cards executivos montados a partir do ResumoFinanceiroIA, sem recalcular nenhum indicador no frontend.
-            </p>
-          </div>
+            <CardContent className="space-y-8">
+              <section className="space-y-3">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Resumo</h3>
+                <p className="text-base leading-7 text-foreground/90">
+                  {resumo?.resumoExecutivo ?? "Seu resumo executivo aparecerá aqui assim que o backend retornar o ResumoFinanceiroIA."}
+                </p>
+              </section>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {indicadores.map((indicador) => (
-              <Card key={indicador.codigo}>
-                <CardHeader className="space-y-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <CardTitle className="text-base leading-snug">{indicador.nome}</CardTitle>
-                    <Badge variant={obterVariantBadge(indicador.status)}>{obterTextoStatus(indicador.status)}</Badge>
-                  </div>
-                  <CardDescription>{indicador.descricao}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
+              <section className="space-y-4">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Prioridades</h3>
+                <div className="space-y-3">
+                  {prioridades.length ? (
+                    prioridades.map((prioridade, index) => (
+                      <div key={prioridade} className="flex items-start gap-3 text-sm">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full border border-border/70 text-xs font-semibold">
+                          {index + 1}
+                        </span>
+                        <p className="pt-0.5 font-medium">{prioridade}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Nenhuma prioridade imediata foi sinalizada no momento.
+                    </p>
+                  )}
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Valor atual</p>
-                    <p className="text-2xl font-semibold">
-                      {formatarValorIndicador(indicador.valorAtual, indicador.formato)}
+                    <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                      Principais indicadores
+                    </h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Síntese em texto dos indicadores mais relevantes para decisão rápida.
                     </p>
                   </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="rounded-lg border border-border/60 bg-background/70 p-3">
-                      <p className="text-xs uppercase tracking-wide text-muted-foreground">Valor ideal</p>
-                      <p className="mt-1 font-medium">
-                        {formatarValorIndicador(indicador.valorIdeal, indicador.formato)}
-                      </p>
-                    </div>
-                    <div className="rounded-lg border border-border/60 bg-background/70 p-3">
-                      <p className="text-xs uppercase tracking-wide text-muted-foreground">Progresso</p>
-                      <p className="mt-1 font-medium">{indicador.percentual.toFixed(1)}%</p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-lg border border-border/60 bg-background/70 p-3 text-sm text-muted-foreground">
-                    {indicador.observacao}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        <div className="mt-8 grid grid-cols-1 gap-4 xl:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Pontos fortes</CardTitle>
-              <CardDescription>Somente os destaques positivos destacados pelo backend.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {pontosFortes.length ? (
-                pontosFortes.map((ponto) => (
-                  <div key={ponto} className="flex items-start gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-emerald-500" />
-                    <p className="text-sm font-medium text-foreground">{ponto}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="rounded-xl border border-dashed border-border/70 bg-background/70 p-4 text-sm text-muted-foreground">
-                  Ainda não há destaques positivos suficientes no resumo atual.
+                  <Button asChild variant="outline" className="sm:w-auto">
+                    <Link href="/saude-financeira">
+                      Ver análise completa
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
                 </div>
-              )}
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Pontos de atenção</CardTitle>
-              <CardDescription>Indicadores classificados como Atenção ou Crítico.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {pontosAtencao.length ? (
-                pontosAtencao.map((indicador) => (
-                  <div key={indicador.codigo} className="rounded-xl border border-border/70 bg-background/70 p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="font-medium">{indicador.nome}</p>
-                      <Badge variant={obterVariantBadge(indicador.status)}>{obterTextoStatus(indicador.status)}</Badge>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">{indicador.descricao}</p>
-                    <p className="mt-2 text-xs text-muted-foreground">{indicador.observacao}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="rounded-xl border border-dashed border-border/70 bg-background/70 p-4 text-sm text-muted-foreground">
-                  Nenhum indicador crítico ou de atenção no momento.
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        <section className="mt-8">
-          <div className="mb-4 space-y-1">
-            <h2 className="text-xl font-semibold">Insights Financeiros</h2>
-            <p className="text-sm text-muted-foreground">
-              Lista priorizada das leituras produzidas pelo backend para orientar sua próxima decisão.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-            {insights.length ? (
-              insights.map((insight) => {
-                const IconeInsight = obterIconeTipoInsight(insight.tipo);
-
-                return (
-                  <Card key={`${insight.titulo}-${insight.prioridade}-${insight.tipo}`}>
-                    <CardHeader className="space-y-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-start gap-3">
-                          <div className="rounded-xl border border-border/60 bg-background/70 p-2">
-                            <IconeInsight className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-base">{insight.titulo}</CardTitle>
-                            <CardDescription className="mt-1">{obterTextoTipoInsight(insight.tipo)}</CardDescription>
-                          </div>
+                <div className="space-y-4">
+                  {principaisIndicadores.length ? (
+                    principaisIndicadores.map((indicador) => (
+                      <div key={indicador.codigo} className="space-y-2 border-l-2 border-border pl-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="font-medium">{indicador.nome}</p>
+                          <Badge variant={obterVariantBadge(indicador.status)}>{obterTextoStatus(indicador.status)}</Badge>
                         </div>
-                        <Badge variant={obterVariantPrioridade(insight.prioridade)}>
-                          {obterTituloPrioridade(insight.prioridade)}
-                        </Badge>
+                        <p className="text-sm font-medium text-foreground">
+                          {formatarValorIndicador(indicador.valorAtual, indicador.formato)}
+                        </p>
+                        <p className="text-sm text-muted-foreground">{indicador.observacao}</p>
                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <p className="text-sm text-muted-foreground">{insight.descricao}</p>
-                      {insight.acaoSugerida ? (
-                        <div className="rounded-xl border border-border/60 bg-background/70 p-3 text-sm">
-                          <span className="font-medium">Ação sugerida:</span> {insight.acaoSugerida}
-                        </div>
-                      ) : null}
-                    </CardContent>
-                  </Card>
-                );
-              })
-            ) : (
-              <Card className="xl:col-span-2">
-                <CardContent className="p-6 text-sm text-muted-foreground">
-                  O backend ainda não retornou insights financeiros para o contexto atual.
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </section>
-
-        <div className="mt-8 grid grid-cols-1 gap-4 xl:grid-cols-[0.9fr_1.1fr]">
-          <Card>
-            <CardHeader>
-              <CardTitle>Próximas prioridades</CardTitle>
-              <CardDescription>As três prioridades imediatas enviadas pelo ResumoFinanceiroIA.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {prioridades.length ? (
-                prioridades.map((prioridade) => (
-                  <div key={prioridade} className="flex items-start gap-3 rounded-xl border border-border/70 bg-background/70 p-4">
-                    <ChevronRight className="mt-0.5 h-5 w-5 text-sky-500" />
-                    <p className="text-sm font-medium">{prioridade}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="rounded-xl border border-dashed border-border/70 bg-background/70 p-4 text-sm text-muted-foreground">
-                  Nenhuma prioridade imediata foi sinalizada no momento.
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Nenhum indicador foi retornado para o resumo executivo.
+                    </p>
+                  )}
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </section>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Gráficos</CardTitle>
-              <CardDescription>
-                Espaço preparado para evolução patrimonial, economia mensal e reserva de emergência assim que o ResumoFinanceiroIA incluir séries históricas suficientes.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-2xl border border-dashed border-border/70 bg-background/70 p-5">
-                <p className="text-sm font-medium">Evolução patrimonial</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Aguardando série histórica consolidada no resumo.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-dashed border-border/70 bg-background/70 p-5">
-                <p className="text-sm font-medium">Economia mensal</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Área reservada para leitura visual sem criar cálculo novo no frontend.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-dashed border-border/70 bg-background/70 p-5">
-                <p className="text-sm font-medium">Reserva de emergência</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Será exibida aqui quando o backend expuser histórico suficiente.
-                </p>
-              </div>
+              <section className="space-y-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                      Leitura estratégica
+                    </h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Pontos fortes e pontos de atenção resumidos, sem repetir a análise detalhada.
+                    </p>
+                  </div>
+                  <Button asChild variant="ghost" className="px-0 text-primary hover:text-primary">
+                    <Link href="/saude-financeira">
+                      Ver análise completa em Saúde Financeira
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-foreground">Pontos fortes</p>
+                  {pontosFortes.length ? (
+                    pontosFortes.map((ponto) => (
+                      <p key={ponto} className="text-sm text-muted-foreground">
+                        - {ponto}
+                      </p>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Nenhum destaque positivo relevante no momento.</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-foreground">Pontos de atenção</p>
+                  {pontosAtencao.length ? (
+                    pontosAtencao.slice(0, 4).map((indicador) => (
+                      <p key={indicador.codigo} className="text-sm text-muted-foreground">
+                        - {indicador.nome}: {indicador.descricao}
+                      </p>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Nenhum ponto de atenção relevante no momento.</p>
+                  )}
+                </div>
+              </section>
             </CardContent>
           </Card>
-        </div>
+        </section>
 
         <section className="mt-8">
           <Card className="border-primary/20 bg-primary/5">
