@@ -46,57 +46,57 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             {
                 CodigoIndicadorFinanceiro.EconomiaMensal when indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
-                        "O mês atual está consumindo mais do que gera.",
-                        "A economia mensal ficou negativa, o que indica fechamento do mês no vermelho.",
-                        "Revise as despesas previstas do mês e identifique cortes ou receitas adicionais para reequilibrar o caixa."),
+                        "O mês está fechando sem folga financeira.",
+                        "No ritmo atual, as saídas do período já pressionam o caixa e reduzem a margem para decisões de curto prazo.",
+                        "Reorganize despesas imediatas e busque recuperar sobra antes do fechamento do próximo ciclo."),
 
                 CodigoIndicadorFinanceiro.PercentualEconomia when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Oportunidade, PrioridadeInsightFinanceiro.Media,
-                        "A taxa de economia está abaixo do desejado.",
-                        "A parcela da renda que realmente sobra ainda não alcançou o objetivo definido no perfil financeiro.",
-                        "Use o fluxo de caixa do mês para identificar despesas ajustáveis e aproximar a sobra do percentual desejado."),
+                        "A capacidade de poupança ainda pode evoluir.",
+                        "A renda ainda não está se convertendo em economia no ritmo necessário para acelerar sua construção financeira.",
+                        "Identifique gastos ajustáveis e direcione uma parcela maior da renda para formação de reserva ou patrimônio."),
 
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
-                        "A reserva de emergência ainda está abaixo do nível ideal.",
-                        "Os recursos líquidos disponíveis ainda não cobrem a meta de segurança definida para o usuário.",
-                        "Priorize a formação de caixa antes de assumir novos compromissos de longo prazo."),
+                        "A proteção contra imprevistos ainda é limitada.",
+                        "A reserva disponível ainda não oferece a segurança ideal para atravessar oscilações ou despesas inesperadas com tranquilidade.",
+                        "Priorize liquidez e proteção antes de assumir compromissos mais longos ou aumentar o padrão de gasto."),
 
                 CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal when indicador.ValorIdeal <= 0
                     => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
-                        "A meta de reserva de emergência ainda não foi configurada.",
-                        "Sem uma referência configurada, a leitura da proteção financeira fica menos precisa.",
-                        "Defina no perfil financeiro a quantidade de meses e o percentual desejado de reserva."),
+                        "Ainda falta definir a régua da sua reserva.",
+                        "Sem uma meta clara de proteção, a leitura do nível de segurança financeira perde precisão.",
+                        "Configure no perfil financeiro a meta de reserva para orientar melhor as próximas decisões."),
 
                 CodigoIndicadorFinanceiro.ComprometimentoRenda when indicador.Status == StatusIndicadorFinanceiro.Atencao
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
-                        "Uma parcela elevada da renda já está comprometida.",
-                        "As despesas previstas do mês estão consumindo mais renda do que o limite saudável definido no perfil.",
-                        "Reavalie despesas recorrentes e parcelamentos para recuperar margem de decisão no mês."),
+                        "O orçamento mensal está pressionado.",
+                        "Uma parcela relevante da renda já está comprometida, o que reduz flexibilidade para reagir a imprevistos ou aproveitar oportunidades.",
+                        "Revise despesas recorrentes e contratos parcelados para recuperar margem de decisão no mês."),
 
                 CodigoIndicadorFinanceiro.Endividamento when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
-                        "O endividamento está exigindo atenção.",
-                        "O peso dos passivos sobre a base patrimonial atual está acima da faixa ideal.",
-                        "Avalie priorização de amortizações e contenção de novas dívidas até o indicador voltar ao nível desejado."),
+                        "As dívidas estão limitando sua evolução.",
+                        "O peso atual dos passivos já interfere na capacidade de formar patrimônio e aumenta a pressão sobre os próximos ciclos.",
+                        "Considere priorizar amortizações e conter novas dívidas até restabelecer uma faixa mais saudável."),
 
                 CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual when indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
-                        "O patrimônio líquido atual ainda não é positivo.",
-                        "O conjunto de passivos supera os ativos disponíveis, reduzindo a solidez patrimonial.",
-                        "Use patrimônio, projeções e fluxo de caixa para estruturar uma trajetória de reversão desse quadro."),
+                        "A base patrimonial ainda está fragilizada.",
+                        "No cenário atual, os passivos ainda superam os ativos, o que reduz a solidez financeira e aumenta a vulnerabilidade estrutural.",
+                        "Use fluxo de caixa, patrimônio e projeções para montar um plano realista de reversão desse quadro."),
 
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo when indicador.ValorIdeal <= 0
                     => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Baixa,
-                        "Ainda não existe um patrimônio-alvo definido.",
-                        "Sem uma meta patrimonial, fica mais difícil medir avanço de longo prazo.",
-                        "Configure um patrimônio líquido alvo no perfil financeiro para acompanhar evolução real."),
+                        "Ainda falta uma referência clara de patrimônio.",
+                        "Sem um patrimônio-alvo definido, fica mais difícil medir avanço real e calibrar expectativas de longo prazo.",
+                        "Defina um objetivo patrimonial no perfil financeiro para acompanhar evolução com mais clareza."),
 
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Oportunidade, PrioridadeInsightFinanceiro.Media,
-                        "O patrimônio ainda está distante do objetivo definido.",
-                        "O avanço rumo ao patrimônio-alvo existe, mas ainda não atingiu a faixa ideal.",
-                        "Cruze patrimônio, capacidade de poupança e projeções para definir uma rota de aceleração."),
+                        "Há espaço para acelerar a construção patrimonial.",
+                        "O patrimônio já avança, mas ainda abaixo da velocidade necessária para atingir o objetivo definido com mais conforto.",
+                        "Ajuste a combinação entre poupança, patrimônio e planejamento para aproximar a trajetória do objetivo esperado."),
 
                 _ => null
             };
@@ -112,9 +112,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual or
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => CriarInsight(indicador, TipoInsightFinanceiro.DestaquePositivo, PrioridadeInsightFinanceiro.Baixa,
-                        $"Ponto forte atual: {indicador.Nome}.",
-                        "Este indicador está em nível excelente e pode ser usado como base para consolidar a saúde financeira.",
-                        "Mantenha a disciplina atual e concentre esforço nos demais indicadores que ainda pedem atenção."),
+                        $"Há um avanço consistente em {indicador.Nome.ToLowerInvariant()}.",
+                        "Esse indicador contribui positivamente para a estabilidade financeira atual e ajuda a sustentar os próximos passos com mais segurança.",
+                        "Mantenha o padrão atual e concentre o esforço de ajuste apenas nos pontos que ainda pressionam sua estrutura financeira."),
                 _ => null
             };
         }

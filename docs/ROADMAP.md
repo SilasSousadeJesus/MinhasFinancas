@@ -198,6 +198,26 @@ Permitir que o usuário converse com o Assistente Financeiro utilizando todo o c
 ### Inteligência Financeira / Assistente Financeiro
 
 - Fase 4 — Integração com IA
+- Interpretador Financeiro
+  - criar uma camada entre `Saúde Financeira` e `Insights Financeiros`
+  - objetivo: transformar indicadores em interpretações humanas baseadas exclusivamente em regras de negócio
+  - motivação: evitar que `Insights`, `ResumoFinanceiroIA` e futuras interfaces reutilizem textos técnicos dos indicadores
+  - fluxo desejado:
+    - `Dados`
+    - `Indicadores Financeiros`
+    - `Saúde Financeira`
+    - `Interpretador Financeiro`
+    - `Insights Financeiros`
+    - `ResumoFinanceiroIA`
+    - `Assistente Financeiro`
+    - `IA (quando utilizada)`
+  - responsabilidades esperadas:
+    - traduzir indicadores em interpretações humanas
+    - explicar o impacto dos números na vida financeira
+    - produzir frases contextualizadas sem uso de IA generativa
+    - evitar que `Insights` e `ResumoFinanceiroIA` reutilizem textos técnicos dos indicadores
+    - servir como camada de conhecimento para futuras integrações com IA
+  - esta melhoria é uma evolução futura independente e não faz parte da Fase 4
 
 ### Dashboard
 

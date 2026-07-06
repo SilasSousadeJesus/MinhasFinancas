@@ -98,7 +98,7 @@ Este arquivo não substitui:
 
 ### O que o usuário faz aqui
 - acompanha a saúde financeira consolidada em formato executivo
-- lê um resumo corrido com prioridades, principais indicadores e leitura estratégica
+- lê um resumo corrido com prioridades, principais indicadores, leitura estratégica e conclusão
 - usa links para aprofundar a análise completa em Saúde Financeira
 - futuramente poderá solicitar uma análise aprofundada com IA
 
@@ -117,9 +117,20 @@ Este arquivo não substitui:
 - consumo exclusivo de `ResumoFinanceiroIA`
 - um único bloco principal de resumo executivo
 - saúde financeira consolidada com pontuação e classificação em destaque
-- seções internas por título: resumo, prioridades, principais indicadores e leitura estratégica
+- seções internas por título: resumo, prioridades, principais indicadores, leitura estratégica e conclusão
+- cada seção possui responsabilidade textual própria:
+  - resumo explica a situação
+  - prioridades mostram ações curtas
+  - principais indicadores sustentam a leitura com números
+  - leitura estratégica destaca forças e riscos
+  - conclusão fecha o parecer do período
+- os blocos textuais não reutilizam literalmente as descrições técnicas dos indicadores; o assistente usa frases interpretativas próprias para transformar os dados em linguagem executiva
+- os insights permanecem como camada separada de alertas, oportunidades, configuração e destaques positivos
 - principais indicadores em formato textual
 - leitura estratégica com pontos fortes e pontos de atenção em formato textual
+- conclusão dinâmica construída por regras com base na saúde financeira atual, sem IA generativa
+- a conclusão usa interpretações executivas próprias por indicador, em vez de repetir literalmente descrições técnicas ou prioridades
+- a abertura da conclusão varia conforme a classificação da saúde financeira
 - link para a análise completa em `Saúde Financeira`
 - próximas prioridades
 - card final de análise aprofundada com IA com botão desabilitado

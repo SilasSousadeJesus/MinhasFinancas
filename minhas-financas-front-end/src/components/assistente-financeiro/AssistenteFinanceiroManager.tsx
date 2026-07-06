@@ -8,6 +8,11 @@ import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  obterTextoExecutivoIndicador,
+  obterTextoPontoAtencao,
+} from "@/lib/assistente-financeiro-textos";
+import { ConclusaoFinanceiraBuilder } from "@/lib/conclusao-financeira-builder";
 import { useAuth } from "@/providers/auth-provider";
 import { buscarResumoFinanceiroIA } from "@/services/api/resumo-financeiro-ia";
 import { ApiError } from "@/types/api";
@@ -182,6 +187,14 @@ export function AssistenteFinanceiroManager() {
     return resumo?.prioridadesImediatas.slice(0, 3) ?? [];
   }, [resumo]);
 
+  const conclusao = useMemo(() => {
+    if (!resumo) {
+      return "";
+    }
+
+    return ConclusaoFinanceiraBuilder.construir(resumo, indicadores);
+  }, [indicadores, resumo]);
+
   return (
     <div className="flex flex-row">
       <Sidebar />
@@ -284,7 +297,7 @@ export function AssistenteFinanceiroManager() {
                         <p className="text-sm font-medium text-foreground">
                           {formatarValorIndicador(indicador.valorAtual, indicador.formato)}
                         </p>
-                        <p className="text-sm text-muted-foreground">{indicador.observacao}</p>
+                        <p className="text-sm text-muted-foreground">{obterTextoExecutivoIndicador(indicador)}</p>
                       </div>
                     ))
                   ) : (
@@ -331,13 +344,20 @@ export function AssistenteFinanceiroManager() {
                   {pontosAtencao.length ? (
                     pontosAtencao.slice(0, 4).map((indicador) => (
                       <p key={indicador.codigo} className="text-sm text-muted-foreground">
-                        - {indicador.nome}: {indicador.descricao}
+                        - {indicador.nome}: {obterTextoPontoAtencao(indicador)}
                       </p>
                     ))
                   ) : (
                     <p className="text-sm text-muted-foreground">Nenhum ponto de atenção relevante no momento.</p>
                   )}
                 </div>
+              </section>
+
+              <section className="space-y-3">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Conclusão</h3>
+                <p className="text-base leading-7 text-foreground/90">
+                  {conclusao || "A conclusão dinâmica será exibida aqui assim que o resumo financeiro estiver disponível."}
+                </p>
               </section>
             </CardContent>
           </Card>

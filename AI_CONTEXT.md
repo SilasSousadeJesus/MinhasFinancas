@@ -276,6 +276,8 @@ ObservaÃ§Ã£o importante:
 - `InteligenciaFinanceiraAppService` reaproveita os indicadores e a saÃºde financeira jÃ¡ existentes para montar as camadas seguintes, sem duplicar cÃ¡lculos
 - o endpoint `api/InsightsFinanceiros/{usuarioId}` devolve a primeira versÃ£o dos insights financeiros
 - o endpoint `api/ResumoFinanceiroIA/{usuarioId}` devolve um resumo consolidado com prioridades imediatas, destaques positivos, indicadores, saÃºde financeira e texto executivo
+- `ResumoExecutivo` Ã© gerado por regras no backend e explica o significado da situaÃ§Ã£o atual, sem repetir apenas pontuaÃ§Ã£o e classificaÃ§Ã£o
+- `PrioridadesImediatas` sÃ£o geradas como aÃ§Ãµes curtas e diretas, sem copiar literalmente os insights
 
 ### Fluxo de Caixa Simples
 
@@ -334,7 +336,19 @@ ObservaÃ§Ã£o importante:
   - prioridades
   - principais indicadores
   - leitura estratÃ©gica
+  - conclusÃ£o
+- cada seÃ§Ã£o textual responde a uma pergunta diferente:
+  - resumo executivo explica a situaÃ§Ã£o atual
+  - prioridades indicam aÃ§Ãµes curtas
+  - principais indicadores sustentam a leitura com nÃºmeros
+  - leitura estratÃ©gica destaca forÃ§as e riscos
+  - conclusÃ£o sintetiza o parecer final do perÃ­odo
 - `principais indicadores` e `leitura estratÃ©gica` sÃ£o exibidos em formato textual
+- os textos de `principais indicadores` e `pontos de atenÃ§Ã£o` do assistente sÃ£o interpretativos e gerados por regras prÃ³prias no frontend, sem reutilizar literalmente `descricao` e `observacao` tÃ©cnicas dos indicadores
+- a seÃ§Ã£o `conclusÃ£o` Ã© gerada por regras determinÃ­sticas no frontend via `ConclusaoFinanceiraBuilder`, sem uso de IA generativa
+- a conclusÃ£o nÃ£o reutiliza descriÃ§Ãµes tÃ©cnicas nem repete literalmente prioridades; ela usa frases interpretativas prÃ³prias por indicador para formar um parecer executivo
+- a abertura da conclusÃ£o varia conforme pontuaÃ§Ã£o/classificaÃ§Ã£o, para soar menos automÃ¡tica
+- os `Insights Financeiros` permanecem como bloco prÃ³prio de risco, oportunidade, configuraÃ§Ã£o ou destaque positivo, sem exercer o mesmo papel do resumo ou da conclusÃ£o
 - usa links para levar o usuÃ¡rio para a anÃ¡lise completa em `SaÃºde Financeira`
 - nÃ£o recalcula indicadores no frontend
 - possui card final de anÃ¡lise aprofundada com IA com botÃ£o desabilitado nesta fase
