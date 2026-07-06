@@ -203,7 +203,9 @@ O provedor nunca deve acessar o banco diretamente.
 
 ## Assistente Financeiro
 
-Experiência futura que organizará saúde financeira, indicadores, insights e análises aprofundadas a partir do `ResumoFinanceiroIA`.
+Experiência executiva do sistema que organiza saúde financeira, indicadores, insights e prioridades a partir do `ResumoFinanceiroIA`.
+
+Na fase atual, funciona sem IA real e sem chat.
 
 ## Parâmetro Financeiro
 

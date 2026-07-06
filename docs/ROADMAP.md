@@ -6,9 +6,9 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 2 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 3 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
-A **próxima etapa oficial** é a **Fase 3 — Assistente Financeiro**.
+A **próxima etapa oficial** é a **Fase 4 — Integração com IA**.
 
 ## Roadmap da Inteligência Financeira / Assistente Financeiro
 
@@ -50,7 +50,7 @@ Criar a infraestrutura de integração com IA sem consumir nenhum provedor.
 
 ### Fase 3 — Assistente Financeiro
 
-**Status:** próxima etapa
+**Status:** concluída
 
 **Objetivo:**
 Criar a tela do Assistente Financeiro.
@@ -164,6 +164,7 @@ Permitir que o usuário converse com o Assistente Financeiro utilizando todo o c
 - insights financeiros básicos
 - ResumoFinanceiroIA
 - infraestrutura de IA preparada sem integração real com provedor
+- assistente financeiro consumindo apenas o resumo consolidado do backend
 
 ### Planejamento
 
@@ -196,7 +197,7 @@ Permitir que o usuário converse com o Assistente Financeiro utilizando todo o c
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 3 — Assistente Financeiro
+- Fase 4 — Integração com IA
 
 ### Dashboard
 

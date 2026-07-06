@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { HeartPulse } from "lucide-react";
+import { BrainCircuit, HeartPulse } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -94,6 +94,26 @@ export function MenuNavegacao({
                 }`}
               >
                 Saúde financeira
+              </span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
+          <Link href="/assistente-financeiro" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                "justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <BrainCircuit className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Assistente financeiro
               </span>
             </NavigationMenuLink>
           </Link>

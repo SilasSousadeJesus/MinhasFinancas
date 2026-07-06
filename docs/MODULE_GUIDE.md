@@ -109,15 +109,24 @@ Será a interface que organizará toda a inteligência financeira do sistema em 
 - servirá como ponto central para futuras integrações com IA e especialistas temáticos
 
 ### O que já está funcional
-- a infraestrutura backend da Fase 2 já existe
-- o sistema já possui `ResumoFinanceiroIA`
-- já existe preparação de contexto e prompt para uso futuro com provedores externos
+- tela executiva do Assistente Financeiro já implementada
+- consumo exclusivo de `ResumoFinanceiroIA`
+- resumo executivo
+- saúde financeira consolidada
+- indicadores financeiros em cards
+- pontos fortes
+- pontos de atenção
+- insights financeiros
+- próximas prioridades
+- área reservada para gráficos futuros
+- card final de análise aprofundada com IA com botão desabilitado
+- a infraestrutura backend da Fase 2 continua preparada para uso futuro com provedores externos
 - o provedor atual permanece simulado, sem chamada real
 
 ### Evoluções futuras
-- tela dedicada do Assistente Financeiro
-- botão de análise aprofundada com IA
 - integração real com provedor externo na fase apropriada
+- especialistas temáticos reutilizando a mesma infraestrutura
+- conversa contínua com contexto financeiro consolidado
 
 ## Lançamentos
 

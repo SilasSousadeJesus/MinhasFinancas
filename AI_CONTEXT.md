@@ -323,6 +323,16 @@ ObservaÃ§Ã£o importante:
 - nenhuma chave de API Ã© versionada
 - a cadeia prevista para integraÃ§Ã£o futura Ã© `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 
+### Assistente Financeiro
+
+- tela dedicada no frontend em `src/app/(authenticated)/assistente-financeiro`
+- consome exclusivamente o endpoint `api/ResumoFinanceiroIA/{usuarioId}`
+- exibe resumo executivo, saÃºde financeira, indicadores, pontos fortes, pontos de atenÃ§Ã£o, insights e prioridades imediatas
+- nÃ£o recalcula indicadores no frontend
+- possui Ã¡rea visual reservada para grÃ¡ficos futuros, sem criar sÃ©ries artificiais
+- possui card final de anÃ¡lise aprofundada com IA com botÃ£o desabilitado nesta fase
+- continua sem qualquer chamada real para IA
+
 ## Infraestrutura e integraÃ§Ãµes existentes
 
 ### Banco de dados
@@ -427,6 +437,7 @@ ObservaÃ§Ã£o importante:
 ### MÃ³dulos concluÃ­dos
 
 - autenticaÃ§Ã£o
+- assistente financeiro
 - categorias e subcategorias
 - contas e cartÃµes
 - lanÃ§amentos
@@ -446,5 +457,5 @@ ObservaÃ§Ã£o importante:
 
 ### PrÃ³xima implementaÃ§Ã£o prevista
 
-- Fase 3 â€” Assistente Financeiro do roadmap de InteligÃªncia Financeira
-- criaÃ§Ã£o da tela do Assistente Financeiro consumindo apenas `ResumoFinanceiroIA`, ainda sem chamada real a provedor externo
+- Fase 4 â€” IntegraÃ§Ã£o real com IA do roadmap de InteligÃªncia Financeira
+- substituiÃ§Ã£o do provedor simulado por integraÃ§Ã£o real, mantendo `ResumoFinanceiroIA` como Ãºnica fonte de contexto
