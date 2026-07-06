@@ -39,7 +39,7 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 
 ## Dados x Informação x Inteligência
 
-- O projeto deve manter uma separação clara entre três níveis:
+- O projeto deve manter uma separação clara entre três níveis.
 - Dados: entidades persistidas (`Lançamentos`, `Patrimônio`, `Metas`, `Perfil Financeiro` etc.).
 - Informação: cálculos e indicadores derivados dos dados (`AnaliseFinanceira`).
 - Inteligência: interpretações e recomendações construídas sobre os indicadores (`Saúde Financeira`, insights, IA).
@@ -118,6 +118,13 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Ao alterar arquitetura, fluxo técnico, infraestrutura ou padrão estrutural, avaliar atualização do `AI_CONTEXT.md`.
 - Ao surgir nova regra permanente de desenvolvimento, atualizar `PROJECT_RULES.md`.
 - Ao final de cada implementação, informar se a documentação foi atualizada.
+
+## Integrações com IA
+
+- A IA nunca deve consultar diretamente o banco de dados.
+- Toda integração com IA deve consumir contexto preparado pelo sistema, preferencialmente a partir do `ResumoFinanceiroIA`.
+- Provedores externos devem ficar isolados na camada de infraestrutura.
+- Nenhuma chave de API deve ser versionada no repositório.
 
 ## Documentação viva
 

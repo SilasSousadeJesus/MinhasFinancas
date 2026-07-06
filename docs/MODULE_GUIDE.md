@@ -43,6 +43,7 @@ Este arquivo não substitui:
 - gráficos do dashboard
 - radar financeiro com próximos vencimentos, contas atrasadas, alertas e fluxo de caixa próximo
 - indicadores financeiros via camada analítica, com leitura baseada em perfil financeiro quando houver configuração vigente
+- resumo de saúde financeira consumido da mesma infraestrutura analítica
 - atalhos operacionais
 
 ### Evoluções futuras
@@ -70,7 +71,7 @@ Este arquivo não substitui:
 ### Impacto no restante do sistema
 - reutiliza a mesma camada analítica do dashboard
 - reforça o uso do perfil financeiro como régua pessoal
-- já serve de base para a primeira versão de insights financeiros e do ResumoFinanceiroIA
+- já serve de base para a primeira versão de insights financeiros e do `ResumoFinanceiroIA`
 - continuará servindo de base para relatórios, alertas e leituras futuras de saúde financeira
 
 ### O que já está funcional
@@ -85,6 +86,38 @@ Este arquivo não substitui:
 - explicações mais profundas por indicador
 - recomendações automáticas
 - integração com relatórios e insights inteligentes
+
+## Assistente Financeiro
+
+### Finalidade
+Será a interface que organizará toda a inteligência financeira do sistema em uma experiência única para leitura, acompanhamento e, futuramente, análise aprofundada com IA.
+
+### O que o usuário faz aqui
+- acompanhará a saúde financeira consolidada
+- visualizará indicadores e insights em um único lugar
+- consultará tendências e recomendações geradas pelo próprio sistema
+- futuramente poderá solicitar uma análise aprofundada com IA
+
+### Dados gerados ou mantidos
+- não criará dados financeiros brutos
+- consumirá `ResumoFinanceiroIA` como fonte oficial de contexto consolidado
+- futuramente poderá produzir relatórios executivos gerados a partir desse resumo
+
+### Impacto no restante do sistema
+- reutiliza a cadeia `Dados -> Indicadores -> Saúde Financeira -> Insights -> ResumoFinanceiroIA`
+- dependerá da camada analítica e do resumo consolidado, sem recalcular nada na interface
+- servirá como ponto central para futuras integrações com IA e especialistas temáticos
+
+### O que já está funcional
+- a infraestrutura backend da Fase 2 já existe
+- o sistema já possui `ResumoFinanceiroIA`
+- já existe preparação de contexto e prompt para uso futuro com provedores externos
+- o provedor atual permanece simulado, sem chamada real
+
+### Evoluções futuras
+- tela dedicada do Assistente Financeiro
+- botão de análise aprofundada com IA
+- integração real com provedor externo na fase apropriada
 
 ## Lançamentos
 

@@ -191,6 +191,20 @@ Ele organiza, em um único payload:
 - destaques positivos
 - resumo executivo textual
 
+## Contexto para IA
+
+Representação textual e estruturada do `ResumoFinanceiroIA`, preparada pelo sistema para consumo externo sem expor dados desnecessários do banco.
+
+## Provedor de IA
+
+Abstração de infraestrutura responsável por receber um contexto já preparado e, futuramente, enviar esse material para um serviço externo de IA.
+
+O provedor nunca deve acessar o banco diretamente.
+
+## Assistente Financeiro
+
+Experiência futura que organizará saúde financeira, indicadores, insights e análises aprofundadas a partir do `ResumoFinanceiroIA`.
+
 ## Parâmetro Financeiro
 
 Valor configurado pelo usuário para servir de referência em análises, indicadores, alertas e comparações futuras.

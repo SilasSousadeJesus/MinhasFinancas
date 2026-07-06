@@ -4,6 +4,138 @@ Este documento contém apenas evolução do produto.
 
 Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 
+## Estado atual do roadmap
+
+O projeto se encontra atualmente na **Fase 2 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
+
+A **próxima etapa oficial** é a **Fase 3 — Assistente Financeiro**.
+
+## Roadmap da Inteligência Financeira / Assistente Financeiro
+
+### Fase 1 — Inteligência do Sistema (sem IA)
+
+**Status:** concluída
+
+**Objetivo:**
+Fazer o sistema entender a situação financeira do usuário sozinho.
+
+**Entregas:**
+
+- Indicadores Financeiros
+- Saúde Financeira
+- Insights Financeiros
+- ResumoFinanceiroIA
+
+### Fase 2 — Infraestrutura de IA
+
+**Status:** concluída
+
+**Objetivo:**
+Criar a infraestrutura de integração com IA sem consumir nenhum provedor.
+
+**Escopo entregue:**
+
+- `IProvedorIA`
+- `OpenAIProvider`
+- `ConstrutorPromptIA`
+- `ConstrutorContextoIA`
+- `AssistenteFinanceiroService`
+
+**Resultado desta fase:**
+
+- a infraestrutura já prepara contexto e prompt a partir de `ResumoFinanceiroIA`
+- o provedor permanece simulado
+- nenhum token é consumido
+- nenhuma IA real é chamada
+
+### Fase 3 — Assistente Financeiro
+
+**Status:** próxima etapa
+
+**Objetivo:**
+Criar a tela do Assistente Financeiro.
+
+Essa tela deve funcionar completamente mesmo sem IA.
+
+Ela deve consumir apenas o `ResumoFinanceiroIA`.
+
+**Exibir:**
+
+- Saúde Financeira
+- Indicadores
+- Insights
+- Gráficos
+- Tendências
+- Histórico
+- Recomendações produzidas pelo sistema
+
+**Observação:**
+
+Ao final da tela existirá um botão:
+
+`Gerar análise aprofundada com IA`
+
+Esse botão pode permanecer desabilitado até a Fase 4.
+
+### Fase 4 — Integração com IA
+
+**Status:** futura
+
+**Objetivo:**
+Integrar o primeiro provedor (`OpenAI`).
+
+**Fluxo:**
+
+`ResumoFinanceiroIA`
+↓
+`ConstrutorContextoIA`
+↓
+`ConstrutorPromptIA`
+↓
+`OpenAIProvider`
+↓
+`Relatório Executivo`
+
+**Regra central:**
+
+A IA nunca consulta diretamente o banco.
+
+Ela recebe exclusivamente o `ResumoFinanceiroIA`.
+
+### Fase 5 — Especialistas
+
+**Status:** futura
+
+Criar especialistas utilizando a mesma infraestrutura.
+
+**Exemplos:**
+
+- Especialista em Dívidas
+- Especialista em Patrimônio
+- Especialista em Metas
+- Especialista em Fluxo de Caixa
+- Especialista em Simulações
+
+**Nesta fase muda apenas:**
+
+- prompt
+- contexto enviado
+
+Toda a infraestrutura permanece a mesma.
+
+### Fase 6 — Conversa Contínua
+
+**Status:** futura
+
+Permitir que o usuário converse com o Assistente Financeiro utilizando todo o contexto financeiro já consolidado.
+
+**Exemplos:**
+
+- Vale a pena quitar meu empréstimo?
+- E se eu comprar uma casa?
+- Quanto posso gastar em um carro?
+- Essa simulação é saudável?
+
 ## Concluído
 
 ### Fundação
@@ -27,9 +159,11 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 - dashboard
 - radar financeiro
 - fluxo de caixa simples
+- indicadores financeiros
 - saúde financeira
 - insights financeiros básicos
 - ResumoFinanceiroIA
+- infraestrutura de IA preparada sem integração real com provedor
 
 ### Planejamento
 
@@ -60,13 +194,17 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 
 ## Próximas implementações
 
+### Inteligência Financeira / Assistente Financeiro
+
+- Fase 3 — Assistente Financeiro
+
 ### Dashboard
 
 - patrimônio líquido no dashboard
 - evolução patrimonial no dashboard
 - saldo projetado
 - metas em risco
-- resumo financeiro inteligente
+- resumo financeiro inteligente na interface, consumindo `ResumoFinanceiroIA`
 
 ### Lançamentos
 
@@ -88,7 +226,7 @@ Ele não representa a arquitetura atual nem o histórico técnico detalhado.
 
 ### Perfil Financeiro
 
-- geração de insights com base no histórico
+- evolução dos insights com base no histórico
 
 ## Ideias futuras
 

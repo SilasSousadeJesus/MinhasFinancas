@@ -1,6 +1,6 @@
-﻿# AI Context - Minhas FinanÃ§as
+﻿# AI Context - Minhas Finanças
 
-Este documento existe para dar a uma IA visÃ£o rÃ¡pida e confiÃ¡vel do estado tÃ©cnico atual do projeto.
+Este documento existe para dar a uma IA visão rápida e confiÃ¡vel do estado tÃ©cnico atual do projeto.
 
 Ele deve permanecer enxuto, arquitetural e orientado a implementaÃ§Ã£o.
 
@@ -310,6 +310,19 @@ ObservaÃ§Ã£o importante:
 - histÃ³rico de configuraÃ§Ãµes vigentes e anteriores
 - base futura para indicadores, dashboard, alertas e insights
 
+### Infraestrutura de IA
+
+- localizada em `MinhasFinancas.Infra/IA`
+- `AssistenteFinanceiroService` orquestra a preparaÃ§Ã£o de contexto, prompt e resposta
+- `ConstrutorContextoIA` transforma `ResumoFinanceiroIA` em contexto textual estruturado e seguro para consumo externo
+- `ConstrutorPromptIA` monta a requisiÃ§Ã£o final a partir do contexto preparado e do prompt base versionado em arquivo
+- `IProvedorIA` abstrai provedores externos para evitar acoplamento com uma implementaÃ§Ã£o especÃ­fica
+- `OpenAIProvider` existe apenas como infraestrutura preparada e hoje devolve resposta simulada
+- nesta fase nÃ£o existe chamada HTTP real para IA
+- nenhum token Ã© consumido
+- nenhuma chave de API Ã© versionada
+- a cadeia prevista para integraÃ§Ã£o futura Ã© `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+
 ## Infraestrutura e integraÃ§Ãµes existentes
 
 ### Banco de dados
@@ -433,4 +446,5 @@ ObservaÃ§Ã£o importante:
 
 ### PrÃ³xima implementaÃ§Ã£o prevista
 
-- fechamento do mÃ³dulo de metas no frontend e evoluÃ§Ã£o dos relatÃ³rios
+- Fase 3 â€” Assistente Financeiro do roadmap de InteligÃªncia Financeira
+- criaÃ§Ã£o da tela do Assistente Financeiro consumindo apenas `ResumoFinanceiroIA`, ainda sem chamada real a provedor externo

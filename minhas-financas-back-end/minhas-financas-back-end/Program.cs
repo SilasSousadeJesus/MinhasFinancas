@@ -15,6 +15,10 @@ using MinhasFinancas.Infra;
 using MinhasFinancas.Infra.Data.config.configMigrate;
 using MinhasFinancas.Infra.Data.Interfaces;
 using MinhasFinancas.Infra.Data.Repositories;
+using MinhasFinancas.Infra.IA;
+using MinhasFinancas.Infra.IA.Construtores;
+using MinhasFinancas.Infra.IA.Modelos;
+using MinhasFinancas.Infra.IA.Provedores;
 using MinhasFinancas.Infra.Reports.Excel;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
@@ -36,6 +40,7 @@ namespace minhas_financas_back_end
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             var connectionString = builder.Configuration.GetConnectionString("ConnectionMinhasFinancas");
+            builder.Services.Configure<ConfiguracaoOpenAI>(builder.Configuration.GetSection("OpenAI"));
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -79,6 +84,10 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IAnaliseFinanceiraAppService, AnaliseFinanceiraAppService>();
             builder.Services.AddScoped<ISaudeFinanceiraAppService, SaudeFinanceiraAppService>();
             builder.Services.AddScoped<IInteligenciaFinanceiraAppService, InteligenciaFinanceiraAppService>();
+            builder.Services.AddScoped<ConstrutorContextoIA>();
+            builder.Services.AddScoped<ConstrutorPromptIA>();
+            builder.Services.AddScoped<IProvedorIA, OpenAIProvider>();
+            builder.Services.AddScoped<AssistenteFinanceiroService>();
             builder.Services.AddScoped<ExcelWorkbookFactory>();
             builder.Services.AddScoped<ExcelStyleHelper>();
             builder.Services.AddScoped<IExcelReport<LancamentosExcelReportData>, LancamentosExcelReport>();
