@@ -93,6 +93,11 @@ Este arquivo não substitui:
 
 ## Assistente Financeiro
 
+Observações adicionais da fase técnica:
+
+- a infraestrutura backend já monta um contexto estruturado por seções antes de qualquer chamada externa para IA
+- a integração técnica já registra tempo, tokens e custo estimado por chamada sem expor prompt completo nem dados financeiros pessoais em logs
+
 ### Finalidade
 É a tela executiva da inteligência financeira. Seu papel é organizar a situação atual do usuário em formato de prioridades, destaques e direcionamento prático para tomada de decisão.
 

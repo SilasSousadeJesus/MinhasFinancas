@@ -1,6 +1,7 @@
 using System.Net;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Infra.IA;
+using MinhasFinancas.Infra.IA.Modelos;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -30,8 +31,8 @@ namespace MinhasFinancas.Application.Services
                 {
                     return new RetornoGenerico(
                         false,
-                        "ResumoFinanceiroIA nÃ£o encontrado para o usuÃ¡rio informado.",
-                        "NÃ£o foi possÃ­vel preparar a anÃ¡lise financeira.",
+                        "ResumoFinanceiroIA não encontrado para o usuário informado.",
+                        "Não foi possível preparar a análise financeira.",
                         HttpStatusCode.NotFound,
                         null);
                 }
@@ -47,14 +48,14 @@ namespace MinhasFinancas.Application.Services
                         false,
                         resposta.MensagemTecnica,
                         resposta.MensagemAmigavel,
-                        MapearStatusHttp(resposta.OrigemErro, resposta.StatusHttpProvedor),
+                        MapearStatusHttp(resposta.CategoriaErro, resposta.StatusHttpProvedor),
                         resposta);
                 }
 
                 return new RetornoGenerico(
                     true,
-                    "AnÃ¡lise tÃ©cnica de IA gerada com sucesso.",
-                    "AnÃ¡lise tÃ©cnica gerada com sucesso.",
+                    "Análise técnica de IA gerada com sucesso.",
+                    "Análise técnica gerada com sucesso.",
                     HttpStatusCode.OK,
                     resposta);
             }
@@ -62,7 +63,7 @@ namespace MinhasFinancas.Application.Services
             {
                 return new RetornoGenerico(
                     false,
-                    $"Tempo limite excedido ao gerar anÃ¡lise com IA: {ex.Message}",
+                    $"Tempo limite excedido ao gerar análise com IA: {ex.Message}",
                     "A IA demorou mais do que o esperado para responder.",
                     HttpStatusCode.ServiceUnavailable,
                     null);
@@ -72,24 +73,25 @@ namespace MinhasFinancas.Application.Services
                 return new RetornoGenerico(
                     false,
                     ex.ToString(),
-                    "NÃ£o foi possÃ­vel gerar a anÃ¡lise com IA.",
+                    "Não foi possível gerar a análise com IA.",
                     HttpStatusCode.InternalServerError,
                     null);
             }
         }
 
-        private static HttpStatusCode MapearStatusHttp(string origemErro, int? statusHttpProvedor)
+        private static HttpStatusCode MapearStatusHttp(CategoriaErroIA categoriaErro, int? statusHttpProvedor)
         {
-            return origemErro switch
+            return categoriaErro switch
             {
-                "Configuracao.OpenAI" => HttpStatusCode.InternalServerError,
-                "OpenAI.Autenticacao" => HttpStatusCode.BadGateway,
-                "OpenAI.Permissao" => HttpStatusCode.BadGateway,
-                "OpenAI.Timeout" => HttpStatusCode.ServiceUnavailable,
-                "OpenAI.Limite" => HttpStatusCode.ServiceUnavailable,
-                "OpenAI.Transiente" => statusHttpProvedor is 500 or 502 or 503 or 504
+                CategoriaErroIA.Configuracao => HttpStatusCode.InternalServerError,
+                CategoriaErroIA.Autenticacao => HttpStatusCode.BadGateway,
+                CategoriaErroIA.Permissao => HttpStatusCode.BadGateway,
+                CategoriaErroIA.Timeout => HttpStatusCode.ServiceUnavailable,
+                CategoriaErroIA.Limite => HttpStatusCode.ServiceUnavailable,
+                CategoriaErroIA.Transiente => statusHttpProvedor is 500 or 502 or 503 or 504
                     ? HttpStatusCode.ServiceUnavailable
                     : HttpStatusCode.BadGateway,
+                CategoriaErroIA.RespostaInvalida => HttpStatusCode.BadGateway,
                 _ => statusHttpProvedor.HasValue
                     ? HttpStatusCode.BadGateway
                     : HttpStatusCode.InternalServerError

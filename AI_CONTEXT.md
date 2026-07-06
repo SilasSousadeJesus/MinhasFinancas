@@ -315,6 +315,19 @@ ObservaÃ§Ã£o importante:
 
 ### Infraestrutura de IA
 
+- o contexto atual da IA passou a ser montado por seções, com resumo executivo, saúde financeira, pontos de atenção, prioridades, destaques, indicadores e insights
+- `RespostaIA` agora devolve métricas de observabilidade:
+  - tokens de entrada estimados
+  - tokens de entrada utilizados
+  - tokens de saída utilizados
+  - tokens de raciocínio quando disponíveis
+  - total de tokens
+  - tempo total da requisição
+  - custo estimado em USD
+- o custo estimado usa preços configuráveis na seção `OpenAI`
+- a aplicação superior continua conhecendo apenas `IProvedorIA`; a classificação genérica de falhas usa `CategoriaErroIA`, reduzindo acoplamento específico com OpenAI
+- radar financeiro detalhado, histórico, projeções, simulações e detalhamento patrimonial ainda não entram como blocos próprios do contexto e seguem como oportunidade de evolução para a fase seguinte
+
 - localizada em `MinhasFinancas.Infra/IA`
 - `AssistenteFinanceiroService` orquestra a preparaÃ§Ã£o de contexto, prompt e resposta
 - `ConstrutorContextoIA` transforma `ResumoFinanceiroIA` em contexto textual estruturado e seguro para consumo externo

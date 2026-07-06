@@ -126,6 +126,19 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Provedores externos devem ficar isolados na camada de infraestrutura.
 - Nenhuma chave de API deve ser versionada no repositório.
 
+## Construção de Contexto para IA
+
+- Antes de enviar qualquer solicitação para um modelo de IA, o sistema deve fornecer o máximo possível de contexto estruturado produzido pelas regras de negócio.
+- Sempre priorizar:
+  - indicadores
+  - interpretações
+  - tendências
+  - resumos
+  - histórico
+  - contexto agregado
+- Evitar enviar dados brutos quando existir uma interpretação equivalente produzida pelo domínio.
+- A IA deve atuar como camada de comunicação, interpretação e aconselhamento, nunca como substituta das regras de negócio do sistema.
+
 ## Documentação viva
 
 - Toda implementação relevante deve atualizar a documentação correspondente.
