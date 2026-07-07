@@ -17,9 +17,12 @@ namespace MinhasFinancas.API.Controllers
 
         [Authorize]
         [HttpGet("{usuarioId}")]
-        public async Task<IActionResult> BuscarTodas([FromRoute] string usuarioId)
+        public async Task<IActionResult> BuscarTodas(
+            [FromRoute] string usuarioId,
+            [FromQuery] int pagina = 1,
+            [FromQuery] int tamanhoPagina = 5)
         {
-            var retorno = await _appService.BuscarTodasAsync(usuarioId);
+            var retorno = await _appService.BuscarTodasAsync(usuarioId, pagina, tamanhoPagina);
 
             if (!retorno.Sucesso)
             {
@@ -40,6 +43,26 @@ namespace MinhasFinancas.API.Controllers
         public async Task<IActionResult> BuscarDetalhe([FromRoute] string usuarioId, [FromRoute] Guid analiseId)
         {
             var retorno = await _appService.BuscarDetalheAsync(usuarioId, analiseId);
+
+            if (!retorno.Sucesso)
+            {
+                return retorno.HttpStatusCode switch
+                {
+                    System.Net.HttpStatusCode.Unauthorized => Unauthorized(retorno),
+                    System.Net.HttpStatusCode.NotFound => NotFound(retorno),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(retorno),
+                    _ => StatusCode((int)retorno.HttpStatusCode, retorno)
+                };
+            }
+
+            return Ok(retorno);
+        }
+
+        [Authorize]
+        [HttpDelete("{usuarioId}/{analiseId:guid}")]
+        public async Task<IActionResult> Excluir([FromRoute] string usuarioId, [FromRoute] Guid analiseId)
+        {
+            var retorno = await _appService.ExcluirAsync(usuarioId, analiseId);
 
             if (!retorno.Sucesso)
             {

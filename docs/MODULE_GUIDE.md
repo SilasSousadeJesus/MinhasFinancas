@@ -143,13 +143,19 @@ ObservaÃ§Ãµes adicionais da fase tÃ©cnica:
 - link para a anÃ¡lise completa em `SaÃºde Financeira`
 - prÃ³ximas prioridades
 - experiÃªncia visual da anÃ¡lise aprofundada com IA implementada na prÃ³pria tela
+- resumo executivo com opÃ§Ã£o de minimizar e mostrar novamente, para liberar espaÃ§o quando o foco estiver na anÃ¡lise da IA
+- histÃ³rico de anÃ¡lises acima da anÃ¡lise aprofundada, com opÃ§Ã£o de minimizar e mostrar novamente
 - botÃ£o funcional para gerar anÃ¡lise aprofundada
 - renderizaÃ§Ã£o da resposta da IA em Markdown
 - loading amigÃ¡vel durante a geraÃ§Ã£o
 - aÃ§Ãµes de copiar anÃ¡lise e gerar novamente
-- dados tÃ©cnicos discretos da geraÃ§Ã£o, como modelo, tempo, tokens, custo e horÃ¡rio
+- histÃ³rico visual das Ãºltimas anÃ¡lises dentro da prÃ³pria tela
+- cada interaÃ§Ã£o usa a prÃ³pria pergunta do usuÃ¡rio como identificador principal no histÃ³rico, com truncamento visual quando necessÃ¡rio
+- abertura de anÃ¡lises anteriores no mesmo card principal da anÃ¡lise aprofundada
+- exclusÃ£o lÃ³gica de anÃ¡lises diretamente pelo histÃ³rico visual
+- os dados tÃ©cnicos da geraÃ§Ã£o permanecem apenas no backend e nÃ£o sÃ£o exibidos ao usuÃ¡rio
 - a infraestrutura backend da Fase 4.1 continua responsÃ¡vel pela integraÃ§Ã£o tÃ©cnica com o provedor
-- a MemÃ³ria Financeira continua sendo salva apenas pelo backend
+- a MemÃ³ria Financeira continua sendo persistida pelo backend e apresentada visualmente pelo frontend
 - antes de chegar Ã  IA, a MemÃ³ria Financeira agora Ã© interpretada pelo backend para criar continuidade entre anÃ¡lises
 - nÃ£o existe chat nem conversa contÃ­nua nesta etapa
 

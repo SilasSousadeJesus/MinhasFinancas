@@ -172,6 +172,20 @@ Transformar o `ResumoFinanceiroIA` em um parecer financeiro muito mais rico do q
 
 Transformar a análise aprofundada com IA em uma experiência visual clara, comparável e útil dentro do Assistente Financeiro.
 
+**Entregas:**
+
+- geração da análise aprofundada diretamente na tela do Assistente Financeiro
+- visualização da resposta em Markdown no mesmo fluxo da tela
+- ação de copiar análise
+- ação de gerar novamente
+- histórico visual das últimas análises
+- carregamento de análises anteriores no mesmo card principal
+- exclusão lógica de análises pelo histórico visual
+- resumo executivo com opção de minimizar e mostrar novamente
+- histórico e análise aprofundada iniciando recolhidos para reduzir poluição visual
+- a pergunta do usuário passa a ser o identificador principal de cada análise, com truncamento visual quando necessário
+- dados técnicos da geração não expostos na interface do usuário
+
 #### Fase 4.2.2.1 — Interpretador da Memória Financeira
 
 **Status:** concluída
@@ -389,6 +403,8 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - implementação do primeiro prompt oficial consultivo da Fase 4.2
 - criação da primeira versão da **Base de Conhecimento Financeira**
 - integração visual da análise aprofundada diretamente na tela do Assistente Financeiro
+- histórico visual da Memória Financeira com reabertura e exclusão de análises anteriores
+- resumo executivo minimizável para foco na leitura da análise aprofundada
 - interpretação da Memória Financeira em narrativa de evolução antes da chamada à IA
 
 ### Base de Conhecimento Financeira

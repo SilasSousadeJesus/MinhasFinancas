@@ -213,15 +213,21 @@ A subfase 4.2.2 tornou a análise aprofundada acessível diretamente na tela do 
 - renderização da resposta da IA em Markdown
 - loading amigável durante a geração
 - ações de copiar análise e gerar novamente
-- exibição discreta de modelo, tempo, tokens, custo e horário da geração
+- resumo executivo com opção de minimizar e mostrar novamente
+- histórico de análises acima da análise aprofundada, com capacidade de recolher e expandir
+- a pergunta do usuário é o identificador principal de cada análise histórica, com truncamento visual quando o texto é longo
+- histórico visual das últimas análises dentro da própria tela
+- reabertura de análises anteriores no mesmo card principal
+- exclusão lógica de análises pelo histórico visual
+- a interface não expõe dados técnicos como modelo, tempo, tokens, custo ou horário
 
 ### Limites desta fase
 
 - não existe chat
 - não existe conversa contínua
 - não existem especialistas
-- o frontend não salva histórico por conta própria
-- a Memória Financeira continua sendo responsabilidade do backend
+- a persistência da Memória Financeira continua sendo responsabilidade do backend
+- o frontend apenas consulta, apresenta e aciona a exclusão lógica do histórico existente
 
 ## Atualização — Base de Conhecimento Financeira
 

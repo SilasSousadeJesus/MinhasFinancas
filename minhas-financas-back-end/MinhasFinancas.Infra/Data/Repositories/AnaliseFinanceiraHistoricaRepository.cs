@@ -41,6 +41,25 @@ namespace MinhasFinancas.Infra.Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<(List<AnaliseFinanceiraHistorica> Itens, int TotalItens)> BuscarPaginaAsync(string usuarioId, int pagina, int tamanhoPagina)
+        {
+            var paginaFinal = pagina < 1 ? 1 : pagina;
+            var tamanhoPaginaFinal = tamanhoPagina < 1 ? 5 : tamanhoPagina;
+
+            var query = _context.Set<AnaliseFinanceiraHistorica>()
+                .AsNoTracking()
+                .Where(x => x.UsuarioId == usuarioId && x.Ativa)
+                .OrderByDescending(x => x.DataGeracao);
+
+            var totalItens = await query.CountAsync();
+            var itens = await query
+                .Skip((paginaFinal - 1) * tamanhoPaginaFinal)
+                .Take(tamanhoPaginaFinal)
+                .ToListAsync();
+
+            return (itens, totalItens);
+        }
+
         public async Task CadastrarElementoAsync(AnaliseFinanceiraHistorica elemento)
         {
             await _context.Set<AnaliseFinanceiraHistorica>().AddAsync(elemento);

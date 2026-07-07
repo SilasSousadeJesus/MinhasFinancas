@@ -1,12 +1,13 @@
+using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using MinhasFinancas.Application.DTOs.AnaliseFinanceiraHistorica;
+using MinhasFinancas.Application.DTOs.Lancamento;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Enums;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos;
 using MinhasFinancas.Infra.Data.Interfaces;
-using System.Net;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -28,7 +29,7 @@ namespace MinhasFinancas.Application.Services
             _perfilFinanceiroRepository = perfilFinanceiroRepository;
         }
 
-        public async Task<RetornoGenerico> BuscarTodasAsync(string usuarioId)
+        public async Task<RetornoGenerico> BuscarTodasAsync(string usuarioId, int pagina = 1, int tamanhoPagina = 5)
         {
             try
             {
@@ -38,13 +39,25 @@ namespace MinhasFinancas.Application.Services
                     return validacaoUsuario;
                 }
 
-                var analises = await _repository.BuscarTodosOsElementosAsync(usuarioId);
-                var dados = analises.Select(MapearLista).ToList();
+                var paginaFinal = pagina < 1 ? 1 : pagina;
+                var tamanhoPaginaFinal = tamanhoPagina < 1 ? 5 : tamanhoPagina;
+
+                var resultado = await _repository.BuscarPaginaAsync(usuarioId, paginaFinal, tamanhoPaginaFinal);
+                var dados = new ResultadoPaginadoDTO<AnaliseFinanceiraHistoricaListaDTO>
+                {
+                    Itens = resultado.Itens.Select(MapearLista).ToList(),
+                    PaginaAtual = paginaFinal,
+                    TamanhoPagina = tamanhoPaginaFinal,
+                    TotalItens = resultado.TotalItens,
+                    TotalPaginas = resultado.TotalItens == 0
+                        ? 1
+                        : (int)Math.Ceiling(resultado.TotalItens / (double)tamanhoPaginaFinal)
+                };
 
                 return new RetornoGenerico(
                     true,
-                    $"{dados.Count} análise(s) histórica(s) encontrada(s).",
-                    $"{dados.Count} análise(s) histórica(s) carregada(s) com sucesso.",
+                    $"{dados.TotalItens} análise(s) histórica(s) encontrada(s).",
+                    $"{dados.Itens.Count} análise(s) histórica(s) carregada(s) com sucesso.",
                     HttpStatusCode.OK,
                     dados);
             }
@@ -81,6 +94,39 @@ namespace MinhasFinancas.Application.Services
             catch (Exception ex)
             {
                 return new RetornoGenerico(false, ex.ToString(), "Não foi possível carregar a análise histórica.", HttpStatusCode.InternalServerError, null);
+            }
+        }
+
+        public async Task<RetornoGenerico> ExcluirAsync(string usuarioId, Guid analiseId)
+        {
+            try
+            {
+                var validacaoUsuario = await ValidarUsuarioAsync(usuarioId);
+                if (validacaoUsuario != null)
+                {
+                    return validacaoUsuario;
+                }
+
+                var analise = await _repository.BuscarUmElementoAsync(usuarioId, analiseId);
+
+                if (analise == null)
+                {
+                    return new RetornoGenerico(false, "Análise histórica não encontrada.", "Não foi possível localizar a análise histórica.", HttpStatusCode.NotFound, null);
+                }
+
+                analise.Ativa = false;
+                await _repository.EditarElementoAsync(analise);
+
+                return new RetornoGenerico(
+                    true,
+                    "Análise histórica inativada com sucesso.",
+                    "Análise removida do histórico com sucesso.",
+                    HttpStatusCode.OK,
+                    null);
+            }
+            catch (Exception ex)
+            {
+                return new RetornoGenerico(false, ex.ToString(), "Não foi possível excluir a análise histórica.", HttpStatusCode.InternalServerError, null);
             }
         }
 

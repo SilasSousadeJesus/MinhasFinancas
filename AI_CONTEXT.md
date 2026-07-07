@@ -373,11 +373,17 @@ ObservaÃ§Ã£o importante:
 - os `Insights Financeiros` permanecem como bloco prÃ³prio de risco, oportunidade, configuraÃ§Ã£o ou destaque positivo, sem exercer o mesmo papel do resumo ou da conclusÃ£o
 - usa links para levar o usuÃ¡rio para a anÃ¡lise completa em `SaÃºde Financeira`
 - nÃ£o recalcula indicadores no frontend
+- o resumo executivo pode ser minimizado localmente para priorizar a leitura da anÃ¡lise aprofundada
 - possui card funcional de anÃ¡lise aprofundada com IA
 - a tela permite pergunta opcional e usa uma pergunta padrÃ£o quando o usuÃ¡rio sÃ³ clica no botÃ£o
 - o frontend chama o endpoint existente `POST api/AssistenteFinanceiro/GerarAnalise/{usuarioId}`
+- o frontend tambÃ©m consome `GET api/AnalisesFinanceirasHistoricas/{usuarioId}` e `GET api/AnalisesFinanceirasHistoricas/{usuarioId}/{analiseId}` para carregar o histÃ³rico visual da MemÃ³ria Financeira
+- o endpoint `DELETE api/AnalisesFinanceirasHistoricas/{usuarioId}/{analiseId}` realiza exclusÃ£o lÃ³gica do histÃ³rico ao marcar a anÃ¡lise como inativa
 - a resposta da IA Ã© exibida em Markdown na prÃ³pria tela, com estilo de parecer executivo
-- a tela permite copiar a anÃ¡lise, gerar novamente e visualizar dados tÃ©cnicos discretos
+- a tela permite copiar a anÃ¡lise, gerar novamente, abrir anÃ¡lises anteriores e excluir anÃ¡lises do histÃ³rico visual
+- o histÃ³rico e a anÃ¡lise aprofundada ficam em cards recolhÃ­veis, iniciando minimizados para deixar a tela mais compacta
+- cada interaÃ§Ã£o usa a prÃ³pria pergunta do usuÃ¡rio como identificador principal no histÃ³rico, com truncamento visual quando necessÃ¡rio
+- o card principal da anÃ¡lise aprofundada reutiliza o mesmo espaÃ§o para respostas novas e anÃ¡lises histÃ³ricas selecionadas
 - erros amigÃ¡veis retornados pela API sÃ£o mostrados sem apagar a anÃ¡lise anterior
 - nÃ£o existe chat, especialistas nem conversa contÃ­nua nesta fase
 - a MemÃ³ria Financeira continua sendo responsabilidade do backend; o frontend apenas solicita a geraÃ§Ã£o e exibe o resultado
