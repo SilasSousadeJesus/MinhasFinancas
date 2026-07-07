@@ -499,10 +499,10 @@ ObservaÃ§Ã£o importante:
 - orÃ§amento
 - integraÃ§Ãµes reais com Hangfire e SignalR
 
-### PrÃ³xima implementaÃ§Ã£o prevista
+### Próxima implementação prevista
 
-- Fase 4.2 â€” Primeira AnÃ¡lise Financeira com IA do roadmap de InteligÃªncia Financeira
-- evoluÃ§Ã£o do prompt oficial, do formato do relatÃ³rio e da experiÃªncia final do assistente, mantendo `ResumoFinanceiroIA` como Ãºnica fonte de contexto
+- Fase 4.2.2 — Experiência Visual da Análise IA no roadmap de Inteligência Financeira
+- evolução da apresentação da análise aprofundada, mantendo `ResumoFinanceiroIA` e a Base de Conhecimento Financeira como fontes oficiais de contexto
 
 ## Atualização da documentação de IA
 
@@ -510,3 +510,45 @@ ObservaÃ§Ã£o importante:
 - a Fase 4.2 foi iniciada com a formalização do fluxo de análise executiva com IA
 - o primeiro prompt oficial da Fase 4.2 foi implementado em `MinhasFinancas.Infra/IA/Prompts/PromptAnaliseFinanceira.md`
 - a cadeia oficial continua sendo `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+
+## Atualização técnica — Base de Conhecimento Financeira
+
+A subfase 4.2.1 adicionou a primeira versão da Base de Conhecimento Financeira do Assistente Financeiro.
+
+### Novos elementos estruturais
+
+- entidade `AnaliseFinanceiraHistorica`
+- `DbSet<AnaliseFinanceiraHistorica>` no `ApplicationDbContext`
+- `IAnaliseFinanceiraHistoricaRepository` e `AnaliseFinanceiraHistoricaRepository`
+- `IAnaliseFinanceiraHistoricaAppService` e `AnaliseFinanceiraHistoricaAppService`
+- modelo `MemoriaFinanceiraResumidaIA` em `MinhasFinancas.Infra/IA/Modelos`
+- endpoints `GET /api/AnalisesFinanceirasHistoricas/{usuarioId}` e `GET /api/AnalisesFinanceirasHistoricas/{usuarioId}/{analiseId}`
+
+### Conceitos da base
+
+- **Memória Financeira**
+  - implementada
+  - registra fotografias históricas completas da situação analisada
+- **Estratégia Financeira**
+  - apenas documentada como evolução futura
+  - registrará direções estratégicas do usuário ao longo do tempo
+- **Compromissos Financeiros**
+  - apenas documentados como evolução futura
+  - registrarão ações e decisões combinadas com o Assistente
+
+### Fluxo atualizado do Assistente Financeiro
+
+1. O sistema monta o `ResumoFinanceiroIA`.
+2. O backend consulta a Memória Financeira e recupera um resumo das últimas análises.
+3. O `ConstrutorContextoIA` gera o contexto textual, incluindo a seção `## Memória Financeira`.
+4. O `ConstrutorPromptIA` gera a requisição final e informa a versão do prompt.
+5. O provedor retorna a resposta real ou a falha tratada.
+6. O backend salva uma `AnaliseFinanceiraHistorica` com contexto, resumos, resposta e métricas técnicas.
+7. O retorno ao cliente pode incluir `AnaliseFinanceiraHistoricaId`.
+
+### Regra de contexto
+
+- a IA nunca recebe todas as análises históricas
+- o contexto usa apenas um resumo recente das últimas análises
+- quando não existe histórico, o contexto informa explicitamente: `Não existem análises anteriores.`
+

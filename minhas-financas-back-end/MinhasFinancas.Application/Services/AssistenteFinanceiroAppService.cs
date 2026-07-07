@@ -1,4 +1,5 @@
 using System.Net;
+using MinhasFinancas.Application.DTOs.AnaliseFinanceiraHistorica;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.Infra.IA;
 using MinhasFinancas.Infra.IA.Modelos;
@@ -9,13 +10,16 @@ namespace MinhasFinancas.Application.Services
     {
         private readonly IInteligenciaFinanceiraAppService _inteligenciaFinanceiraAppService;
         private readonly AssistenteFinanceiroService _assistenteFinanceiroService;
+        private readonly IAnaliseFinanceiraHistoricaAppService _analiseFinanceiraHistoricaAppService;
 
         public AssistenteFinanceiroAppService(
             IInteligenciaFinanceiraAppService inteligenciaFinanceiraAppService,
-            AssistenteFinanceiroService assistenteFinanceiroService)
+            AssistenteFinanceiroService assistenteFinanceiroService,
+            IAnaliseFinanceiraHistoricaAppService analiseFinanceiraHistoricaAppService)
         {
             _inteligenciaFinanceiraAppService = inteligenciaFinanceiraAppService;
             _assistenteFinanceiroService = assistenteFinanceiroService;
+            _analiseFinanceiraHistoricaAppService = analiseFinanceiraHistoricaAppService;
         }
 
         public async Task<RetornoGenerico> GerarAnaliseAsync(
@@ -37,10 +41,42 @@ namespace MinhasFinancas.Application.Services
                         null);
                 }
 
-                var resposta = await _assistenteFinanceiroService.GerarRespostaAsync(
-                    resumo,
-                    perguntaUsuario,
-                    cancellationToken);
+                var memoriaFinanceira = (await _analiseFinanceiraHistoricaAppService.BuscarUltimasAnalisesResumidasAsync(usuarioId, 4))
+                    .Select(item => new MemoriaFinanceiraResumidaIA
+                    {
+                        DataGeracao = item.DataGeracao,
+                        PeriodoReferencia = item.PeriodoReferencia,
+                        PontuacaoSaudeFinanceira = item.PontuacaoSaudeFinanceira,
+                        ClassificacaoSaudeFinanceira = item.ClassificacaoSaudeFinanceira,
+                        ResumoExecutivoSistema = item.ResumoExecutivoSistema,
+                        PrincipaisRiscos = item.PrincipaisRiscos,
+                        PrincipaisPontosPositivos = item.PrincipaisPontosPositivos,
+                        PrincipaisRecomendacoes = item.PrincipaisRecomendacoes,
+                        Prioridades = item.Prioridades
+                    })
+                    .ToList();
+                var contexto = _assistenteFinanceiroService.PrepararContexto(resumo, perguntaUsuario, memoriaFinanceira);
+                var requisicao = _assistenteFinanceiroService.PrepararRequisicao(resumo, perguntaUsuario, memoriaFinanceira);
+                var resposta = await _assistenteFinanceiroService.GerarRespostaAsync(requisicao, cancellationToken);
+
+                try
+                {
+                    var analiseHistoricaId = await _analiseFinanceiraHistoricaAppService.RegistrarAsync(
+                        new RegistrarAnaliseFinanceiraHistoricaDTO
+                        {
+                            UsuarioId = usuarioId,
+                            ResumoFinanceiroIA = resumo,
+                            ContextoAssistenteFinanceiro = contexto,
+                            RequisicaoIA = requisicao,
+                            RespostaIA = resposta
+                        });
+
+                    resposta.AnaliseFinanceiraHistoricaId = analiseHistoricaId;
+                }
+                catch
+                {
+                    resposta.AnaliseFinanceiraHistoricaId = null;
+                }
 
                 if (!resposta.Sucesso)
                 {

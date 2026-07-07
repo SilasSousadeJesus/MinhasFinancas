@@ -96,11 +96,13 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IResumoFinanceiroIAService, ResumoFinanceiroIAService>();
             builder.Services.AddScoped<IAnaliseFinanceiraAppService, AnaliseFinanceiraAppService>();
             builder.Services.AddScoped<IAssistenteFinanceiroAppService, AssistenteFinanceiroAppService>();
+            builder.Services.AddScoped<IAnaliseFinanceiraHistoricaAppService, AnaliseFinanceiraHistoricaAppService>();
             builder.Services.AddScoped<ISaudeFinanceiraAppService, SaudeFinanceiraAppService>();
             builder.Services.AddScoped<IInteligenciaFinanceiraAppService, InteligenciaFinanceiraAppService>();
             builder.Services.AddScoped<ConstrutorContextoIA>();
             builder.Services.AddScoped<ConstrutorPromptIA>();
             builder.Services.AddScoped<AssistenteFinanceiroService>();
+            builder.Services.AddScoped<IAnaliseFinanceiraHistoricaRepository, AnaliseFinanceiraHistoricaRepository>();
             builder.Services.AddScoped<ExcelWorkbookFactory>();
             builder.Services.AddScoped<ExcelStyleHelper>();
             builder.Services.AddScoped<IExcelReport<LancamentosExcelReportData>, LancamentosExcelReport>();

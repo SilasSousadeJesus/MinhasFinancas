@@ -33,6 +33,7 @@ namespace MinhasFinancas.Infra
         public DbSet<DividaManualProjecaoMensal> DividaManualProjecaoMensal { get; set; }
         public DbSet<SimulacaoFinanceira> SimulacaoFinanceira { get; set; }
         public DbSet<AcaoSimulacaoFinanceira> AcaoSimulacaoFinanceira { get; set; }
+        public DbSet<AnaliseFinanceiraHistorica> AnaliseFinanceiraHistorica { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -86,6 +87,12 @@ namespace MinhasFinancas.Infra
                 .HasMany(x => x.Acoes)
                 .WithOne(x => x.SimulacaoFinanceira)
                 .HasForeignKey(x => x.SimulacaoFinanceiraId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AnaliseFinanceiraHistorica>()
+                .HasOne(x => x.Usuario)
+                .WithMany()
+                .HasForeignKey(x => x.UsuarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Configuração das chaves primárias para as entidades do Identity

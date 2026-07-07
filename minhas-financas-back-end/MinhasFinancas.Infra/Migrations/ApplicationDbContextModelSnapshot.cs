@@ -38,7 +38,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -60,7 +60,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoleClaims", (string)null);
+                    b.ToTable("RoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -82,7 +82,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserClaims", (string)null);
+                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -101,7 +101,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.ToTable("UserLogins", (string)null);
+                    b.ToTable("UserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -114,7 +114,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -133,7 +133,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens", (string)null);
+                    b.ToTable("UserTokens");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.AcaoSimulacaoFinanceira", b =>
@@ -175,7 +175,122 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("SimulacaoFinanceiraId");
 
-                    b.ToTable("AcaoSimulacaoFinanceira", (string)null);
+                    b.ToTable("AcaoSimulacaoFinanceira");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.AnaliseFinanceiraHistorica", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Ativa")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("ClassificacaoSaudeFinanceira")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ContextoResumoFinanceiroIAJson")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("CustoEstimadoUsd")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<DateTime>("DataGeracao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("IndicadoresResumidosJson")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("InsightsResumidosJson")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("MensagemErro")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ModeloIA")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PerfilFinanceiroVigenteJson")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PerguntaUsuario")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("PeriodoReferencia")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("PontuacaoSaudeFinanceira")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PrincipaisPontosPositivosJson")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PrincipaisRecomendacoesJson")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PrincipaisRiscosJson")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PrioridadesJson")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ProvedorIA")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RespostaIA")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ResumoExecutivoSistema")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Sucesso")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<long>("TempoTotalMs")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("TokensEntrada")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TokensSaida")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TokensTotais")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("VersaoPrompt")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("VersaoSistema")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("AnaliseFinanceiraHistorica");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.AporteMeta", b =>
@@ -197,7 +312,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("MetaId");
 
-                    b.ToTable("AporteMeta", (string)null);
+                    b.ToTable("AporteMeta");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.BemPatrimonial", b =>
@@ -236,7 +351,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("BemPatrimonial", (string)null);
+                    b.ToTable("BemPatrimonial");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Cartao", b =>
@@ -290,7 +405,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Cartao", (string)null);
+                    b.ToTable("Cartao");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Categoria", b =>
@@ -317,7 +432,56 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Categoria", (string)null);
+                    b.ToTable("Categoria");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.ConfiguracaoPerfilFinanceiro", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataFimVigencia")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataInicioVigencia")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("MesesReservaEmergenciaDesejados")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal?>("PatrimonioLiquidoAlvo")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("PercentualEconomiaMensalDesejado")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("PercentualMaximoComprometimentoRenda")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("PercentualMaximoEndividamento")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("PercentualMinimoInvestimento")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("PercentualReservaEmergenciaDesejado")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<Guid>("PerfilFinanceiroId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PerfilFinanceiroId");
+
+                    b.ToTable("ConfiguracaoPerfilFinanceiro");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Conta", b =>
@@ -354,7 +518,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Conta", (string)null);
+                    b.ToTable("Conta");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.DividaManualProjecaoMensal", b =>
@@ -376,7 +540,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("ProjecaoId");
 
-                    b.ToTable("DividaManualProjecaoMensal", (string)null);
+                    b.ToTable("DividaManualProjecaoMensal");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Lancamento", b =>
@@ -462,7 +626,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Lancamento", (string)null);
+                    b.ToTable("Lancamento");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.LancamentoFixo", b =>
@@ -487,7 +651,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("LancamentoId");
 
-                    b.ToTable("LancamentoFixo", (string)null);
+                    b.ToTable("LancamentoFixo");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.LancamentoParcelado", b =>
@@ -512,7 +676,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("LancamentoId");
 
-                    b.ToTable("LancamentoParcelado", (string)null);
+                    b.ToTable("LancamentoParcelado");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Meta", b =>
@@ -553,7 +717,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Meta", (string)null);
+                    b.ToTable("Meta");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Passivo", b =>
@@ -595,7 +759,30 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Passivo", (string)null);
+                    b.ToTable("Passivo");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.PerfilFinanceiro", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("PerfilFinanceiro");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.PermanenciaBemMaterial", b =>
@@ -617,7 +804,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("BemPatrimonialId");
 
-                    b.ToTable("PermanenciaBemMaterial", (string)null);
+                    b.ToTable("PermanenciaBemMaterial");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.PermanenciaPassivo", b =>
@@ -639,7 +826,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("PassivoId");
 
-                    b.ToTable("PermanenciaPassivo", (string)null);
+                    b.ToTable("PermanenciaPassivo");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
@@ -681,7 +868,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Projecao", (string)null);
+                    b.ToTable("Projecao");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.RendaExtraProjecaoMensal", b =>
@@ -703,7 +890,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("ProjecaoId");
 
-                    b.ToTable("RendaExtraProjecaoMensal", (string)null);
+                    b.ToTable("RendaExtraProjecaoMensal");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.RendaProjecao", b =>
@@ -726,7 +913,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("ProjecaoId");
 
-                    b.ToTable("RendaProjecao", (string)null);
+                    b.ToTable("RendaProjecao");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.SimulacaoFinanceira", b =>
@@ -766,7 +953,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("SimulacaoFinanceira", (string)null);
+                    b.ToTable("SimulacaoFinanceira");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.SnapshotPatrimonial", b =>
@@ -801,7 +988,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("SnapshotPatrimonial", (string)null);
+                    b.ToTable("SnapshotPatrimonial");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.SubCategoria", b =>
@@ -821,7 +1008,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.ToTable("SubCategoria", (string)null);
+                    b.ToTable("SubCategoria");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Usuario", b =>
@@ -876,7 +1063,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.AcaoSimulacaoFinanceira", b =>
@@ -888,6 +1075,17 @@ namespace MinhasFinancas.Infra.Migrations
                         .IsRequired();
 
                     b.Navigation("SimulacaoFinanceira");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.AnaliseFinanceiraHistorica", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.AporteMeta", b =>
@@ -920,6 +1118,17 @@ namespace MinhasFinancas.Infra.Migrations
                     b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
                         .WithMany("Categorias")
                         .HasForeignKey("UsuarioId");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.ConfiguracaoPerfilFinanceiro", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.PerfilFinanceiro", "PerfilFinanceiro")
+                        .WithMany("Configuracoes")
+                        .HasForeignKey("PerfilFinanceiroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PerfilFinanceiro");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Conta", b =>
@@ -1003,6 +1212,17 @@ namespace MinhasFinancas.Infra.Migrations
                     b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
                         .WithMany("Passivos")
                         .HasForeignKey("UsuarioId");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.PerfilFinanceiro", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
+                        .WithMany("PerfisFinanceiros")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.PermanenciaBemMaterial", b =>
@@ -1115,6 +1335,11 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Navigation("DataPermanencia");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.PerfilFinanceiro", b =>
+                {
+                    b.Navigation("Configuracoes");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
                 {
                     b.Navigation("DividasManuaisMensais");
@@ -1144,6 +1369,8 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Navigation("Metas");
 
                     b.Navigation("Passivos");
+
+                    b.Navigation("PerfisFinanceiros");
 
                     b.Navigation("Projecoes");
 

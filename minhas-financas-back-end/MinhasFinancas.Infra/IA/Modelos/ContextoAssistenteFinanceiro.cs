@@ -8,6 +8,7 @@ namespace MinhasFinancas.Infra.IA.Modelos
         public List<string> PrioridadesImediatas { get; set; } = [];
         public List<string> DestaquesPositivos { get; set; } = [];
         public List<string> InsightsPrioritarios { get; set; } = [];
+        public List<string> MemoriaFinanceiraResumida { get; set; } = [];
         public string ResumoExecutivo { get; set; } = string.Empty;
         public string ContextoTextual { get; set; } = string.Empty;
         public string PerguntaUsuario { get; set; } = string.Empty;

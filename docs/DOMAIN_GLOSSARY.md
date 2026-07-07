@@ -1,40 +1,40 @@
-# Glossário do Domínio - Minhas Finanças
+﻿# GlossÃ¡rio do DomÃ­nio - Minhas FinanÃ§as
 
-Este documento registra os conceitos oficiais do domínio financeiro do sistema.
+Este documento registra os conceitos oficiais do domÃ­nio financeiro do sistema.
 
 Sempre que surgir um novo conceito relevante, ele deve ser documentado aqui.
 
-## Lançamento
+## LanÃ§amento
 
-Registro de uma movimentação financeira do usuário.
+Registro de uma movimentaÃ§Ã£o financeira do usuÃ¡rio.
 
-## Data de lançamento
+## Data de lanÃ§amento
 
 Data em que o registro foi criado no sistema.
 
-Não representa vencimento, pagamento nem recebimento.
+NÃ£o representa vencimento, pagamento nem recebimento.
 
 ## Data de vencimento
 
-Data prevista para a movimentação ocorrer.
+Data prevista para a movimentaÃ§Ã£o ocorrer.
 
-- em despesas, representa o vencimento da obrigação
+- em despesas, representa o vencimento da obrigaÃ§Ã£o
 - em receitas, representa a data prevista de entrada do valor
 
-## Data de efetivação
+## Data de efetivaÃ§Ã£o
 
 Data em que o dinheiro realmente entrou ou saiu.
 
 - em despesas, representa a data do pagamento
 - em receitas, representa a data do recebimento
 
-## Status do lançamento
+## Status do lanÃ§amento
 
-Estado atual do ciclo de vida do lançamento.
+Estado atual do ciclo de vida do lanÃ§amento.
 
 ## Pendente
 
-Lançamento previsto, mas ainda não efetivado.
+LanÃ§amento previsto, mas ainda nÃ£o efetivado.
 
 ## Pago
 
@@ -46,11 +46,11 @@ Status final permitido para receitas efetivadas.
 
 ## Cancelado
 
-Lançamento que não deve mais produzir efeito financeiro previsto nem realizado.
+LanÃ§amento que nÃ£o deve mais produzir efeito financeiro previsto nem realizado.
 
 ## Receita
 
-Movimentação de entrada de recursos.
+MovimentaÃ§Ã£o de entrada de recursos.
 
 Pode assumir apenas:
 
@@ -60,7 +60,7 @@ Pode assumir apenas:
 
 ## Despesa
 
-Movimentação de saída de recursos.
+MovimentaÃ§Ã£o de saÃ­da de recursos.
 
 Pode assumir apenas:
 
@@ -68,24 +68,24 @@ Pode assumir apenas:
 - `Pago`
 - `Cancelado`
 
-## Efetivação
+## EfetivaÃ§Ã£o
 
-Ato de registrar que a movimentação realmente ocorreu.
+Ato de registrar que a movimentaÃ§Ã£o realmente ocorreu.
 
 - receita: `Pendente -> Recebido`
 - despesa: `Pendente -> Pago`
 
 ## Conta
 
-Meio financeiro do usuário usado para organizar saldo e lançamentos.
+Meio financeiro do usuÃ¡rio usado para organizar saldo e lanÃ§amentos.
 
-## Cartão
+## CartÃ£o
 
-Meio de pagamento vinculado ao usuário, utilizado nos lançamentos e no controle financeiro.
+Meio de pagamento vinculado ao usuÃ¡rio, utilizado nos lanÃ§amentos e no controle financeiro.
 
 ## Categoria
 
-Classificação principal de um lançamento.
+ClassificaÃ§Ã£o principal de um lanÃ§amento.
 
 ## Subcategoria
 
@@ -97,21 +97,21 @@ Leitura baseada em datas previstas, especialmente `DataVencimento`.
 
 ## Fluxo de Caixa Realizado
 
-Leitura baseada apenas em movimentações efetivadas, usando `DataEfetivacao`.
+Leitura baseada apenas em movimentaÃ§Ãµes efetivadas, usando `DataEfetivacao`.
 
-## Patrimônio
+## PatrimÃ´nio
 
-Conjunto de ativos e passivos do usuário.
+Conjunto de ativos e passivos do usuÃ¡rio.
 
 ## Ativo patrimonial
 
-Bem ou recurso que compõe positivamente o patrimônio.
+Bem ou recurso que compÃµe positivamente o patrimÃ´nio.
 
 ## Passivo patrimonial
 
-Obrigação financeira que reduz o patrimônio.
+ObrigaÃ§Ã£o financeira que reduz o patrimÃ´nio.
 
-## Patrimônio líquido
+## PatrimÃ´nio lÃ­quido
 
 Resultado de:
 
@@ -119,73 +119,73 @@ Resultado de:
 
 ## Snapshot patrimonial
 
-Fotografia congelada do patrimônio em uma data de referência.
+Fotografia congelada do patrimÃ´nio em uma data de referÃªncia.
 
-## Evolução patrimonial
+## EvoluÃ§Ã£o patrimonial
 
-Leitura histórica construída a partir dos snapshots salvos.
+Leitura histÃ³rica construÃ­da a partir dos snapshots salvos.
 
 ## Meta
 
-Objetivo financeiro acumulativo do usuário.
+Objetivo financeiro acumulativo do usuÃ¡rio.
 
-## Projeção
+## ProjeÃ§Ã£o
 
-Simulação orientada a objetivo financeiro, com acumulado inicial, renda base, renda extra e horizonte temporal.
+SimulaÃ§Ã£o orientada a objetivo financeiro, com acumulado inicial, renda base, renda extra e horizonte temporal.
 
-## Simulação Financeira
+## SimulaÃ§Ã£o Financeira
 
-Cenário hipotético persistido por usuário para testar decisões futuras sem alterar dados reais.
+CenÃ¡rio hipotÃ©tico persistido por usuÃ¡rio para testar decisÃµes futuras sem alterar dados reais.
 
 ## Perfil Financeiro
 
-Conjunto de parâmetros pessoais usados para definir como o usuário deseja medir e avaliar sua própria saúde financeira.
+Conjunto de parÃ¢metros pessoais usados para definir como o usuÃ¡rio deseja medir e avaliar sua prÃ³pria saÃºde financeira.
 
 ## Indicador Financeiro
 
-Informação derivada dos dados financeiros do sistema para mostrar desempenho, risco, equilíbrio ou progresso do usuário.
+InformaÃ§Ã£o derivada dos dados financeiros do sistema para mostrar desempenho, risco, equilÃ­brio ou progresso do usuÃ¡rio.
 
-Não é um dado bruto persistido.
+NÃ£o Ã© um dado bruto persistido.
 
-É resultado de cálculo sobre lançamentos, patrimônio, perfil financeiro, metas, projeções ou outras bases existentes.
+Ã‰ resultado de cÃ¡lculo sobre lanÃ§amentos, patrimÃ´nio, perfil financeiro, metas, projeÃ§Ãµes ou outras bases existentes.
 
-## Análise Financeira
+## AnÃ¡lise Financeira
 
-Módulo responsável por transformar dados em indicadores reutilizáveis.
+MÃ³dulo responsÃ¡vel por transformar dados em indicadores reutilizÃ¡veis.
 
-Essa camada não deve depender de tela específica.
+Essa camada nÃ£o deve depender de tela especÃ­fica.
 
-Ela existe para servir dashboard, relatórios, exportações, APIs, módulos de saúde financeira e futuras integrações.
+Ela existe para servir dashboard, relatÃ³rios, exportaÃ§Ãµes, APIs, mÃ³dulos de saÃºde financeira e futuras integraÃ§Ãµes.
 
-## Saúde Financeira
+## SaÃºde Financeira
 
-Leitura interpretativa construída a partir dos indicadores financeiros e dos parâmetros definidos no perfil financeiro do usuário.
+Leitura interpretativa construÃ­da a partir dos indicadores financeiros e dos parÃ¢metros definidos no perfil financeiro do usuÃ¡rio.
 
-## Pontuação de Saúde Financeira
+## PontuaÃ§Ã£o de SaÃºde Financeira
 
-Medida sintética de 0 a 100 calculada a partir do conjunto de indicadores financeiros.
+Medida sintÃ©tica de 0 a 100 calculada a partir do conjunto de indicadores financeiros.
 
-Ela resume, de forma simples, o equilíbrio financeiro atual do usuário.
+Ela resume, de forma simples, o equilÃ­brio financeiro atual do usuÃ¡rio.
 
 ## Insight Financeiro
 
-Leitura acionável gerada a partir dos indicadores e da saúde financeira.
+Leitura acionÃ¡vel gerada a partir dos indicadores e da saÃºde financeira.
 
 Pode representar:
 
 - alerta
 - oportunidade
 - destaque positivo
-- necessidade de configuração
+- necessidade de configuraÃ§Ã£o
 
 ## ResumoFinanceiroIA
 
-Objeto consolidado da inteligência financeira do sistema.
+Objeto consolidado da inteligÃªncia financeira do sistema.
 
-Ele organiza, em um único payload:
+Ele organiza, em um Ãºnico payload:
 
 - indicadores
-- saúde financeira
+- saÃºde financeira
 - insights
 - prioridades imediatas
 - destaques positivos
@@ -193,56 +193,118 @@ Ele organiza, em um único payload:
 
 ## Contexto para IA
 
-Representação textual e estruturada do `ResumoFinanceiroIA`, preparada pelo sistema para consumo externo sem expor dados desnecessários do banco.
+RepresentaÃ§Ã£o textual e estruturada do `ResumoFinanceiroIA`, preparada pelo sistema para consumo externo sem expor dados desnecessÃ¡rios do banco.
 
 ## Provedor de IA
 
-Abstração de infraestrutura responsável por receber um contexto já preparado e, futuramente, enviar esse material para um serviço externo de IA.
+AbstraÃ§Ã£o de infraestrutura responsÃ¡vel por receber um contexto jÃ¡ preparado e, futuramente, enviar esse material para um serviÃ§o externo de IA.
 
 O provedor nunca deve acessar o banco diretamente.
 
 ## Assistente Financeiro
 
-Experiência executiva do sistema que organiza saúde financeira, indicadores, insights e prioridades a partir do `ResumoFinanceiroIA`.
+ExperiÃªncia executiva do sistema que organiza saÃºde financeira, indicadores, insights e prioridades a partir do `ResumoFinanceiroIA`.
 
 Na fase atual, funciona sem IA real e sem chat.
 
-## Parâmetro Financeiro
+## ParÃ¢metro Financeiro
 
-Valor configurado pelo usuário para servir de referência em análises, indicadores, alertas e comparações futuras.
+Valor configurado pelo usuÃ¡rio para servir de referÃªncia em anÃ¡lises, indicadores, alertas e comparaÃ§Ãµes futuras.
 
-## Configuração vigente
+## ConfiguraÃ§Ã£o vigente
 
-Registro atualmente ativo dentro de um histórico de configurações.
+Registro atualmente ativo dentro de um histÃ³rico de configuraÃ§Ãµes.
 
-Em módulos históricos, representa a configuração que deve ser considerada como referência atual do usuário.
+Em mÃ³dulos histÃ³ricos, representa a configuraÃ§Ã£o que deve ser considerada como referÃªncia atual do usuÃ¡rio.
 
-## Histórico do Perfil Financeiro
+## HistÃ³rico do Perfil Financeiro
 
-Conjunto temporal de configurações anteriores do perfil financeiro do usuário.
+Conjunto temporal de configuraÃ§Ãµes anteriores do perfil financeiro do usuÃ¡rio.
 
-Permite saber quais critérios estavam válidos em cada período.
+Permite saber quais critÃ©rios estavam vÃ¡lidos em cada perÃ­odo.
 
-## Ação de Simulação
+## AÃ§Ã£o de SimulaÃ§Ã£o
 
-Evento hipotético dentro de uma simulação financeira.
+Evento hipotÃ©tico dentro de uma simulaÃ§Ã£o financeira.
 
 Na V1 pode representar:
 
-- receita única
-- despesa única
+- receita Ãºnica
+- despesa Ãºnica
 - receita recorrente mensal
 - despesa recorrente mensal
 - despesa parcelada
 
 ## Resultado simulado
 
-Consolidação mensal que combina base real de lançamentos com ações hipotéticas.
+ConsolidaÃ§Ã£o mensal que combina base real de lanÃ§amentos com aÃ§Ãµes hipotÃ©ticas.
 
 ## Saldo real
 
-Saldo mensal obtido apenas dos lançamentos reais.
+Saldo mensal obtido apenas dos lanÃ§amentos reais.
 
 ## Saldo simulado
 
-Saldo mensal obtido ao aplicar as ações simuladas sobre a base real.
+Saldo mensal obtido ao aplicar as aÃ§Ãµes simuladas sobre a base real.
+
+## Memória Financeira
+
+Histórico persistido das análises financeiras geradas pelo Assistente Financeiro.
+
+Esse histórico pertence ao sistema, e não ao provedor de IA.
+
+## Análise Financeira Histórica
+
+Fotografia analítica preservada em determinado momento.
+
+Ela registra:
+
+- o período de referência
+- o estado resumido da inteligência financeira naquele instante
+- a pergunta do usuário
+- a resposta da IA
+- as métricas técnicas da geração
+
+## Histórico de Análises
+
+Coleção de análises financeiras históricas de um usuário.
+
+Permite auditoria, comparação temporal, evolução mensal e futura construção de memória para a IA.
+
+## Base de Conhecimento Financeira
+
+Conjunto de registros e interpretações persistidas que permitem ao sistema acompanhar a evolução financeira do usuário ao longo do tempo.
+
+Ela pertence ao domínio do sistema e pode ser consumida pela IA, mas não pertence ao provedor externo.
+
+## Memória Consultiva
+
+Resumo estruturado de análises anteriores usado para dar continuidade às novas análises do Assistente Financeiro.
+
+Não representa o histórico completo.
+
+Serve para economizar tokens e preservar contexto recente.
+
+## Estratégia Financeira
+
+Registro da direção financeira desejada pelo usuário em determinado período.
+
+Exemplos:
+
+- construir reserva de emergência
+- reduzir endividamento
+- iniciar investimentos
+- planejar compra de imóvel
+
+## Compromissos Financeiros
+
+Registro de ações e decisões combinadas entre usuário e Assistente Financeiro.
+
+Exemplos:
+
+- fortalecer a reserva
+- reduzir uso do cartão
+- adiar compra não prioritária
+
+No futuro, esses compromissos poderão ser acompanhados por status, data e evolução.
+

@@ -1,57 +1,57 @@
-# AI Design
+﻿# AI Design
 
-Este documento registra as decisões de design da camada de IA do projeto.
+Este documento registra as decisÃµes de design da camada de IA do projeto.
 
 Ele complementa:
 
-- `AI_CONTEXT.md`, que documenta arquitetura e fluxo técnico
+- `AI_CONTEXT.md`, que documenta arquitetura e fluxo tÃ©cnico
 - `docs/MODULE_GUIDE.md`, que documenta o papel funcional do Assistente Financeiro
-- `docs/ROADMAP.md`, que documenta a evolução futura da IA no produto
+- `docs/ROADMAP.md`, que documenta a evoluÃ§Ã£o futura da IA no produto
 
-## Visão geral
+## VisÃ£o geral
 
-A IA do projeto não consulta diretamente o banco de dados nem opera sobre entidades brutas.
+A IA do projeto nÃ£o consulta diretamente o banco de dados nem opera sobre entidades brutas.
 
-Ela recebe um contexto já consolidado pelo sistema, preparado a partir da inteligência financeira existente.
+Ela recebe um contexto jÃ¡ consolidado pelo sistema, preparado a partir da inteligÃªncia financeira existente.
 
-O objetivo é transformar esse contexto em uma análise executiva mais rica, clara e educativa para o usuário.
+O objetivo Ã© transformar esse contexto em uma anÃ¡lise executiva mais rica, clara e educativa para o usuÃ¡rio.
 
 ## Filosofia
 
-Princípios obrigatórios:
+PrincÃ­pios obrigatÃ³rios:
 
 - a IA deve explicar antes de recomendar
 - a IA deve ensinar antes de aconselhar
-- a IA deve atuar como consultora financeira prudente, e não como promotora de decisões impulsivas
+- a IA deve atuar como consultora financeira prudente, e nÃ£o como promotora de decisÃµes impulsivas
 - a IA deve respeitar os limites do contexto recebido
-- a IA deve complementar a inteligência do sistema, nunca substituí-la
+- a IA deve complementar a inteligÃªncia do sistema, nunca substituÃ­-la
 
-O Assistente Financeiro deve contribuir para educação financeira.
+O Assistente Financeiro deve contribuir para educaÃ§Ã£o financeira.
 
-Sempre que possível, a resposta deve mostrar por que uma recomendação importa e qual impacto ela tende a gerar.
+Sempre que possÃ­vel, a resposta deve mostrar por que uma recomendaÃ§Ã£o importa e qual impacto ela tende a gerar.
 
 ## Fluxo oficial
 
-O fluxo oficial da análise com IA é:
+O fluxo oficial da anÃ¡lise com IA Ã©:
 
-`Dados -> Indicadores Financeiros -> Saúde Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA -> Relatório Executivo`
+`Dados -> Indicadores Financeiros -> SaÃºde Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA -> RelatÃ³rio Executivo`
 
-Esse fluxo garante separação entre:
+Esse fluxo garante separaÃ§Ã£o entre:
 
 - dados persistidos
-- cálculos analíticos
-- interpretação baseada em regras
-- geração textual por IA
+- cÃ¡lculos analÃ­ticos
+- interpretaÃ§Ã£o baseada em regras
+- geraÃ§Ã£o textual por IA
 
 ## Responsabilidades
 
 ### Backend
 
-O backend é responsável por:
+O backend Ã© responsÃ¡vel por:
 
 - consolidar dados financeiros
 - calcular indicadores
-- montar a saúde financeira
+- montar a saÃºde financeira
 - gerar insights baseados em regras
 - produzir o `ResumoFinanceiroIA`
 - transformar esse resumo em contexto seguro para uso externo
@@ -60,14 +60,14 @@ O backend é responsável por:
 
 ### IA
 
-A IA é responsável por:
+A IA Ã© responsÃ¡vel por:
 
 - interpretar o contexto consolidado recebido
-- produzir uma análise executiva em linguagem natural
+- produzir uma anÃ¡lise executiva em linguagem natural
 - conectar causas, riscos, oportunidades e prioridades
 - organizar a resposta no formato esperado pelo sistema
 
-A IA não deve:
+A IA nÃ£o deve:
 
 - inventar dados
 - recalcular indicadores
@@ -76,111 +76,168 @@ A IA não deve:
 
 ### Frontend
 
-O frontend é responsável por:
+O frontend Ã© responsÃ¡vel por:
 
-- exibir o relatório executivo
-- preservar a separação entre conteúdo técnico e leitura executiva
-- apresentar a análise sem recalcular nada localmente
+- exibir o relatÃ³rio executivo
+- preservar a separaÃ§Ã£o entre conteÃºdo tÃ©cnico e leitura executiva
+- apresentar a anÃ¡lise sem recalcular nada localmente
 
 ## Contexto enviado para a IA
 
 O contexto enviado para a IA nasce exclusivamente do `ResumoFinanceiroIA`.
 
-Ele é estruturado pelo `ConstrutorContextoIA` em blocos organizados, incluindo:
+Ele Ã© estruturado pelo `ConstrutorContextoIA` em blocos organizados, incluindo:
 
-- data de referência
-- pontuação da saúde financeira
-- classificação
+- data de referÃªncia
+- pontuaÃ§Ã£o da saÃºde financeira
+- classificaÃ§Ã£o
 - resumo executivo do sistema
 - prioridades imediatas
 - destaques positivos
-- insights prioritários
+- insights prioritÃ¡rios
 
 O contexto deve ser suficiente para gerar uma boa resposta sem expor a base inteira do sistema.
 
 ## Engenharia de prompt
 
-O prompt oficial da Fase 4.2 deve orientar a IA a agir como consultora financeira experiente, com as seguintes características:
+O prompt oficial da Fase 4.2 deve orientar a IA a agir como consultora financeira experiente, com as seguintes caracterÃ­sticas:
 
 - linguagem clara
 - tom respeitoso
 - postura prudente
 - foco educativo
-- orientação prática
+- orientaÃ§Ã£o prÃ¡tica
 
-Estrutura obrigatória da resposta:
+Estrutura obrigatÃ³ria da resposta:
 
-1. Diagnóstico
+1. DiagnÃ³stico
 2. Principais riscos
 3. Pontos positivos
-4. Recomendações
-5. Plano de ação
-6. Conclusão
+4. RecomendaÃ§Ãµes
+5. Plano de aÃ§Ã£o
+6. ConclusÃ£o
 
-O prompt também deve forçar:
+O prompt tambÃ©m deve forÃ§ar:
 
-- separação entre explicação e recomendação
-- plano de ação com no máximo 5 prioridades
-- ausência de listas excessivas
-- ausência de repetição do contexto recebido
-- linguagem natural e não robótica
+- separaÃ§Ã£o entre explicaÃ§Ã£o e recomendaÃ§Ã£o
+- plano de aÃ§Ã£o com no mÃ¡ximo 5 prioridades
+- ausÃªncia de listas excessivas
+- ausÃªncia de repetiÃ§Ã£o do contexto recebido
+- linguagem natural e nÃ£o robÃ³tica
 
-## Segurança
+## SeguranÃ§a
 
-Diretrizes obrigatórias:
+Diretrizes obrigatÃ³rias:
 
 - a IA nunca consulta diretamente o banco
 - a IA nunca recebe credenciais
-- logs técnicos não devem registrar prompt completo nem resposta completa
-- a chave da API deve ficar fora do repositório
+- logs tÃ©cnicos nÃ£o devem registrar prompt completo nem resposta completa
+- a chave da API deve ficar fora do repositÃ³rio
 - o contexto deve ser sempre preparado pelo backend antes da chamada externa
 
 ## Especialistas futuros
 
-A infraestrutura foi desenhada para permitir especialistas futuros com a mesma base técnica.
+A infraestrutura foi desenhada para permitir especialistas futuros com a mesma base tÃ©cnica.
 
 Exemplos:
 
-- especialista em dívidas
-- especialista em patrimônio
+- especialista em dÃ­vidas
+- especialista em patrimÃ´nio
 - especialista em metas
 - especialista em fluxo de caixa
-- especialista em simulações
+- especialista em simulaÃ§Ãµes
 
 Nesses casos, a infraestrutura permanece a mesma e muda principalmente:
 
 - o contexto enviado
 - o prompt utilizado
-- o objetivo da análise
+- o objetivo da anÃ¡lise
 
-## Evolução futura
+## EvoluÃ§Ã£o futura
 
 ### Interpretador Financeiro
 
-Melhoria futura já identificada:
+Melhoria futura jÃ¡ identificada:
 
-Criar uma camada entre `Saúde Financeira` e `Insights Financeiros` para transformar indicadores em interpretações humanas baseadas exclusivamente em regras.
+Criar uma camada entre `SaÃºde Financeira` e `Insights Financeiros` para transformar indicadores em interpretaÃ§Ãµes humanas baseadas exclusivamente em regras.
 
 Fluxo futuro desejado:
 
-`Dados -> Indicadores Financeiros -> Saúde Financeira -> Interpretador Financeiro -> Insights Financeiros -> ResumoFinanceiroIA -> Assistente Financeiro -> IA`
+`Dados -> Indicadores Financeiros -> SaÃºde Financeira -> Interpretador Financeiro -> Insights Financeiros -> ResumoFinanceiroIA -> Assistente Financeiro -> IA`
 
-Essa camada ajudará a:
+Essa camada ajudarÃ¡ a:
 
-- reduzir repetição textual
+- reduzir repetiÃ§Ã£o textual
 - enriquecer a linguagem executiva
 - servir como base ainda melhor para respostas com IA
 
 ## Estado atual
 
-Situação atual da evolução:
+SituaÃ§Ã£o atual da evoluÃ§Ã£o:
 
-- Fase 4.1 concluída: integração técnica com IA já existe
-- Fase 4.2 iniciada: primeiro prompt oficial de análise financeira com IA implementado
+- Fase 4.1 concluÃ­da: integraÃ§Ã£o tÃ©cnica com IA jÃ¡ existe
+- Fase 4.2 iniciada: primeiro prompt oficial de anÃ¡lise financeira com IA implementado
 
-Nesta etapa, o foco é melhorar:
+Nesta etapa, o foco Ã© melhorar:
 
 - qualidade do prompt
-- formato do relatório executivo
-- consistência do tom do assistente
+- formato do relatÃ³rio executivo
+- consistÃªncia do tom do assistente
 - valor consultivo das respostas
+
+## Atualização — Base de Conhecimento Financeira
+
+A partir da subfase 4.2.1, o sistema passa a tratar o histórico analítico como parte da **Base de Conhecimento Financeira** do usuário.
+
+### Estrutura conceitual
+
+A Base de Conhecimento Financeira possui três conceitos:
+
+- **Memória Financeira**
+  - implementada nesta etapa
+  - preserva fotografias históricas da situação financeira analisada
+- **Estratégia Financeira**
+  - evolução futura
+  - registrará a direção estratégica do usuário ao longo do tempo
+- **Compromissos Financeiros**
+  - evolução futura
+  - registrará decisões e ações combinadas entre usuário e Assistente
+
+### Diretriz oficial
+
+- a Base de Conhecimento Financeira pertence ao domínio do sistema
+- a IA não é dona dessa base
+- o provedor externo apenas consulta contexto consolidado preparado pelo backend
+
+### Memória Financeira
+
+Cada análise histórica preserva:
+
+- data de geração
+- período de referência
+- pontuação e classificação da saúde financeira
+- resumo executivo do sistema
+- `ResumoFinanceiroIA` serializado em JSON
+- indicadores resumidos
+- insights resumidos
+- perfil financeiro vigente
+- pergunta do usuário
+- resposta textual da IA
+- provedor, modelo, versão do prompt e versão do sistema
+- tokens, custo estimado, tempo total, sucesso e erro
+
+### Memória Consultiva
+
+Antes de solicitar uma nova análise, o backend consulta a Memória Financeira e envia ao `ConstrutorContextoIA` um resumo estruturado das últimas análises.
+
+Regras:
+
+- nunca enviar todas as análises
+- enviar apenas um conjunto resumido e recente
+- priorizar economia de tokens
+- informar explicitamente quando não existirem análises anteriores
+
+Objetivo:
+
+Permitir continuidade consultiva, para que a IA consiga perceber evolução, mudança de prioridades e histórico recente do usuário.
+

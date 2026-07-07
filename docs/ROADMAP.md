@@ -1,37 +1,37 @@
-# Roadmap - Minhas Finanças
+﻿# Roadmap - Minhas FinanÃ§as
 
-Este documento contém apenas evolução do produto.
+Este documento contÃ©m apenas evoluÃ§Ã£o do produto.
 
-Ele não representa a arquitetura atual nem o histórico técnico detalhado.
+Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhado.
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 4.1 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 4.1 concluÃ­da** do roadmap de InteligÃªncia Financeira / Assistente Financeiro.
 
-A **próxima etapa oficial** é a **Fase 4.2 — Primeira Análise Financeira com IA**.
+A próxima etapa oficial é a **Fase 4.2.2 — Experiência Visual da Análise IA**.
 
-## Roadmap da Inteligência Financeira / Assistente Financeiro
+## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
-### Fase 1 — Inteligência do Sistema (sem IA)
+### Fase 1 â€” InteligÃªncia do Sistema (sem IA)
 
-**Status:** concluída
+**Status:** concluÃ­da
 
 **Objetivo:**
-Fazer o sistema entender a situação financeira do usuário sozinho.
+Fazer o sistema entender a situaÃ§Ã£o financeira do usuÃ¡rio sozinho.
 
 **Entregas:**
 
 - Indicadores Financeiros
-- Saúde Financeira
+- SaÃºde Financeira
 - Insights Financeiros
 - ResumoFinanceiroIA
 
-### Fase 2 — Infraestrutura de IA
+### Fase 2 â€” Infraestrutura de IA
 
-**Status:** concluída
+**Status:** concluÃ­da
 
 **Objetivo:**
-Criar a infraestrutura de integração com IA sem consumir nenhum provedor.
+Criar a infraestrutura de integraÃ§Ã£o com IA sem consumir nenhum provedor.
 
 **Escopo entregue:**
 
@@ -43,14 +43,14 @@ Criar a infraestrutura de integração com IA sem consumir nenhum provedor.
 
 **Resultado desta fase:**
 
-- a infraestrutura já prepara contexto e prompt a partir de `ResumoFinanceiroIA`
+- a infraestrutura jÃ¡ prepara contexto e prompt a partir de `ResumoFinanceiroIA`
 - o provedor permanece simulado
-- nenhum token é consumido
-- nenhuma IA real é chamada
+- nenhum token Ã© consumido
+- nenhuma IA real Ã© chamada
 
-### Fase 3 — Assistente Financeiro
+### Fase 3 â€” Assistente Financeiro
 
-**Status:** concluída
+**Status:** concluÃ­da
 
 **Objetivo:**
 Criar a tela do Assistente Financeiro.
@@ -61,56 +61,56 @@ Ela deve consumir apenas o `ResumoFinanceiroIA`.
 
 **Exibir:**
 
-- Saúde Financeira
+- SaÃºde Financeira
 - Indicadores
 - Insights
-- Gráficos
-- Tendências
-- Histórico
-- Recomendações produzidas pelo sistema
+- GrÃ¡ficos
+- TendÃªncias
+- HistÃ³rico
+- RecomendaÃ§Ãµes produzidas pelo sistema
 
-**Observação:**
+**ObservaÃ§Ã£o:**
 
-Ao final da tela existirá um botão:
+Ao final da tela existirÃ¡ um botÃ£o:
 
-`Gerar análise aprofundada com IA`
+`Gerar anÃ¡lise aprofundada com IA`
 
-Esse botão pode permanecer desabilitado até a Fase 4.1.
+Esse botÃ£o pode permanecer desabilitado atÃ© a Fase 4.1.
 
-### Fase 4.1 — Integração Técnica com IA
+### Fase 4.1 â€” IntegraÃ§Ã£o TÃ©cnica com IA
 
-**Status:** concluída
+**Status:** concluÃ­da
 
 **Objetivo:**
-Implementar apenas a comunicação técnica com o primeiro provedor de IA.
+Implementar apenas a comunicaÃ§Ã£o tÃ©cnica com o primeiro provedor de IA.
 
 **Escopo:**
 
-- configuração segura da API Key
-- implementação definitiva do `OpenAIProvider`
-- comunicação HTTP com a API
+- configuraÃ§Ã£o segura da API Key
+- implementaÃ§Ã£o definitiva do `OpenAIProvider`
+- comunicaÃ§Ã£o HTTP com a API
 - tratamento de erros
 - timeout
 - retry
-- configuração do modelo
+- configuraÃ§Ã£o do modelo
 - controle de tokens
-- configuração por ambiente
-- logs técnicos
+- configuraÃ§Ã£o por ambiente
+- logs tÃ©cnicos
 
 **Importante:**
 
-- esta fase não altera a experiência do usuário
-- esta fase não melhora os textos
-- esta fase não cria inteligência nova
+- esta fase nÃ£o altera a experiÃªncia do usuÃ¡rio
+- esta fase nÃ£o melhora os textos
+- esta fase nÃ£o cria inteligÃªncia nova
 - ela apenas faz a infraestrutura preparada na Fase 2 funcionar de verdade
 
 **Resultado esperado:**
 
-Ao final desta fase, o backend já consegue chamar a IA e obter uma resposta técnica quando a chave estiver configurada corretamente no ambiente.
+Ao final desta fase, o backend jÃ¡ consegue chamar a IA e obter uma resposta tÃ©cnica quando a chave estiver configurada corretamente no ambiente.
 
 ### Fase 4.2 — Primeira Análise Financeira com IA
 
-**Status:** futura
+**Status:** em evolução
 
 **Objetivo:**
 Criar a primeira experiência real de análise financeira utilizando IA.
@@ -147,7 +147,48 @@ Ela recebe exclusivamente o `ResumoFinanceiroIA`.
 
 Transformar o `ResumoFinanceiroIA` em um parecer financeiro muito mais rico do que o produzido apenas pelas regras do sistema.
 
-### Fase 5 — Especialistas
+#### Fase 4.2.1 — Base de Conhecimento Financeira
+
+**Status:** concluída no backend
+
+**Escopo desta subfase:**
+
+- Memória Financeira
+- Memória Consultiva
+
+**Entregas:**
+
+- persistência histórica das análises do Assistente Financeiro
+- fotografia completa do estado financeiro analisado em cada geração
+- registro de resumo financeiro, indicadores resumidos, insights resumidos e perfil financeiro vigente
+- preservação de pergunta do usuário, resposta da IA, provedor, modelo, versão do prompt, versão do sistema, tokens, tempo, custo, sucesso e erros
+- recuperação resumida das últimas análises para enriquecer o contexto da IA com economia de tokens
+
+#### Fase 4.2.2 — Experiência Visual da Análise IA
+
+**Status:** próxima etapa
+
+**Objetivo:**
+
+Transformar a análise aprofundada com IA em uma experiência visual clara, comparável e útil dentro do Assistente Financeiro.
+
+#### Fase 4.2.3 — Estratégia Financeira
+
+**Status:** futura
+
+**Objetivo:**
+
+Registrar a direção estratégica do usuário ao longo do tempo, como construir reserva, reduzir endividamento, iniciar investimentos ou planejar grandes compras.
+
+#### Fase 4.2.4 — Compromissos Financeiros
+
+**Status:** futura
+
+**Objetivo:**
+
+Registrar ações e decisões combinadas entre usuário e Assistente Financeiro, permitindo acompanhamento de execução, adiamento e conclusão.
+
+### Fase 5 â€” Especialistas
 
 **Status:** futura
 
@@ -155,11 +196,11 @@ Criar especialistas utilizando a mesma infraestrutura.
 
 **Exemplos:**
 
-- Especialista em Dívidas
-- Especialista em Patrimônio
+- Especialista em DÃ­vidas
+- Especialista em PatrimÃ´nio
 - Especialista em Metas
 - Especialista em Fluxo de Caixa
-- Especialista em Simulações
+- Especialista em SimulaÃ§Ãµes
 
 **Nesta fase muda apenas:**
 
@@ -168,36 +209,36 @@ Criar especialistas utilizando a mesma infraestrutura.
 
 Toda a infraestrutura permanece a mesma.
 
-### Fase 6 — Conversa Contínua
+### Fase 6 â€” Conversa ContÃ­nua
 
 **Status:** futura
 
-Permitir que o usuário converse com o Assistente Financeiro utilizando todo o contexto financeiro já consolidado.
+Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o contexto financeiro jÃ¡ consolidado.
 
 **Exemplos:**
 
-- Vale a pena quitar meu empréstimo?
+- Vale a pena quitar meu emprÃ©stimo?
 - E se eu comprar uma casa?
 - Quanto posso gastar em um carro?
-- Essa simulação é saudável?
+- Essa simulaÃ§Ã£o Ã© saudÃ¡vel?
 
-## Concluído
+## ConcluÃ­do
 
-### Fundação
+### FundaÃ§Ã£o
 
-- autenticação com JWT
+- autenticaÃ§Ã£o com JWT
 - cliente HTTP padronizado
-- loading global de requisições
-- migração do banco oficial para MySQL
+- loading global de requisiÃ§Ãµes
+- migraÃ§Ã£o do banco oficial para MySQL
 
-### Operação financeira
+### OperaÃ§Ã£o financeira
 
 - categorias e subcategorias
-- contas e cartões
-- lançamentos com CRUD
-- filtros, ordenação, paginação e exportação Excel
-- efetivação rápida de receitas e despesas
-- lançamentos únicos, parcelados, fixos e por dia útil
+- contas e cartÃµes
+- lanÃ§amentos com CRUD
+- filtros, ordenaÃ§Ã£o, paginaÃ§Ã£o e exportaÃ§Ã£o Excel
+- efetivaÃ§Ã£o rÃ¡pida de receitas e despesas
+- lanÃ§amentos Ãºnicos, parcelados, fixos e por dia Ãºtil
 
 ### Leitura financeira
 
@@ -205,45 +246,46 @@ Permitir que o usuário converse com o Assistente Financeiro utilizando todo o c
 - radar financeiro
 - fluxo de caixa simples
 - indicadores financeiros
-- saúde financeira
-- insights financeiros básicos
+- saÃºde financeira
+- insights financeiros bÃ¡sicos
 - ResumoFinanceiroIA
-- infraestrutura de IA preparada sem integração real com provedor
+- infraestrutura de IA preparada sem integraÃ§Ã£o real com provedor
 - assistente financeiro consumindo apenas o resumo consolidado do backend
 
 ### Planejamento
 
-- projeções financeiras
-- simulações financeiras
+- projeÃ§Ãµes financeiras
+- simulaÃ§Ãµes financeiras
 - perfil financeiro
 
-### Patrimônio
+### PatrimÃ´nio
 
 - ativos patrimoniais
 - passivos
 - snapshots patrimoniais
-- evolução patrimonial
+- evoluÃ§Ã£o patrimonial
 
 ## Em desenvolvimento
 
 ### Metas
 
-- integração visual completa do módulo no frontend
+- integraÃ§Ã£o visual completa do mÃ³dulo no frontend
 
-### Relatórios
+### RelatÃ³rios
 
-- fechamento do frontend para consumo dos relatórios já existentes no backend
+- fechamento do frontend para consumo dos relatÃ³rios jÃ¡ existentes no backend
 
-### Orçamento
+### OrÃ§amento
 
-- definição da regra de negócio e integração real com a aplicação
+- definiÃ§Ã£o da regra de negÃ³cio e integraÃ§Ã£o real com a aplicaÃ§Ã£o
 
-## Próximas implementações
+## PrÃ³ximas implementaÃ§Ãµes
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.1 — Integração Técnica com IA
-- Fase 4.2 — Primeira Análise Financeira com IA
+- Fase 4.2.2 — Experiência Visual da Análise IA
+- Fase 4.2.3 — Estratégia Financeira
+- Fase 4.2.4 — Compromissos Financeiros
 - Interpretador Financeiro
   - criar uma camada entre `Saúde Financeira` e `Insights Financeiros`
   - objetivo: transformar indicadores em interpretações humanas baseadas exclusivamente em regras de negócio
@@ -263,75 +305,91 @@ Permitir que o usuário converse com o Assistente Financeiro utilizando todo o c
     - produzir interpretações baseadas em regras
     - reduzir repetição textual
     - servir como base ainda melhor para futuras integrações com IA
-  - esta melhoria é uma evolução futura independente e não faz parte da Fase 4
+  - esta melhoria é uma evolução futura independente e não faz parte da Fase 4.2 atual
 
 ### Dashboard
 
-- patrimônio líquido no dashboard
-- evolução patrimonial no dashboard
+- patrimÃ´nio lÃ­quido no dashboard
+- evoluÃ§Ã£o patrimonial no dashboard
 - saldo projetado
 - metas em risco
 - resumo financeiro inteligente na interface, consumindo `ResumoFinanceiroIA`
 
-### Lançamentos
+### LanÃ§amentos
 
-- modal para visualização de parcelas agrupadas
-- edição em lote de parcelamentos
-- exclusão individual ou total de parcelamentos
-- histórico de alterações
+- modal para visualizaÃ§Ã£o de parcelas agrupadas
+- ediÃ§Ã£o em lote de parcelamentos
+- exclusÃ£o individual ou total de parcelamentos
+- histÃ³rico de alteraÃ§Ãµes
 
-### Patrimônio
+### PatrimÃ´nio
 
-- integração automática com contas, cartões e lançamentos
-- geração automática de snapshots por período
-- relatório patrimonial dedicado
+- integraÃ§Ã£o automÃ¡tica com contas, cartÃµes e lanÃ§amentos
+- geraÃ§Ã£o automÃ¡tica de snapshots por perÃ­odo
+- relatÃ³rio patrimonial dedicado
 
 ### Metas
 
-- experiência completa de uso no frontend
+- experiÃªncia completa de uso no frontend
 - leitura consolidada junto ao dashboard e ao planejamento financeiro
 
 ### Perfil Financeiro
 
-- evolução dos insights com base no histórico
+- evoluÃ§Ã£o dos insights com base no histÃ³rico
 
 ## Ideias futuras
 
-### Simulações Financeiras
+### SimulaÃ§Ãµes Financeiras
 
-- comparação entre múltiplas simulações
-- aplicação parcial de simulação aos dados reais com confirmação explícita
-- impacto em patrimônio líquido
+- comparaÃ§Ã£o entre mÃºltiplas simulaÃ§Ãµes
+- aplicaÃ§Ã£o parcial de simulaÃ§Ã£o aos dados reais com confirmaÃ§Ã£o explÃ­cita
+- impacto em patrimÃ´nio lÃ­quido
 - impacto em metas
-- importação de ações a partir de lançamentos reais
-- duplicação rápida de cenários
+- importaÃ§Ã£o de aÃ§Ãµes a partir de lanÃ§amentos reais
+- duplicaÃ§Ã£o rÃ¡pida de cenÃ¡rios
 
 ### Infraestrutura
 
 - melhorias globais de performance
-- melhorias de segurança
+- melhorias de seguranÃ§a
 - melhorias de observabilidade
 - melhorias de auditoria
 - melhor aproveitamento de Hangfire e SignalR
 
-## Atualiza��o da Fase 4.2
+## Atualização da Fase 4.2
 
-Esta se��o registra o estado oficial mais recente da evolu��o do Assistente Financeiro.
+Esta seção registra o estado oficial mais recente da evolução do Assistente Financeiro.
 
-- a **Fase 4.2 � Primeira An�lise Financeira com IA** est� **iniciada**
-- a **Fase 4.1 � Integra��o T�cnica com IA** permanece **conclu�da**
-- a pr�xima evolu��o dentro da fase atual � o refinamento da experi�ncia da an�lise executiva gerada pela IA
+- a **Fase 4.1 — Integração Técnica com IA** permanece **concluída**
+- a **Fase 4.2 — Primeira Análise Financeira com IA** está **em evolução**
+- a **Fase 4.2.1 — Base de Conhecimento Financeira** está **concluída no backend**
+- a **próxima etapa oficial** é a **Fase 4.2.2 — Experiência Visual da Análise IA**
 
-### Entregas j� iniciadas na Fase 4.2
+### Entregas já consolidadas
 
-- cria��o do documento oficial `docs/AI_DESIGN.md`
-- formaliza��o da filosofia da IA do projeto
-- formaliza��o do fluxo oficial `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> OpenAIProvider -> Relat�rio Executivo`
-- implementa��o do primeiro prompt oficial consultivo da Fase 4.2
+- criação do documento oficial `docs/AI_DESIGN.md`
+- formalização da filosofia da IA do projeto
+- formalização do fluxo oficial `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> OpenAIProvider -> Relatório Executivo`
+- implementação do primeiro prompt oficial consultivo da Fase 4.2
+- criação da primeira versão da **Base de Conhecimento Financeira**
 
-### Evolu��o futura relacionada
+### Base de Conhecimento Financeira
 
-- `Interpretador Financeiro`
-  - permanece como melhoria arquitetural futura
-  - n�o faz parte da Fase 4.2
-  - dever� ficar entre `Sa�de Financeira` e `Insights Financeiros`
+Ela passa a ser formada por três conceitos:
+
+- **Memória Financeira**
+  - implementada nesta etapa
+  - registra fotografias históricas da situação financeira analisada
+- **Estratégia Financeira**
+  - documentada como evolução futura
+  - registrará a direção estratégica do usuário ao longo do tempo
+- **Compromissos Financeiros**
+  - documentados como evolução futura
+  - registrarão decisões e ações combinadas entre usuário e Assistente
+
+### Regra arquitetural
+
+A Base de Conhecimento Financeira pertence ao domínio do sistema.
+
+A IA pode consultar essa base para enriquecer respostas, mas não é dona dela.
+

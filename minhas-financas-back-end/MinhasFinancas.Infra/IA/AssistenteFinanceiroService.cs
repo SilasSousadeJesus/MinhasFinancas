@@ -21,15 +21,28 @@ namespace MinhasFinancas.Infra.IA
             _provedorIA = provedorIA;
         }
 
-        public ContextoAssistenteFinanceiro PrepararContexto(ResumoFinanceiroIA resumoFinanceiroIA, string? perguntaUsuario = null)
+        public ContextoAssistenteFinanceiro PrepararContexto(
+            ResumoFinanceiroIA resumoFinanceiroIA,
+            string? perguntaUsuario = null,
+            IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null)
         {
-            return _construtorContextoIA.Construir(resumoFinanceiroIA, perguntaUsuario);
+            return _construtorContextoIA.Construir(resumoFinanceiroIA, perguntaUsuario, memoriaFinanceira);
         }
 
-        public RequisicaoIA PrepararRequisicao(ResumoFinanceiroIA resumoFinanceiroIA, string? perguntaUsuario = null)
+        public RequisicaoIA PrepararRequisicao(
+            ResumoFinanceiroIA resumoFinanceiroIA,
+            string? perguntaUsuario = null,
+            IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null)
         {
-            var contexto = PrepararContexto(resumoFinanceiroIA, perguntaUsuario);
+            var contexto = PrepararContexto(resumoFinanceiroIA, perguntaUsuario, memoriaFinanceira);
             return _construtorPromptIA.Construir(contexto);
+        }
+
+        public Task<RespostaIA> GerarRespostaAsync(
+            RequisicaoIA requisicao,
+            CancellationToken cancellationToken = default)
+        {
+            return _provedorIA.GerarRespostaAsync(requisicao, cancellationToken);
         }
 
         public Task<RespostaIA> GerarRespostaAsync(
@@ -38,7 +51,7 @@ namespace MinhasFinancas.Infra.IA
             CancellationToken cancellationToken = default)
         {
             var requisicao = PrepararRequisicao(resumoFinanceiroIA, perguntaUsuario);
-            return _provedorIA.GerarRespostaAsync(requisicao, cancellationToken);
+            return GerarRespostaAsync(requisicao, cancellationToken);
         }
 
         public Task<RespostaIA> GerarRespostaSimuladaAsync(

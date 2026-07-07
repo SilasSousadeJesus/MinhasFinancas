@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Enums;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos;
@@ -8,7 +8,10 @@ namespace MinhasFinancas.Infra.IA.Construtores
 {
     public class ConstrutorContextoIA
     {
-        public ContextoAssistenteFinanceiro Construir(ResumoFinanceiroIA resumoFinanceiroIA, string? perguntaUsuario = null)
+        public ContextoAssistenteFinanceiro Construir(
+            ResumoFinanceiroIA resumoFinanceiroIA,
+            string? perguntaUsuario = null,
+            IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null)
         {
             var cultura = new CultureInfo("pt-BR");
 
@@ -46,24 +49,28 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 .Select(indicador => FormatarIndicador(indicador, cultura))
                 .ToList();
 
+            var memoriaFinanceiraResumida = memoriaFinanceira?
+                .Select(FormatarMemoriaFinanceira)
+                .ToList() ?? [];
+
             var secoes = new List<string>
             {
                 MontarSecao(
                     "Resumo Executivo",
                     [
-                        $"Data de referência: {resumoFinanceiroIA.DataReferencia:dd/MM/yyyy}",
+                        $"Data de referÃªncia: {resumoFinanceiroIA.DataReferencia:dd/MM/yyyy}",
                         $"Resumo do sistema: {resumoFinanceiroIA.ResumoExecutivo}"
                     ]),
                 MontarSecao(
-                    "Saúde Financeira",
+                    "SaÃºde Financeira",
                     [
-                        $"Pontuação geral: {resumoFinanceiroIA.SaudeFinanceira.PontuacaoGeral}/100",
-                        $"Classificação atual: {resumoFinanceiroIA.SaudeFinanceira.Classificacao}"
+                        $"PontuaÃ§Ã£o geral: {resumoFinanceiroIA.SaudeFinanceira.PontuacaoGeral}/100",
+                        $"ClassificaÃ§Ã£o atual: {resumoFinanceiroIA.SaudeFinanceira.Classificacao}"
                     ]),
                 MontarSecao(
-                    "Pontos de Atenção Técnicos",
+                    "Pontos de AtenÃ§Ã£o TÃ©cnicos",
                     pontosAtencao,
-                    "- Nenhum ponto de atenção técnico relevante foi identificado pelo sistema."),
+                    "- Nenhum ponto de atenÃ§Ã£o tÃ©cnico relevante foi identificado pelo sistema."),
                 MontarSecao(
                     "Prioridades Imediatas",
                     prioridades.Select(item => $"- {item}"),
@@ -73,9 +80,9 @@ namespace MinhasFinancas.Infra.IA.Construtores
                     destaques.Select(item => $"- {item}"),
                     "- Nenhum destaque positivo foi registrado."),
                 MontarSecao(
-                    "Indicadores em Atenção",
+                    "Indicadores em AtenÃ§Ã£o",
                     indicadoresEmAtencao,
-                    "- Nenhum indicador está em faixa de atenção ou crítica."),
+                    "- Nenhum indicador estÃ¡ em faixa de atenÃ§Ã£o ou crÃ­tica."),
                 MontarSecao(
                     "Indicadores Positivos",
                     indicadoresPositivos,
@@ -83,29 +90,33 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 MontarSecao(
                     "Indicadores Financeiros Consolidados",
                     todosIndicadores,
-                    "- Não há indicadores consolidados disponíveis."),
+                    "- NÃ£o hÃ¡ indicadores consolidados disponÃ­veis."),
                 MontarSecao(
-                    "Insights Financeiros Prioritários",
+                    "Insights Financeiros PrioritÃ¡rios",
                     insightsPrioritarios,
-                    "- Nenhum insight prioritário está disponível."),
+                    "- Nenhum insight prioritÃ¡rio estÃ¡ disponÃ­vel."),
                 MontarSecao(
                     "Insights Positivos",
                     insightsPositivos,
-                    "- Nenhum insight positivo está disponível."),
+                    "- Nenhum insight positivo estÃ¡ disponÃ­vel."),
+                MontarSecao(
+                    "MemÃ³ria Financeira",
+                    memoriaFinanceiraResumida,
+                    "NÃ£o existem anÃ¡lises anteriores."),
                 MontarSecao(
                     "Cobertura Atual do Contexto",
                     [
-                        "- Perfil financeiro: já refletido de forma indireta nos indicadores, na saúde financeira e nas prioridades.",
-                        "- Patrimônio: já refletido pelos indicadores de patrimônio líquido atual e percentual do patrimônio-alvo.",
-                        "- Fluxo de caixa: já refletido pelos indicadores de economia mensal, percentual de economia e comprometimento da renda.",
-                        "- Tendências, histórico detalhado, radar financeiro operacional, projeções, simulações e detalhamento patrimonial ainda não são enviados como blocos próprios nesta fase.",
-                        "- Quando algum dado não estiver explicitamente descrito no contexto, a análise deve se limitar às informações estruturadas recebidas."
+                        "- Perfil financeiro: jÃ¡ refletido de forma indireta nos indicadores, na saÃºde financeira e nas prioridades.",
+                        "- PatrimÃ´nio: jÃ¡ refletido pelos indicadores de patrimÃ´nio lÃ­quido atual e percentual do patrimÃ´nio-alvo.",
+                        "- Fluxo de caixa: jÃ¡ refletido pelos indicadores de economia mensal, percentual de economia e comprometimento da renda.",
+                        "- TendÃªncias, radar financeiro operacional, projeÃ§Ãµes, simulaÃ§Ãµes e detalhamento patrimonial ainda nÃ£o sÃ£o enviados como blocos prÃ³prios nesta fase.",
+                        "- Quando algum dado nÃ£o estiver explicitamente descrito no contexto, a anÃ¡lise deve se limitar Ã s informaÃ§Ãµes estruturadas recebidas."
                     ])
             };
 
             if (!string.IsNullOrWhiteSpace(perguntaUsuario))
             {
-                secoes.Add(MontarSecao("Pergunta do Usuário", [$"- {perguntaUsuario}"]));
+                secoes.Add(MontarSecao("Pergunta do UsuÃ¡rio", [$"- {perguntaUsuario}"]));
             }
 
             return new ContextoAssistenteFinanceiro
@@ -116,6 +127,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 PrioridadesImediatas = prioridades,
                 DestaquesPositivos = destaques,
                 InsightsPrioritarios = insightsPrioritarios,
+                MemoriaFinanceiraResumida = memoriaFinanceiraResumida,
                 ResumoExecutivo = resumoFinanceiroIA.ResumoExecutivo,
                 ContextoTextual = string.Join(Environment.NewLine + Environment.NewLine, secoes),
                 PerguntaUsuario = perguntaUsuario ?? string.Empty
@@ -146,17 +158,17 @@ namespace MinhasFinancas.Infra.IA.Construtores
 
         private static string FormatarInsight(InsightFinanceiro insight)
         {
-            return $"- [{insight.Tipo}] {insight.Titulo} | Descrição: {insight.Descricao} | Ação sugerida: {insight.AcaoSugerida}";
+            return $"- [{insight.Tipo}] {insight.Titulo} | DescriÃ§Ã£o: {insight.Descricao} | AÃ§Ã£o sugerida: {insight.AcaoSugerida}";
         }
 
         private static string FormatarPontoAtencao(PontoAtencaoSaudeFinanceira pontoAtencao)
         {
-            return $"- {pontoAtencao.Nome} | Status: {FormatarStatus(pontoAtencao.Status)} | Descrição: {pontoAtencao.Descricao} | Observação: {pontoAtencao.Observacao}";
+            return $"- {pontoAtencao.Nome} | Status: {FormatarStatus(pontoAtencao.Status)} | DescriÃ§Ã£o: {pontoAtencao.Descricao} | ObservaÃ§Ã£o: {pontoAtencao.Observacao}";
         }
 
         private static string FormatarIndicador(IndicadorFinanceiro indicador, CultureInfo cultura)
         {
-            return $"- {indicador.Nome} | Atual: {FormatarValor(indicador.ValorAtual, indicador.Formato, cultura)} | Ideal: {FormatarValor(indicador.ValorIdeal, indicador.Formato, cultura)} | Percentual: {indicador.Percentual:N2}% | Status: {FormatarStatus(indicador.Status)} | Descrição: {indicador.Descricao} | Observação: {indicador.Observacao}";
+            return $"- {indicador.Nome} | Atual: {FormatarValor(indicador.ValorAtual, indicador.Formato, cultura)} | Ideal: {FormatarValor(indicador.ValorIdeal, indicador.Formato, cultura)} | Percentual: {indicador.Percentual:N2}% | Status: {FormatarStatus(indicador.Status)} | DescriÃ§Ã£o: {indicador.Descricao} | ObservaÃ§Ã£o: {indicador.Observacao}";
         }
 
         private static string FormatarStatus(StatusIndicadorFinanceiro status)
@@ -165,8 +177,8 @@ namespace MinhasFinancas.Infra.IA.Construtores
             {
                 StatusIndicadorFinanceiro.Excelente => "Excelente",
                 StatusIndicadorFinanceiro.Bom => "Bom",
-                StatusIndicadorFinanceiro.Atencao => "Atenção",
-                _ => "Crítico"
+                StatusIndicadorFinanceiro.Atencao => "AtenÃ§Ã£o",
+                _ => "CrÃ­tico"
             };
         }
 
@@ -175,9 +187,39 @@ namespace MinhasFinancas.Infra.IA.Construtores
             return formato switch
             {
                 FormatoValorIndicadorFinanceiro.Percentual => $"{valor:N2}%",
-                FormatoValorIndicadorFinanceiro.Meses => $"{valor:N2} mês(es)",
+                FormatoValorIndicadorFinanceiro.Meses => $"{valor:N2} mÃªs(es)",
                 _ => valor.ToString("C", cultura)
             };
         }
+
+        private static string FormatarMemoriaFinanceira(MemoriaFinanceiraResumidaIA memoria)
+        {
+            var partes = new List<string>
+            {
+                $"- Data: {memoria.DataGeracao:dd/MM/yyyy}",
+                $"PerÃ­odo: {memoria.PeriodoReferencia:MM/yyyy}",
+                $"PontuaÃ§Ã£o: {memoria.PontuacaoSaudeFinanceira}/100",
+                $"ClassificaÃ§Ã£o: {memoria.ClassificacaoSaudeFinanceira}",
+                $"Resumo: {memoria.ResumoExecutivoSistema}",
+                $"Riscos: {FormatarListaResumo(memoria.PrincipaisRiscos)}",
+                $"Pontos positivos: {FormatarListaResumo(memoria.PrincipaisPontosPositivos)}",
+                $"RecomendaÃ§Ãµes: {FormatarListaResumo(memoria.PrincipaisRecomendacoes)}",
+                $"Prioridades: {FormatarListaResumo(memoria.Prioridades)}"
+            };
+
+            return string.Join(" | ", partes);
+        }
+
+        private static string FormatarListaResumo(List<string> itens)
+        {
+            var filtrados = itens
+                .Where(item => !string.IsNullOrWhiteSpace(item))
+                .ToList();
+
+            return filtrados.Count == 0
+                ? "nenhum registro"
+                : string.Join("; ", filtrados);
+        }
     }
 }
+

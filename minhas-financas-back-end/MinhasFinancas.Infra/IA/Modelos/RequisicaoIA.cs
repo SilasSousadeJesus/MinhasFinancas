@@ -7,6 +7,7 @@ namespace MinhasFinancas.Infra.IA.Modelos
         public string PerguntaUsuario { get; set; } = string.Empty;
         public string PromptCompleto { get; set; } = string.Empty;
         public string ModeloSugerido { get; set; } = string.Empty;
+        public string VersaoPrompt { get; set; } = string.Empty;
         public decimal Temperatura { get; set; }
     }
 }

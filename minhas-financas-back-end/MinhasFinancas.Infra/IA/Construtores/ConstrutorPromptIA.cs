@@ -4,6 +4,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
 {
     public class ConstrutorPromptIA
     {
+        public const string VersaoPromptAtual = "fase-4.2.1";
         private readonly string _caminhoPromptBase;
 
         public ConstrutorPromptIA()
@@ -34,6 +35,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 PerguntaUsuario = perguntaUsuario,
                 PromptCompleto = string.Join(Environment.NewLine + Environment.NewLine, secoes),
                 ModeloSugerido = string.Empty,
+                VersaoPrompt = VersaoPromptAtual,
                 Temperatura = 0.2m
             };
         }
