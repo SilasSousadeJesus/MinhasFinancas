@@ -373,9 +373,14 @@ ObservaÃ§Ã£o importante:
 - os `Insights Financeiros` permanecem como bloco prÃ³prio de risco, oportunidade, configuraÃ§Ã£o ou destaque positivo, sem exercer o mesmo papel do resumo ou da conclusÃ£o
 - usa links para levar o usuÃ¡rio para a anÃ¡lise completa em `SaÃºde Financeira`
 - nÃ£o recalcula indicadores no frontend
-- possui card final de anÃ¡lise aprofundada com IA com botÃ£o desabilitado nesta fase
-- continua sem qualquer chamada real para IA
-- a integraÃ§Ã£o tÃ©cnica real do backend jÃ¡ existe, mas a qualidade final da experiÃªncia e do relatÃ³rio continua reservada para a `Fase 4.2`
+- possui card funcional de anÃ¡lise aprofundada com IA
+- a tela permite pergunta opcional e usa uma pergunta padrÃ£o quando o usuÃ¡rio sÃ³ clica no botÃ£o
+- o frontend chama o endpoint existente `POST api/AssistenteFinanceiro/GerarAnalise/{usuarioId}`
+- a resposta da IA Ã© exibida em Markdown na prÃ³pria tela, com estilo de parecer executivo
+- a tela permite copiar a anÃ¡lise, gerar novamente e visualizar dados tÃ©cnicos discretos
+- erros amigÃ¡veis retornados pela API sÃ£o mostrados sem apagar a anÃ¡lise anterior
+- nÃ£o existe chat, especialistas nem conversa contÃ­nua nesta fase
+- a MemÃ³ria Financeira continua sendo responsabilidade do backend; o frontend apenas solicita a geraÃ§Ã£o e exibe o resultado
 
 ## Infraestrutura e integraÃ§Ãµes existentes
 
@@ -501,8 +506,8 @@ ObservaÃ§Ã£o importante:
 
 ### Próxima implementação prevista
 
-- Fase 4.2.2 — Experiência Visual da Análise IA no roadmap de Inteligência Financeira
-- evolução da apresentação da análise aprofundada, mantendo `ResumoFinanceiroIA` e a Base de Conhecimento Financeira como fontes oficiais de contexto
+- Fase 4.2.3 — Estratégia Financeira no roadmap de Inteligência Financeira
+- evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo
 
 ## Atualização da documentação de IA
 

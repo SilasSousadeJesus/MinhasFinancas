@@ -177,6 +177,7 @@ SituaÃ§Ã£o atual da evoluÃ§Ã£o:
 
 - Fase 4.1 concluÃ­da: integraÃ§Ã£o tÃ©cnica com IA jÃ¡ existe
 - Fase 4.2 iniciada: primeiro prompt oficial de anÃ¡lise financeira com IA implementado
+- Fase 4.2.2 implementada no frontend: experiÃªncia visual da anÃ¡lise aprofundada integrada Ã  tela do Assistente Financeiro
 
 Nesta etapa, o foco Ã© melhorar:
 
@@ -184,6 +185,27 @@ Nesta etapa, o foco Ã© melhorar:
 - formato do relatÃ³rio executivo
 - consistÃªncia do tom do assistente
 - valor consultivo das respostas
+
+## Atualização — Experiência Visual da Análise IA
+
+A subfase 4.2.2 tornou a análise aprofundada acessível diretamente na tela do Assistente Financeiro.
+
+### O que foi implementado
+
+- botão funcional para gerar a análise aprofundada
+- uso do endpoint existente `POST /api/AssistenteFinanceiro/GerarAnalise/{usuarioId}`
+- renderização da resposta da IA em Markdown
+- loading amigável durante a geração
+- ações de copiar análise e gerar novamente
+- exibição discreta de modelo, tempo, tokens, custo e horário da geração
+
+### Limites desta fase
+
+- não existe chat
+- não existe conversa contínua
+- não existem especialistas
+- o frontend não salva histórico por conta própria
+- a Memória Financeira continua sendo responsabilidade do backend
 
 ## Atualização — Base de Conhecimento Financeira
 

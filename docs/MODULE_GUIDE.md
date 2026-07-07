@@ -105,7 +105,9 @@ ObservaÃ§Ãµes adicionais da fase tÃ©cnica:
 - acompanha a saÃºde financeira consolidada em formato executivo
 - lÃª um resumo corrido com prioridades, principais indicadores, leitura estratÃ©gica e conclusÃ£o
 - usa links para aprofundar a anÃ¡lise completa em SaÃºde Financeira
-- futuramente poderÃ¡ solicitar uma anÃ¡lise aprofundada com IA
+- pode solicitar uma anÃ¡lise aprofundada com IA diretamente na prÃ³pria tela
+- pode escrever uma pergunta opcional para orientar a anÃ¡lise
+- pode copiar o parecer gerado e gerar novamente sem sair da pÃ¡gina
 
 ### Dados gerados ou mantidos
 - nÃ£o criarÃ¡ dados financeiros brutos
@@ -140,13 +142,17 @@ ObservaÃ§Ãµes adicionais da fase tÃ©cnica:
 - a abertura da conclusÃ£o varia conforme a classificaÃ§Ã£o da saÃºde financeira
 - link para a anÃ¡lise completa em `SaÃºde Financeira`
 - prÃ³ximas prioridades
-- card final de anÃ¡lise aprofundada com IA com botÃ£o desabilitado
-- a infraestrutura backend da Fase 2 continua preparada para uso futuro com provedores externos
-- o backend jÃ¡ possui integraÃ§Ã£o tÃ©cnica real com OpenAI quando a chave estiver configurada no ambiente
-- existe endpoint tÃ©cnico para geraÃ§Ã£o da anÃ¡lise, sem mudanÃ§a obrigatÃ³ria na experiÃªncia visual desta fase
+- experiÃªncia visual da anÃ¡lise aprofundada com IA implementada na prÃ³pria tela
+- botÃ£o funcional para gerar anÃ¡lise aprofundada
+- renderizaÃ§Ã£o da resposta da IA em Markdown
+- loading amigÃ¡vel durante a geraÃ§Ã£o
+- aÃ§Ãµes de copiar anÃ¡lise e gerar novamente
+- dados tÃ©cnicos discretos da geraÃ§Ã£o, como modelo, tempo, tokens, custo e horÃ¡rio
+- a infraestrutura backend da Fase 4.1 continua responsÃ¡vel pela integraÃ§Ã£o tÃ©cnica com o provedor
+- a MemÃ³ria Financeira continua sendo salva apenas pelo backend
+- nÃ£o existe chat nem conversa contÃ­nua nesta etapa
 
 ### EvoluÃ§Ãµes futuras
-- Fase 4.2: construÃ§Ã£o da primeira anÃ¡lise financeira aprofundada com IA, usando `ResumoFinanceiroIA` como Ãºnica base de contexto
 - futura camada de `Interpretador Financeiro` entre `SaÃºde Financeira` e `Insights Financeiros` para qualificar ainda mais a linguagem natural baseada em regras
 - especialistas temÃ¡ticos reutilizando a mesma infraestrutura
 - conversa contÃ­nua com contexto financeiro consolidado

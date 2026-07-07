@@ -8,7 +8,7 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 O projeto se encontra atualmente na **Fase 4.1 concluÃ­da** do roadmap de InteligÃªncia Financeira / Assistente Financeiro.
 
-A próxima etapa oficial é a **Fase 4.2.2 — Experiência Visual da Análise IA**.
+A próxima etapa oficial é a **Fase 4.2.3 — Estratégia Financeira**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -166,7 +166,7 @@ Transformar o `ResumoFinanceiroIA` em um parecer financeiro muito mais rico do q
 
 #### Fase 4.2.2 — Experiência Visual da Análise IA
 
-**Status:** próxima etapa
+**Status:** concluída
 
 **Objetivo:**
 
@@ -283,7 +283,6 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.2.2 — Experiência Visual da Análise IA
 - Fase 4.2.3 — Estratégia Financeira
 - Fase 4.2.4 — Compromissos Financeiros
 - Interpretador Financeiro
@@ -363,7 +362,8 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.1 — Integração Técnica com IA** permanece **concluída**
 - a **Fase 4.2 — Primeira Análise Financeira com IA** está **em evolução**
 - a **Fase 4.2.1 — Base de Conhecimento Financeira** está **concluída no backend**
-- a **próxima etapa oficial** é a **Fase 4.2.2 — Experiência Visual da Análise IA**
+- a **Fase 4.2.2 — Experiência Visual da Análise IA** está **concluída**
+- a **próxima etapa oficial** é a **Fase 4.2.3 — Estratégia Financeira**
 
 ### Entregas já consolidadas
 
@@ -372,6 +372,7 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - formalização do fluxo oficial `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> OpenAIProvider -> Relatório Executivo`
 - implementação do primeiro prompt oficial consultivo da Fase 4.2
 - criação da primeira versão da **Base de Conhecimento Financeira**
+- integração visual da análise aprofundada diretamente na tela do Assistente Financeiro
 
 ### Base de Conhecimento Financeira
 
