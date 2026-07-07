@@ -8,7 +8,7 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 O projeto se encontra atualmente na **Fase 4.2.2.1 concluÃ­da** do roadmap de InteligÃªncia Financeira / Assistente Financeiro.
 
-A próxima etapa oficial é a **Fase 4.2.3 — Estratégia Financeira**.
+A próxima etapa oficial é a **Fase 4.2.3 — Plano Estratégico Financeiro**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -201,13 +201,24 @@ Transformar a memória histórica do usuário em uma narrativa de evolução pro
 - redução da dependência de listagens cronológicas brutas
 - orientação explícita do prompt para continuidade entre análises
 
-#### Fase 4.2.3 — Estratégia Financeira
+#### Fase 4.2.3 — Plano Estratégico Financeiro
 
 **Status:** futura
 
 **Objetivo:**
 
 Registrar a direção estratégica do usuário ao longo do tempo, como construir reserva, reduzir endividamento, iniciar investimentos ou planejar grandes compras.
+
+**Subfases oficiais:**
+
+- **Fase 4.2.3.1 — Plano Estratégico Financeiro**
+  - armazenar objetivos, prioridades, princípios e direção estratégica formal do usuário
+- **Fase 4.2.3.2 — Interpretador Estratégico**
+  - transformar o Plano Estratégico em narrativa compreensível para a IA
+- **Fase 4.2.3.3 — Consistência Estratégica**
+  - avaliar o quanto uma decisão está alinhada com o Plano Estratégico
+- **Fase 4.2.3.4 — IA Estratégica**
+  - usar Estado Atual + Evolução + Plano Estratégico para produzir recomendações contextualizadas
 
 #### Fase 4.2.4 — Compromissos Financeiros
 
@@ -312,28 +323,17 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.2.3 — Estratégia Financeira
+- Fase 4.2.3 — Plano Estratégico Financeiro
 - Fase 4.2.4 — Compromissos Financeiros
-- Interpretador Financeiro
-  - criar uma camada entre `Saúde Financeira` e `Insights Financeiros`
-  - objetivo: transformar indicadores em interpretações humanas baseadas exclusivamente em regras de negócio
-  - motivação: evitar que `Insights`, `ResumoFinanceiroIA` e futuras interfaces reutilizem textos técnicos dos indicadores
-  - fluxo desejado:
-    - `Dados`
-    - `Indicadores Financeiros`
-    - `Saúde Financeira`
-    - `Interpretador Financeiro`
-    - `Insights Financeiros`
-    - `ResumoFinanceiroIA`
-    - `Assistente Financeiro`
-    - `IA`
-  - responsabilidades esperadas:
-    - traduzir indicadores em linguagem natural
-    - explicar impacto financeiro
-    - produzir interpretações baseadas em regras
-    - reduzir repetição textual
-    - servir como base ainda melhor para futuras integrações com IA
-  - esta melhoria é uma evolução futura independente e não faz parte da Fase 4.2 atual
+- Plano Estratégico Financeiro
+  - registrar objetivos, prioridades, princípios e direção de longo prazo do usuário
+  - servir como base explícita para consistência estratégica
+- Interpretador Estratégico
+  - transformar o Plano Estratégico em narrativa compreensível para IA e interfaces
+- Consistência Estratégica
+  - avaliar alinhamento entre decisões e plano vigente
+- IA Estratégica
+  - usar Estado Atual + Evolução + Plano Estratégico para recomendações contextualizadas
 
 ### Dashboard
 
@@ -393,7 +393,7 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2.1 — Base de Conhecimento Financeira** está **concluída no backend**
 - a **Fase 4.2.2 — Experiência Visual da Análise IA** está **concluída**
 - a **Fase 4.2.2.1 — Interpretador da Memória Financeira** está **concluída**
-- a **próxima etapa oficial** é a **Fase 4.2.3 — Estratégia Financeira**
+- a **próxima etapa oficial** é a **Fase 4.2.3 — Plano Estratégico Financeiro**
 
 ### Entregas já consolidadas
 
@@ -414,8 +414,8 @@ Ela passa a ser formada por três conceitos:
 - **Memória Financeira**
   - implementada nesta etapa
   - registra fotografias históricas da situação financeira analisada
-- **Estratégia Financeira**
-  - documentada como evolução futura
+- **Plano Estratégico Financeiro**
+  - documentado como evolução futura
   - registrará a direção estratégica do usuário ao longo do tempo
 - **Compromissos Financeiros**
   - documentados como evolução futura

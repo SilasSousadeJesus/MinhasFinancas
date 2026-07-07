@@ -406,6 +406,42 @@ Serve para testar cenÃ¡rios hipotÃ©ticos sem alterar os dados reais do usuÃ
 - score de saÃºde financeira
 - insights automÃ¡ticos com base no histÃ³rico
 
+## Plano Estratégico Financeiro
+
+### Finalidade
+É o módulo que registra a direção financeira deliberadamente escolhida pelo usuário para o longo prazo. Ele complementa o `Perfil Financeiro`, que define a régua de avaliação, com uma camada de intenção, prioridade e estratégia.
+
+### Diferença para o Perfil Financeiro
+- o `Perfil Financeiro` define limites, parâmetros e metas numéricas de referência
+- o `Plano Estratégico Financeiro` define prioridades, objetivos, princípios e direção de longo prazo
+- os dois módulos são complementares e não devem ser confundidos
+
+### O que o usuário faz aqui
+- registra objetivos estratégicos
+- define prioridades de longo prazo
+- descreve princípios importantes para sua jornada financeira
+- atualiza a direção escolhida ao longo do tempo
+
+### Dados gerados ou mantidos
+- plano estratégico do usuário
+- objetivos estratégicos
+- prioridades e princípios
+- histórico de direção escolhida
+
+### Impacto no restante do sistema
+- será consumido pela IA para contextualizar recomendações
+- poderá ser consumido por insights e leituras estratégicas futuras
+- permitirá avaliar se decisões atuais estão alinhadas com a direção escolhida
+
+### O que já está funcional
+- ainda não existe tela funcional concluída
+- a arquitetura e o roadmap já estão documentados
+
+### Evoluções futuras
+- interpretador estratégico
+- consistência estratégica
+- IA estratégica
+
 ## Metas
 
 ### Finalidade
@@ -581,5 +617,5 @@ A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design
 ### Evolução futura imediata
 
 - a próxima etapa visual será a exibição da análise aprofundada usando essa memória como base histórica
-- a evolução posterior da Base de Conhecimento incluirá **Estratégia Financeira** e **Compromissos Financeiros**
+- a evolução posterior da Base de Conhecimento incluirá **Plano Estratégico Financeiro** e **Compromissos Financeiros**
 

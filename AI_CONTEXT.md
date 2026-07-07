@@ -513,7 +513,7 @@ ObservaÃ§Ã£o importante:
 
 ### Próxima implementação prevista
 
-- Fase 4.2.3 — Estratégia Financeira no roadmap de Inteligência Financeira
+- Fase 4.2.3 — Plano Estratégico Financeiro no roadmap de Inteligência Financeira
 - evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo
 
 ## Atualização da documentação de IA
@@ -543,9 +543,9 @@ As subfases 4.2.1 e 4.2.2.1 adicionaram a primeira versão da Base de Conhecimen
 - **Memória Financeira**
   - implementada
   - registra fotografias históricas completas da situação analisada
-- **Estratégia Financeira**
-  - apenas documentada como evolução futura
-  - registrará direções estratégicas do usuário ao longo do tempo
+- **Plano Estratégico Financeiro**
+  - apenas documentado como evolução futura
+  - registrará a direção estratégica escolhida pelo usuário ao longo do tempo
 - **Compromissos Financeiros**
   - apenas documentados como evolução futura
   - registrarão ações e decisões combinadas com o Assistente

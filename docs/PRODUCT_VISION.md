@@ -63,6 +63,8 @@ Cada camada do sistema deve agregar valor a anterior.
 - O `ResumoFinanceiroIA` organiza esse conhecimento para consumo por interfaces e por futuros modelos de IA.
 - A Memoria Financeira preserva a evolucao analitica ao longo do tempo.
 - O `InterpretadorMemoriaFinanceira` transforma esse historico em continuidade narrativa antes do consumo por IA.
+- O `Plano Estratégico Financeiro` registra a direção escolhida pelo usuário para orientar decisões futuras.
+- O `Interpretador Estratégico` transformará esse plano em narrativa compreensível para interfaces e IA.
 
 Nenhuma camada deve substituir a anterior.
 
@@ -94,6 +96,29 @@ O produto caminha para se tornar um centro pessoal de inteligencia financeira co
    - metas, projecoes e simulacoes financeiras
 4. Patrimonio
    - ativos, passivos, snapshots e evolucao patrimonial
+
+## Distinção entre régua e direção
+
+O `Perfil Financeiro` define a régua de avaliação.
+
+O `Plano Estratégico Financeiro` define a direção escolhida.
+
+Os dois módulos são complementares:
+
+- o perfil diz o que é desejável, aceitável ou saudável
+- o plano diz para onde o usuário decidiu caminhar
+
+Essa separação evita confundir parâmetros numéricos com intenção estratégica de longo prazo.
+
+## Natureza do plano estratégico
+
+O `Plano Estratégico Financeiro` representa a intenção deliberada do usuário.
+
+Ele deve ser tratado como um ativo de longo prazo, versionado e historicamente preservado.
+
+A IA nunca cria ou modifica estratégias.
+
+Ela apenas interpreta decisões à luz do plano vigente, da evolução histórica e da situação financeira atual.
 
 ## Criterio para novas funcionalidades
 

@@ -285,9 +285,17 @@ Não representa o histórico completo.
 
 Serve para economizar tokens e preservar contexto recente.
 
-## Estratégia Financeira
+## Plano Estratégico Financeiro
 
-Registro da direção financeira desejada pelo usuário em determinado período.
+Direção financeira deliberadamente escolhida pelo usuário para um horizonte mais longo.
+
+Ele registra:
+
+- objetivos
+- prioridades
+- princípios
+- decisões importantes
+- direção de longo prazo
 
 Exemplos:
 
@@ -295,6 +303,14 @@ Exemplos:
 - reduzir endividamento
 - iniciar investimentos
 - planejar compra de imóvel
+
+## Interpretador Estratégico
+
+Camada que transforma o Plano Estratégico Financeiro em narrativa compreensível para IA e interfaces.
+
+## Consistência Estratégica
+
+Leitura que avalia se uma decisão está alinhada com o Plano Estratégico Financeiro vigente.
 
 ## Compromissos Financeiros
 

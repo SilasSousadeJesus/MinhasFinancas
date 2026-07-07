@@ -156,21 +156,51 @@ Nesses casos, a infraestrutura permanece a mesma e muda principalmente:
 
 ## EvoluÃ§Ã£o futura
 
-### Interpretador Financeiro
+### Plano Estratégico Financeiro
 
-Melhoria futura jÃ¡ identificada:
+Melhoria futura já identificada:
 
-Criar uma camada entre `SaÃºde Financeira` e `Insights Financeiros` para transformar indicadores em interpretaÃ§Ãµes humanas baseadas exclusivamente em regras.
+Criar uma camada responsável por armazenar objetivos, prioridades, princípios e direção de longo prazo do usuário.
 
-Fluxo futuro desejado:
+Fluxo arquitetural futuro:
 
-`Dados -> Indicadores Financeiros -> SaÃºde Financeira -> Interpretador Financeiro -> Insights Financeiros -> ResumoFinanceiroIA -> Assistente Financeiro -> IA`
+`Dados -> Indicadores Financeiros -> Saúde Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Plano Estratégico Financeiro -> Interpretador Estratégico -> Consistência Estratégica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA`
 
-Essa camada ajudarÃ¡ a:
+Essa camada ajudará a:
 
-- reduzir repetiÃ§Ã£o textual
-- enriquecer a linguagem executiva
-- servir como base ainda melhor para respostas com IA
+- registrar a direção escolhida pelo usuário
+- servir como referência explícita para decisões futuras
+- alimentar interpretações e recomendações contextualizadas
+
+### Interpretador Estratégico
+
+Melhoria futura ligada ao Plano Estratégico Financeiro.
+
+Responsabilidades:
+
+- transformar o plano em narrativa compreensível para IA e interfaces
+- traduzir direção e prioridades em linguagem natural
+- servir como apoio para contextualização executiva
+
+### Consistência Estratégica
+
+Melhoria futura ligada ao Plano Estratégico Financeiro.
+
+Responsabilidades:
+
+- avaliar alinhamento entre decisões e plano vigente
+- apoiar recomendações contextualizadas
+- evitar recomendações desalinhadas com objetivos de longo prazo
+
+### Princípio do Plano Estratégico
+
+O `Plano Estratégico Financeiro` representa a intenção deliberada do usuário.
+
+Ele deve ser tratado como um ativo de longo prazo, versionado e historicamente preservado.
+
+A IA nunca cria ou modifica estratégias.
+
+Ela apenas interpreta decisões à luz do plano vigente, da evolução histórica e da situação financeira atual.
 
 ### InterpretadorMemoriaFinanceira
 
@@ -240,7 +270,7 @@ A Base de Conhecimento Financeira possui três conceitos:
 - **Memória Financeira**
   - implementada nesta etapa
   - preserva fotografias históricas da situação financeira analisada
-- **Estratégia Financeira**
+- **Plano Estratégico Financeiro**
   - evolução futura
   - registrará a direção estratégica do usuário ao longo do tempo
 - **Compromissos Financeiros**
