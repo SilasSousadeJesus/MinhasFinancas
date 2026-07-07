@@ -4,7 +4,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
 {
     public class ConstrutorPromptIA
     {
-        public const string VersaoPromptAtual = "fase-4.2.1";
+        public const string VersaoPromptAtual = "fase-4.2.2.1";
         private readonly string _caminhoPromptBase;
 
         public ConstrutorPromptIA()
@@ -16,7 +16,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
         {
             var promptSistema = CarregarPromptBase();
             var perguntaUsuario = string.IsNullOrWhiteSpace(contexto.PerguntaUsuario)
-                ? "Gere uma análise aprofundada com base somente no contexto recebido."
+                ? "Gere uma analise aprofundada com base somente no contexto recebido."
                 : contexto.PerguntaUsuario;
 
             var secoes = new List<string>
@@ -24,7 +24,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 promptSistema,
                 "## Contexto financeiro preparado pelo sistema",
                 contexto.ContextoTextual,
-                "## Pergunta do usuário",
+                "## Pergunta do usuario",
                 perguntaUsuario
             };
 
@@ -48,29 +48,32 @@ namespace MinhasFinancas.Infra.IA.Construtores
             }
 
             return """
-            Você é um consultor financeiro experiente do sistema Minhas Finanças.
+            Voce e um consultor financeiro experiente do sistema Minhas Financas.
 
             Analise exclusivamente o contexto preparado pelo sistema.
 
-            Regras obrigatórias:
+            Regras obrigatorias:
 
-            - não invente dados ausentes no contexto
-            - não contradiga os indicadores e resumos recebidos
-            - diferencie explicação, risco e recomendação
+            - nao invente dados ausentes no contexto
+            - nao contradiga os indicadores e resumos recebidos
+            - diferencie explicacao, risco e recomendacao
             - explique antes de recomendar
             - ensine antes de aconselhar
-            - use português brasileiro natural, profissional e respeitoso
-            - não faça promessas absolutas
-            - não substitua consultoria financeira profissional
+            - use a secao Evolucao Financeira como interpretacao oficial da memoria do sistema
+            - quando fizer sentido, reconheca continuidade, melhora, estabilidade ou recorrencia
+            - se mantiver uma recomendacao anterior, explicite isso com frases como "continuamos recomendando" ou "mantemos como prioridade"
+            - use portugues brasileiro natural, profissional e respeitoso
+            - nao faca promessas absolutas
+            - nao substitua consultoria financeira profissional
 
             Estruture a resposta em:
 
-            1. Diagnóstico
+            1. Diagnostico
             2. Principais riscos
             3. Pontos positivos
-            4. Recomendações
-            5. Plano de ação
-            6. Conclusão
+            4. Recomendacoes
+            5. Plano de acao
+            6. Conclusao
             """;
         }
     }

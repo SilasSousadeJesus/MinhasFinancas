@@ -150,6 +150,7 @@ ObservaÃ§Ãµes adicionais da fase tÃ©cnica:
 - dados tÃ©cnicos discretos da geraÃ§Ã£o, como modelo, tempo, tokens, custo e horÃ¡rio
 - a infraestrutura backend da Fase 4.1 continua responsÃ¡vel pela integraÃ§Ã£o tÃ©cnica com o provedor
 - a MemÃ³ria Financeira continua sendo salva apenas pelo backend
+- antes de chegar Ã  IA, a MemÃ³ria Financeira agora Ã© interpretada pelo backend para criar continuidade entre anÃ¡lises
 - nÃ£o existe chat nem conversa contÃ­nua nesta etapa
 
 ### EvoluÃ§Ãµes futuras
@@ -568,6 +569,7 @@ A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design
 - o sistema preserva a resposta da IA, sucesso ou falha, e métricas técnicas da chamada
 - existem endpoints de listagem e detalhe do histórico
 - antes de cada nova análise, o backend recupera um resumo das últimas análises e o envia ao contexto da IA como **Memória Consultiva**
+- antes da montagem final do contexto, esse histórico resumido passa pelo `InterpretadorMemoriaFinanceira`, que gera a seção **Evolução Financeira**
 - nenhuma tela nova foi criada nesta etapa
 
 ### Evolução futura imediata

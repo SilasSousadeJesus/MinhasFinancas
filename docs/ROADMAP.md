@@ -6,7 +6,7 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 4.1 concluÃ­da** do roadmap de InteligÃªncia Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 4.2.2.1 concluÃ­da** do roadmap de InteligÃªncia Financeira / Assistente Financeiro.
 
 A próxima etapa oficial é a **Fase 4.2.3 — Estratégia Financeira**.
 
@@ -171,6 +171,21 @@ Transformar o `ResumoFinanceiroIA` em um parecer financeiro muito mais rico do q
 **Objetivo:**
 
 Transformar a análise aprofundada com IA em uma experiência visual clara, comparável e útil dentro do Assistente Financeiro.
+
+#### Fase 4.2.2.1 — Interpretador da Memória Financeira
+
+**Status:** concluída
+
+**Objetivo:**
+
+Transformar a memória histórica do usuário em uma narrativa de evolução produzida pelo próprio sistema antes do envio para a IA.
+
+**Entregas:**
+
+- criação do `InterpretadorMemoriaFinanceira`
+- criação da seção `Evolução Financeira` no contexto enviado à IA
+- redução da dependência de listagens cronológicas brutas
+- orientação explícita do prompt para continuidade entre análises
 
 #### Fase 4.2.3 — Estratégia Financeira
 
@@ -363,6 +378,7 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2 — Primeira Análise Financeira com IA** está **em evolução**
 - a **Fase 4.2.1 — Base de Conhecimento Financeira** está **concluída no backend**
 - a **Fase 4.2.2 — Experiência Visual da Análise IA** está **concluída**
+- a **Fase 4.2.2.1 — Interpretador da Memória Financeira** está **concluída**
 - a **próxima etapa oficial** é a **Fase 4.2.3 — Estratégia Financeira**
 
 ### Entregas já consolidadas
@@ -373,6 +389,7 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - implementação do primeiro prompt oficial consultivo da Fase 4.2
 - criação da primeira versão da **Base de Conhecimento Financeira**
 - integração visual da análise aprofundada diretamente na tela do Assistente Financeiro
+- interpretação da Memória Financeira em narrativa de evolução antes da chamada à IA
 
 ### Base de Conhecimento Financeira
 

@@ -1,103 +1,105 @@
-# Product Vision - Minhas Finanças
+# Product Vision - Minhas Financas
 
 ## Objetivo do sistema
 
-`Minhas Finanças` é um sistema de gestão financeira pessoal voltado para transformar dados financeiros dispersos em decisões práticas.
+`Minhas Financas` e um sistema de gestao financeira pessoal voltado para transformar dados financeiros dispersos em decisoes praticas.
 
-O produto deve ajudar o usuário a entender:
+O produto deve ajudar o usuario a entender:
 
-- como está sua saúde financeira hoje
+- como esta sua saude financeira hoje
 - o que vence em seguida
-- como seu patrimônio evolui
-- quando alcançará objetivos financeiros
-- como diferentes decisões alterariam seu futuro financeiro
+- como seu patrimonio evolui
+- quando alcancara objetivos financeiros
+- como diferentes decisoes alterariam seu futuro financeiro
 
 ## Problema que o sistema resolve
 
-Grande parte dos usuários registra receitas e despesas, mas continua sem visão clara de:
+Grande parte dos usuarios registra receitas e despesas, mas continua sem visao clara de:
 
 - fluxo de caixa real
 - compromissos futuros
-- evolução patrimonial
+- evolucao patrimonial
 - progresso em metas
-- impacto de novas decisões financeiras
+- impacto de novas decisoes financeiras
 
-O sistema existe para reduzir essa cegueira operacional e transformar registro em inteligência financeira.
+O sistema existe para reduzir essa cegueira operacional e transformar registro em inteligencia financeira.
 
 ## Tipo de produto que estamos construindo
 
-Não queremos apenas um cadastro de movimentações.
+Nao queremos apenas um cadastro de movimentacoes.
 
-Queremos construir uma plataforma de inteligência financeira pessoal com foco em:
+Queremos construir uma plataforma de inteligencia financeira pessoal com foco em:
 
 - clareza
 - rastreabilidade
-- histórico
+- historico
 - planejamento
-- apoio à decisão
+- apoio a decisao
 
-## Público-alvo
+## Publico-alvo
 
-- pessoas físicas que desejam organizar sua vida financeira
-- usuários que controlam contas, cartões, categorias, metas e patrimônio
-- usuários que desejam planejar objetivos e comparar cenários futuros
+- pessoas fisicas que desejam organizar sua vida financeira
+- usuarios que controlam contas, cartoes, categorias, metas e patrimonio
+- usuarios que desejam planejar objetivos e comparar cenarios futuros
 
-## Princípios do produto
+## Principios do produto
 
-- Toda funcionalidade deve gerar informação útil para tomada de decisão.
-- Priorizar clareza antes de sofisticação visual.
-- Priorizar rastreabilidade antes de automações frágeis.
-- Priorizar histórico antes de sobrescrever estados antigos.
-- Priorizar planejamento financeiro, não apenas registro do passado.
-- Evitar funcionalidades que apenas armazenem dados sem produzir leitura útil.
-- Sempre que possível, conectar números a contexto e consequência prática.
+- Toda funcionalidade deve gerar informacao util para tomada de decisao.
+- Priorizar clareza antes de sofisticacao visual.
+- Priorizar rastreabilidade antes de automacoes frageis.
+- Priorizar historico antes de sobrescrever estados antigos.
+- Priorizar planejamento financeiro, nao apenas registro do passado.
+- Evitar funcionalidades que apenas armazenem dados sem produzir leitura util.
+- Sempre que possivel, conectar numeros a contexto e consequencia pratica.
 
-## Progressão de valor entre camadas
+## Progressao de valor entre camadas
 
-Cada camada do sistema deve agregar valor à anterior.
+Cada camada do sistema deve agregar valor a anterior.
 
 - Os dados registram fatos.
 - Os indicadores resumem esses fatos.
-- A saúde financeira interpreta os indicadores.
+- A saude financeira interpreta os indicadores.
 - Os insights destacam oportunidades, riscos e prioridades.
 - O `ResumoFinanceiroIA` organiza esse conhecimento para consumo por interfaces e por futuros modelos de IA.
+- A Memoria Financeira preserva a evolucao analitica ao longo do tempo.
+- O `InterpretadorMemoriaFinanceira` transforma esse historico em continuidade narrativa antes do consumo por IA.
 
 Nenhuma camada deve substituir a anterior.
 
-Cada uma existe para enriquecer a compreensão da situação financeira do usuário.
+Cada uma existe para enriquecer a compreensao da situacao financeira do usuario.
 
-## Integração com IA como evolução em duas etapas
+## Integracao com IA como evolucao em duas etapas
 
-A evolução do Assistente Financeiro com IA foi oficialmente separada em duas responsabilidades diferentes:
+A evolucao do Assistente Financeiro com IA foi oficialmente separada em duas responsabilidades diferentes:
 
-- primeiro, fazer a infraestrutura técnica de integração funcionar de verdade
-- depois, construir a primeira experiência real de análise financeira com IA
+- primeiro, fazer a infraestrutura tecnica de integracao funcionar de verdade
+- depois, construir a primeira experiencia real de analise financeira com IA
 
-Essa separação existe para evitar confusão entre:
+Essa separacao existe para evitar confusoes entre:
 
 - conectar com um provedor externo
-- melhorar a qualidade analítica da experiência entregue ao usuário
+- melhorar a qualidade analitica da experiencia entregue ao usuario
 
-O sistema só deve considerar a IA como evolução de experiência quando a base técnica e de contexto estiver madura, segura e controlada.
+O sistema so deve considerar a IA como evolucao de experiencia quando a base tecnica e de contexto estiver madura, segura e controlada.
 
-## Direção do produto
+## Direcao do produto
 
-O produto caminha para se tornar um centro pessoal de inteligência financeira com quatro pilares:
+O produto caminha para se tornar um centro pessoal de inteligencia financeira com quatro pilares:
 
-1. Operação
-   - lançamentos, contas, cartões, categorias e efetivação
+1. Operacao
+   - lancamentos, contas, cartoes, categorias e efetivacao
 2. Leitura
-   - dashboard, radar financeiro, fluxo de caixa e relatórios
+   - dashboard, radar financeiro, fluxo de caixa e relatorios
 3. Planejamento
-   - metas, projeções e simulações financeiras
-4. Patrimônio
-   - ativos, passivos, snapshots e evolução patrimonial
+   - metas, projecoes e simulacoes financeiras
+4. Patrimonio
+   - ativos, passivos, snapshots e evolucao patrimonial
 
-## Critério para novas funcionalidades
+## Criterio para novas funcionalidades
 
 Antes de criar qualquer nova feature, responder:
 
-- Que decisão melhor o usuário conseguirá tomar depois de ver ou usar isso?
-- A funcionalidade melhora operação, leitura, planejamento ou patrimônio?
+- Que decisao melhor o usuario conseguira tomar depois de ver ou usar isso?
+- A funcionalidade melhora operacao, leitura, planejamento ou patrimonio?
 - Existe rastreabilidade suficiente?
-- A informação produz valor recorrente ou apenas ocupa espaço?
+- A informacao produz valor recorrente ou apenas ocupa espaco?

@@ -330,11 +330,12 @@ ObservaÃ§Ã£o importante:
 
 - localizada em `MinhasFinancas.Infra/IA`
 - `AssistenteFinanceiroService` orquestra a preparaÃ§Ã£o de contexto, prompt e resposta
+- `InterpretadorMemoriaFinanceira` transforma o histÃ³rico resumido em narrativa de evoluÃ§Ã£o antes da chamada Ã  IA
 - `ConstrutorContextoIA` transforma `ResumoFinanceiroIA` em contexto textual estruturado e seguro para consumo externo
 - `ConstrutorPromptIA` monta a requisiÃ§Ã£o final a partir do contexto preparado e do prompt base versionado em arquivo
 - `IProvedorIA` abstrai provedores externos para evitar acoplamento com uma implementaÃ§Ã£o especÃ­fica
 - `OpenAIProvider` agora possui implementaÃ§Ã£o real via HTTP para a API da OpenAI
-- a chamada externa usa apenas `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a chamada externa usa apenas `ResumoFinanceiroIA -> MemÃ³ria Financeira -> InterpretadorMemoriaFinanceira -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 - o provedor trata timeout, retry simples, respostas vazias, autenticaÃ§Ã£o invÃ¡lida e falhas transitÃ³rias
 - logs tÃ©cnicos existem, mas nÃ£o devem registrar API Key, prompt completo nem resposta completa da IA
 - a chave de API nÃ£o deve ser versionada
@@ -342,7 +343,6 @@ ObservaÃ§Ã£o importante:
 - exemplo de configuraÃ§Ã£o local segura:
   - `dotnet user-secrets set "OpenAI:ApiKey" "sua-chave"` no projeto `minhas-financas-back-end/minhas-financas-back-end`
   - ou variÃ¡vel de ambiente `OpenAI__ApiKey`
-- a cadeia prevista para integraÃ§Ã£o futura Ã© `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 - o roadmap passou a separar a evoluÃ§Ã£o futura em duas subfases:
   - `Fase 4.1`, agora implementada para ativaÃ§Ã£o tÃ©cnica real com o provedor
   - `Fase 4.2`, focada na primeira experiÃªncia real de anÃ¡lise financeira com IA
@@ -381,6 +381,7 @@ ObservaÃ§Ã£o importante:
 - erros amigÃ¡veis retornados pela API sÃ£o mostrados sem apagar a anÃ¡lise anterior
 - nÃ£o existe chat, especialistas nem conversa contÃ­nua nesta fase
 - a MemÃ³ria Financeira continua sendo responsabilidade do backend; o frontend apenas solicita a geraÃ§Ã£o e exibe o resultado
+- a IA passou a receber a seÃ§Ã£o `EvoluÃ§Ã£o Financeira` como interpretaÃ§Ã£o oficial da continuidade histÃ³rica, e nÃ£o apenas uma lista cronolÃ³gica
 
 ## Infraestrutura e integraÃ§Ãµes existentes
 
@@ -514,11 +515,11 @@ ObservaÃ§Ã£o importante:
 - `docs/AI_DESIGN.md` passou a ser o documento oficial de design da camada de IA
 - a Fase 4.2 foi iniciada com a formalização do fluxo de análise executiva com IA
 - o primeiro prompt oficial da Fase 4.2 foi implementado em `MinhasFinancas.Infra/IA/Prompts/PromptAnaliseFinanceira.md`
-- a cadeia oficial continua sendo `ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a cadeia oficial continua sendo `ResumoFinanceiroIA -> MemÃ³ria Financeira -> InterpretadorMemoriaFinanceira -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 
 ## Atualização técnica — Base de Conhecimento Financeira
 
-A subfase 4.2.1 adicionou a primeira versão da Base de Conhecimento Financeira do Assistente Financeiro.
+As subfases 4.2.1 e 4.2.2.1 adicionaram a primeira versão da Base de Conhecimento Financeira do Assistente Financeiro e sua interpretação histórica.
 
 ### Novos elementos estruturais
 
@@ -527,6 +528,8 @@ A subfase 4.2.1 adicionou a primeira versão da Base de Conhecimento Financeira 
 - `IAnaliseFinanceiraHistoricaRepository` e `AnaliseFinanceiraHistoricaRepository`
 - `IAnaliseFinanceiraHistoricaAppService` e `AnaliseFinanceiraHistoricaAppService`
 - modelo `MemoriaFinanceiraResumidaIA` em `MinhasFinancas.Infra/IA/Modelos`
+- modelo `InterpretacaoMemoriaFinanceiraIA` em `MinhasFinancas.Infra/IA/Modelos`
+- `InterpretadorMemoriaFinanceira` em `MinhasFinancas.Infra/IA/Interpretadores`
 - endpoints `GET /api/AnalisesFinanceirasHistoricas/{usuarioId}` e `GET /api/AnalisesFinanceirasHistoricas/{usuarioId}/{analiseId}`
 
 ### Conceitos da base
@@ -545,15 +548,18 @@ A subfase 4.2.1 adicionou a primeira versão da Base de Conhecimento Financeira 
 
 1. O sistema monta o `ResumoFinanceiroIA`.
 2. O backend consulta a Memória Financeira e recupera um resumo das últimas análises.
-3. O `ConstrutorContextoIA` gera o contexto textual, incluindo a seção `## Memória Financeira`.
-4. O `ConstrutorPromptIA` gera a requisição final e informa a versão do prompt.
-5. O provedor retorna a resposta real ou a falha tratada.
-6. O backend salva uma `AnaliseFinanceiraHistorica` com contexto, resumos, resposta e métricas técnicas.
-7. O retorno ao cliente pode incluir `AnaliseFinanceiraHistoricaId`.
+3. O `InterpretadorMemoriaFinanceira` transforma esse histórico em uma narrativa estruturada de continuidade.
+4. O `ConstrutorContextoIA` gera o contexto textual, incluindo as seções `## Evolução Financeira` e `## Memória Financeira`.
+5. O `ConstrutorPromptIA` gera a requisição final e informa a versão do prompt.
+6. O provedor retorna a resposta real ou a falha tratada.
+7. O backend salva uma `AnaliseFinanceiraHistorica` com contexto, resumos, resposta e métricas técnicas.
+8. O retorno ao cliente pode incluir `AnaliseFinanceiraHistoricaId`.
 
 ### Regra de contexto
 
 - a IA nunca recebe todas as análises históricas
 - o contexto usa apenas um resumo recente das últimas análises
-- quando não existe histórico, o contexto informa explicitamente: `Não existem análises anteriores.`
+- a continuidade histórica passa a ser enviada principalmente como narrativa interpretada em `## Evolução Financeira`
+- a seção `## Memória Financeira` permanece como apoio resumido, e não como bloco principal de interpretação
+- quando não existe histórico, o contexto informa explicitamente que ainda não existem análises suficientes para avaliar evolução
 

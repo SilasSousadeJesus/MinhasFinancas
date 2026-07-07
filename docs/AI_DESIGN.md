@@ -34,7 +34,7 @@ Sempre que possÃ­vel, a resposta deve mostrar por que uma recomendaÃ§Ã£o i
 
 O fluxo oficial da anÃ¡lise com IA Ã©:
 
-`Dados -> Indicadores Financeiros -> SaÃºde Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA -> RelatÃ³rio Executivo`
+`Dados -> Indicadores Financeiros -> SaÃºde Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> MemÃ³ria Financeira -> InterpretadorMemoriaFinanceira -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA -> RelatÃ³rio Executivo`
 
 Esse fluxo garante separaÃ§Ã£o entre:
 
@@ -92,6 +92,7 @@ Ele Ã© estruturado pelo `ConstrutorContextoIA` em blocos organizados, incluind
 - pontuaÃ§Ã£o da saÃºde financeira
 - classificaÃ§Ã£o
 - resumo executivo do sistema
+- evoluÃ§Ã£o financeira interpretada a partir da memÃ³ria
 - prioridades imediatas
 - destaques positivos
 - insights prioritÃ¡rios
@@ -171,6 +172,20 @@ Essa camada ajudarÃ¡ a:
 - enriquecer a linguagem executiva
 - servir como base ainda melhor para respostas com IA
 
+### InterpretadorMemoriaFinanceira
+
+Camada implementada na infraestrutura de IA para interpretar a MemÃ³ria Financeira antes da montagem do contexto.
+
+Responsabilidades:
+
+- receber apenas memÃ³rias resumidas jÃ¡ existentes
+- identificar melhora, piora ou estabilidade da pontuaÃ§Ã£o
+- reconhecer classificaÃ§Ãµes recorrentes
+- detectar prioridades, riscos e recomendaÃ§Ãµes repetidas
+- produzir a seÃ§Ã£o `EvoluÃ§Ã£o Financeira` em linguagem narrativa
+
+Essa camada nÃ£o consulta banco e nÃ£o substitui indicadores ou insights.
+
 ## Estado atual
 
 SituaÃ§Ã£o atual da evoluÃ§Ã£o:
@@ -178,6 +193,7 @@ SituaÃ§Ã£o atual da evoluÃ§Ã£o:
 - Fase 4.1 concluÃ­da: integraÃ§Ã£o tÃ©cnica com IA jÃ¡ existe
 - Fase 4.2 iniciada: primeiro prompt oficial de anÃ¡lise financeira com IA implementado
 - Fase 4.2.2 implementada no frontend: experiÃªncia visual da anÃ¡lise aprofundada integrada Ã  tela do Assistente Financeiro
+- Fase 4.2.2.1 implementada no backend: interpretaÃ§Ã£o da memÃ³ria histÃ³rica antes da chamada Ã  IA
 
 Nesta etapa, o foco Ã© melhorar:
 
@@ -250,7 +266,7 @@ Cada análise histórica preserva:
 
 ### Memória Consultiva
 
-Antes de solicitar uma nova análise, o backend consulta a Memória Financeira e envia ao `ConstrutorContextoIA` um resumo estruturado das últimas análises.
+Antes de solicitar uma nova análise, o backend consulta a Memória Financeira, passa esse histórico resumido pelo `InterpretadorMemoriaFinanceira` e então envia ao `ConstrutorContextoIA` uma narrativa estruturada de evolução junto com uma memória compacta de apoio.
 
 Regras:
 
