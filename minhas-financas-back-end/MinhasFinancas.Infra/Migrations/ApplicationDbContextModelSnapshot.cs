@@ -720,6 +720,56 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("Meta");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.ObjetivoPlanoEstrategico", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("DataAlvo")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
+
+                    b.Property<string>("Observacao")
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
+
+                    b.Property<int>("Ordem")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PlanoEstrategicoFinanceiroId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Prioridade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<decimal?>("ValorAlvo")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("ValorAtual")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlanoEstrategicoFinanceiroId", "Ordem");
+
+                    b.ToTable("ObjetivoPlanoEstrategico");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Passivo", b =>
                 {
                     b.Property<Guid>("Id")
@@ -827,6 +877,60 @@ namespace MinhasFinancas.Infra.Migrations
                     b.HasIndex("PassivoId");
 
                     b.ToTable("PermanenciaPassivo");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.PlanoEstrategicoFinanceiro", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("DataAtualizacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataFimVigencia")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataInicioVigencia")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<int>("NumeroVersao")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observacao")
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
+
+                    b.Property<Guid>("PlanoRaizId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId", "Ativo");
+
+                    b.HasIndex("UsuarioId", "PlanoRaizId", "NumeroVersao")
+                        .IsUnique();
+
+                    b.ToTable("PlanoEstrategicoFinanceiro");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
@@ -1207,6 +1311,17 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.ObjetivoPlanoEstrategico", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.PlanoEstrategicoFinanceiro", "PlanoEstrategicoFinanceiro")
+                        .WithMany("Objetivos")
+                        .HasForeignKey("PlanoEstrategicoFinanceiroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PlanoEstrategicoFinanceiro");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Passivo", b =>
                 {
                     b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
@@ -1241,6 +1356,17 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasForeignKey("PassivoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.PlanoEstrategicoFinanceiro", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
+                        .WithMany("PlanosEstrategicosFinanceiros")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
@@ -1340,6 +1466,11 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Navigation("Configuracoes");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.PlanoEstrategicoFinanceiro", b =>
+                {
+                    b.Navigation("Objetivos");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Projecao", b =>
                 {
                     b.Navigation("DividasManuaisMensais");
@@ -1371,6 +1502,8 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Navigation("Passivos");
 
                     b.Navigation("PerfisFinanceiros");
+
+                    b.Navigation("PlanosEstrategicosFinanceiros");
 
                     b.Navigation("Projecoes");
 

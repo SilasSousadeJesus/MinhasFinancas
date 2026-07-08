@@ -27,6 +27,8 @@ namespace MinhasFinancas.Infra
         public DbSet<SnapshotPatrimonial> SnapshotPatrimonial { get; set; }
         public DbSet<PerfilFinanceiro> PerfilFinanceiro { get; set; }
         public DbSet<ConfiguracaoPerfilFinanceiro> ConfiguracaoPerfilFinanceiro { get; set; }
+        public DbSet<PlanoEstrategicoFinanceiro> PlanoEstrategicoFinanceiro { get; set; }
+        public DbSet<ObjetivoPlanoEstrategico> ObjetivoPlanoEstrategico { get; set; }
         public DbSet<Projecao> Projecao { get; set; }
         public DbSet<RendaProjecao> RendaProjecao { get; set; }
         public DbSet<RendaExtraProjecaoMensal> RendaExtraProjecaoMensal { get; set; }
@@ -82,6 +84,28 @@ namespace MinhasFinancas.Infra
                 .WithOne(x => x.PerfilFinanceiro)
                 .HasForeignKey(x => x.PerfilFinanceiroId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PlanoEstrategicoFinanceiro>()
+                .HasOne(x => x.Usuario)
+                .WithMany(x => x.PlanosEstrategicosFinanceiros)
+                .HasForeignKey(x => x.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PlanoEstrategicoFinanceiro>()
+                .HasMany(x => x.Objetivos)
+                .WithOne(x => x.PlanoEstrategicoFinanceiro)
+                .HasForeignKey(x => x.PlanoEstrategicoFinanceiroId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PlanoEstrategicoFinanceiro>()
+                .HasIndex(x => new { x.UsuarioId, x.PlanoRaizId, x.NumeroVersao })
+                .IsUnique();
+
+            modelBuilder.Entity<PlanoEstrategicoFinanceiro>()
+                .HasIndex(x => new { x.UsuarioId, x.Ativo });
+
+            modelBuilder.Entity<ObjetivoPlanoEstrategico>()
+                .HasIndex(x => new { x.PlanoEstrategicoFinanceiroId, x.Ordem });
 
             modelBuilder.Entity<SimulacaoFinanceira>()
                 .HasMany(x => x.Acoes)

@@ -6,9 +6,9 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 4.2.2.1 concluÃ­da** do roadmap de InteligÃªncia Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 4.2.3.1 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
-A próxima etapa oficial é a **Fase 4.2.3 — Plano Estratégico Financeiro**.
+A próxima etapa oficial é a **Fase 4.2.3.2 — Interpretador Estratégico**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -203,7 +203,7 @@ Transformar a memória histórica do usuário em uma narrativa de evolução pro
 
 #### Fase 4.2.3 — Plano Estratégico Financeiro
 
-**Status:** futura
+**Status:** em andamento
 
 **Objetivo:**
 
@@ -212,6 +212,7 @@ Registrar a direção estratégica do usuário ao longo do tempo, como construir
 **Subfases oficiais:**
 
 - **Fase 4.2.3.1 — Plano Estratégico Financeiro**
+  - concluída
   - armazenar objetivos, prioridades, princípios e direção estratégica formal do usuário
 - **Fase 4.2.3.2 — Interpretador Estratégico**
   - transformar o Plano Estratégico em narrativa compreensível para a IA
@@ -228,7 +229,7 @@ Registrar a direção estratégica do usuário ao longo do tempo, como construir
 
 Registrar ações e decisões combinadas entre usuário e Assistente Financeiro, permitindo acompanhamento de execução, adiamento e conclusão.
 
-### Fase 5 â€” Especialistas
+### Fase 5 — Especialistas
 
 **Status:** futura
 
@@ -323,17 +324,10 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.2.3 — Plano Estratégico Financeiro
+- Fase 4.2.3.2 — Interpretador Estratégico
+- Fase 4.2.3.3 — Consistência Estratégica
+- Fase 4.2.3.4 — IA Estratégica
 - Fase 4.2.4 — Compromissos Financeiros
-- Plano Estratégico Financeiro
-  - registrar objetivos, prioridades, princípios e direção de longo prazo do usuário
-  - servir como base explícita para consistência estratégica
-- Interpretador Estratégico
-  - transformar o Plano Estratégico em narrativa compreensível para IA e interfaces
-- Consistência Estratégica
-  - avaliar alinhamento entre decisões e plano vigente
-- IA Estratégica
-  - usar Estado Atual + Evolução + Plano Estratégico para recomendações contextualizadas
 
 ### Dashboard
 
@@ -393,7 +387,7 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2.1 — Base de Conhecimento Financeira** está **concluída no backend**
 - a **Fase 4.2.2 — Experiência Visual da Análise IA** está **concluída**
 - a **Fase 4.2.2.1 — Interpretador da Memória Financeira** está **concluída**
-- a **próxima etapa oficial** é a **Fase 4.2.3 — Plano Estratégico Financeiro**
+- a **próxima etapa oficial** é a **Fase 4.2.3.2 — Interpretador Estratégico**
 
 ### Entregas já consolidadas
 
@@ -415,8 +409,8 @@ Ela passa a ser formada por três conceitos:
   - implementada nesta etapa
   - registra fotografias históricas da situação financeira analisada
 - **Plano Estratégico Financeiro**
-  - documentado como evolução futura
-  - registrará a direção estratégica do usuário ao longo do tempo
+  - implementado na fase 4.2.3.1
+  - registra a direção estratégica do usuário ao longo do tempo em versões históricas
 - **Compromissos Financeiros**
   - documentados como evolução futura
   - registrarão decisões e ações combinadas entre usuário e Assistente

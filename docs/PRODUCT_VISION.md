@@ -116,6 +116,8 @@ O `Plano Estratégico Financeiro` representa a intenção deliberada do usuário
 
 Ele deve ser tratado como um ativo de longo prazo, versionado e historicamente preservado.
 
+A primeira versão dessa camada já está disponível no backend como a fase 4.2.3.1.
+
 A IA nunca cria ou modifica estratégias.
 
 Ela apenas interpreta decisões à luz do plano vigente, da evolução histórica e da situação financeira atual.

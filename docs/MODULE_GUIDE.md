@@ -434,8 +434,10 @@ Serve para testar cenÃ¡rios hipotÃ©ticos sem alterar os dados reais do usuÃ
 - permitirá avaliar se decisões atuais estão alinhadas com a direção escolhida
 
 ### O que já está funcional
-- ainda não existe tela funcional concluída
-- a arquitetura e o roadmap já estão documentados
+- backend funcional com CRUD de versões
+- cada atualização cria uma nova versão preservando o histórico
+- listagem de versões e carregamento da versão vigente
+- a tela frontend ainda não foi entregue nesta fase
 
 ### Evoluções futuras
 - interpretador estratégico
@@ -617,5 +619,5 @@ A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design
 ### Evolução futura imediata
 
 - a próxima etapa visual será a exibição da análise aprofundada usando essa memória como base histórica
-- a evolução posterior da Base de Conhecimento incluirá **Plano Estratégico Financeiro** e **Compromissos Financeiros**
+- a evolução posterior da Base de Conhecimento incluirá **Interpretador Estratégico**, **Consistência Estratégica**, **IA Estratégica** e **Compromissos Financeiros**
 

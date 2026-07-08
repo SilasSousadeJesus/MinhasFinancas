@@ -158,15 +158,15 @@ Nesses casos, a infraestrutura permanece a mesma e muda principalmente:
 
 ### Plano Estratégico Financeiro
 
-Melhoria futura já identificada:
+Camada já implementada na primeira versão da fase 4.2.3.1.
 
-Criar uma camada responsável por armazenar objetivos, prioridades, princípios e direção de longo prazo do usuário.
+Ela armazena objetivos, prioridades, princípios e direção de longo prazo do usuário em versões historicamente preservadas.
 
-Fluxo arquitetural futuro:
+Fluxo arquitetural atual e futuro:
 
 `Dados -> Indicadores Financeiros -> Saúde Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Plano Estratégico Financeiro -> Interpretador Estratégico -> Consistência Estratégica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA`
 
-Essa camada ajudará a:
+Essa camada já serve para:
 
 - registrar a direção escolhida pelo usuário
 - servir como referência explícita para decisões futuras
@@ -271,8 +271,8 @@ A Base de Conhecimento Financeira possui três conceitos:
   - implementada nesta etapa
   - preserva fotografias históricas da situação financeira analisada
 - **Plano Estratégico Financeiro**
-  - evolução futura
-  - registrará a direção estratégica do usuário ao longo do tempo
+  - implementado na primeira versão da fase 4.2.3.1
+  - registra a direção estratégica do usuário ao longo do tempo em versões preservadas
 - **Compromissos Financeiros**
   - evolução futura
   - registrará decisões e ações combinadas entre usuário e Assistente
