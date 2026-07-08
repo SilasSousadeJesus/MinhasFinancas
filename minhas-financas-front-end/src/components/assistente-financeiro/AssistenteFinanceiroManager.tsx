@@ -227,7 +227,7 @@ function mapearDetalheHistorico(
 }
 
 function processarConteudoAnalise(conteudo: string, sugestaoCompromissoBackend?: string | null) {
-  const regex = /(?:^|\n)(#{2,3})\s*Sugest[aã]o de compromisso\s*:?\s*([\s\S]*?)(?=\n#{2,3}\s|\n---|\s*$)/i;
+  const regex = /(?:^|\n)\s*(?:#{2,3}\s*)?Sugest[aã]o de compromisso\s*:?\s*([\s\S]*?)(?=\n(?:#{2,3}\s*|Sugest[aã]o de compromisso\s*:)|\n---|\s*$)/i;
   const correspondencia = conteudo.match(regex);
 
   if (sugestaoCompromissoBackend?.trim()) {
@@ -244,7 +244,7 @@ function processarConteudoAnalise(conteudo: string, sugestaoCompromissoBackend?:
     };
   }
 
-  const sugestao = correspondencia[2].trim();
+  const sugestao = correspondencia[1].trim();
   const conteudoLimpo = conteudo.replace(correspondencia[0], "\n").trim();
 
   return {
@@ -255,7 +255,7 @@ function processarConteudoAnalise(conteudo: string, sugestaoCompromissoBackend?:
 
 function removerSecaoSugestaoCompromisso(conteudo: string) {
   return conteudo
-    .replace(/(?:^|\n)(#{2,3})\s*Sugest[aã]o de compromisso\s*:?\s*([\s\S]*?)(?=\n#{2,3}\s|\n---|\s*$)/i, "\n")
+    .replace(/(?:^|\n)\s*(?:#{2,3}\s*)?Sugest[aã]o de compromisso\s*:?\s*([\s\S]*?)(?=\n(?:#{2,3}\s*|Sugest[aã]o de compromisso\s*:)|\n---|\s*$)/i, "\n")
     .trim();
 }
 
