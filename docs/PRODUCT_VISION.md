@@ -66,6 +66,7 @@ Cada camada do sistema deve agregar valor a anterior.
 - O `Plano Estratégico Financeiro` registra a direção escolhida pelo usuário para orientar decisões futuras.
 - O `Interpretador Estratégico` transforma esse plano em narrativa compreensível para interfaces e IA.
 - A `Consistência Estratégica` avalia de forma determinística se uma decisão está alinhada ao plano vigente antes de qualquer interpretação da IA.
+- A intenção do usuário deve ser estruturada como `Decisão Financeira` antes de chegar às camadas estratégicas, para preservar rastreabilidade e clareza de domínio.
 
 Nenhuma camada deve substituir a anterior.
 

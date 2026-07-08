@@ -16,6 +16,7 @@ namespace MinhasFinancas.Application.Services
         private readonly AssistenteFinanceiroService _assistenteFinanceiroService;
         private readonly IAnaliseFinanceiraHistoricaAppService _analiseFinanceiraHistoricaAppService;
         private readonly IPlanoEstrategicoFinanceiroRepository _planoEstrategicoFinanceiroRepository;
+        private readonly InterpretadorDecisaoFinanceira _interpretadorDecisaoFinanceira;
         private readonly InterpretadorEstrategico _interpretadorEstrategico;
 
         public AssistenteFinanceiroAppService(
@@ -23,12 +24,14 @@ namespace MinhasFinancas.Application.Services
             AssistenteFinanceiroService assistenteFinanceiroService,
             IAnaliseFinanceiraHistoricaAppService analiseFinanceiraHistoricaAppService,
             IPlanoEstrategicoFinanceiroRepository planoEstrategicoFinanceiroRepository,
+            InterpretadorDecisaoFinanceira interpretadorDecisaoFinanceira,
             InterpretadorEstrategico interpretadorEstrategico)
         {
             _inteligenciaFinanceiraAppService = inteligenciaFinanceiraAppService;
             _assistenteFinanceiroService = assistenteFinanceiroService;
             _analiseFinanceiraHistoricaAppService = analiseFinanceiraHistoricaAppService;
             _planoEstrategicoFinanceiroRepository = planoEstrategicoFinanceiroRepository;
+            _interpretadorDecisaoFinanceira = interpretadorDecisaoFinanceira;
             _interpretadorEstrategico = interpretadorEstrategico;
         }
 
@@ -68,11 +71,13 @@ namespace MinhasFinancas.Application.Services
 
                 var planoEstrategicoFinanceiro = await _planoEstrategicoFinanceiroRepository.BuscarVigenteAsync(usuarioId);
                 var interpretacaoPlanoEstrategico = _interpretadorEstrategico.Interpretar(planoEstrategicoFinanceiro);
+                var decisaoFinanceira = _interpretadorDecisaoFinanceira.Interpretar(perguntaUsuario);
 
                 var contexto = _assistenteFinanceiroService.PrepararContexto(
                     resumo,
                     perguntaUsuario,
                     memoriaFinanceira,
+                    decisaoFinanceira,
                     planoEstrategicoFinanceiro,
                     interpretacaoPlanoEstrategico);
 
@@ -80,6 +85,7 @@ namespace MinhasFinancas.Application.Services
                     resumo,
                     perguntaUsuario,
                     memoriaFinanceira,
+                    decisaoFinanceira,
                     planoEstrategicoFinanceiro,
                     interpretacaoPlanoEstrategico);
                 var resposta = await _assistenteFinanceiroService.GerarRespostaAsync(requisicao, cancellationToken);

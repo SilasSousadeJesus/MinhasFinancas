@@ -11,13 +11,16 @@ namespace MinhasFinancas.Infra.IA.Construtores
     public class ConstrutorContextoIA
     {
         private readonly InterpretadorMemoriaFinanceira _interpretadorMemoriaFinanceira;
+        private readonly InterpretadorDecisaoFinanceira _interpretadorDecisaoFinanceira;
         private readonly InterpretadorEstrategico _interpretadorEstrategico;
 
         public ConstrutorContextoIA(
             InterpretadorMemoriaFinanceira interpretadorMemoriaFinanceira,
+            InterpretadorDecisaoFinanceira interpretadorDecisaoFinanceira,
             InterpretadorEstrategico interpretadorEstrategico)
         {
             _interpretadorMemoriaFinanceira = interpretadorMemoriaFinanceira;
+            _interpretadorDecisaoFinanceira = interpretadorDecisaoFinanceira;
             _interpretadorEstrategico = interpretadorEstrategico;
         }
 
@@ -25,6 +28,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
             IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
+            DecisaoFinanceiraIA? decisaoFinanceira = null,
             InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null,
             ConsistenciaEstrategicaIA? consistenciaEstrategica = null)
         {
@@ -66,6 +70,13 @@ namespace MinhasFinancas.Infra.IA.Construtores
 
             var interpretacaoMemoria = _interpretadorMemoriaFinanceira.Interpretar(memoriaFinanceira);
             var memoriaFinanceiraResumida = interpretacaoMemoria.MemoriaFinanceiraCompacta;
+            var decisaoInterpretada = decisaoFinanceira;
+
+            if (decisaoInterpretada is null && !string.IsNullOrWhiteSpace(perguntaUsuario))
+            {
+                decisaoInterpretada = _interpretadorDecisaoFinanceira.Interpretar(perguntaUsuario);
+            }
+
             var interpretacaoPlano = interpretacaoPlanoEstrategico ?? new InterpretacaoPlanoEstrategicoIA
             {
                 PossuiPlanoVigente = false,
@@ -144,6 +155,10 @@ namespace MinhasFinancas.Infra.IA.Construtores
                     MontarLinhasConsistenciaEstrategica(consistencia),
                     "- Nao foi possivel calcular consistencia estrategica."),
                 MontarSecao(
+                    "Decisao Financeira Interpretada",
+                    MontarLinhasDecisaoFinanceira(decisaoInterpretada),
+                    "- Nenhuma decisao financeira foi interpretada nesta leitura."),
+                MontarSecao(
                     "Cobertura Atual do Contexto",
                     [
                         "- Perfil financeiro: ja refletido de forma indireta nos indicadores, na saude financeira e nas prioridades.",
@@ -171,6 +186,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 ResumoEvolucaoFinanceira = interpretacaoMemoria.ResumoEvolucao,
                 EvolucaoFinanceira = interpretacaoMemoria.Narrativas,
                 ResumoExecutivo = resumoFinanceiroIA.ResumoExecutivo,
+                DecisaoFinanceira = decisaoInterpretada,
                 InterpretacaoPlanoEstrategico = interpretacaoPlano,
                 ConsistenciaEstrategica = consistencia,
                 ContextoTextual = string.Join(Environment.NewLine + Environment.NewLine, secoes),
@@ -252,6 +268,50 @@ namespace MinhasFinancas.Infra.IA.Construtores
             {
                 yield return $"- Objetivos impactados: {string.Join("; ", consistencia.ObjetivosImpactados)}";
             }
+        }
+
+        private static IEnumerable<string> MontarLinhasDecisaoFinanceira(DecisaoFinanceiraIA? decisaoFinanceira)
+        {
+            if (decisaoFinanceira is null)
+            {
+                yield break;
+            }
+
+            yield return $"- Tipo de decisão: {decisaoFinanceira.TipoDecisao}";
+            yield return $"- Categoria interpretada: {decisaoFinanceira.Categoria}";
+            yield return $"- Descrição: {decisaoFinanceira.Descricao}";
+
+            if (!string.IsNullOrWhiteSpace(decisaoFinanceira.TextoOriginalUsuario))
+            {
+                yield return $"- Pergunta original: {decisaoFinanceira.TextoOriginalUsuario}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(decisaoFinanceira.TextoInterpretado))
+            {
+                yield return $"- Interpretação: {decisaoFinanceira.TextoInterpretado}";
+            }
+
+            if (decisaoFinanceira.ValorEstimado.HasValue)
+            {
+                yield return $"- Valor estimado: {decisaoFinanceira.ValorEstimado.Value.ToString("C", new CultureInfo("pt-BR"))}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(decisaoFinanceira.Prazo))
+            {
+                yield return $"- Prazo identificado: {decisaoFinanceira.Prazo}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(decisaoFinanceira.FormaPagamento))
+            {
+                yield return $"- Forma de pagamento: {decisaoFinanceira.FormaPagamento}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(decisaoFinanceira.ObjetivoRelacionado))
+            {
+                yield return $"- Objetivo relacionado: {decisaoFinanceira.ObjetivoRelacionado}";
+            }
+
+            yield return $"- Grau de confiança: {decisaoFinanceira.GrauConfiancaInterpretacao}/100";
         }
 
         private static string FormatarNivelConsistencia(NivelConsistenciaEstrategica nivel)

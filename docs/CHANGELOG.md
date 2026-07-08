@@ -6,6 +6,7 @@ Registrar aqui apenas mudanças relevantes do sistema.
 
 - Criação do documento `docs/ASSISTANT_VISION.md`, com a visão humana e evolutiva do Assistente Financeiro.
 - Referências ao novo documento adicionadas em `AI_CONTEXT.md`, `docs/PRODUCT_VISION.md` e `docs/MODULE_GUIDE.md`.
+- Criação da base inicial do `Modelo de Decisão Financeira`, com `DecisaoFinanceiraIA`, `InterpretadorDecisaoFinanceira` e preparação do contexto do Assistente Financeiro para receber essa camada.
 
 ## 07/07/2026
 

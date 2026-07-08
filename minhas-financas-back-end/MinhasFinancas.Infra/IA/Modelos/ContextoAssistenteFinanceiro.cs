@@ -5,6 +5,7 @@ namespace MinhasFinancas.Infra.IA.Modelos
         public DateTime DataReferencia { get; set; }
         public int PontuacaoSaudeFinanceira { get; set; }
         public string ClassificacaoSaudeFinanceira { get; set; } = string.Empty;
+        public DecisaoFinanceiraIA? DecisaoFinanceira { get; set; }
         public InterpretacaoPlanoEstrategicoIA InterpretacaoPlanoEstrategico { get; set; } = new();
         public ConsistenciaEstrategicaIA ConsistenciaEstrategica { get; set; } = new();
         public List<string> PrioridadesImediatas { get; set; } = [];

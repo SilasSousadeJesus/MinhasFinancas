@@ -162,7 +162,8 @@ ObservaÃ§Ãµes adicionais da fase tÃ©cnica:
 - nÃ£o existe chat nem conversa contÃ­nua nesta etapa
 
 ### EvoluÃ§Ãµes futuras
-- futura camada de `Interpretador Financeiro` entre `SaÃºde Financeira` e `Insights Financeiros` para qualificar ainda mais a linguagem natural baseada em regras
+- camada de `Modelo de Decisão Financeira` para estruturar a intenção do usuário antes da leitura estratégica
+- futura camada de `Interpretador Financeiro` entre `Saúde Financeira` e `Insights Financeiros` para qualificar ainda mais a linguagem natural baseada em regras
 - especialistas temÃ¡ticos reutilizando a mesma infraestrutura
 - conversa contÃ­nua com contexto financeiro consolidado
 

@@ -520,6 +520,8 @@ ObservaÃ§Ã£o importante:
 ### Próxima implementação prevista
 
 - Fase 4.2.3.4 — IA Estratégica no roadmap de Inteligência Financeira
+- a Fase 4.2.4.1 — Modelo de Decisão Financeira foi registrada como evolução futura da cadeia do Assistente Financeiro
+- a intenção do usuário já pode ser interpretada como `DecisaoFinanceiraIA` antes da montagem do contexto estratégico
 - evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo
 - consolidação da tela de gestão do Plano Estratégico Financeiro no frontend, com edição por nova versão e histórico simples
 
@@ -528,13 +530,16 @@ ObservaÃ§Ã£o importante:
 - `docs/AI_DESIGN.md` passou a ser o documento oficial de design da camada de IA
 - a Fase 4.2 foi iniciada com a formalização do fluxo de análise executiva com IA
 - o primeiro prompt oficial da Fase 4.2 foi implementado em `MinhasFinancas.Infra/IA/Prompts/PromptAnaliseFinanceira.md`
-- a cadeia oficial continua sendo `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Plano Estratégico Financeiro -> InterpretadorEstrategico -> Consistência Estratégica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+A cadeia oficial continua sendo `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> InterpretadorDecisaoFinanceira -> Plano Estratégico Financeiro -> InterpretadorEstrategico -> Consistência Estratégica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 
 ## Atualização técnica — Base de Conhecimento Financeira
 
 As subfases 4.2.1, 4.2.2.1, 4.2.3.2 e 4.2.3.3 adicionaram a primeira versão da Base de Conhecimento Financeira do Assistente Financeiro, sua interpretação histórica, sua leitura estratégica e sua consistência determinística.
 
 ### Novos elementos estruturais
+- `TipoDecisaoFinanceira` em `MinhasFinancas.Infra/IA/Enums`
+- `DecisaoFinanceiraIA` em `MinhasFinancas.Infra/IA/Modelos`
+- `InterpretadorDecisaoFinanceira` em `MinhasFinancas.Infra/IA/Interpretadores`
 
 - entidade `AnaliseFinanceiraHistorica`
 - `DbSet<AnaliseFinanceiraHistorica>` no `ApplicationDbContext`
@@ -545,6 +550,8 @@ As subfases 4.2.1, 4.2.2.1, 4.2.3.2 e 4.2.3.3 adicionaram a primeira versão da 
 - modelo `InterpretacaoPlanoEstrategicoIA` em `MinhasFinancas.Infra/IA/Modelos`
 - `InterpretadorMemoriaFinanceira` em `MinhasFinancas.Infra/IA/Interpretadores`
 - `InterpretadorEstrategico` em `MinhasFinancas.Infra/IA/Interpretadores`
+- `ContextoAssistenteFinanceiro.DecisaoFinanceira` para armazenar a decisão interpretada na montagem do contexto
+- `AvaliadorConsistenciaEstrategica` passou a aceitar `DecisaoFinanceiraIA` como entrada opcional para futura evolução do raciocínio
 - endpoints `GET /api/AnalisesFinanceirasHistoricas/{usuarioId}` e `GET /api/AnalisesFinanceirasHistoricas/{usuarioId}/{analiseId}`
 
 ### Conceitos da base

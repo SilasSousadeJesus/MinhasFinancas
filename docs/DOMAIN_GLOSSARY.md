@@ -1,4 +1,4 @@
-﻿# GlossÃ¡rio do DomÃ­nio - Minhas FinanÃ§as
+# GlossÃ¡rio do DomÃ­nio - Minhas FinanÃ§as
 
 Este documento registra os conceitos oficiais do domÃ­nio financeiro do sistema.
 
@@ -330,6 +330,14 @@ Exemplos:
 - Baixa
 - Muito baixa
 - Indeterminada
+
+## Decisão Financeira
+
+Intenção do usuário estruturada pelo sistema em uma forma própria de domínio antes da leitura estratégica.
+
+## Interpretador da Decisão Financeira
+
+Camada que transforma a pergunta do usuário em `DecisãoFinanceiraIA`, identificando tipo, categoria, valor estimado, prazo e objetivo relacionado.
 
 ## Compromissos Financeiros
 

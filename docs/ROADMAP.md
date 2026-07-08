@@ -236,6 +236,21 @@ Registrar a direção estratégica do usuário ao longo do tempo, como construir
 
 Registrar ações e decisões combinadas entre usuário e Assistente Financeiro, permitindo acompanhamento de execução, adiamento e conclusão.
 
+##### Fase 4.2.4.1 — Modelo de Decisão Financeira
+
+**Status:** futura
+
+**Objetivo:**
+
+Criar uma camada responsável por interpretar a intenção do usuário como uma decisão financeira estruturada antes de qualquer leitura estratégica.
+
+**Escopo previsto:**
+
+- interpretação da pergunta do usuário em uma decisão financeira tipada
+- preparação de contexto mais rastreável para o Assistente Financeiro
+- base conceitual para futuros compromissos financeiros
+- apoio ao uso futuro da consistência estratégica com maior clareza de domínio
+
 ### Fase 5 — Especialistas
 
 **Status:** futura

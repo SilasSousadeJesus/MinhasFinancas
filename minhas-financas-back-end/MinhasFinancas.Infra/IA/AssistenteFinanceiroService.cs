@@ -30,6 +30,7 @@ namespace MinhasFinancas.Infra.IA
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
             IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
+            DecisaoFinanceiraIA? decisaoFinanceira = null,
             PlanoEstrategicoFinanceiro? planoEstrategicoFinanceiro = null,
             InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
         {
@@ -37,12 +38,14 @@ namespace MinhasFinancas.Infra.IA
                 resumoFinanceiroIA,
                 planoEstrategicoFinanceiro,
                 interpretacaoPlanoEstrategico,
-                perguntaUsuario);
+                perguntaUsuario,
+                decisaoFinanceira);
 
             return _construtorContextoIA.Construir(
                 resumoFinanceiroIA,
                 perguntaUsuario,
                 memoriaFinanceira,
+                decisaoFinanceira,
                 interpretacaoPlanoEstrategico,
                 consistenciaEstrategica);
         }
@@ -51,6 +54,7 @@ namespace MinhasFinancas.Infra.IA
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
             IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
+            DecisaoFinanceiraIA? decisaoFinanceira = null,
             PlanoEstrategicoFinanceiro? planoEstrategicoFinanceiro = null,
             InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
         {
@@ -58,6 +62,7 @@ namespace MinhasFinancas.Infra.IA
                 resumoFinanceiroIA,
                 perguntaUsuario,
                 memoriaFinanceira,
+                decisaoFinanceira,
                 planoEstrategicoFinanceiro,
                 interpretacaoPlanoEstrategico);
             return _construtorPromptIA.Construir(contexto);

@@ -98,7 +98,8 @@ namespace MinhasFinancas.Infra.IA.Avaliadores
             ResumoFinanceiroIA resumoFinanceiroIA,
             PlanoEstrategicoFinanceiro? planoEstrategicoFinanceiro,
             InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico,
-            string? perguntaUsuario = null)
+            string? perguntaUsuario = null,
+            DecisaoFinanceiraIA? decisaoFinanceira = null)
         {
             if (planoEstrategicoFinanceiro is null || !planoEstrategicoFinanceiro.Ativo || interpretacaoPlanoEstrategico is null || !interpretacaoPlanoEstrategico.PossuiPlanoVigente)
             {
@@ -128,7 +129,11 @@ namespace MinhasFinancas.Infra.IA.Avaliadores
                 };
             }
 
-            var perguntaNormalizada = Normalizar(perguntaUsuario);
+            var textoBasePergunta = string.IsNullOrWhiteSpace(perguntaUsuario) && decisaoFinanceira is not null
+                ? $"{decisaoFinanceira.TextoOriginalUsuario} {decisaoFinanceira.TextoInterpretado} {decisaoFinanceira.Categoria} {decisaoFinanceira.Descricao}"
+                : perguntaUsuario;
+
+            var perguntaNormalizada = Normalizar(textoBasePergunta);
             var orientacaoPergunta = DetectarOrientacaoPergunta(perguntaNormalizada);
             var temaPergunta = DetectarTemaDecisao(perguntaNormalizada);
 

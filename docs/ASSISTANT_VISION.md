@@ -131,6 +131,17 @@ Por exemplo:
 
 A consistência estratégica ajuda o assistente a falar com mais responsabilidade.
 
+### Modelo de Decisão Financeira
+
+Antes de uma pergunta virar leitura estratégica, o sistema passa a enxergar a intenção do usuário como uma decisão financeira estruturada.
+
+Exemplo:
+
+- "Vale a pena comprar um carro?"
+- "Comprar veículo financiado"
+
+Essa camada ajuda o assistente a entender melhor o que está em jogo, sem depender de interpretação solta.
+
 ### Compromissos Financeiros
 
 Se o plano responde para onde eu quero ir, os compromissos respondem:

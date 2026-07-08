@@ -102,6 +102,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<ISaudeFinanceiraAppService, SaudeFinanceiraAppService>();
             builder.Services.AddScoped<IInteligenciaFinanceiraAppService, InteligenciaFinanceiraAppService>();
             builder.Services.AddScoped<InterpretadorMemoriaFinanceira>();
+            builder.Services.AddScoped<InterpretadorDecisaoFinanceira>();
             builder.Services.AddScoped<InterpretadorEstrategico>();
             builder.Services.AddScoped<AvaliadorConsistenciaEstrategica>();
             builder.Services.AddScoped<ConstrutorContextoIA>();

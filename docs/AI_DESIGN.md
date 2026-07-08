@@ -194,6 +194,24 @@ Responsabilidades:
 - evitar recomendações desalinhadas com objetivos de longo prazo
 - fornecer ao contexto da IA uma leitura oficial de consistência, sem recalcular nada no modelo
 
+### Modelo de Decisão Financeira
+
+Camada arquitetural preparada para transformar a intenção do usuário em uma decisão financeira estruturada antes da leitura estratégica.
+
+Responsabilidades:
+
+- interpretar a pergunta do usuário como uma decisão financeira tipada
+- organizar a intenção em uma forma rastreável para o restante do fluxo
+- servir de ponte entre a linguagem livre do usuário e o raciocínio estratégico
+- evitar que o sistema trate apenas texto solto como entrada principal
+
+Fluxo desejado:
+
+`Pergunta do usuário -> Interpretador da Decisão -> DecisaoFinanceiraIA -> Plano Estratégico Financeiro -> Consistência Estratégica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA`
+
+Essa camada não substitui o plano estratégico nem a consistência.
+Ela apenas organiza a intenção para que as próximas fases consigam raciocinar com mais clareza.
+
 ### Princípio do Plano Estratégico
 
 O `Plano Estratégico Financeiro` representa a intenção deliberada do usuário.
