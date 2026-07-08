@@ -32,9 +32,9 @@ Sempre que possÃ­vel, a resposta deve mostrar por que uma recomendaÃ§Ã£o i
 
 ## Fluxo oficial
 
-O fluxo oficial da anÃ¡lise com IA Ã©:
+O fluxo oficial da análise com IA é:
 
-`Dados -> Indicadores Financeiros -> SaÃºde Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> MemÃ³ria Financeira -> InterpretadorMemoriaFinanceira -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA -> RelatÃ³rio Executivo`
+`Dados -> Indicadores Financeiros -> Saude Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> Memoria Financeira -> InterpretadorMemoriaFinanceira -> Plano Estrategico Financeiro -> InterpretadorEstrategico -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA -> Relatorio Executivo`
 
 Esse fluxo garante separaÃ§Ã£o entre:
 
@@ -93,6 +93,7 @@ Ele Ã© estruturado pelo `ConstrutorContextoIA` em blocos organizados, incluind
 - classificaÃ§Ã£o
 - resumo executivo do sistema
 - evoluÃ§Ã£o financeira interpretada a partir da memÃ³ria
+- plano estratÃ©gico financeiro interpretado a partir da direÃ§Ã£o vigente do usuÃ¡rio
 - prioridades imediatas
 - destaques positivos
 - insights prioritÃ¡rios
@@ -164,7 +165,7 @@ Ela armazena objetivos, prioridades, princípios e direção de longo prazo do u
 
 Fluxo arquitetural atual e futuro:
 
-`Dados -> Indicadores Financeiros -> Saúde Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Plano Estratégico Financeiro -> Interpretador Estratégico -> Consistência Estratégica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA`
+`Dados -> Indicadores Financeiros -> Saude Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> Memoria Financeira -> InterpretadorMemoriaFinanceira -> Plano Estrategico Financeiro -> InterpretadorEstrategico -> Consistencia Estrategica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA`
 
 Essa camada já serve para:
 
@@ -174,7 +175,7 @@ Essa camada já serve para:
 
 ### Interpretador Estratégico
 
-Melhoria futura ligada ao Plano Estratégico Financeiro.
+Camada já implementada para transformar o Plano Estratégico Financeiro em narrativa compreensível para a IA.
 
 Responsabilidades:
 

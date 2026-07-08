@@ -10,16 +10,21 @@ namespace MinhasFinancas.Infra.IA.Construtores
     public class ConstrutorContextoIA
     {
         private readonly InterpretadorMemoriaFinanceira _interpretadorMemoriaFinanceira;
+        private readonly InterpretadorEstrategico _interpretadorEstrategico;
 
-        public ConstrutorContextoIA(InterpretadorMemoriaFinanceira interpretadorMemoriaFinanceira)
+        public ConstrutorContextoIA(
+            InterpretadorMemoriaFinanceira interpretadorMemoriaFinanceira,
+            InterpretadorEstrategico interpretadorEstrategico)
         {
             _interpretadorMemoriaFinanceira = interpretadorMemoriaFinanceira;
+            _interpretadorEstrategico = interpretadorEstrategico;
         }
 
         public ContextoAssistenteFinanceiro Construir(
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
-            IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null)
+            IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
+            InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
         {
             var cultura = new CultureInfo("pt-BR");
 
@@ -59,6 +64,14 @@ namespace MinhasFinancas.Infra.IA.Construtores
 
             var interpretacaoMemoria = _interpretadorMemoriaFinanceira.Interpretar(memoriaFinanceira);
             var memoriaFinanceiraResumida = interpretacaoMemoria.MemoriaFinanceiraCompacta;
+            var interpretacaoPlano = interpretacaoPlanoEstrategico ?? new InterpretacaoPlanoEstrategicoIA
+            {
+                PossuiPlanoVigente = false,
+                ResumoEstrategico = "Nao ha Plano Estrategico Financeiro vigente cadastrado.",
+                TextoParaIA = "Nao ha Plano Estrategico Financeiro vigente cadastrado.",
+                AlertasEstrategicos = ["Nao ha Plano Estrategico Financeiro vigente cadastrado."]
+            };
+            var narrativaPlanoEstrategico = _interpretadorEstrategico.InterpretarPlanoParaContexto(interpretacaoPlano);
 
             var secoes = new List<string>
             {
@@ -115,6 +128,10 @@ namespace MinhasFinancas.Infra.IA.Construtores
                     memoriaFinanceiraResumida,
                     "Nao existem analises anteriores."),
                 MontarSecao(
+                    "Plano Estrategico Financeiro",
+                    narrativaPlanoEstrategico,
+                    "- Nao ha Plano Estrategico Financeiro vigente cadastrado."),
+                MontarSecao(
                     "Cobertura Atual do Contexto",
                     [
                         "- Perfil financeiro: ja refletido de forma indireta nos indicadores, na saude financeira e nas prioridades.",
@@ -142,6 +159,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 ResumoEvolucaoFinanceira = interpretacaoMemoria.ResumoEvolucao,
                 EvolucaoFinanceira = interpretacaoMemoria.Narrativas,
                 ResumoExecutivo = resumoFinanceiroIA.ResumoExecutivo,
+                InterpretacaoPlanoEstrategico = interpretacaoPlano,
                 ContextoTextual = string.Join(Environment.NewLine + Environment.NewLine, secoes),
                 PerguntaUsuario = perguntaUsuario ?? string.Empty
             };

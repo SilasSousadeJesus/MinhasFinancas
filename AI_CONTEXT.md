@@ -513,7 +513,7 @@ ObservaÃ§Ã£o importante:
 
 ### Próxima implementação prevista
 
-- Fase 4.2.3.2 — Interpretador Estratégico no roadmap de Inteligência Financeira
+- Fase 4.2.3.3 — Consistência Estratégica no roadmap de Inteligência Financeira
 - evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo
 
 ## Atualização da documentação de IA
@@ -521,11 +521,11 @@ ObservaÃ§Ã£o importante:
 - `docs/AI_DESIGN.md` passou a ser o documento oficial de design da camada de IA
 - a Fase 4.2 foi iniciada com a formalização do fluxo de análise executiva com IA
 - o primeiro prompt oficial da Fase 4.2 foi implementado em `MinhasFinancas.Infra/IA/Prompts/PromptAnaliseFinanceira.md`
-- a cadeia oficial continua sendo `ResumoFinanceiroIA -> MemÃ³ria Financeira -> InterpretadorMemoriaFinanceira -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a cadeia oficial continua sendo `ResumoFinanceiroIA -> MemÃ³ria Financeira -> InterpretadorMemoriaFinanceira -> PlanoEstratégicoFinanceiro -> InterpretadorEstrategico -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 
 ## Atualização técnica — Base de Conhecimento Financeira
 
-As subfases 4.2.1 e 4.2.2.1 adicionaram a primeira versão da Base de Conhecimento Financeira do Assistente Financeiro e sua interpretação histórica.
+As subfases 4.2.1, 4.2.2.1 e 4.2.3.2 adicionaram a primeira versão da Base de Conhecimento Financeira do Assistente Financeiro, sua interpretação histórica e sua leitura estratégica.
 
 ### Novos elementos estruturais
 
@@ -535,7 +535,9 @@ As subfases 4.2.1 e 4.2.2.1 adicionaram a primeira versão da Base de Conhecimen
 - `IAnaliseFinanceiraHistoricaAppService` e `AnaliseFinanceiraHistoricaAppService`
 - modelo `MemoriaFinanceiraResumidaIA` em `MinhasFinancas.Infra/IA/Modelos`
 - modelo `InterpretacaoMemoriaFinanceiraIA` em `MinhasFinancas.Infra/IA/Modelos`
+- modelo `InterpretacaoPlanoEstrategicoIA` em `MinhasFinancas.Infra/IA/Modelos`
 - `InterpretadorMemoriaFinanceira` em `MinhasFinancas.Infra/IA/Interpretadores`
+- `InterpretadorEstrategico` em `MinhasFinancas.Infra/IA/Interpretadores`
 - endpoints `GET /api/AnalisesFinanceirasHistoricas/{usuarioId}` e `GET /api/AnalisesFinanceirasHistoricas/{usuarioId}/{analiseId}`
 
 ### Conceitos da base
@@ -555,11 +557,12 @@ As subfases 4.2.1 e 4.2.2.1 adicionaram a primeira versão da Base de Conhecimen
 1. O sistema monta o `ResumoFinanceiroIA`.
 2. O backend consulta a Memória Financeira e recupera um resumo das últimas análises.
 3. O `InterpretadorMemoriaFinanceira` transforma esse histórico em uma narrativa estruturada de continuidade.
-4. O `ConstrutorContextoIA` gera o contexto textual, incluindo as seções `## Evolução Financeira` e `## Memória Financeira`.
-5. O `ConstrutorPromptIA` gera a requisição final e informa a versão do prompt.
-6. O provedor retorna a resposta real ou a falha tratada.
-7. O backend salva uma `AnaliseFinanceiraHistorica` com contexto, resumos, resposta e métricas técnicas.
-8. O retorno ao cliente pode incluir `AnaliseFinanceiraHistoricaId`.
+4. O `InterpretadorEstrategico` transforma o plano vigente em leitura estratégica textual para a IA.
+5. O `ConstrutorContextoIA` gera o contexto textual, incluindo as seções `## Evolução Financeira`, `## Memória Financeira` e `## Plano Estrategico Financeiro`.
+6. O `ConstrutorPromptIA` gera a requisição final e informa a versão do prompt.
+7. O provedor retorna a resposta real ou a falha tratada.
+8. O backend salva uma `AnaliseFinanceiraHistorica` com contexto, resumos, resposta e métricas técnicas.
+9. O retorno ao cliente pode incluir `AnaliseFinanceiraHistoricaId`.
 
 ### Regra de contexto
 

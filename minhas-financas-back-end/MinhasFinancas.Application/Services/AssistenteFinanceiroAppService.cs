@@ -1,7 +1,11 @@
 using System.Net;
 using MinhasFinancas.Application.DTOs.AnaliseFinanceiraHistorica;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.CrossCutting.Util.Enum;
+using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.IA;
+using MinhasFinancas.Infra.Data.Interfaces;
+using MinhasFinancas.Infra.IA.Interpretadores;
 using MinhasFinancas.Infra.IA.Modelos;
 
 namespace MinhasFinancas.Application.Services
@@ -11,15 +15,21 @@ namespace MinhasFinancas.Application.Services
         private readonly IInteligenciaFinanceiraAppService _inteligenciaFinanceiraAppService;
         private readonly AssistenteFinanceiroService _assistenteFinanceiroService;
         private readonly IAnaliseFinanceiraHistoricaAppService _analiseFinanceiraHistoricaAppService;
+        private readonly IPlanoEstrategicoFinanceiroRepository _planoEstrategicoFinanceiroRepository;
+        private readonly InterpretadorEstrategico _interpretadorEstrategico;
 
         public AssistenteFinanceiroAppService(
             IInteligenciaFinanceiraAppService inteligenciaFinanceiraAppService,
             AssistenteFinanceiroService assistenteFinanceiroService,
-            IAnaliseFinanceiraHistoricaAppService analiseFinanceiraHistoricaAppService)
+            IAnaliseFinanceiraHistoricaAppService analiseFinanceiraHistoricaAppService,
+            IPlanoEstrategicoFinanceiroRepository planoEstrategicoFinanceiroRepository,
+            InterpretadorEstrategico interpretadorEstrategico)
         {
             _inteligenciaFinanceiraAppService = inteligenciaFinanceiraAppService;
             _assistenteFinanceiroService = assistenteFinanceiroService;
             _analiseFinanceiraHistoricaAppService = analiseFinanceiraHistoricaAppService;
+            _planoEstrategicoFinanceiroRepository = planoEstrategicoFinanceiroRepository;
+            _interpretadorEstrategico = interpretadorEstrategico;
         }
 
         public async Task<RetornoGenerico> GerarAnaliseAsync(
@@ -55,8 +65,21 @@ namespace MinhasFinancas.Application.Services
                         Prioridades = item.Prioridades
                     })
                     .ToList();
-                var contexto = _assistenteFinanceiroService.PrepararContexto(resumo, perguntaUsuario, memoriaFinanceira);
-                var requisicao = _assistenteFinanceiroService.PrepararRequisicao(resumo, perguntaUsuario, memoriaFinanceira);
+
+                var planoEstrategicoFinanceiro = await _planoEstrategicoFinanceiroRepository.BuscarVigenteAsync(usuarioId);
+                var interpretacaoPlanoEstrategico = _interpretadorEstrategico.Interpretar(planoEstrategicoFinanceiro);
+
+                var contexto = _assistenteFinanceiroService.PrepararContexto(
+                    resumo,
+                    perguntaUsuario,
+                    memoriaFinanceira,
+                    interpretacaoPlanoEstrategico);
+
+                var requisicao = _assistenteFinanceiroService.PrepararRequisicao(
+                    resumo,
+                    perguntaUsuario,
+                    memoriaFinanceira,
+                    interpretacaoPlanoEstrategico);
                 var resposta = await _assistenteFinanceiroService.GerarRespostaAsync(requisicao, cancellationToken);
 
                 try

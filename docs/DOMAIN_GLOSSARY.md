@@ -308,6 +308,8 @@ Exemplos:
 
 Camada que transforma o Plano Estratégico Financeiro em narrativa compreensível para IA e interfaces.
 
+Na fase atual, ela já é usada para preparar o contexto do Assistente Financeiro antes da chamada de IA.
+
 ## Consistência Estratégica
 
 Leitura que avalia se uma decisão está alinhada com o Plano Estratégico Financeiro vigente.

@@ -432,6 +432,7 @@ Serve para testar cenÃ¡rios hipotÃ©ticos sem alterar os dados reais do usuÃ
 - será consumido pela IA para contextualizar recomendações
 - poderá ser consumido por insights e leituras estratégicas futuras
 - permitirá avaliar se decisões atuais estão alinhadas com a direção escolhida
+- já possui interpretação estratégica preparada para o contexto do Assistente Financeiro
 
 ### O que já está funcional
 - backend funcional com CRUD de versões
@@ -440,7 +441,6 @@ Serve para testar cenÃ¡rios hipotÃ©ticos sem alterar os dados reais do usuÃ
 - a tela frontend ainda não foi entregue nesta fase
 
 ### Evoluções futuras
-- interpretador estratégico
 - consistência estratégica
 - IA estratégica
 

@@ -4,7 +4,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
 {
     public class ConstrutorPromptIA
     {
-        public const string VersaoPromptAtual = "fase-4.2.2.1";
+        public const string VersaoPromptAtual = "fase-4.2.3.2";
         private readonly string _caminhoPromptBase;
 
         public ConstrutorPromptIA()
@@ -60,6 +60,10 @@ namespace MinhasFinancas.Infra.IA.Construtores
             - explique antes de recomendar
             - ensine antes de aconselhar
             - use a secao Evolucao Financeira como interpretacao oficial da memoria do sistema
+            - use a secao Plano Estrategico Financeiro como referencia oficial da direcao escolhida pelo usuario
+            - nao crie nem altere estrategia; apenas interprete o plano vigente
+            - quando houver plano estrategico, avalie se a leitura executiva esta alinhada com ele
+            - quando nao houver plano vigente, deixe isso explicito sem inventar direcionamento
             - quando fizer sentido, reconheca continuidade, melhora, estabilidade ou recorrencia
             - se mantiver uma recomendacao anterior, explicite isso com frases como "continuamos recomendando" ou "mantemos como prioridade"
             - use portugues brasileiro natural, profissional e respeitoso

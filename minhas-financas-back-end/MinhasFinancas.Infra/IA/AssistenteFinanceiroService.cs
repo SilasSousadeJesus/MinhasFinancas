@@ -24,17 +24,23 @@ namespace MinhasFinancas.Infra.IA
         public ContextoAssistenteFinanceiro PrepararContexto(
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
-            IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null)
+            IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
+            InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
         {
-            return _construtorContextoIA.Construir(resumoFinanceiroIA, perguntaUsuario, memoriaFinanceira);
+            return _construtorContextoIA.Construir(
+                resumoFinanceiroIA,
+                perguntaUsuario,
+                memoriaFinanceira,
+                interpretacaoPlanoEstrategico);
         }
 
         public RequisicaoIA PrepararRequisicao(
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
-            IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null)
+            IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
+            InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
         {
-            var contexto = PrepararContexto(resumoFinanceiroIA, perguntaUsuario, memoriaFinanceira);
+            var contexto = PrepararContexto(resumoFinanceiroIA, perguntaUsuario, memoriaFinanceira, interpretacaoPlanoEstrategico);
             return _construtorPromptIA.Construir(contexto);
         }
 

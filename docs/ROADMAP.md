@@ -6,9 +6,9 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 4.2.3.1 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 4.2.3.2 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
-A próxima etapa oficial é a **Fase 4.2.3.2 — Interpretador Estratégico**.
+A próxima etapa oficial é a **Fase 4.2.3.3 — Consistência Estratégica**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -215,6 +215,7 @@ Registrar a direção estratégica do usuário ao longo do tempo, como construir
   - concluída
   - armazenar objetivos, prioridades, princípios e direção estratégica formal do usuário
 - **Fase 4.2.3.2 — Interpretador Estratégico**
+  - concluída
   - transformar o Plano Estratégico em narrativa compreensível para a IA
 - **Fase 4.2.3.3 — Consistência Estratégica**
   - avaliar o quanto uma decisão está alinhada com o Plano Estratégico
@@ -324,7 +325,6 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.2.3.2 — Interpretador Estratégico
 - Fase 4.2.3.3 — Consistência Estratégica
 - Fase 4.2.3.4 — IA Estratégica
 - Fase 4.2.4 — Compromissos Financeiros
@@ -387,7 +387,8 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2.1 — Base de Conhecimento Financeira** está **concluída no backend**
 - a **Fase 4.2.2 — Experiência Visual da Análise IA** está **concluída**
 - a **Fase 4.2.2.1 — Interpretador da Memória Financeira** está **concluída**
-- a **próxima etapa oficial** é a **Fase 4.2.3.2 — Interpretador Estratégico**
+- a **Fase 4.2.3.2 — Interpretador Estratégico** está **concluída**
+- a **próxima etapa oficial** é a **Fase 4.2.3.3 — Consistência Estratégica**
 
 ### Entregas já consolidadas
 

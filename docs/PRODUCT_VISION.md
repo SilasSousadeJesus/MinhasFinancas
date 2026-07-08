@@ -64,7 +64,7 @@ Cada camada do sistema deve agregar valor a anterior.
 - A Memoria Financeira preserva a evolucao analitica ao longo do tempo.
 - O `InterpretadorMemoriaFinanceira` transforma esse historico em continuidade narrativa antes do consumo por IA.
 - O `Plano Estratégico Financeiro` registra a direção escolhida pelo usuário para orientar decisões futuras.
-- O `Interpretador Estratégico` transformará esse plano em narrativa compreensível para interfaces e IA.
+- O `Interpretador Estratégico` transforma esse plano em narrativa compreensível para interfaces e IA.
 
 Nenhuma camada deve substituir a anterior.
 
