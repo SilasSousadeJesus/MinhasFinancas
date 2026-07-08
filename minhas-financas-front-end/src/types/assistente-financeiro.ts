@@ -8,6 +8,7 @@ export interface RespostaAssistenteFinanceiroIA {
   modelo: string;
   analiseFinanceiraHistoricaId?: string | null;
   conteudo: string;
+  sugestaoCompromissoFinanceiro?: string | null;
   foiSimulada: boolean;
   observacaoInfraestrutura: string;
   mensagemTecnica: string;
@@ -43,6 +44,7 @@ export interface AnaliseFinanceiraHistoricaLista {
   sucesso: boolean;
   tempoTotalMs: number;
   custoEstimadoUsd: number;
+  compromissoFinanceiroId?: string | null;
 }
 
 export interface AnaliseFinanceiraHistoricaDetalhe {
@@ -74,6 +76,7 @@ export interface AnaliseFinanceiraHistoricaDetalhe {
   tempoTotalMs: number;
   sucesso: boolean;
   mensagemErro: string;
+  compromissoFinanceiroId?: string | null;
   ativa: boolean;
 }
 
@@ -82,6 +85,7 @@ export interface AnaliseAssistenteExibida {
   perguntaUsuario: string;
   conteudo: string;
   sugestaoCompromisso?: string | null;
+  compromissoFinanceiroId?: string | null;
   modelo: string;
   provedor: string;
   tempoTotalMs: number;

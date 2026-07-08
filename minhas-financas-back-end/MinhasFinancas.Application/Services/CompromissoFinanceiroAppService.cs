@@ -11,13 +11,16 @@ namespace MinhasFinancas.Application.Services
     {
         private readonly IUsuarioAppService _usuarioAppService;
         private readonly ICompromissoFinanceiroRepository _repository;
+        private readonly IAnaliseFinanceiraHistoricaRepository _analiseFinanceiraHistoricaRepository;
 
         public CompromissoFinanceiroAppService(
             IUsuarioAppService usuarioAppService,
-            ICompromissoFinanceiroRepository repository)
+            ICompromissoFinanceiroRepository repository,
+            IAnaliseFinanceiraHistoricaRepository analiseFinanceiraHistoricaRepository)
         {
             _usuarioAppService = usuarioAppService;
             _repository = repository;
+            _analiseFinanceiraHistoricaRepository = analiseFinanceiraHistoricaRepository;
         }
 
         public async Task<RetornoGenerico> BuscarTodosOsElementosAsync(string id)
@@ -94,6 +97,7 @@ namespace MinhasFinancas.Application.Services
                     Descricao = elementoDTO.Descricao.Trim(),
                     Origem = elementoDTO.Origem,
                     Status = EnumStatusCompromissoFinanceiro.EmAndamento,
+                    AnaliseFinanceiraHistoricaId = elementoDTO.AnaliseFinanceiraHistoricaId,
                     DataCriacao = agora,
                     Observacoes = string.IsNullOrWhiteSpace(elementoDTO.Observacoes) ? null : elementoDTO.Observacoes.Trim(),
                     Ativo = true
@@ -101,6 +105,7 @@ namespace MinhasFinancas.Application.Services
 
                 await _repository.AdicionarAsync(compromisso);
                 await _repository.SalvarAlteracoesAsync();
+                await SincronizarAnaliseFinanceiraHistoricaAsync(elementoDTO, compromisso.Id);
 
                 return new RetornoGenerico(true, "Compromisso financeiro criado com sucesso.", "Compromisso financeiro criado com sucesso.", HttpStatusCode.OK, Mapear(compromisso));
             }
@@ -277,12 +282,30 @@ namespace MinhasFinancas.Application.Services
                 Descricao = compromisso.Descricao,
                 Origem = compromisso.Origem,
                 Status = compromisso.Status,
+                AnaliseFinanceiraHistoricaId = compromisso.AnaliseFinanceiraHistoricaId,
                 DataCriacao = compromisso.DataCriacao,
                 DataConclusao = compromisso.DataConclusao,
                 DataCancelamento = compromisso.DataCancelamento,
                 Observacoes = compromisso.Observacoes,
                 Ativo = compromisso.Ativo
             };
+        }
+
+        private async Task SincronizarAnaliseFinanceiraHistoricaAsync(SalvarCompromissoFinanceiroDTO dto, Guid compromissoId)
+        {
+            if (!dto.AnaliseFinanceiraHistoricaId.HasValue)
+            {
+                return;
+            }
+
+            var analise = await _analiseFinanceiraHistoricaRepository.BuscarUmElementoAsync(dto.UsuarioId, dto.AnaliseFinanceiraHistoricaId.Value);
+            if (analise == null)
+            {
+                return;
+            }
+
+            analise.CompromissoFinanceiroId = compromissoId;
+            await _analiseFinanceiraHistoricaRepository.EditarElementoAsync(analise);
         }
 
         private static RetornoGenerico CriarErro(Exception ex, string mensagemUsuario)

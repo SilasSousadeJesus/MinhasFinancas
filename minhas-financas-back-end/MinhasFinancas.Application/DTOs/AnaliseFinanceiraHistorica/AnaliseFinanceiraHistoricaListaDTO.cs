@@ -14,5 +14,6 @@ namespace MinhasFinancas.Application.DTOs.AnaliseFinanceiraHistorica
         public bool Sucesso { get; set; }
         public long TempoTotalMs { get; set; }
         public decimal CustoEstimadoUsd { get; set; }
+        public Guid? CompromissoFinanceiroId { get; set; }
     }
 }

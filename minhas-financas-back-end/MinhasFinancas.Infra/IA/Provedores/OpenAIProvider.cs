@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -140,12 +141,15 @@ namespace MinhasFinancas.Infra.IA.Provedores
                             metricas.TokensReaisDisponiveis,
                             custoEstimado);
 
+                        var sugestaoCompromisso = ExtrairSugestaoCompromissoFinanceiro(texto);
+
                         return new RespostaIA
                         {
                             Sucesso = true,
                             Provedor = NomeProvedor,
                             Modelo = modelo,
                             Conteudo = texto.Trim(),
+                            SugestaoCompromissoFinanceiro = sugestaoCompromisso,
                             FoiSimulada = false,
                             ObservacaoInfraestrutura = "Resposta real gerada pela OpenAI a partir do contexto preparado pelo sistema.",
                             MensagemTecnica = "Resposta gerada com sucesso.",
@@ -673,6 +677,7 @@ namespace MinhasFinancas.Infra.IA.Provedores
                 Provedor = NomeProvedor,
                 Modelo = modelo,
                 Conteudo = string.Empty,
+                SugestaoCompromissoFinanceiro = null,
                 FoiSimulada = false,
                 ObservacaoInfraestrutura = "A integração técnica com a OpenAI foi executada, mas a resposta não pôde ser concluída com sucesso.",
                 MensagemTecnica = mensagemTecnica,
@@ -707,6 +712,27 @@ namespace MinhasFinancas.Infra.IA.Provedores
             return corpoResposta.Length <= limite
                 ? corpoResposta
                 : corpoResposta[..limite];
+        }
+
+        private static string? ExtrairSugestaoCompromissoFinanceiro(string conteudo)
+        {
+            if (string.IsNullOrWhiteSpace(conteudo))
+            {
+                return null;
+            }
+
+            var regex = new Regex(
+                @"(?:^|\n)\s*(?:#{2,3}\s*)?Sugest[aã]o de compromisso\s*:?\s*(?<texto>.+?)(?=\n#{2,3}\s|\n---|\s*$)",
+                RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
+            var match = regex.Match(conteudo);
+            if (!match.Success)
+            {
+                return null;
+            }
+
+            var texto = match.Groups["texto"].Value.Trim();
+            return string.IsNullOrWhiteSpace(texto) ? null : texto;
         }
 
         private sealed class MetricasUsoResposta

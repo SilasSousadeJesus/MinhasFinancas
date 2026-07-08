@@ -30,6 +30,7 @@ namespace MinhasFinancas.Application.DTOs.AnaliseFinanceiraHistorica
         public long TempoTotalMs { get; set; }
         public bool Sucesso { get; set; }
         public string MensagemErro { get; set; } = string.Empty;
+        public Guid? CompromissoFinanceiroId { get; set; }
         public bool Ativa { get; set; }
     }
 }

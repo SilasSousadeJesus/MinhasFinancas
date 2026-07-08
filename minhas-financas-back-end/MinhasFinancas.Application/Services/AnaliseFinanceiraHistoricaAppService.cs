@@ -302,7 +302,8 @@ namespace MinhasFinancas.Application.Services
                 ModeloIA = entidade.ModeloIA,
                 Sucesso = entidade.Sucesso,
                 TempoTotalMs = entidade.TempoTotalMs,
-                CustoEstimadoUsd = entidade.CustoEstimadoUsd
+                CustoEstimadoUsd = entidade.CustoEstimadoUsd,
+                CompromissoFinanceiroId = entidade.CompromissoFinanceiroId
             };
         }
 
@@ -338,6 +339,7 @@ namespace MinhasFinancas.Application.Services
                 TempoTotalMs = entidade.TempoTotalMs,
                 Sucesso = entidade.Sucesso,
                 MensagemErro = entidade.MensagemErro,
+                CompromissoFinanceiroId = entidade.CompromissoFinanceiroId,
                 Ativa = entidade.Ativa
             };
         }

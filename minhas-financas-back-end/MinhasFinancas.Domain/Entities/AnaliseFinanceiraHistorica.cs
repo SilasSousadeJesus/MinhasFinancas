@@ -64,6 +64,8 @@ namespace MinhasFinancas.Domain.Entities
 
         public string MensagemErro { get; set; } = string.Empty;
 
+        public Guid? CompromissoFinanceiroId { get; set; }
+
         public bool Ativa { get; set; } = true;
     }
 }

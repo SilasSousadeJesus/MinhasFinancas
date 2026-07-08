@@ -15,6 +15,7 @@ export interface CompromissoFinanceiroItem {
   descricao: string;
   origem: OrigemCompromissoFinanceiro;
   status: StatusCompromissoFinanceiro;
+  analiseFinanceiraHistoricaId?: string | null;
   dataCriacao: string;
   dataConclusao?: string | null;
   dataCancelamento?: string | null;
@@ -26,5 +27,6 @@ export interface SalvarCompromissoFinanceiroPayload {
   usuarioId?: string;
   descricao: string;
   origem: OrigemCompromissoFinanceiro;
+  analiseFinanceiraHistoricaId?: string | null;
   observacoes?: string | null;
 }

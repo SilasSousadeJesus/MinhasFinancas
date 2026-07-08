@@ -21,6 +21,7 @@ interface CompromissoFinanceiroModalProps {
   initialDescricao?: string;
   initialObservacoes?: string;
   defaultOrigin?: OrigemCompromissoFinanceiro;
+  travarOrigem?: boolean;
   title?: string;
   description?: string;
   submitLabel?: string;
@@ -35,6 +36,7 @@ export function CompromissoFinanceiroModal({
   initialDescricao,
   initialObservacoes,
   defaultOrigin = OrigemCompromissoFinanceiro.Manual,
+  travarOrigem = false,
   title,
   description,
   submitLabel,
@@ -115,7 +117,7 @@ export function CompromissoFinanceiroModal({
               <Select
                 value={String(origem)}
                 onValueChange={(valor) => setOrigem(Number(valor) as OrigemCompromissoFinanceiro)}
-                disabled={mode === "edit"}
+                disabled={mode === "edit" || travarOrigem}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione" />

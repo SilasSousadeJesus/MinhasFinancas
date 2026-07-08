@@ -28,6 +28,8 @@ namespace MinhasFinancas.Domain.Entities
         [MaxLength(4000)]
         public string? Observacoes { get; set; }
 
+        public Guid? AnaliseFinanceiraHistoricaId { get; set; }
+
         public bool Ativo { get; set; } = true;
 
         public Usuario? Usuario { get; set; }

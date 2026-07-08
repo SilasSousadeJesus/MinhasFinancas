@@ -7,6 +7,7 @@ namespace MinhasFinancas.Infra.IA.Modelos
         public string Modelo { get; set; } = string.Empty;
         public Guid? AnaliseFinanceiraHistoricaId { get; set; }
         public string Conteudo { get; set; } = string.Empty;
+        public string? SugestaoCompromissoFinanceiro { get; set; }
         public bool FoiSimulada { get; set; }
         public string ObservacaoInfraestrutura { get; set; } = string.Empty;
         public string MensagemTecnica { get; set; } = string.Empty;

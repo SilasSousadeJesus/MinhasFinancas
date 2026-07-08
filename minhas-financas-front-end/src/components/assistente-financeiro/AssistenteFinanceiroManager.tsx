@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -185,13 +185,14 @@ function mapearNovaAnalise(
   dataGeracao: Date,
   perguntaUsuario: string
 ): AnaliseAssistenteExibida {
-  const conteudoProcessado = processarConteudoAnalise(resposta.conteudo);
+  const conteudoProcessado = processarConteudoAnalise(resposta.conteudo, resposta.sugestaoCompromissoFinanceiro);
 
   return {
     id: resposta.analiseFinanceiraHistoricaId ?? null,
     perguntaUsuario,
     conteudo: conteudoProcessado.conteudo,
     sugestaoCompromisso: conteudoProcessado.sugestaoCompromisso,
+    compromissoFinanceiroId: null,
     modelo: resposta.modelo,
     provedor: resposta.provedor,
     tempoTotalMs: resposta.tempoTotalMs,
@@ -214,6 +215,7 @@ function mapearDetalheHistorico(
     perguntaUsuario: detalhe.perguntaUsuario,
     conteudo: conteudoProcessado.conteudo,
     sugestaoCompromisso: conteudoProcessado.sugestaoCompromisso,
+    compromissoFinanceiroId: detalhe.compromissoFinanceiroId ?? null,
     modelo: detalhe.modeloIA,
     provedor: detalhe.provedorIA,
     tempoTotalMs: detalhe.tempoTotalMs,
@@ -224,9 +226,16 @@ function mapearDetalheHistorico(
   };
 }
 
-function processarConteudoAnalise(conteudo: string) {
-  const regex = /(?:^|\n)(#{2,3})\s*Sugest[aã]o de compromisso\s*\n([\s\S]*?)(?=\n#{2,3}\s|\n---|\s*$)/i;
+function processarConteudoAnalise(conteudo: string, sugestaoCompromissoBackend?: string | null) {
+  const regex = /(?:^|\n)(#{2,3})\s*Sugest[aã]o de compromisso\s*:?\s*([\s\S]*?)(?=\n#{2,3}\s|\n---|\s*$)/i;
   const correspondencia = conteudo.match(regex);
+
+  if (sugestaoCompromissoBackend?.trim()) {
+    return {
+      conteudo: correspondencia ? conteudo.replace(correspondencia[0], "\n").trim() : removerSecaoSugestaoCompromisso(conteudo),
+      sugestaoCompromisso: sugestaoCompromissoBackend.trim(),
+    };
+  }
 
   if (!correspondencia) {
     return {
@@ -242,6 +251,12 @@ function processarConteudoAnalise(conteudo: string) {
     conteudo: conteudoLimpo,
     sugestaoCompromisso: sugestao || null,
   };
+}
+
+function removerSecaoSugestaoCompromisso(conteudo: string) {
+  return conteudo
+    .replace(/(?:^|\n)(#{2,3})\s*Sugest[aã]o de compromisso\s*:?\s*([\s\S]*?)(?=\n#{2,3}\s|\n---|\s*$)/i, "\n")
+    .trim();
 }
 
 export function AssistenteFinanceiroManager() {
@@ -260,6 +275,7 @@ export function AssistenteFinanceiroManager() {
   const [analiseMinimizada, setAnaliseMinimizada] = useState(true);
   const [compromissoModalOpen, setCompromissoModalOpen] = useState(false);
   const [mensagemCompromisso, setMensagemCompromisso] = useState("");
+  const [compromissoCriadoAnaliseId, setCompromissoCriadoAnaliseId] = useState<string | null>(null);
 
   const [historicoAnalises, setHistoricoAnalises] = useState<AnaliseFinanceiraHistoricaLista[]>([]);
   const [historicoErro, setHistoricoErro] = useState("");
@@ -334,6 +350,11 @@ export function AssistenteFinanceiroManager() {
   }, [resumo]);
 
   const sugestaoCompromisso = analiseExibida?.sugestaoCompromisso?.trim() ?? "";
+  const chaveAnaliseAtual = analiseExibida?.id ?? analiseExibida?.dataGeracao ?? null;
+  const compromissoJaCriadoNestaAnalise = Boolean(
+    chaveAnaliseAtual &&
+      (compromissoCriadoAnaliseId === chaveAnaliseAtual || analiseExibida?.compromissoFinanceiroId)
+  );
 
   const conclusao = useMemo(() => {
     if (!resumo) {
@@ -475,6 +496,7 @@ export function AssistenteFinanceiroManager() {
       setAnaliseCopiada(false);
       setMensagemCompromisso("");
       setCompromissoModalOpen(false);
+      setCompromissoCriadoAnaliseId(null);
 
       const response = await gerarAnaliseAssistenteFinanceiro(session.usuario.id, session.token, {
         perguntaUsuario: perguntaFinal,
@@ -521,7 +543,7 @@ export function AssistenteFinanceiroManager() {
   }
 
   function abrirModalCompromisso() {
-    if (!analiseExibida?.sugestaoCompromisso) {
+    if (!analiseExibida?.sugestaoCompromisso || compromissoJaCriadoNestaAnalise) {
       return;
     }
 
@@ -542,12 +564,24 @@ export function AssistenteFinanceiroManager() {
         {
           ...payload,
           usuarioId: session.usuario.id,
-          origem: payload.origem,
+          origem: OrigemCompromissoFinanceiro.IA,
+          analiseFinanceiraHistoricaId: chaveAnaliseAtual,
         },
         session.token
       );
 
       setMensagemCompromisso("Compromisso criado com sucesso.");
+      if (chaveAnaliseAtual) {
+        setCompromissoCriadoAnaliseId(chaveAnaliseAtual);
+      }
+      setAnaliseExibida((analiseAtual) =>
+        analiseAtual
+          ? {
+              ...analiseAtual,
+              compromissoFinanceiroId: chaveAnaliseAtual,
+            }
+          : analiseAtual
+      );
       setCompromissoModalOpen(false);
     } catch (error) {
       if (error instanceof ApiError) {
@@ -900,27 +934,6 @@ export function AssistenteFinanceiroManager() {
                   </div>
                 ) : null}
 
-                {sugestaoCompromisso ? (
-                  <div className="rounded-2xl border border-primary/20 bg-primary/5 px-5 py-4">
-                    <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                      <div className="space-y-2">
-                        <p className="text-sm font-semibold uppercase tracking-wide text-primary">
-                          Sugestão de compromisso
-                        </p>
-                        <p className="text-sm leading-6 text-foreground/90">{sugestaoCompromisso}</p>
-                      </div>
-
-                      <Button variant="outline" onClick={abrirModalCompromisso}>
-                        Transformar em compromisso
-                      </Button>
-                    </div>
-
-                    {mensagemCompromisso ? (
-                      <p className="mt-3 text-sm text-muted-foreground">{mensagemCompromisso}</p>
-                    ) : null}
-                  </div>
-                ) : null}
-
                 <div className="space-y-4">
                   {analiseExibida ? (
                     <Card
@@ -977,6 +990,41 @@ export function AssistenteFinanceiroManager() {
                             </ReactMarkdown>
                           </div>
                         </div>
+
+                        {sugestaoCompromisso ? (
+                          <div className="rounded-2xl border border-primary/20 bg-primary/5 px-5 py-4">
+                            <div className="space-y-3">
+                              <div className="space-y-2">
+                                <p className="text-sm font-semibold uppercase tracking-wide text-primary">
+                                  Sugestão de compromisso
+                                </p>
+                                <p className="text-sm leading-6 text-foreground/90">{sugestaoCompromisso}</p>
+                                {compromissoJaCriadoNestaAnalise ? (
+                                  <p className="text-sm font-medium text-primary">Compromisso criado com sucesso.</p>
+                                ) : null}
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-3">
+                                <Button
+                                  type="button"
+                                  onClick={abrirModalCompromisso}
+                                  disabled={compromissoJaCriadoNestaAnalise}
+                                >
+                                  {compromissoJaCriadoNestaAnalise
+                                    ? "Compromisso criado"
+                                    : "Transformar em compromisso"}
+                                </Button>
+                                <span className="text-xs text-muted-foreground">
+                                  Revise o texto antes de salvar o compromisso.
+                                </span>
+                              </div>
+                            </div>
+
+                            {mensagemCompromisso ? (
+                              <p className="mt-3 text-sm text-muted-foreground">{mensagemCompromisso}</p>
+                            ) : null}
+                          </div>
+                        ) : null}
                       </CardContent>
                     </Card>
                   ) : (
@@ -1125,18 +1173,25 @@ export function AssistenteFinanceiroManager() {
                               <TableCell className="text-xs">{formatarData(analise.dataGeracao)}</TableCell>
                               <TableCell className="text-xs">{formatarHora(analise.dataGeracao)}</TableCell>
                               <TableCell>
-                                <button
-                                  type="button"
-                                  className="block max-w-[360px] truncate text-left text-sm font-medium text-foreground hover:underline"
-                                  title={analise.perguntaUsuario || "Análise financeira geral"}
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    abrirAnaliseHistorica(analise.id);
-                                  }}
-                                  disabled={estaCarregando || estaExcluindo}
-                                >
-                                  {analise.perguntaUsuario || "Análise financeira geral"}
-                                </button>
+                                <div className="space-y-2">
+                                  <button
+                                    type="button"
+                                    className="block max-w-[360px] truncate text-left text-sm font-medium text-foreground hover:underline"
+                                    title={analise.perguntaUsuario || "Análise financeira geral"}
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      abrirAnaliseHistorica(analise.id);
+                                    }}
+                                    disabled={estaCarregando || estaExcluindo}
+                                  >
+                                    {analise.perguntaUsuario || "Análise financeira geral"}
+                                  </button>
+                                  {analise.compromissoFinanceiroId ? (
+                                    <Badge variant="secondary" className="text-[11px]">
+                                      Compromisso gerado
+                                    </Badge>
+                                  ) : null}
+                                </div>
                               </TableCell>
                               <TableCell className="font-semibold">{analise.pontuacaoSaudeFinanceira}/100</TableCell>
                               <TableCell>
@@ -1206,6 +1261,7 @@ export function AssistenteFinanceiroManager() {
           mode="create"
           initialDescricao={sugestaoCompromisso}
           defaultOrigin={OrigemCompromissoFinanceiro.IA}
+          travarOrigem
           title="Transformar em compromisso"
           description="Edite a sugestão antes de confirmar. O compromisso será salvo para acompanhar suas próximas análises."
           submitLabel="Confirmar compromisso"
@@ -1215,3 +1271,7 @@ export function AssistenteFinanceiroManager() {
     </div>
   );
 }
+
+
+
+

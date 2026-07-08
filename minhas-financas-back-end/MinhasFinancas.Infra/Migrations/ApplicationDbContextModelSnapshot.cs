@@ -191,6 +191,9 @@ namespace MinhasFinancas.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<Guid?>("CompromissoFinanceiroId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("ContextoResumoFinanceiroIAJson")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -439,6 +442,9 @@ namespace MinhasFinancas.Infra.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("AnaliseFinanceiraHistoricaId")
                         .HasColumnType("char(36)");
 
                     b.Property<bool>("Ativo")
