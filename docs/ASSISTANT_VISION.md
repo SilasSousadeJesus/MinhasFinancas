@@ -185,9 +185,9 @@ Na prática, a IA Estratégica conecta o momento atual, a evolução, o plano e 
 
 ### Especialistas Financeiros
 
-O usuário continuará conversando com um único assistente.
+O usuário continua conversando com um único assistente.
 
-Por trás dele, haverá especialistas.
+Por trás dele, já existem especialistas internos.
 
 Um para dívidas.
 
@@ -200,6 +200,8 @@ Outro para fluxo de caixa.
 Outro para simulações.
 
 O valor dessa camada está em permitir profundidade sem transformar a experiência em algo fragmentado.
+
+Os especialistas internos organizam o raciocínio por domínio e depois devolvem esse parecer ao Assistente para compor a leitura final.
 
 O usuário vê um assistente só.
 

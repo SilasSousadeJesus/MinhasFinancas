@@ -5,6 +5,7 @@ using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Enums;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos;
 using MinhasFinancas.Infra.IA.Enums;
+using MinhasFinancas.Infra.IA.Especialistas;
 using MinhasFinancas.Infra.IA.Interpretadores;
 using MinhasFinancas.Infra.IA.Modelos;
 
@@ -15,15 +16,18 @@ namespace MinhasFinancas.Infra.IA.Construtores
         private readonly InterpretadorMemoriaFinanceira _interpretadorMemoriaFinanceira;
         private readonly InterpretadorDecisaoFinanceira _interpretadorDecisaoFinanceira;
         private readonly InterpretadorEstrategico _interpretadorEstrategico;
+        private readonly IEspecialistasFinanceirosService _especialistasFinanceirosService;
 
         public ConstrutorContextoIA(
             InterpretadorMemoriaFinanceira interpretadorMemoriaFinanceira,
             InterpretadorDecisaoFinanceira interpretadorDecisaoFinanceira,
-            InterpretadorEstrategico interpretadorEstrategico)
+            InterpretadorEstrategico interpretadorEstrategico,
+            IEspecialistasFinanceirosService especialistasFinanceirosService)
         {
             _interpretadorMemoriaFinanceira = interpretadorMemoriaFinanceira;
             _interpretadorDecisaoFinanceira = interpretadorDecisaoFinanceira;
             _interpretadorEstrategico = interpretadorEstrategico;
+            _especialistasFinanceirosService = especialistasFinanceirosService;
         }
 
         public ContextoAssistenteFinanceiro Construir(
@@ -99,6 +103,27 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 TextoParaIA = "Nao foi possivel calcular consistencia estrategica."
             };
 
+            var contexto = new ContextoAssistenteFinanceiro
+            {
+                DataReferencia = resumoFinanceiroIA.DataReferencia,
+                PontuacaoSaudeFinanceira = resumoFinanceiroIA.SaudeFinanceira.PontuacaoGeral,
+                ClassificacaoSaudeFinanceira = resumoFinanceiroIA.SaudeFinanceira.Classificacao,
+                PrioridadesImediatas = prioridades,
+                DestaquesPositivos = destaques,
+                InsightsPrioritarios = insightsPrioritarios,
+                MemoriaFinanceiraResumida = memoriaFinanceiraResumida,
+                ResumoEvolucaoFinanceira = interpretacaoMemoria.ResumoEvolucao,
+                EvolucaoFinanceira = interpretacaoMemoria.Narrativas,
+                CompromissosFinanceiros = compromissosAtivos,
+                ResumoExecutivo = resumoFinanceiroIA.ResumoExecutivo,
+                DecisaoFinanceira = decisaoInterpretada,
+                InterpretacaoPlanoEstrategico = interpretacaoPlano,
+                ConsistenciaEstrategica = consistencia,
+                PerguntaUsuario = perguntaUsuario ?? string.Empty
+            };
+
+            contexto.PareceresEspecialistas = _especialistasFinanceirosService.Avaliar(contexto);
+
             var secoes = new List<string>
             {
                 MontarSecao(
@@ -166,6 +191,10 @@ namespace MinhasFinancas.Infra.IA.Construtores
                     MontarLinhasConsistenciaEstrategica(consistencia),
                     "- Nao foi possivel calcular consistencia estrategica."),
                 MontarSecao(
+                    "Pareceres dos Especialistas",
+                    ResumoEspecialistasFinanceiros.ParaTexto(contexto.PareceresEspecialistas),
+                    "- Nenhum especialista retornou parecer."),
+                MontarSecao(
                     "Decisao Financeira Interpretada",
                     MontarLinhasDecisaoFinanceira(decisaoInterpretada),
                     "- Nenhuma decisao financeira foi interpretada nesta leitura."),
@@ -185,25 +214,8 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 secoes.Add(MontarSecao("Pergunta do Usuario", [$"- {perguntaUsuario}"]));
             }
 
-            return new ContextoAssistenteFinanceiro
-            {
-                DataReferencia = resumoFinanceiroIA.DataReferencia,
-                PontuacaoSaudeFinanceira = resumoFinanceiroIA.SaudeFinanceira.PontuacaoGeral,
-                ClassificacaoSaudeFinanceira = resumoFinanceiroIA.SaudeFinanceira.Classificacao,
-                PrioridadesImediatas = prioridades,
-                DestaquesPositivos = destaques,
-                InsightsPrioritarios = insightsPrioritarios,
-                MemoriaFinanceiraResumida = memoriaFinanceiraResumida,
-                ResumoEvolucaoFinanceira = interpretacaoMemoria.ResumoEvolucao,
-                EvolucaoFinanceira = interpretacaoMemoria.Narrativas,
-                CompromissosFinanceiros = compromissosAtivos,
-                ResumoExecutivo = resumoFinanceiroIA.ResumoExecutivo,
-                DecisaoFinanceira = decisaoInterpretada,
-                InterpretacaoPlanoEstrategico = interpretacaoPlano,
-                ConsistenciaEstrategica = consistencia,
-                ContextoTextual = string.Join(Environment.NewLine + Environment.NewLine, secoes),
-                PerguntaUsuario = perguntaUsuario ?? string.Empty
-            };
+            contexto.ContextoTextual = string.Join(Environment.NewLine + Environment.NewLine, secoes);
+            return contexto;
         }
 
         private static string MontarSecao(string titulo, IEnumerable<string> linhas, string? vazio = null)

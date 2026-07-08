@@ -6,11 +6,11 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 4.2.5 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 4.2.6 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
 A subfase **Fase 4.2.3.1.1 — Gestão do Plano Estratégico Financeiro** também foi concluída no frontend.
 
-A próxima etapa oficial é a **Fase 4.2.6 — Especialistas Financeiros**.
+A próxima etapa oficial é a **Fase 4.2.7 — Conversa Contínua**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -279,34 +279,20 @@ Usar o contexto consolidado do usuário para produzir recomendações estratégi
 
 #### Fase 4.2.6 — Especialistas Financeiros
 
-**Status:** futura
+**Status:** concluída
 
 **Objetivo:**
 
 Criar especialistas temáticos utilizando a mesma base técnica da IA estratégica, alterando principalmente contexto e foco de análise.
 
-### Fase 5 — Especialistas
+**Entregas concluídas:**
 
-**Status:** futura
+- infraestrutura interna de especialistas no backend
+- pareceres estruturados por domínio financeiro
+- integração dos pareceres ao contexto consolidado do Assistente Financeiro
+- documentação oficial de cada especialista para evolução futura
 
-Criar especialistas utilizando a mesma infraestrutura.
-
-**Exemplos:**
-
-- Especialista em DÃ­vidas
-- Especialista em PatrimÃ´nio
-- Especialista em Metas
-- Especialista em Fluxo de Caixa
-- Especialista em SimulaÃ§Ãµes
-
-**Nesta fase muda apenas:**
-
-- prompt
-- contexto enviado
-
-Toda a infraestrutura permanece a mesma.
-
-### Fase 6 â€” Conversa ContÃ­nua
+### Fase 4.2.7 — Conversa Contínua
 
 **Status:** futura
 
@@ -380,7 +366,7 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.2.6 — Especialistas Financeiros
+- Fase 4.2.7 — Conversa Contínua
 
 ### Dashboard
 
@@ -443,7 +429,8 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2.3.2 — Interpretador Estratégico** está **concluída**
 - a **Fase 4.2.3.3 — Consistência Estratégica** está **concluída**
 - a **Fase 4.2.5 — IA Estratégica** está **concluída**
-- a **próxima etapa oficial** é a **Fase 4.2.6 — Especialistas Financeiros**
+- a **Fase 4.2.6 — Especialistas Financeiros** está **concluída**
+- a **próxima etapa oficial** é a **Fase 4.2.7 — Conversa Contínua**
 
 ### Entregas já consolidadas
 

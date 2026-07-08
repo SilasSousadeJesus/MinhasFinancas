@@ -1,48 +1,50 @@
-# Changelog - Minhas Finanças
+# Changelog - Minhas Financas
 
-Registrar aqui apenas mudanças relevantes do sistema.
+Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 08/07/2026
 
-- Consolidação da Fase 4.2.5 — IA Estratégica, com revisão do prompt oficial para conectar estado atual, evolução, plano estratégico, consistência e compromissos em uma narrativa consultiva.
-- Atualização da documentação de produto, roadmap, visão do assistente e AI context para refletir a IA Estratégica como fase concluída.
-- Criação do documento `docs/ASSISTANT_VISION.md`, com a visão humana e evolutiva do Assistente Financeiro.
-- Referências ao novo documento adicionadas em `AI_CONTEXT.md`, `docs/PRODUCT_VISION.md` e `docs/MODULE_GUIDE.md`.
-- Criação da base inicial do `Modelo de Decisão Financeira`, com `DecisaoFinanceiraIA`, `InterpretadorDecisaoFinanceira` e preparação do contexto do Assistente Financeiro para receber essa camada.
+- Consolidacao da Fase 4.2.5 - IA Estrategica, com revisao do prompt oficial para conectar estado atual, evolucao, plano estrategico, consistencia e compromissos em uma narrativa consultiva.
+- Atualizacao da documentacao de produto, roadmap, visao do assistente e AI context para refletir a IA Estrategica como fase concluida.
+- Criacao do documento `docs/ASSISTANT_VISION.md`, com a visao humana e evolutiva do Assistente Financeiro.
+- Referencias ao novo documento adicionadas em `AI_CONTEXT.md`, `docs/PRODUCT_VISION.md` e `docs/MODULE_GUIDE.md`.
+- Criacao da base inicial do `Modelo de Decisao Financeira`, com `DecisaoFinanceiraIA`, `InterpretadorDecisaoFinanceira` e preparacao do contexto do Assistente Financeiro para receber essa camada.
+- Consolidacao da Fase 4.2.6 - Especialistas Financeiros, com pareceres internos por dominio integrados ao contexto consolidado do Assistente Financeiro.
+- Criacao dos documentos de apoio dos especialistas internos em `MinhasFinancas.Infra/IA/Prompts/Especialistas/`, registrando objetivos, regras, prioridades e limitacoes de cada dominio.
 
 ## 07/07/2026
 
-- Criação da tela de gestão do Plano Estratégico Financeiro no frontend.
-- Visualização do plano vigente, edição por nova versão e histórico simples de versões.
-- Inclusão do acesso ao módulo na navegação lateral.
-- Implementação da Consistência Estratégica como avaliação determinística entre decisão, situação atual e plano estratégico vigente.
-- Integração da Consistência Estratégica ao contexto textual enviado para a IA.
+- Criacao da tela de gestao do Plano Estrategico Financeiro no frontend.
+- Visualizacao do plano vigente, edicao por nova versao e historico simples de versoes.
+- Inclusao do acesso ao modulo na navegacao lateral.
+- Implementacao da Consistencia Estrategica como avaliacao deterministica entre decisao, situacao atual e plano estrategico vigente.
+- Integracao da Consistencia Estrategica ao contexto textual enviado para a IA.
 
 ## 05/07/2026
 
-- Migração do banco oficial de SQL Server para MySQL.
-- Criação do módulo de Patrimônio com ativos, passivos, snapshots e evolução patrimonial.
-- Criação do módulo de Simulações Financeiras.
-- Criação do Radar Financeiro no Dashboard.
-- Criação da tela de Fluxo de Caixa Simples.
-- Criação da infraestrutura global de loading no frontend.
-- Implementação de exportação para Excel na tela de Lançamentos.
-- Implementação de novo modelo de status dos lançamentos com efetivação rápida.
+- Migracao do banco oficial de SQL Server para MySQL.
+- Criacao do modulo de Patrimonio com ativos, passivos, snapshots e evolucao patrimonial.
+- Criacao do modulo de Simulacoes Financeiras.
+- Criacao do Radar Financeiro no Dashboard.
+- Criacao da tela de Fluxo de Caixa Simples.
+- Criacao da infraestrutura global de loading no frontend.
+- Implementacao de exportacao para Excel na tela de Lancamentos.
+- Implementacao de novo modelo de status dos lancamentos com efetivacao rapida.
 
 ## 04/07/2026
 
-- Integração real de autenticação entre frontend e backend.
-- Integração do dashboard com dados reais.
-- Criação do CRUD de contas e cartões.
-- Criação do CRUD de categorias e subcategorias com seed inicial por usuário.
-- Evolução do módulo de Projeções com persistência por usuário e múltiplos cenários.
-- Implementação de lançamentos programados:
-  - único
+- Integracao real de autenticacao entre frontend e backend.
+- Integracao do dashboard com dados reais.
+- Criacao do CRUD de contas e cartoes.
+- Criacao do CRUD de categorias e subcategorias com seed inicial por usuario.
+- Evolucao do modulo de Projecoes com persistencia por usuario e multiplos cenarios.
+- Implementacao de lancamentos programados:
+  - unico
   - parcelado
   - fixo
-  - por dia útil
+  - por dia util
 
-## Histórico acumulado
+## Historico acumulado
 
-- O projeto evoluiu de frontend majoritariamente visual para aplicação integrada de ponta a ponta.
-- Os módulos centrais hoje já possuem fluxo real entre interface, API e persistência.
+- O projeto evoluiu de frontend majoritariamente visual para aplicacao integrada de ponta a ponta.
+- Os modulos centrais hoje ja possuem fluxo real entre interface, API e persistencia.

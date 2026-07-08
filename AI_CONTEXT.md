@@ -338,8 +338,9 @@ ObservaÃ§Ã£o importante:
 - `ConstrutorPromptIA` monta a requisiÃ§Ã£o final a partir do contexto preparado e do prompt base versionado em arquivo
 - `IProvedorIA` abstrai provedores externos para evitar acoplamento com uma implementaÃ§Ã£o especÃ­fica
 - `OpenAIProvider` agora possui implementaÃ§Ã£o real via HTTP para a API da OpenAI
-- a chamada externa usa apenas `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Plano Estratégico Financeiro -> InterpretadorEstrategico -> Consistência Estratégica -> CompromissosFinanceiros -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a chamada externa usa apenas `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Plano Estratégico Financeiro -> InterpretadorEstrategico -> Consistência Estratégica -> CompromissosFinanceiros -> Pareceres dos Especialistas -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 - a Fase 4.2.5 consolidou a IA Estratégica, que passa a conectar estado atual, evolução, plano, consistência e compromissos em uma única narrativa consultiva
+- a Fase 4.2.6 adicionou especialistas internos por domínio, sem criar uma segunda IA
 - o provedor trata timeout, retry simples, respostas vazias, autenticaÃ§Ã£o invÃ¡lida e falhas transitÃ³rias
 - logs tÃ©cnicos existem, mas nÃ£o devem registrar API Key, prompt completo nem resposta completa da IA
 - a chave de API nÃ£o deve ser versionada
@@ -356,6 +357,7 @@ ObservaÃ§Ã£o importante:
 - consome exclusivamente o endpoint `api/ResumoFinanceiroIA/{usuarioId}`
 - o backend tambÃ©m expÃµe `POST api/AssistenteFinanceiro/GerarAnalise/{usuarioId}` para execuÃ§Ã£o tÃ©cnica da anÃ¡lise via IA
 - exibe um Ãºnico card principal de resumo executivo
+- recebe o apoio dos especialistas internos por domínio antes da resposta final da IA
 - dentro desse resumo, organiza a leitura em seÃ§Ãµes com tÃ­tulos:
   - resumo
   - prioridades
@@ -390,7 +392,8 @@ ObservaÃ§Ã£o importante:
 - cada interaÃ§Ã£o usa a prÃ³pria pergunta do usuÃ¡rio como identificador principal no histÃ³rico, com truncamento visual quando necessÃ¡rio
 - o card principal da anÃ¡lise aprofundada reutiliza o mesmo espaÃ§o para respostas novas e anÃ¡lises histÃ³ricas selecionadas
 - erros amigÃ¡veis retornados pela API sÃ£o mostrados sem apagar a anÃ¡lise anterior
-- nÃ£o existe chat, especialistas nem conversa contÃ­nua nesta fase
+- os especialistas internos jÃ¡ alimentam o contexto consolidado com pareceres por domÃ­nio financeiro
+- nÃ£o existe chat nem conversa contÃ­nua nesta fase
 - a MemÃ³ria Financeira continua sendo responsabilidade do backend; o frontend apenas solicita a geraÃ§Ã£o e exibe o resultado
 - a IA passou a receber a seção `Evolução Financeira` como interpretação oficial da continuidade histórica, e não apenas uma lista cronológica
 - a IA também recebe a seção `Consistência Estratégica` como avaliação oficial e determinística do alinhamento com o plano vigente
@@ -520,7 +523,7 @@ ObservaÃ§Ã£o importante:
 
 ### Próxima implementação prevista
 
-- Fase 4.2.6 — Especialistas Financeiros no roadmap de Inteligência Financeira
+- Fase 4.2.7 — Conversa Contínua no roadmap de Inteligência Financeira
 - a Fase 4.2.4 — Compromissos Financeiros foi concluída e passou a integrar a cadeia do Assistente Financeiro
 - a intenção do usuário já pode ser interpretada como `DecisaoFinanceiraIA` antes da montagem do contexto estratégico
 - evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo

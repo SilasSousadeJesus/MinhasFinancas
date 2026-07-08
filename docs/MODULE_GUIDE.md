@@ -105,6 +105,7 @@ Este arquivo nÃ£o substitui:
 - copia o conteúdo da análise e abre análises anteriores
 - transforma sugestões da IA em compromissos financeiros reais
 - acompanha uma leitura estratégica que conecta estado atual, evolução, plano, consistência e compromissos
+- recebe pareceres internos de especialistas por domínio financeiro
 
 ### Dados gerados ou mantidos
 - consome `ResumoFinanceiroIA` como base consolidada
@@ -112,12 +113,14 @@ Este arquivo nÃ£o substitui:
 - reutiliza o histórico das análises como continuidade da leitura executiva
 - envia ao backend a intenção do usuário e o contexto necessário para a análise
 - produz uma resposta consultiva apoiada na Fase 4.2.5 — IA Estratégica
+- incorpora os pareceres dos especialistas internos antes da resposta final da IA
 
 ### Impacto no restante do sistema
 - depende da cadeia `Dados -> Indicadores -> Saúde Financeira -> Insights -> ResumoFinanceiroIA`
 - consulta a Memória Financeira para manter continuidade entre análises
 - utiliza o Plano Estratégico Financeiro e os compromissos ativos como contexto adicional
-- serve como ponto central para IA futura, especialistas temáticos e Estratégia Financeira
+- utiliza especialistas internos para aprofundar domínios específicos antes da consolidação final
+- serve como ponto central para a próxima evolução do Assistente Financeiro
 
 ### O que já está funcional
 - resumo executivo com possibilidade de minimizar e expandir
@@ -129,6 +132,7 @@ Este arquivo nÃ£o substitui:
 - sugestão de compromisso gerada pela IA e conversão direta em compromisso financeiro
 - ações de copiar, gerar novamente e recarregar análises anteriores
 - IA Estratégica já consolidada no texto final, conectando estado atual, evolução, plano e compromissos
+- especialistas internos alimentando a leitura final do assistente com pareceres por domínio
 
 ### Evoluções futuras
 - especialistas temáticos reutilizando a mesma infraestrutura

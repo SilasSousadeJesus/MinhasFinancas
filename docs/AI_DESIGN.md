@@ -137,23 +137,28 @@ Diretrizes obrigatÃ³rias:
 - a chave da API deve ficar fora do repositÃ³rio
 - o contexto deve ser sempre preparado pelo backend antes da chamada externa
 
-## Especialistas futuros
+## Especialistas Financeiros
 
-A infraestrutura foi desenhada para permitir especialistas futuros com a mesma base tÃ©cnica.
+A infraestrutura dos especialistas jÃ¡ existe no backend e foi criada para aprofundar a leitura financeira por domÃ­nio sem criar uma segunda IA.
 
-Exemplos:
+Os especialistas internos atuais cobrem:
 
-- especialista em dÃ­vidas
-- especialista em patrimÃ´nio
-- especialista em metas
-- especialista em fluxo de caixa
-- especialista em simulaÃ§Ãµes
+- dÃ­vidas
+- reserva de emergÃªncia
+- fluxo de caixa
+- patrimÃ´nio
+- plano estratÃ©gico
+- compromissos financeiros
 
-Nesses casos, a infraestrutura permanece a mesma e muda principalmente:
+Esses especialistas:
 
-- o contexto enviado
-- o prompt utilizado
-- o objetivo da anÃ¡lise
+- analisam sinais do contexto consolidado
+- retornam pareceres estruturados
+- nÃ£o chamam IA generativa
+- nÃ£o substituem o Assistente Financeiro principal
+- nÃ£o alteram regras de negÃ³cio
+
+O valor dessa camada Ã© permitir profundidade sem fragmentar a experiÃªncia do usuÃ¡rio.
 
 ## EvoluÃ§Ã£o futura
 
@@ -246,6 +251,7 @@ SituaÃ§Ã£o atual da evoluÃ§Ã£o:
 - Fase 4.2.2.1 implementada no backend: interpretaÃ§Ã£o da memÃ³ria histÃ³rica antes da chamada Ã  IA
 - Fase 4.2.3.3 implementada no backend: Consistência Estratégica calculada pelo sistema e enviada ao contexto da IA
 - Fase 4.2.5 concluÃ­da: IA EstratÃ©gica consolidada com leitura consultiva baseada em estado atual, evoluÃ§Ã£o, plano, consistÃªncia e compromissos
+- Fase 4.2.6 concluÃ­da: especialistas internos analisam domÃ­nios especÃ­ficos antes da consolidaÃ§Ã£o do contexto final
 
 Nesta etapa, o foco Ã© melhorar:
 

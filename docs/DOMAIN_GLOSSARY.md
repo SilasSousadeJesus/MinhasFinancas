@@ -356,6 +356,21 @@ Campos conceituais principais:
 - observações complementares
 - ativo/inativo
 
+## Especialistas Financeiros
+
+Camada interna do Assistente Financeiro responsável por aprofundar a leitura de domínios específicos sem criar uma segunda IA.
+
+Os especialistas retornam pareceres estruturados por assunto, como:
+
+- dívidas
+- fluxo de caixa
+- patrimônio
+- reserva de emergência
+- plano estratégico
+- compromissos
+
+Eles não substituem o Assistente Financeiro principal. Apenas aprofundam o contexto consolidado antes da resposta final.
+
 Exemplos:
 
 - fortalecer a reserva de emergência

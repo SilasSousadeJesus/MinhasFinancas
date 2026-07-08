@@ -68,6 +68,7 @@ Cada camada do sistema deve agregar valor a anterior.
 - A `Consistência Estratégica` avalia de forma determinística se uma decisão está alinhada ao plano vigente antes de qualquer interpretação da IA.
 - A intenção do usuário deve ser estruturada como `Decisão Financeira` antes de chegar às camadas estratégicas, para preservar rastreabilidade e clareza de domínio.
 - A `IA Estratégica` transforma esse contexto consolidado em um parecer consultivo mais profundo, sem criar novas regras de negócio.
+- Os `Especialistas Financeiros` aprofundam a leitura por domínio antes da consolidação final da resposta.
 
 Nenhuma camada deve substituir a anterior.
 
