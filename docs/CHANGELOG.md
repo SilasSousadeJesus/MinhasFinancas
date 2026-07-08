@@ -2,6 +2,12 @@
 
 Registrar aqui apenas mudanças relevantes do sistema.
 
+## 07/07/2026
+
+- Criação da tela de gestão do Plano Estratégico Financeiro no frontend.
+- Visualização do plano vigente, edição por nova versão e histórico simples de versões.
+- Inclusão do acesso ao módulo na navegação lateral.
+
 ## 05/07/2026
 
 - Migração do banco oficial de SQL Server para MySQL.

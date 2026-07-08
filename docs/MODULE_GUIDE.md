@@ -438,7 +438,10 @@ Serve para testar cenÃ¡rios hipotÃ©ticos sem alterar os dados reais do usuÃ
 - backend funcional com CRUD de versões
 - cada atualização cria uma nova versão preservando o histórico
 - listagem de versões e carregamento da versão vigente
-- a tela frontend ainda não foi entregue nesta fase
+- a tela frontend já permite visualizar o plano vigente, criar o primeiro plano e gerar nova versão sem sobrescrever o histórico
+- a tela frontend também permite cadastrar e editar objetivos estratégicos antes de salvar
+- a listagem simples de versões permite consultar versões anteriores de forma compacta
+- o usuário pode visualizar uma versão histórica sem alterar o plano ativo
 
 ### Evoluções futuras
 - consistência estratégica

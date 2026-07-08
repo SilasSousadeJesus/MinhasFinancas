@@ -8,6 +8,8 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 O projeto se encontra atualmente na **Fase 4.2.3.2 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
+A subfase **Fase 4.2.3.1.1 — Gestão do Plano Estratégico Financeiro** também foi concluída no frontend.
+
 A próxima etapa oficial é a **Fase 4.2.3.3 — Consistência Estratégica**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
@@ -214,6 +216,9 @@ Registrar a direção estratégica do usuário ao longo do tempo, como construir
 - **Fase 4.2.3.1 — Plano Estratégico Financeiro**
   - concluída
   - armazenar objetivos, prioridades, princípios e direção estratégica formal do usuário
+- **Fase 4.2.3.1.1 — Gestão do Plano Estratégico Financeiro**
+  - concluída
+  - tela para criar a primeira versão, editar a versão vigente por nova versão e consultar versões históricas de forma simples
 - **Fase 4.2.3.2 — Interpretador Estratégico**
   - concluída
   - transformar o Plano Estratégico em narrativa compreensível para a IA

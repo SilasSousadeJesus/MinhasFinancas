@@ -488,7 +488,7 @@ ObservaÃ§Ã£o importante:
 
 ### Data da Ãºltima atualizaÃ§Ã£o
 
-- 06/07/2026
+- 07/07/2026
 
 ### MÃ³dulos concluÃ­dos
 
@@ -503,6 +503,7 @@ ObservaÃ§Ã£o importante:
 - patrimÃ´nio
 - simulaÃ§Ãµes financeiras
 - perfil financeiro
+- plano estratÃ©gico financeiro
 
 ### MÃ³dulos em desenvolvimento
 
@@ -515,6 +516,7 @@ ObservaÃ§Ã£o importante:
 
 - Fase 4.2.3.3 — Consistência Estratégica no roadmap de Inteligência Financeira
 - evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo
+- consolidação da tela de gestão do Plano Estratégico Financeiro no frontend, com edição por nova versão e histórico simples
 
 ## Atualização da documentação de IA
 
