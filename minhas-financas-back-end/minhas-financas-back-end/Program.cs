@@ -16,6 +16,7 @@ using MinhasFinancas.Infra.Data.config.configMigrate;
 using MinhasFinancas.Infra.Data.Interfaces;
 using MinhasFinancas.Infra.Data.Repositories;
 using MinhasFinancas.Infra.IA;
+using MinhasFinancas.Infra.IA.Avaliadores;
 using MinhasFinancas.Infra.IA.Construtores;
 using MinhasFinancas.Infra.IA.Interpretadores;
 using MinhasFinancas.Infra.IA.Modelos;
@@ -102,6 +103,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IInteligenciaFinanceiraAppService, InteligenciaFinanceiraAppService>();
             builder.Services.AddScoped<InterpretadorMemoriaFinanceira>();
             builder.Services.AddScoped<InterpretadorEstrategico>();
+            builder.Services.AddScoped<AvaliadorConsistenciaEstrategica>();
             builder.Services.AddScoped<ConstrutorContextoIA>();
             builder.Services.AddScoped<ConstrutorPromptIA>();
             builder.Services.AddScoped<AssistenteFinanceiroService>();

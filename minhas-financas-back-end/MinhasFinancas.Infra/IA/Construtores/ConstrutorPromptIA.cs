@@ -4,7 +4,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
 {
     public class ConstrutorPromptIA
     {
-        public const string VersaoPromptAtual = "fase-4.2.3.2";
+        public const string VersaoPromptAtual = "fase-4.2.3.3";
         private readonly string _caminhoPromptBase;
 
         public ConstrutorPromptIA()
@@ -61,7 +61,12 @@ namespace MinhasFinancas.Infra.IA.Construtores
             - ensine antes de aconselhar
             - use a secao Evolucao Financeira como interpretacao oficial da memoria do sistema
             - use a secao Plano Estrategico Financeiro como referencia oficial da direcao escolhida pelo usuario
+            - use a secao Consistencia Estrategica como avaliacao oficial do alinhamento da decisao
+            - nunca recalcular consistencia estrategica; aceite a avaliacao deterministica do sistema
+            - nunca contradiga o Avaliador de Consistencia Estrategica
             - nao crie nem altere estrategia; apenas interprete o plano vigente
+            - explique por que a decisao esta alinhada ou desalinhada ao plano vigente
+            - cite os objetivos impactados quando houver consistencia estrategica
             - quando houver plano estrategico, avalie se a leitura executiva esta alinhada com ele
             - quando nao houver plano vigente, deixe isso explicito sem inventar direcionamento
             - quando fizer sentido, reconheca continuidade, melhora, estabilidade ou recorrencia

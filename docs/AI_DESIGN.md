@@ -34,7 +34,7 @@ Sempre que possÃ­vel, a resposta deve mostrar por que uma recomendaÃ§Ã£o i
 
 O fluxo oficial da análise com IA é:
 
-`Dados -> Indicadores Financeiros -> Saude Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> Memoria Financeira -> InterpretadorMemoriaFinanceira -> Plano Estrategico Financeiro -> InterpretadorEstrategico -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA -> Relatorio Executivo`
+`Dados -> Indicadores Financeiros -> Saude Financeira -> Insights Financeiros -> ResumoFinanceiroIA -> Memoria Financeira -> InterpretadorMemoriaFinanceira -> Plano Estrategico Financeiro -> InterpretadorEstrategico -> Consistencia Estrategica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IA -> Relatorio Executivo`
 
 Esse fluxo garante separaÃ§Ã£o entre:
 
@@ -185,13 +185,14 @@ Responsabilidades:
 
 ### Consistência Estratégica
 
-Melhoria futura ligada ao Plano Estratégico Financeiro.
+Camada implementada para avaliar, de forma determinística, se uma decisão está alinhada ao Plano Estratégico Financeiro vigente.
 
 Responsabilidades:
 
-- avaliar alinhamento entre decisões e plano vigente
+- avaliar alinhamento entre decisão, pergunta do usuário e plano vigente
 - apoiar recomendações contextualizadas
 - evitar recomendações desalinhadas com objetivos de longo prazo
+- fornecer ao contexto da IA uma leitura oficial de consistência, sem recalcular nada no modelo
 
 ### Princípio do Plano Estratégico
 
@@ -225,6 +226,7 @@ SituaÃ§Ã£o atual da evoluÃ§Ã£o:
 - Fase 4.2 iniciada: primeiro prompt oficial de anÃ¡lise financeira com IA implementado
 - Fase 4.2.2 implementada no frontend: experiÃªncia visual da anÃ¡lise aprofundada integrada Ã  tela do Assistente Financeiro
 - Fase 4.2.2.1 implementada no backend: interpretaÃ§Ã£o da memÃ³ria histÃ³rica antes da chamada Ã  IA
+- Fase 4.2.3.3 implementada no backend: Consistência Estratégica calculada pelo sistema e enviada ao contexto da IA
 
 Nesta etapa, o foco Ã© melhorar:
 

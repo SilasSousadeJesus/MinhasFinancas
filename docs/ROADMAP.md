@@ -6,11 +6,11 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 4.2.3.2 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 4.2.3.3 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
 A subfase **Fase 4.2.3.1.1 — Gestão do Plano Estratégico Financeiro** também foi concluída no frontend.
 
-A próxima etapa oficial é a **Fase 4.2.3.3 — Consistência Estratégica**.
+A próxima etapa oficial é a **Fase 4.2.3.4 — IA Estratégica**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -223,6 +223,7 @@ Registrar a direção estratégica do usuário ao longo do tempo, como construir
   - concluída
   - transformar o Plano Estratégico em narrativa compreensível para a IA
 - **Fase 4.2.3.3 — Consistência Estratégica**
+  - concluída
   - avaliar o quanto uma decisão está alinhada com o Plano Estratégico
 - **Fase 4.2.3.4 — IA Estratégica**
   - usar Estado Atual + Evolução + Plano Estratégico para produzir recomendações contextualizadas
@@ -330,7 +331,6 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.2.3.3 — Consistência Estratégica
 - Fase 4.2.3.4 — IA Estratégica
 - Fase 4.2.4 — Compromissos Financeiros
 
@@ -393,7 +393,8 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2.2 — Experiência Visual da Análise IA** está **concluída**
 - a **Fase 4.2.2.1 — Interpretador da Memória Financeira** está **concluída**
 - a **Fase 4.2.3.2 — Interpretador Estratégico** está **concluída**
-- a **próxima etapa oficial** é a **Fase 4.2.3.3 — Consistência Estratégica**
+- a **Fase 4.2.3.3 — Consistência Estratégica** está **concluída**
+- a **próxima etapa oficial** é a **Fase 4.2.3.4 — IA Estratégica**
 
 ### Entregas já consolidadas
 
@@ -406,6 +407,8 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - histórico visual da Memória Financeira com reabertura e exclusão de análises anteriores
 - resumo executivo minimizável para foco na leitura da análise aprofundada
 - interpretação da Memória Financeira em narrativa de evolução antes da chamada à IA
+- avaliação determinística da Consistência Estratégica antes da montagem do contexto final
+- integração da seção `Consistência Estrategica` no contexto textual enviado à IA
 
 ### Base de Conhecimento Financeira
 

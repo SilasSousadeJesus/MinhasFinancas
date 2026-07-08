@@ -1,4 +1,4 @@
-﻿# Guia dos MÃ³dulos - Minhas FinanÃ§as
+# Guia dos MÃ³dulos - Minhas FinanÃ§as
 
 Este documento explica o papel funcional de cada mÃ³dulo do sistema.
 
@@ -136,6 +136,7 @@ ObservaÃ§Ãµes adicionais da fase tÃ©cnica:
 - os blocos textuais nÃ£o reutilizam literalmente as descriÃ§Ãµes tÃ©cnicas dos indicadores; o assistente usa frases interpretativas prÃ³prias para transformar os dados em linguagem executiva
 - os insights permanecem como camada separada de alertas, oportunidades, configuraÃ§Ã£o e destaques positivos
 - principais indicadores em formato textual
+- a seção de Consistência Estratégica mostra se a pergunta ou decisão está alinhada ao plano vigente, sem a IA recalcular essa leitura
 - leitura estratÃ©gica com pontos fortes e pontos de atenÃ§Ã£o em formato textual
 - conclusÃ£o dinÃ¢mica construÃ­da por regras com base na saÃºde financeira atual, sem IA generativa
 - a conclusÃ£o usa interpretaÃ§Ãµes executivas prÃ³prias por indicador, em vez de repetir literalmente descriÃ§Ãµes tÃ©cnicas ou prioridades
@@ -433,6 +434,7 @@ Serve para testar cenÃ¡rios hipotÃ©ticos sem alterar os dados reais do usuÃ
 - poderá ser consumido por insights e leituras estratégicas futuras
 - permitirá avaliar se decisões atuais estão alinhadas com a direção escolhida
 - já possui interpretação estratégica preparada para o contexto do Assistente Financeiro
+- alimenta a avaliação de Consistência Estratégica usada pelo Assistente Financeiro
 
 ### O que já está funcional
 - backend funcional com CRUD de versões
@@ -622,5 +624,5 @@ A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design
 ### Evolução futura imediata
 
 - a próxima etapa visual será a exibição da análise aprofundada usando essa memória como base histórica
-- a evolução posterior da Base de Conhecimento incluirá **Interpretador Estratégico**, **Consistência Estratégica**, **IA Estratégica** e **Compromissos Financeiros**
+- a evolução posterior da Base de Conhecimento incluirá **Interpretador Estratégico**, **IA Estratégica** e **Compromissos Financeiros**
 

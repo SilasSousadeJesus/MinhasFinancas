@@ -73,12 +73,14 @@ namespace MinhasFinancas.Application.Services
                     resumo,
                     perguntaUsuario,
                     memoriaFinanceira,
+                    planoEstrategicoFinanceiro,
                     interpretacaoPlanoEstrategico);
 
                 var requisicao = _assistenteFinanceiroService.PrepararRequisicao(
                     resumo,
                     perguntaUsuario,
                     memoriaFinanceira,
+                    planoEstrategicoFinanceiro,
                     interpretacaoPlanoEstrategico);
                 var resposta = await _assistenteFinanceiroService.GerarRespostaAsync(requisicao, cancellationToken);
 

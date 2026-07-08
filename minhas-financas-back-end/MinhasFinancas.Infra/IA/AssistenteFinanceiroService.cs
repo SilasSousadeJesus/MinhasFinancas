@@ -1,4 +1,6 @@
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos;
+using MinhasFinancas.Domain.Entities;
+using MinhasFinancas.Infra.IA.Avaliadores;
 using MinhasFinancas.Infra.IA.Construtores;
 using MinhasFinancas.Infra.IA.Modelos;
 using MinhasFinancas.Infra.IA.Provedores;
@@ -10,37 +12,54 @@ namespace MinhasFinancas.Infra.IA
         private readonly ConstrutorContextoIA _construtorContextoIA;
         private readonly ConstrutorPromptIA _construtorPromptIA;
         private readonly IProvedorIA _provedorIA;
+        private readonly AvaliadorConsistenciaEstrategica _avaliadorConsistenciaEstrategica;
 
         public AssistenteFinanceiroService(
             ConstrutorContextoIA construtorContextoIA,
             ConstrutorPromptIA construtorPromptIA,
-            IProvedorIA provedorIA)
+            IProvedorIA provedorIA,
+            AvaliadorConsistenciaEstrategica avaliadorConsistenciaEstrategica)
         {
             _construtorContextoIA = construtorContextoIA;
             _construtorPromptIA = construtorPromptIA;
             _provedorIA = provedorIA;
+            _avaliadorConsistenciaEstrategica = avaliadorConsistenciaEstrategica;
         }
 
         public ContextoAssistenteFinanceiro PrepararContexto(
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
             IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
+            PlanoEstrategicoFinanceiro? planoEstrategicoFinanceiro = null,
             InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
         {
+            var consistenciaEstrategica = _avaliadorConsistenciaEstrategica.Avaliar(
+                resumoFinanceiroIA,
+                planoEstrategicoFinanceiro,
+                interpretacaoPlanoEstrategico,
+                perguntaUsuario);
+
             return _construtorContextoIA.Construir(
                 resumoFinanceiroIA,
                 perguntaUsuario,
                 memoriaFinanceira,
-                interpretacaoPlanoEstrategico);
+                interpretacaoPlanoEstrategico,
+                consistenciaEstrategica);
         }
 
         public RequisicaoIA PrepararRequisicao(
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
             IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
+            PlanoEstrategicoFinanceiro? planoEstrategicoFinanceiro = null,
             InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
         {
-            var contexto = PrepararContexto(resumoFinanceiroIA, perguntaUsuario, memoriaFinanceira, interpretacaoPlanoEstrategico);
+            var contexto = PrepararContexto(
+                resumoFinanceiroIA,
+                perguntaUsuario,
+                memoriaFinanceira,
+                planoEstrategicoFinanceiro,
+                interpretacaoPlanoEstrategico);
             return _construtorPromptIA.Construir(contexto);
         }
 

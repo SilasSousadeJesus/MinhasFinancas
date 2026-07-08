@@ -7,6 +7,8 @@ Registrar aqui apenas mudanças relevantes do sistema.
 - Criação da tela de gestão do Plano Estratégico Financeiro no frontend.
 - Visualização do plano vigente, edição por nova versão e histórico simples de versões.
 - Inclusão do acesso ao módulo na navegação lateral.
+- Implementação da Consistência Estratégica como avaliação determinística entre decisão, situação atual e plano estratégico vigente.
+- Integração da Consistência Estratégica ao contexto textual enviado para a IA.
 
 ## 05/07/2026
 

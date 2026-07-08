@@ -1,4 +1,4 @@
-﻿# AI Context - Minhas Finanças
+# AI Context - Minhas Finanças
 
 Este documento existe para dar a uma IA visão rápida e confiÃ¡vel do estado tÃ©cnico atual do projeto.
 
@@ -329,13 +329,14 @@ ObservaÃ§Ã£o importante:
 - radar financeiro detalhado, histórico, projeções, simulações e detalhamento patrimonial ainda não entram como blocos próprios do contexto e seguem como oportunidade de evolução para a fase seguinte
 
 - localizada em `MinhasFinancas.Infra/IA`
-- `AssistenteFinanceiroService` orquestra a preparaÃ§Ã£o de contexto, prompt e resposta
-- `InterpretadorMemoriaFinanceira` transforma o histÃ³rico resumido em narrativa de evoluÃ§Ã£o antes da chamada Ã  IA
+- `AssistenteFinanceiroService` orquestra a preparação de contexto, prompt e resposta
+- `InterpretadorMemoriaFinanceira` transforma o histórico resumido em narrativa de evolução antes da chamada à IA
+- `AvaliadorConsistenciaEstrategica` calcula de forma determinística o nível de consistência entre a pergunta do usuário, a situação financeira atual e o plano estratégico vigente
 - `ConstrutorContextoIA` transforma `ResumoFinanceiroIA` em contexto textual estruturado e seguro para consumo externo
 - `ConstrutorPromptIA` monta a requisiÃ§Ã£o final a partir do contexto preparado e do prompt base versionado em arquivo
 - `IProvedorIA` abstrai provedores externos para evitar acoplamento com uma implementaÃ§Ã£o especÃ­fica
 - `OpenAIProvider` agora possui implementaÃ§Ã£o real via HTTP para a API da OpenAI
-- a chamada externa usa apenas `ResumoFinanceiroIA -> MemÃ³ria Financeira -> InterpretadorMemoriaFinanceira -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a chamada externa usa apenas `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 - o provedor trata timeout, retry simples, respostas vazias, autenticaÃ§Ã£o invÃ¡lida e falhas transitÃ³rias
 - logs tÃ©cnicos existem, mas nÃ£o devem registrar API Key, prompt completo nem resposta completa da IA
 - a chave de API nÃ£o deve ser versionada
@@ -370,7 +371,8 @@ ObservaÃ§Ã£o importante:
 - a seÃ§Ã£o `conclusÃ£o` Ã© gerada por regras determinÃ­sticas no frontend via `ConclusaoFinanceiraBuilder`, sem uso de IA generativa
 - a conclusÃ£o nÃ£o reutiliza descriÃ§Ãµes tÃ©cnicas nem repete literalmente prioridades; ela usa frases interpretativas prÃ³prias por indicador para formar um parecer executivo
 - a abertura da conclusÃ£o varia conforme pontuaÃ§Ã£o/classificaÃ§Ã£o, para soar menos automÃ¡tica
-- os `Insights Financeiros` permanecem como bloco prÃ³prio de risco, oportunidade, configuraÃ§Ã£o ou destaque positivo, sem exercer o mesmo papel do resumo ou da conclusÃ£o
+- os `Insights Financeiros` permanecem como bloco próprio de risco, oportunidade, configuração ou destaque positivo, sem exercer o mesmo papel do resumo ou da conclusão
+- a seção `Consistência Estratégica` é montada pelo backend como avaliação determinística do alinhamento entre a decisão do usuário e o plano vigente
 - usa links para levar o usuÃ¡rio para a anÃ¡lise completa em `SaÃºde Financeira`
 - nÃ£o recalcula indicadores no frontend
 - o resumo executivo pode ser minimizado localmente para priorizar a leitura da anÃ¡lise aprofundada
@@ -387,7 +389,8 @@ ObservaÃ§Ã£o importante:
 - erros amigÃ¡veis retornados pela API sÃ£o mostrados sem apagar a anÃ¡lise anterior
 - nÃ£o existe chat, especialistas nem conversa contÃ­nua nesta fase
 - a MemÃ³ria Financeira continua sendo responsabilidade do backend; o frontend apenas solicita a geraÃ§Ã£o e exibe o resultado
-- a IA passou a receber a seÃ§Ã£o `EvoluÃ§Ã£o Financeira` como interpretaÃ§Ã£o oficial da continuidade histÃ³rica, e nÃ£o apenas uma lista cronolÃ³gica
+- a IA passou a receber a seção `Evolução Financeira` como interpretação oficial da continuidade histórica, e não apenas uma lista cronológica
+- a IA também recebe a seção `Consistência Estratégica` como avaliação oficial e determinística do alinhamento com o plano vigente
 
 ## Infraestrutura e integraÃ§Ãµes existentes
 
@@ -514,7 +517,7 @@ ObservaÃ§Ã£o importante:
 
 ### Próxima implementação prevista
 
-- Fase 4.2.3.3 — Consistência Estratégica no roadmap de Inteligência Financeira
+- Fase 4.2.3.4 — IA Estratégica no roadmap de Inteligência Financeira
 - evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo
 - consolidação da tela de gestão do Plano Estratégico Financeiro no frontend, com edição por nova versão e histórico simples
 
@@ -523,11 +526,11 @@ ObservaÃ§Ã£o importante:
 - `docs/AI_DESIGN.md` passou a ser o documento oficial de design da camada de IA
 - a Fase 4.2 foi iniciada com a formalização do fluxo de análise executiva com IA
 - o primeiro prompt oficial da Fase 4.2 foi implementado em `MinhasFinancas.Infra/IA/Prompts/PromptAnaliseFinanceira.md`
-- a cadeia oficial continua sendo `ResumoFinanceiroIA -> MemÃ³ria Financeira -> InterpretadorMemoriaFinanceira -> PlanoEstratégicoFinanceiro -> InterpretadorEstrategico -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a cadeia oficial continua sendo `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Plano Estratégico Financeiro -> InterpretadorEstrategico -> Consistência Estratégica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 
 ## Atualização técnica — Base de Conhecimento Financeira
 
-As subfases 4.2.1, 4.2.2.1 e 4.2.3.2 adicionaram a primeira versão da Base de Conhecimento Financeira do Assistente Financeiro, sua interpretação histórica e sua leitura estratégica.
+As subfases 4.2.1, 4.2.2.1, 4.2.3.2 e 4.2.3.3 adicionaram a primeira versão da Base de Conhecimento Financeira do Assistente Financeiro, sua interpretação histórica, sua leitura estratégica e sua consistência determinística.
 
 ### Novos elementos estruturais
 

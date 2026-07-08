@@ -314,6 +314,23 @@ Na fase atual, ela já é usada para preparar o contexto do Assistente Financeir
 
 Leitura que avalia se uma decisão está alinhada com o Plano Estratégico Financeiro vigente.
 
+## Avaliador de Consistência Estratégica
+
+Componente determinístico que calcula a consistência entre a pergunta do usuário, a situação financeira atual e o plano estratégico vigente.
+
+## Nível de Consistência Estratégica
+
+Classificação gerada pelo avaliador para indicar o grau de alinhamento.
+
+Exemplos:
+
+- Muito alta
+- Alta
+- Média
+- Baixa
+- Muito baixa
+- Indeterminada
+
 ## Compromissos Financeiros
 
 Registro de ações e decisões combinadas entre usuário e Assistente Financeiro.

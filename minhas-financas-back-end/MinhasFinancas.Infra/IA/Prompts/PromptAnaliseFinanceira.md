@@ -30,6 +30,11 @@ Produzir um parecer financeiro que ajude o usuario a compreender sua situacao at
 - trate o resumo do sistema como base oficial da leitura
 - trate a secao Evolucao Financeira como a interpretacao oficial da memoria do sistema
 - trate a secao Plano Estrategico Financeiro como a referencia oficial da direcao escolhida pelo usuario
+- trate a secao Consistencia Estrategica como a avaliacao oficial do alinhamento da decisao
+- nunca recalcular consistencia estrategica
+- nunca contradizer o Avaliador de Consistencia Estrategica
+- explicar por que a decisao esta alinhada ou desalinhada ao plano vigente
+- citar objetivos impactados quando houver consistencia estrategica
 - conecte os indicadores aos possiveis efeitos na vida financeira
 - priorize clareza sobre sofisticacao
 - evite repetir literalmente o contexto

@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Enums;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos;
+using MinhasFinancas.Infra.IA.Enums;
 using MinhasFinancas.Infra.IA.Interpretadores;
 using MinhasFinancas.Infra.IA.Modelos;
 
@@ -24,7 +25,8 @@ namespace MinhasFinancas.Infra.IA.Construtores
             ResumoFinanceiroIA resumoFinanceiroIA,
             string? perguntaUsuario = null,
             IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
-            InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
+            InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null,
+            ConsistenciaEstrategicaIA? consistenciaEstrategica = null)
         {
             var cultura = new CultureInfo("pt-BR");
 
@@ -72,6 +74,12 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 AlertasEstrategicos = ["Nao ha Plano Estrategico Financeiro vigente cadastrado."]
             };
             var narrativaPlanoEstrategico = _interpretadorEstrategico.InterpretarPlanoParaContexto(interpretacaoPlano);
+            var consistencia = consistenciaEstrategica ?? new ConsistenciaEstrategicaIA
+            {
+                PossuiPlano = false,
+                Resumo = "Nao foi possivel calcular consistencia estrategica.",
+                TextoParaIA = "Nao foi possivel calcular consistencia estrategica."
+            };
 
             var secoes = new List<string>
             {
@@ -132,6 +140,10 @@ namespace MinhasFinancas.Infra.IA.Construtores
                     narrativaPlanoEstrategico,
                     "- Nao ha Plano Estrategico Financeiro vigente cadastrado."),
                 MontarSecao(
+                    "Consistencia Estrategica",
+                    MontarLinhasConsistenciaEstrategica(consistencia),
+                    "- Nao foi possivel calcular consistencia estrategica."),
+                MontarSecao(
                     "Cobertura Atual do Contexto",
                     [
                         "- Perfil financeiro: ja refletido de forma indireta nos indicadores, na saude financeira e nas prioridades.",
@@ -160,6 +172,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 EvolucaoFinanceira = interpretacaoMemoria.Narrativas,
                 ResumoExecutivo = resumoFinanceiroIA.ResumoExecutivo,
                 InterpretacaoPlanoEstrategico = interpretacaoPlano,
+                ConsistenciaEstrategica = consistencia,
                 ContextoTextual = string.Join(Environment.NewLine + Environment.NewLine, secoes),
                 PerguntaUsuario = perguntaUsuario ?? string.Empty
             };
@@ -213,6 +226,45 @@ namespace MinhasFinancas.Infra.IA.Construtores
 
             linhas.AddRange(interpretacao.Narrativas.Where(item => !string.IsNullOrWhiteSpace(item)));
             return linhas;
+        }
+
+        private static IEnumerable<string> MontarLinhasConsistenciaEstrategica(ConsistenciaEstrategicaIA consistencia)
+        {
+            yield return $"- Possui plano vigente: {(consistencia.PossuiPlano ? "Sim" : "Nao")}";
+            yield return $"- Nivel de consistencia: {FormatarNivelConsistencia(consistencia.NivelConsistencia)}";
+
+            if (!string.IsNullOrWhiteSpace(consistencia.Resumo))
+            {
+                yield return $"- Resumo: {consistencia.Resumo}";
+            }
+
+            if (consistencia.MotivosFavoraveis.Count > 0)
+            {
+                yield return $"- Motivos favoraveis: {string.Join("; ", consistencia.MotivosFavoraveis)}";
+            }
+
+            if (consistencia.MotivosDesfavoraveis.Count > 0)
+            {
+                yield return $"- Motivos desfavoraveis: {string.Join("; ", consistencia.MotivosDesfavoraveis)}";
+            }
+
+            if (consistencia.ObjetivosImpactados.Count > 0)
+            {
+                yield return $"- Objetivos impactados: {string.Join("; ", consistencia.ObjetivosImpactados)}";
+            }
+        }
+
+        private static string FormatarNivelConsistencia(NivelConsistenciaEstrategica nivel)
+        {
+            return nivel switch
+            {
+                NivelConsistenciaEstrategica.MuitoAlta => "Muito alta",
+                NivelConsistenciaEstrategica.Alta => "Alta",
+                NivelConsistenciaEstrategica.Media => "Média",
+                NivelConsistenciaEstrategica.Baixa => "Baixa",
+                NivelConsistenciaEstrategica.MuitoBaixa => "Muito baixa",
+                _ => "Indeterminada"
+            };
         }
 
         private static string FormatarStatus(StatusIndicadorFinanceiro status)
