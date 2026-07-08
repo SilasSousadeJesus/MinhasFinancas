@@ -71,6 +71,8 @@ Nenhuma camada deve substituir a anterior.
 
 Cada uma existe para enriquecer a compreensao da situacao financeira do usuario.
 
+Para uma leitura mais humana e inspiradora da jornada do Assistente, consulte `docs/ASSISTANT_VISION.md`.
+
 ## Integracao com IA como evolucao em duas etapas
 
 A evolucao do Assistente Financeiro com IA foi oficialmente separada em duas responsabilidades diferentes:

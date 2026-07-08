@@ -8,6 +8,8 @@ InformaÃ§Ãµes de produto, roadmap, changelog e glossÃ¡rio de domÃ­nio fi
 
 `docs/MODULE_GUIDE.md` contém a explicação funcional dos módulos e seus impactos no restante do sistema.
 
+`docs/ASSISTANT_VISION.md` reúne a visão humana e evolutiva do Assistente Financeiro.
+
 ## Arquitetura da soluÃ§Ã£o
 
 O backend segue uma arquitetura em camadas prÃ³xima de `Clean Architecture` / `Onion`, sem rigidez acadÃªmica absoluta:

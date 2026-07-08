@@ -2,6 +2,11 @@
 
 Registrar aqui apenas mudanças relevantes do sistema.
 
+## 08/07/2026
+
+- Criação do documento `docs/ASSISTANT_VISION.md`, com a visão humana e evolutiva do Assistente Financeiro.
+- Referências ao novo documento adicionadas em `AI_CONTEXT.md`, `docs/PRODUCT_VISION.md` e `docs/MODULE_GUIDE.md`.
+
 ## 07/07/2026
 
 - Criação da tela de gestão do Plano Estratégico Financeiro no frontend.

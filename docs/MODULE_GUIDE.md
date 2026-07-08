@@ -14,6 +14,7 @@ Este arquivo nÃ£o substitui:
 - `AI_CONTEXT.md`, que documenta arquitetura e fluxo tÃ©cnico
 - `docs/DOMAIN_GLOSSARY.md`, que documenta conceitos oficiais do domÃ­nio
 - `docs/ROADMAP.md`, que documenta evoluÃ§Ã£o futura do produto
+- `docs/ASSISTANT_VISION.md`, que apresenta a visão humana e evolutiva do Assistente Financeiro
 
 ## Dashboard
 
