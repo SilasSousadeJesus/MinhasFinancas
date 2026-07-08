@@ -168,11 +168,9 @@ Ele deixa de ser apenas um conselheiro momentâneo e passa a ser também um guar
 
 ### IA Estratégica
 
-Hoje a IA responde.
+Hoje a IA já responde com mais contexto.
 
-No próximo nível, ela responde com mais contexto.
-
-Ela passa a considerar:
+Ela considera:
 
 - plano
 - memória
@@ -181,7 +179,9 @@ Ela passa a considerar:
 
 Isso não significa que a IA passa a mandar no sistema.
 
-Significa apenas que ela ganha uma base mais madura para comunicar melhor aquilo que o sistema já sabe.
+Significa que ela ganha uma base mais madura para comunicar melhor aquilo que o sistema já sabe, com tom de consultoria, não de relatório.
+
+Na prática, a IA Estratégica conecta o momento atual, a evolução, o plano e os compromissos em uma leitura mais humana e responsável.
 
 ### Especialistas Financeiros
 

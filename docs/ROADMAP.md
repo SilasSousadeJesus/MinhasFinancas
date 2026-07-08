@@ -6,11 +6,11 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 4.2.4 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 4.2.5 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
 A subfase **Fase 4.2.3.1.1 — Gestão do Plano Estratégico Financeiro** também foi concluída no frontend.
 
-A próxima etapa oficial é a **Fase 4.2.5 — IA Estratégica**.
+A próxima etapa oficial é a **Fase 4.2.6 — Especialistas Financeiros**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -226,6 +226,7 @@ Registrar a direção estratégica do usuário ao longo do tempo, como construir
   - concluída
   - avaliar o quanto uma decisão está alinhada com o Plano Estratégico
 - **Fase 4.2.5 — IA Estratégica**
+  - concluída
   - usar Estado Atual + Evolução + Plano Estratégico para produzir recomendações contextualizadas
 
 #### Fase 4.2.4 — Compromissos Financeiros
@@ -263,11 +264,26 @@ Registrar e gerenciar compromissos financeiros criados pelo usuário ou sugerido
 
 #### Fase 4.2.5 — IA Estratégica
 
-**Status:** futura
+**Status:** concluída
 
 **Objetivo:**
 
 Usar o contexto consolidado do usuário para produzir recomendações estratégicas mais profundas, sempre a partir da base de conhecimento já consolidada pelo sistema.
+
+**Entregas concluídas:**
+
+- prompt oficial revisado para conectar estado atual, evolução, plano, consistência e compromissos
+- respostas com tom consultivo e narrativa estratégica
+- recomendações priorizadas por impacto crítico, estratégico e de longo prazo
+- conclusão executiva mais coerente com a direção escolhida pelo usuário
+
+#### Fase 4.2.6 — Especialistas Financeiros
+
+**Status:** futura
+
+**Objetivo:**
+
+Criar especialistas temáticos utilizando a mesma base técnica da IA estratégica, alterando principalmente contexto e foco de análise.
 
 ### Fase 5 — Especialistas
 
@@ -364,7 +380,7 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.2.5 — IA Estratégica
+- Fase 4.2.6 — Especialistas Financeiros
 
 ### Dashboard
 
@@ -426,7 +442,8 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2.2.1 — Interpretador da Memória Financeira** está **concluída**
 - a **Fase 4.2.3.2 — Interpretador Estratégico** está **concluída**
 - a **Fase 4.2.3.3 — Consistência Estratégica** está **concluída**
-- a **próxima etapa oficial** é a **Fase 4.2.5 — IA Estratégica**
+- a **Fase 4.2.5 — IA Estratégica** está **concluída**
+- a **próxima etapa oficial** é a **Fase 4.2.6 — Especialistas Financeiros**
 
 ### Entregas já consolidadas
 
@@ -441,6 +458,7 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - interpretação da Memória Financeira em narrativa de evolução antes da chamada à IA
 - avaliação determinística da Consistência Estratégica antes da montagem do contexto final
 - integração da seção `Consistência Estrategica` no contexto textual enviado à IA
+- IA Estratégica conectando estado atual, evolução, plano, consistência e compromissos em uma única narrativa consultiva
 
 ### Base de Conhecimento Financeira
 

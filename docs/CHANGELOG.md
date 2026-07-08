@@ -4,6 +4,8 @@ Registrar aqui apenas mudanças relevantes do sistema.
 
 ## 08/07/2026
 
+- Consolidação da Fase 4.2.5 — IA Estratégica, com revisão do prompt oficial para conectar estado atual, evolução, plano estratégico, consistência e compromissos em uma narrativa consultiva.
+- Atualização da documentação de produto, roadmap, visão do assistente e AI context para refletir a IA Estratégica como fase concluída.
 - Criação do documento `docs/ASSISTANT_VISION.md`, com a visão humana e evolutiva do Assistente Financeiro.
 - Referências ao novo documento adicionadas em `AI_CONTEXT.md`, `docs/PRODUCT_VISION.md` e `docs/MODULE_GUIDE.md`.
 - Criação da base inicial do `Modelo de Decisão Financeira`, com `DecisaoFinanceiraIA`, `InterpretadorDecisaoFinanceira` e preparação do contexto do Assistente Financeiro para receber essa camada.

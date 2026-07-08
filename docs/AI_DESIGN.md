@@ -102,7 +102,7 @@ O contexto deve ser suficiente para gerar uma boa resposta sem expor a base inte
 
 ## Engenharia de prompt
 
-O prompt oficial da Fase 4.2 deve orientar a IA a agir como consultora financeira experiente, com as seguintes caracterÃ­sticas:
+O prompt oficial da Fase 4.2.5 deve orientar a IA a agir como consultora financeira experiente, com as seguintes caracterÃ­sticas:
 
 - linguagem clara
 - tom respeitoso
@@ -245,6 +245,7 @@ SituaÃ§Ã£o atual da evoluÃ§Ã£o:
 - Fase 4.2.2 implementada no frontend: experiÃªncia visual da anÃ¡lise aprofundada integrada Ã  tela do Assistente Financeiro
 - Fase 4.2.2.1 implementada no backend: interpretaÃ§Ã£o da memÃ³ria histÃ³rica antes da chamada Ã  IA
 - Fase 4.2.3.3 implementada no backend: Consistência Estratégica calculada pelo sistema e enviada ao contexto da IA
+- Fase 4.2.5 concluÃ­da: IA EstratÃ©gica consolidada com leitura consultiva baseada em estado atual, evoluÃ§Ã£o, plano, consistÃªncia e compromissos
 
 Nesta etapa, o foco Ã© melhorar:
 
@@ -279,6 +280,23 @@ A subfase 4.2.2 tornou a análise aprofundada acessível diretamente na tela do 
 - não existem especialistas
 - a persistência da Memória Financeira continua sendo responsabilidade do backend
 - o frontend apenas consulta, apresenta e aciona a exclusão lógica do histórico existente
+
+## Atualização — IA Estratégica
+
+A Fase 4.2.5 consolidou a IA Estratégica como a camada responsável por transformar o contexto consolidado em um parecer mais profundo e consultivo.
+
+### O que foi refinado
+
+- o prompt passou a conectar estado atual, evolução, plano, consistência e compromissos em uma única narrativa
+- as recomendações passaram a ser priorizadas por impacto crítico, estratégico e de longo prazo
+- a conclusão passou a soar mais próxima de um consultor financeiro prudente
+- a IA continua sem recalcular indicadores ou criar regras de negócio novas
+
+### Diretriz oficial
+
+- a IA interpreta o contexto preparado pelo backend
+- o backend continua responsável por cálculos, memória, plano, consistência e compromissos
+- a IA comunica com mais profundidade aquilo que o sistema já sabe
 
 ## Atualização — Base de Conhecimento Financeira
 

@@ -338,7 +338,8 @@ ObservaÃ§Ã£o importante:
 - `ConstrutorPromptIA` monta a requisiÃ§Ã£o final a partir do contexto preparado e do prompt base versionado em arquivo
 - `IProvedorIA` abstrai provedores externos para evitar acoplamento com uma implementaÃ§Ã£o especÃ­fica
 - `OpenAIProvider` agora possui implementaÃ§Ã£o real via HTTP para a API da OpenAI
-- a chamada externa usa apenas `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> CompromissosFinanceiros -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a chamada externa usa apenas `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Plano Estratégico Financeiro -> InterpretadorEstrategico -> Consistência Estratégica -> CompromissosFinanceiros -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a Fase 4.2.5 consolidou a IA Estratégica, que passa a conectar estado atual, evolução, plano, consistência e compromissos em uma única narrativa consultiva
 - o provedor trata timeout, retry simples, respostas vazias, autenticaÃ§Ã£o invÃ¡lida e falhas transitÃ³rias
 - logs tÃ©cnicos existem, mas nÃ£o devem registrar API Key, prompt completo nem resposta completa da IA
 - a chave de API nÃ£o deve ser versionada
@@ -346,9 +347,8 @@ ObservaÃ§Ã£o importante:
 - exemplo de configuraÃ§Ã£o local segura:
   - `dotnet user-secrets set "OpenAI:ApiKey" "sua-chave"` no projeto `minhas-financas-back-end/minhas-financas-back-end`
   - ou variÃ¡vel de ambiente `OpenAI__ApiKey`
-- o roadmap passou a separar a evoluÃ§Ã£o futura em duas subfases:
-  - `Fase 4.1`, agora implementada para ativaÃ§Ã£o tÃ©cnica real com o provedor
-  - `Fase 4.2`, focada na primeira experiÃªncia real de anÃ¡lise financeira com IA
+- o roadmap passou a separar a evoluÃ§Ã£o da IA em fases técnicas e de experiência
+- a Fase 4.2.5 passa a representar a IA Estratégica já consolidada no produto
 
 ### Assistente Financeiro
 
@@ -373,6 +373,7 @@ ObservaÃ§Ã£o importante:
 - a seÃ§Ã£o `conclusÃ£o` Ã© gerada por regras determinÃ­sticas no frontend via `ConclusaoFinanceiraBuilder`, sem uso de IA generativa
 - a conclusÃ£o nÃ£o reutiliza descriÃ§Ãµes tÃ©cnicas nem repete literalmente prioridades; ela usa frases interpretativas prÃ³prias por indicador para formar um parecer executivo
 - a abertura da conclusÃ£o varia conforme pontuaÃ§Ã£o/classificaÃ§Ã£o, para soar menos automÃ¡tica
+- a análise aprofundada já utiliza a Fase 4.2.5 para produzir leitura estratégica conectando estado atual, evolução, plano, consistência e compromissos
 - os `Insights Financeiros` permanecem como bloco próprio de risco, oportunidade, configuração ou destaque positivo, sem exercer o mesmo papel do resumo ou da conclusão
 - a seção `Consistência Estratégica` é montada pelo backend como avaliação determinística do alinhamento entre a decisão do usuário e o plano vigente
 - usa links para levar o usuÃ¡rio para a anÃ¡lise completa em `SaÃºde Financeira`
@@ -519,7 +520,7 @@ ObservaÃ§Ã£o importante:
 
 ### Próxima implementação prevista
 
-- Fase 4.2.5 — IA Estratégica no roadmap de Inteligência Financeira
+- Fase 4.2.6 — Especialistas Financeiros no roadmap de Inteligência Financeira
 - a Fase 4.2.4 — Compromissos Financeiros foi concluída e passou a integrar a cadeia do Assistente Financeiro
 - a intenção do usuário já pode ser interpretada como `DecisaoFinanceiraIA` antes da montagem do contexto estratégico
 - evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo
@@ -529,7 +530,7 @@ ObservaÃ§Ã£o importante:
 
 - `docs/AI_DESIGN.md` passou a ser o documento oficial de design da camada de IA
 - a Fase 4.2 foi iniciada com a formalização do fluxo de análise executiva com IA
-- o primeiro prompt oficial da Fase 4.2 foi implementado em `MinhasFinancas.Infra/IA/Prompts/PromptAnaliseFinanceira.md`
+- o primeiro prompt oficial da Fase 4.2.5 foi implementado em `MinhasFinancas.Infra/IA/Prompts/PromptAnaliseFinanceira.md`
 A cadeia oficial continua sendo `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> InterpretadorDecisaoFinanceira -> Plano Estratégico Financeiro -> InterpretadorEstrategico -> Consistência Estratégica -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 
 ## Atualização técnica — Base de Conhecimento Financeira

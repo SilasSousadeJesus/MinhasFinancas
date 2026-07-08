@@ -145,3 +145,9 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Não utilizar o `AI_CONTEXT.md` como repositório de todas as informações do projeto.
 - Cada informação deve ser registrada apenas no documento responsável por aquele assunto.
 - A documentação faz parte do código e deve evoluir junto com ele.
+
+## Changelog obrigatório
+
+- Toda fase concluída, implementação relevante ou evolução arquitetural deve ser registrada em `docs/CHANGELOG.md`.
+- As entradas do changelog devem seguir a ordem cronológica real do trabalho, usando a data correspondente ao registro.
+- O changelog complementa o roadmap e o AI_CONTEXT, mas não os substitui.

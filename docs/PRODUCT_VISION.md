@@ -67,6 +67,7 @@ Cada camada do sistema deve agregar valor a anterior.
 - O `Interpretador Estratégico` transforma esse plano em narrativa compreensível para interfaces e IA.
 - A `Consistência Estratégica` avalia de forma determinística se uma decisão está alinhada ao plano vigente antes de qualquer interpretação da IA.
 - A intenção do usuário deve ser estruturada como `Decisão Financeira` antes de chegar às camadas estratégicas, para preservar rastreabilidade e clareza de domínio.
+- A `IA Estratégica` transforma esse contexto consolidado em um parecer consultivo mais profundo, sem criar novas regras de negócio.
 
 Nenhuma camada deve substituir a anterior.
 
@@ -127,6 +128,8 @@ A primeira versão dessa camada já está disponível no backend como a fase 4.2
 A IA nunca cria ou modifica estratégias.
 
 Ela apenas interpreta decisões à luz do plano vigente, da evolução histórica e da situação financeira atual.
+
+Na Fase 4.2.5, ela passou a considerar também compromissos ativos e consistência estratégica para produzir uma leitura mais humana e mais responsável.
 
 ## Criterio para novas funcionalidades
 

@@ -104,12 +104,14 @@ Este arquivo nÃ£o substitui:
 - gera uma nova análise aprofundada com IA
 - copia o conteúdo da análise e abre análises anteriores
 - transforma sugestões da IA em compromissos financeiros reais
+- acompanha uma leitura estratégica que conecta estado atual, evolução, plano, consistência e compromissos
 
 ### Dados gerados ou mantidos
 - consome `ResumoFinanceiroIA` como base consolidada
 - registra a análise aprofundada na Memória Financeira quando a IA é acionada
 - reutiliza o histórico das análises como continuidade da leitura executiva
 - envia ao backend a intenção do usuário e o contexto necessário para a análise
+- produz uma resposta consultiva apoiada na Fase 4.2.5 — IA Estratégica
 
 ### Impacto no restante do sistema
 - depende da cadeia `Dados -> Indicadores -> Saúde Financeira -> Insights -> ResumoFinanceiroIA`
@@ -126,10 +128,10 @@ Este arquivo nÃ£o substitui:
 - histórico visual com paginação, abertura de itens anteriores e exclusão lógica
 - sugestão de compromisso gerada pela IA e conversão direta em compromisso financeiro
 - ações de copiar, gerar novamente e recarregar análises anteriores
+- IA Estratégica já consolidada no texto final, conectando estado atual, evolução, plano e compromissos
 
 ### Evoluções futuras
 - especialistas temáticos reutilizando a mesma infraestrutura
-- IA Estratégica com base no contexto consolidado
 - conversa contínua com o assistente financeiro
 
 ## Compromissos Financeiros
@@ -629,7 +631,7 @@ A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design
 ### Evolução futura imediata
 
 - a próxima etapa visual será a exibição da análise aprofundada usando essa memória como base histórica
-- a evolução posterior da Base de Conhecimento incluirá **Interpretador Estratégico** e **IA Estratégica**
+- a evolução posterior da Base de Conhecimento incluirá os especialistas temáticos e a conversa contínua
 
 
 
