@@ -435,6 +435,50 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("Categoria");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.CompromissoFinanceiro", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("DataCancelamento")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataConclusao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<string>("Observacoes")
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
+
+                    b.Property<int>("Origem")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId", "Ativo", "Status");
+
+                    b.ToTable("CompromissoFinanceiro");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.ConfiguracaoPerfilFinanceiro", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1222,6 +1266,17 @@ namespace MinhasFinancas.Infra.Migrations
                     b.HasOne("MinhasFinancas.Domain.Entities.Usuario", null)
                         .WithMany("Categorias")
                         .HasForeignKey("UsuarioId");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.CompromissoFinanceiro", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.ConfiguracaoPerfilFinanceiro", b =>

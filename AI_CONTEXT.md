@@ -1,4 +1,4 @@
-# AI Context - Minhas Finanças
+﻿# AI Context - Minhas Finanças
 
 Este documento existe para dar a uma IA visão rápida e confiÃ¡vel do estado tÃ©cnico atual do projeto.
 
@@ -338,7 +338,7 @@ ObservaÃ§Ã£o importante:
 - `ConstrutorPromptIA` monta a requisiÃ§Ã£o final a partir do contexto preparado e do prompt base versionado em arquivo
 - `IProvedorIA` abstrai provedores externos para evitar acoplamento com uma implementaÃ§Ã£o especÃ­fica
 - `OpenAIProvider` agora possui implementaÃ§Ã£o real via HTTP para a API da OpenAI
-- a chamada externa usa apenas `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a chamada externa usa apenas `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> CompromissosFinanceiros -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 - o provedor trata timeout, retry simples, respostas vazias, autenticaÃ§Ã£o invÃ¡lida e falhas transitÃ³rias
 - logs tÃ©cnicos existem, mas nÃ£o devem registrar API Key, prompt completo nem resposta completa da IA
 - a chave de API nÃ£o deve ser versionada
@@ -519,8 +519,8 @@ ObservaÃ§Ã£o importante:
 
 ### Próxima implementação prevista
 
-- Fase 4.2.3.4 — IA Estratégica no roadmap de Inteligência Financeira
-- a Fase 4.2.4.1 — Modelo de Decisão Financeira foi registrada como evolução futura da cadeia do Assistente Financeiro
+- Fase 4.2.5 — IA Estratégica no roadmap de Inteligência Financeira
+- a Fase 4.2.4 — Compromissos Financeiros foi concluída e passou a integrar a cadeia do Assistente Financeiro
 - a intenção do usuário já pode ser interpretada como `DecisaoFinanceiraIA` antes da montagem do contexto estratégico
 - evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo
 - consolidação da tela de gestão do Plano Estratégico Financeiro no frontend, com edição por nova versão e histórico simples
@@ -563,8 +563,8 @@ As subfases 4.2.1, 4.2.2.1, 4.2.3.2 e 4.2.3.3 adicionaram a primeira versão da 
   - já implementado na fase 4.2.3.1
   - registra a direção estratégica escolhida pelo usuário ao longo do tempo em versões históricas
 - **Compromissos Financeiros**
-  - apenas documentados como evolução futura
-  - registrarão ações e decisões combinadas com o Assistente
+  - implementados
+  - registram ações e decisões combinadas com o Assistente
 
 ### Fluxo atualizado do Assistente Financeiro
 
@@ -572,7 +572,7 @@ As subfases 4.2.1, 4.2.2.1, 4.2.3.2 e 4.2.3.3 adicionaram a primeira versão da 
 2. O backend consulta a Memória Financeira e recupera um resumo das últimas análises.
 3. O `InterpretadorMemoriaFinanceira` transforma esse histórico em uma narrativa estruturada de continuidade.
 4. O `InterpretadorEstrategico` transforma o plano vigente em leitura estratégica textual para a IA.
-5. O `ConstrutorContextoIA` gera o contexto textual, incluindo as seções `## Evolução Financeira`, `## Memória Financeira` e `## Plano Estrategico Financeiro`.
+5. O `ConstrutorContextoIA` gera o contexto textual, incluindo as seções `## Evolução Financeira`, `## Memória Financeira`, `## Compromissos Financeiros` e `## Plano Estrategico Financeiro`.
 6. O `ConstrutorPromptIA` gera a requisição final e informa a versão do prompt.
 7. O provedor retorna a resposta real ou a falha tratada.
 8. O backend salva uma `AnaliseFinanceiraHistorica` com contexto, resumos, resposta e métricas técnicas.
@@ -583,6 +583,7 @@ As subfases 4.2.1, 4.2.2.1, 4.2.3.2 e 4.2.3.3 adicionaram a primeira versão da 
 - a IA nunca recebe todas as análises históricas
 - o contexto usa apenas um resumo recente das últimas análises
 - a continuidade histórica passa a ser enviada principalmente como narrativa interpretada em `## Evolução Financeira`
-- a seção `## Memória Financeira` permanece como apoio resumido, e não como bloco principal de interpretação
+- as seções `## Memória Financeira` e `## Compromissos Financeiros` permanecem como apoio resumido, e não como blocos principais de interpretação
 - quando não existe histórico, o contexto informa explicitamente que ainda não existem análises suficientes para avaliar evolução
+
 

@@ -23,6 +23,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { CompromissoFinanceiroModal } from "@/components/compromissos-financeiros/CompromissoFinanceiroModal";
 import { obterTextoExecutivoIndicador, obterTextoPontoAtencao } from "@/lib/assistente-financeiro-textos";
 import { ConclusaoFinanceiraBuilder } from "@/lib/conclusao-financeira-builder";
 import { useAuth } from "@/providers/auth-provider";
@@ -32,6 +33,11 @@ import {
   excluirAnaliseFinanceiraHistorica,
   gerarAnaliseAssistenteFinanceiro,
 } from "@/services/api/assistente-financeiro";
+import { cadastrarCompromissoFinanceiro } from "@/services/api/compromissos-financeiros";
+import {
+  OrigemCompromissoFinanceiro,
+  SalvarCompromissoFinanceiroPayload,
+} from "@/types/compromissos-financeiros";
 import { buscarResumoFinanceiroIA } from "@/services/api/resumo-financeiro-ia";
 import { ApiError } from "@/types/api";
 import {
@@ -179,10 +185,13 @@ function mapearNovaAnalise(
   dataGeracao: Date,
   perguntaUsuario: string
 ): AnaliseAssistenteExibida {
+  const conteudoProcessado = processarConteudoAnalise(resposta.conteudo);
+
   return {
     id: resposta.analiseFinanceiraHistoricaId ?? null,
     perguntaUsuario,
-    conteudo: resposta.conteudo,
+    conteudo: conteudoProcessado.conteudo,
+    sugestaoCompromisso: conteudoProcessado.sugestaoCompromisso,
     modelo: resposta.modelo,
     provedor: resposta.provedor,
     tempoTotalMs: resposta.tempoTotalMs,
@@ -198,10 +207,13 @@ function mapearNovaAnalise(
 function mapearDetalheHistorico(
   detalhe: AnaliseFinanceiraHistoricaDetalhe
 ): AnaliseAssistenteExibida {
+  const conteudoProcessado = processarConteudoAnalise(detalhe.respostaIA);
+
   return {
     id: detalhe.id,
     perguntaUsuario: detalhe.perguntaUsuario,
-    conteudo: detalhe.respostaIA,
+    conteudo: conteudoProcessado.conteudo,
+    sugestaoCompromisso: conteudoProcessado.sugestaoCompromisso,
     modelo: detalhe.modeloIA,
     provedor: detalhe.provedorIA,
     tempoTotalMs: detalhe.tempoTotalMs,
@@ -209,6 +221,26 @@ function mapearDetalheHistorico(
     tokensTotaisUtilizados: detalhe.tokensTotais,
     dataGeracao: detalhe.dataGeracao,
     origem: "historico",
+  };
+}
+
+function processarConteudoAnalise(conteudo: string) {
+  const regex = /(?:^|\n)(#{2,3})\s*Sugest[aã]o de compromisso\s*\n([\s\S]*?)(?=\n#{2,3}\s|\n---|\s*$)/i;
+  const correspondencia = conteudo.match(regex);
+
+  if (!correspondencia) {
+    return {
+      conteudo,
+      sugestaoCompromisso: null,
+    };
+  }
+
+  const sugestao = correspondencia[2].trim();
+  const conteudoLimpo = conteudo.replace(correspondencia[0], "\n").trim();
+
+  return {
+    conteudo: conteudoLimpo,
+    sugestaoCompromisso: sugestao || null,
   };
 }
 
@@ -226,6 +258,8 @@ export function AssistenteFinanceiroManager() {
   const [gerandoAnaliseIa, setGerandoAnaliseIa] = useState(false);
   const [analiseCopiada, setAnaliseCopiada] = useState(false);
   const [analiseMinimizada, setAnaliseMinimizada] = useState(true);
+  const [compromissoModalOpen, setCompromissoModalOpen] = useState(false);
+  const [mensagemCompromisso, setMensagemCompromisso] = useState("");
 
   const [historicoAnalises, setHistoricoAnalises] = useState<AnaliseFinanceiraHistoricaLista[]>([]);
   const [historicoErro, setHistoricoErro] = useState("");
@@ -298,6 +332,8 @@ export function AssistenteFinanceiroManager() {
   const prioridades = useMemo(() => {
     return resumo?.prioridadesImediatas.slice(0, 3) ?? [];
   }, [resumo]);
+
+  const sugestaoCompromisso = analiseExibida?.sugestaoCompromisso?.trim() ?? "";
 
   const conclusao = useMemo(() => {
     if (!resumo) {
@@ -437,6 +473,8 @@ export function AssistenteFinanceiroManager() {
       setGerandoAnaliseIa(true);
       setErroAnaliseIa("");
       setAnaliseCopiada(false);
+      setMensagemCompromisso("");
+      setCompromissoModalOpen(false);
 
       const response = await gerarAnaliseAssistenteFinanceiro(session.usuario.id, session.token, {
         perguntaUsuario: perguntaFinal,
@@ -480,6 +518,44 @@ export function AssistenteFinanceiroManager() {
     window.setTimeout(() => {
       setAnaliseCopiada(false);
     }, 2500);
+  }
+
+  function abrirModalCompromisso() {
+    if (!analiseExibida?.sugestaoCompromisso) {
+      return;
+    }
+
+    setMensagemCompromisso("");
+    setCompromissoModalOpen(true);
+  }
+
+  async function handleSalvarCompromisso(payload: SalvarCompromissoFinanceiroPayload) {
+    if (!session?.usuario.id || !session.token) {
+      return;
+    }
+
+    try {
+      setMensagemCompromisso("");
+
+      await cadastrarCompromissoFinanceiro(
+        session.usuario.id,
+        {
+          ...payload,
+          usuarioId: session.usuario.id,
+          origem: payload.origem,
+        },
+        session.token
+      );
+
+      setMensagemCompromisso("Compromisso criado com sucesso.");
+      setCompromissoModalOpen(false);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setMensagemCompromisso(error.message);
+      } else {
+        setMensagemCompromisso("Não foi possível transformar a sugestão em compromisso.");
+      }
+    }
   }
 
   async function handleExcluirAnalise(analiseId: string) {
@@ -824,6 +900,27 @@ export function AssistenteFinanceiroManager() {
                   </div>
                 ) : null}
 
+                {sugestaoCompromisso ? (
+                  <div className="rounded-2xl border border-primary/20 bg-primary/5 px-5 py-4">
+                    <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                      <div className="space-y-2">
+                        <p className="text-sm font-semibold uppercase tracking-wide text-primary">
+                          Sugestão de compromisso
+                        </p>
+                        <p className="text-sm leading-6 text-foreground/90">{sugestaoCompromisso}</p>
+                      </div>
+
+                      <Button variant="outline" onClick={abrirModalCompromisso}>
+                        Transformar em compromisso
+                      </Button>
+                    </div>
+
+                    {mensagemCompromisso ? (
+                      <p className="mt-3 text-sm text-muted-foreground">{mensagemCompromisso}</p>
+                    ) : null}
+                  </div>
+                ) : null}
+
                 <div className="space-y-4">
                   {analiseExibida ? (
                     <Card
@@ -1102,6 +1199,18 @@ export function AssistenteFinanceiroManager() {
             ) : null}
           </Card>
         </section>
+
+        <CompromissoFinanceiroModal
+          open={compromissoModalOpen}
+          onOpenChange={setCompromissoModalOpen}
+          mode="create"
+          initialDescricao={sugestaoCompromisso}
+          defaultOrigin={OrigemCompromissoFinanceiro.IA}
+          title="Transformar em compromisso"
+          description="Edite a sugestão antes de confirmar. O compromisso será salvo para acompanhar suas próximas análises."
+          submitLabel="Confirmar compromisso"
+          onSubmit={handleSalvarCompromisso}
+        />
       </main>
     </div>
   );

@@ -6,11 +6,11 @@ Ele nÃ£o representa a arquitetura atual nem o histÃ³rico tÃ©cnico detalhad
 
 ## Estado atual do roadmap
 
-O projeto se encontra atualmente na **Fase 4.2.3.3 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
+O projeto se encontra atualmente na **Fase 4.2.4 concluída** do roadmap de Inteligência Financeira / Assistente Financeiro.
 
 A subfase **Fase 4.2.3.1.1 — Gestão do Plano Estratégico Financeiro** também foi concluída no frontend.
 
-A próxima etapa oficial é a **Fase 4.2.3.4 — IA Estratégica**.
+A próxima etapa oficial é a **Fase 4.2.5 — IA Estratégica**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -225,31 +225,49 @@ Registrar a direção estratégica do usuário ao longo do tempo, como construir
 - **Fase 4.2.3.3 — Consistência Estratégica**
   - concluída
   - avaliar o quanto uma decisão está alinhada com o Plano Estratégico
-- **Fase 4.2.3.4 — IA Estratégica**
+- **Fase 4.2.5 — IA Estratégica**
   - usar Estado Atual + Evolução + Plano Estratégico para produzir recomendações contextualizadas
 
 #### Fase 4.2.4 — Compromissos Financeiros
 
-**Status:** futura
+**Status:** concluída
 
 **Objetivo:**
 
 Registrar ações e decisões combinadas entre usuário e Assistente Financeiro, permitindo acompanhamento de execução, adiamento e conclusão.
 
-##### Fase 4.2.4.1 — Modelo de Decisão Financeira
+**Entregas concluídas:**
+
+- entidade de compromisso financeiro por usuário
+- cadastro, edição, conclusão, cancelamento e exclusão lógica
+- origem do compromisso como `Manual` ou `IA`
+- integração do Assistente Financeiro com compromissos ativos
+- sugestão de compromisso gerada pela análise aprofundada com IA
+- tela de gerenciamento de compromissos financeiros
+
+##### Fase 4.2.4.1 — Compromissos Financeiros
+
+**Status:** concluída
+
+**Objetivo:**
+
+Registrar e gerenciar compromissos financeiros criados pelo usuário ou sugeridos pela IA, preservando rastreabilidade de status e evolução.
+
+**Escopo concluído:**
+
+- cadastro de compromissos financeiros
+- edição de compromissos já existentes
+- conclusão, cancelamento e exclusão lógica
+- integração com o Assistente Financeiro para transformar sugestões em registros reais
+- base de rastreabilidade para intenções e decisões do usuário
+
+#### Fase 4.2.5 — IA Estratégica
 
 **Status:** futura
 
 **Objetivo:**
 
-Criar uma camada responsável por interpretar a intenção do usuário como uma decisão financeira estruturada antes de qualquer leitura estratégica.
-
-**Escopo previsto:**
-
-- interpretação da pergunta do usuário em uma decisão financeira tipada
-- preparação de contexto mais rastreável para o Assistente Financeiro
-- base conceitual para futuros compromissos financeiros
-- apoio ao uso futuro da consistência estratégica com maior clareza de domínio
+Usar o contexto consolidado do usuário para produzir recomendações estratégicas mais profundas, sempre a partir da base de conhecimento já consolidada pelo sistema.
 
 ### Fase 5 — Especialistas
 
@@ -346,8 +364,7 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.2.3.4 — IA Estratégica
-- Fase 4.2.4 — Compromissos Financeiros
+- Fase 4.2.5 — IA Estratégica
 
 ### Dashboard
 
@@ -409,7 +426,7 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2.2.1 — Interpretador da Memória Financeira** está **concluída**
 - a **Fase 4.2.3.2 — Interpretador Estratégico** está **concluída**
 - a **Fase 4.2.3.3 — Consistência Estratégica** está **concluída**
-- a **próxima etapa oficial** é a **Fase 4.2.3.4 — IA Estratégica**
+- a **próxima etapa oficial** é a **Fase 4.2.5 — IA Estratégica**
 
 ### Entregas já consolidadas
 
@@ -436,12 +453,15 @@ Ela passa a ser formada por três conceitos:
   - implementado na fase 4.2.3.1
   - registra a direção estratégica do usuário ao longo do tempo em versões históricas
 - **Compromissos Financeiros**
-  - documentados como evolução futura
-  - registrarão decisões e ações combinadas entre usuário e Assistente
+  - implementados
+  - registram decisões e ações combinadas entre usuário e Assistente
 
 ### Regra arquitetural
 
 A Base de Conhecimento Financeira pertence ao domínio do sistema.
 
 A IA pode consultar essa base para enriquecer respostas, mas não é dona dela.
+
+
+
 

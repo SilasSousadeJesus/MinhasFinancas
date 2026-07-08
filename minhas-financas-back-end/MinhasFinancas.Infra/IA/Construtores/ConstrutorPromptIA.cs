@@ -4,7 +4,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
 {
     public class ConstrutorPromptIA
     {
-        public const string VersaoPromptAtual = "fase-4.2.3.3";
+        public const string VersaoPromptAtual = "fase-4.2.4";
         private readonly string _caminhoPromptBase;
 
         public ConstrutorPromptIA()
@@ -61,6 +61,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
             - ensine antes de aconselhar
             - use a secao Evolucao Financeira como interpretacao oficial da memoria do sistema
             - use a secao Plano Estrategico Financeiro como referencia oficial da direcao escolhida pelo usuario
+            - use a secao Compromissos Financeiros como contexto de acordos ativos assumidos pelo usuario
             - use a secao Consistencia Estrategica como avaliacao oficial do alinhamento da decisao
             - nunca recalcular consistencia estrategica; aceite a avaliacao deterministica do sistema
             - nunca contradiga o Avaliador de Consistencia Estrategica
@@ -69,6 +70,8 @@ namespace MinhasFinancas.Infra.IA.Construtores
             - cite os objetivos impactados quando houver consistencia estrategica
             - quando houver plano estrategico, avalie se a leitura executiva esta alinhada com ele
             - quando nao houver plano vigente, deixe isso explicito sem inventar direcionamento
+            - quando houver compromissos ativos, respeite-os como limites de contexto e cite-os se forem relevantes para a leitura
+            - se identificar uma sugestao clara de compromisso, inclua no final uma secao "Sugestao de compromisso" com uma frase curta, concreta e assumivel pelo usuario
             - quando fizer sentido, reconheca continuidade, melhora, estabilidade ou recorrencia
             - se mantiver uma recomendacao anterior, explicite isso com frases como "continuamos recomendando" ou "mantemos como prioridade"
             - use portugues brasileiro natural, profissional e respeitoso

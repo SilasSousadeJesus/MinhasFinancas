@@ -1,4 +1,4 @@
-# Guia dos MÃ³dulos - Minhas FinanÃ§as
+﻿# Guia dos MÃ³dulos - Minhas FinanÃ§as
 
 Este documento explica o papel funcional de cada mÃ³dulo do sistema.
 
@@ -94,80 +94,83 @@ Este arquivo nÃ£o substitui:
 
 ## Assistente Financeiro
 
-ObservaÃ§Ãµes adicionais da fase tÃ©cnica:
-
-- a infraestrutura backend jÃ¡ monta um contexto estruturado por seÃ§Ãµes antes de qualquer chamada externa para IA
-- a integraÃ§Ã£o tÃ©cnica jÃ¡ registra tempo, tokens e custo estimado por chamada sem expor prompt completo nem dados financeiros pessoais em logs
-
 ### Finalidade
-Ã‰ a tela executiva da inteligÃªncia financeira. Seu papel Ã© organizar a situaÃ§Ã£o atual do usuÃ¡rio em formato de prioridades, destaques e direcionamento prÃ¡tico para tomada de decisÃ£o.
+É a tela executiva da inteligência financeira. Seu papel é transformar o resumo consolidado do sistema em uma leitura clara, consultiva e orientada à decisão.
 
-### O que o usuÃ¡rio faz aqui
-- acompanha a saÃºde financeira consolidada em formato executivo
-- lÃª um resumo corrido com prioridades, principais indicadores, leitura estratÃ©gica e conclusÃ£o
-- usa links para aprofundar a anÃ¡lise completa em SaÃºde Financeira
-- pode solicitar uma anÃ¡lise aprofundada com IA diretamente na prÃ³pria tela
-- pode escrever uma pergunta opcional para orientar a anÃ¡lise
-- pode copiar o parecer gerado e gerar novamente sem sair da pÃ¡gina
+### O que o usuário faz aqui
+- acompanha a saúde financeira em uma visão executiva
+- lê resumo, prioridades, principais indicadores, leitura estratégica e conclusão
+- consulta o histórico visual das últimas análises
+- gera uma nova análise aprofundada com IA
+- copia o conteúdo da análise e abre análises anteriores
+- transforma sugestões da IA em compromissos financeiros reais
 
 ### Dados gerados ou mantidos
-- nÃ£o criarÃ¡ dados financeiros brutos
-- consumirÃ¡ `ResumoFinanceiroIA` como fonte oficial de contexto consolidado
-- jÃ¡ registra histÃ³rico analÃ­tico na MemÃ³ria Financeira quando uma anÃ¡lise com IA Ã© solicitada
-- futuramente poderÃ¡ produzir relatÃ³rios executivos gerados a partir desse resumo e da Base de Conhecimento Financeira
+- consome `ResumoFinanceiroIA` como base consolidada
+- registra a análise aprofundada na Memória Financeira quando a IA é acionada
+- reutiliza o histórico das análises como continuidade da leitura executiva
+- envia ao backend a intenção do usuário e o contexto necessário para a análise
 
 ### Impacto no restante do sistema
-- reutiliza a cadeia `Dados -> Indicadores -> SaÃºde Financeira -> Insights -> ResumoFinanceiroIA`
-- dependerÃ¡ da camada analÃ­tica e do resumo consolidado, sem recalcular nada na interface
-- passa a consultar a MemÃ³ria Financeira para dar continuidade Ã  conversa analÃ­tica
-- servirÃ¡ como ponto central para futuras integraÃ§Ãµes com IA, especialistas temÃ¡ticos, EstratÃ©gia Financeira e Compromissos Financeiros
+- depende da cadeia `Dados -> Indicadores -> Saúde Financeira -> Insights -> ResumoFinanceiroIA`
+- consulta a Memória Financeira para manter continuidade entre análises
+- utiliza o Plano Estratégico Financeiro e os compromissos ativos como contexto adicional
+- serve como ponto central para IA futura, especialistas temáticos e Estratégia Financeira
 
-### O que jÃ¡ estÃ¡ funcional
-- tela executiva do Assistente Financeiro jÃ¡ implementada
-- consumo exclusivo de `ResumoFinanceiroIA`
-- um Ãºnico bloco principal de resumo executivo
-- saÃºde financeira consolidada com pontuaÃ§Ã£o e classificaÃ§Ã£o em destaque
-- seÃ§Ãµes internas por tÃ­tulo: resumo, prioridades, principais indicadores, leitura estratÃ©gica e conclusÃ£o
-- cada seÃ§Ã£o possui responsabilidade textual prÃ³pria:
-  - resumo explica a situaÃ§Ã£o
-  - prioridades mostram aÃ§Ãµes curtas
-  - principais indicadores sustentam a leitura com nÃºmeros
-  - leitura estratÃ©gica destaca forÃ§as e riscos
-  - conclusÃ£o fecha o parecer do perÃ­odo
-- os blocos textuais nÃ£o reutilizam literalmente as descriÃ§Ãµes tÃ©cnicas dos indicadores; o assistente usa frases interpretativas prÃ³prias para transformar os dados em linguagem executiva
-- os insights permanecem como camada separada de alertas, oportunidades, configuraÃ§Ã£o e destaques positivos
-- principais indicadores em formato textual
-- a seção de Consistência Estratégica mostra se a pergunta ou decisão está alinhada ao plano vigente, sem a IA recalcular essa leitura
-- leitura estratÃ©gica com pontos fortes e pontos de atenÃ§Ã£o em formato textual
-- conclusÃ£o dinÃ¢mica construÃ­da por regras com base na saÃºde financeira atual, sem IA generativa
-- a conclusÃ£o usa interpretaÃ§Ãµes executivas prÃ³prias por indicador, em vez de repetir literalmente descriÃ§Ãµes tÃ©cnicas ou prioridades
-- a abertura da conclusÃ£o varia conforme a classificaÃ§Ã£o da saÃºde financeira
-- link para a anÃ¡lise completa em `SaÃºde Financeira`
-- prÃ³ximas prioridades
-- experiÃªncia visual da anÃ¡lise aprofundada com IA implementada na prÃ³pria tela
-- resumo executivo com opÃ§Ã£o de minimizar e mostrar novamente, para liberar espaÃ§o quando o foco estiver na anÃ¡lise da IA
-- histÃ³rico de anÃ¡lises acima da anÃ¡lise aprofundada, com opÃ§Ã£o de minimizar e mostrar novamente
-- botÃ£o funcional para gerar anÃ¡lise aprofundada
-- renderizaÃ§Ã£o da resposta da IA em Markdown
-- loading amigÃ¡vel durante a geraÃ§Ã£o
-- aÃ§Ãµes de copiar anÃ¡lise e gerar novamente
-- histÃ³rico visual das Ãºltimas anÃ¡lises dentro da prÃ³pria tela
-- cada interaÃ§Ã£o usa a prÃ³pria pergunta do usuÃ¡rio como identificador principal no histÃ³rico, com truncamento visual quando necessÃ¡rio
-- abertura de anÃ¡lises anteriores no mesmo card principal da anÃ¡lise aprofundada
-- exclusÃ£o lÃ³gica de anÃ¡lises diretamente pelo histÃ³rico visual
-- os dados tÃ©cnicos da geraÃ§Ã£o permanecem apenas no backend e nÃ£o sÃ£o exibidos ao usuÃ¡rio
-- a infraestrutura backend da Fase 4.1 continua responsÃ¡vel pela integraÃ§Ã£o tÃ©cnica com o provedor
-- a MemÃ³ria Financeira continua sendo persistida pelo backend e apresentada visualmente pelo frontend
-- antes de chegar Ã  IA, a MemÃ³ria Financeira agora Ã© interpretada pelo backend para criar continuidade entre anÃ¡lises
-- nÃ£o existe chat nem conversa contÃ­nua nesta etapa
+### O que já está funcional
+- resumo executivo com possibilidade de minimizar e expandir
+- principais indicadores em texto com link para a análise completa em Saúde Financeira
+- leitura estratégica com pontos fortes e pontos de atenção
+- conclusão dinâmica gerada por regras
+- análise aprofundada com IA em Markdown dentro da própria tela
+- histórico visual com paginação, abertura de itens anteriores e exclusão lógica
+- sugestão de compromisso gerada pela IA e conversão direta em compromisso financeiro
+- ações de copiar, gerar novamente e recarregar análises anteriores
 
-### EvoluÃ§Ãµes futuras
-- camada de `Modelo de Decisão Financeira` para estruturar a intenção do usuário antes da leitura estratégica
-- futura camada de `Interpretador Financeiro` entre `Saúde Financeira` e `Insights Financeiros` para qualificar ainda mais a linguagem natural baseada em regras
-- especialistas temÃ¡ticos reutilizando a mesma infraestrutura
-- conversa contÃ­nua com contexto financeiro consolidado
+### Evoluções futuras
+- especialistas temáticos reutilizando a mesma infraestrutura
+- IA Estratégica com base no contexto consolidado
+- conversa contínua com o assistente financeiro
 
-## LanÃ§amentos
+## Compromissos Financeiros
+
+### Finalidade
+Registrar intenções e decisões financeiras que o usuário deseja acompanhar ao longo do tempo. O módulo também serve como destino para sugestões relevantes geradas pelo Assistente Financeiro.
+
+### O que o usuário faz aqui
+- cria compromissos manualmente
+- edita compromissos já registrados
+- conclui compromissos em andamento
+- cancela compromissos quando a intenção deixa de fazer sentido
+- exclui compromissos logicamente
+- transforma sugestões da IA em compromissos reais
+
+### Dados gerados ou mantidos
+- descrição do compromisso
+- origem do compromisso
+- status atual
+- datas de criação, conclusão e cancelamento
+- observações complementares
+- ativo/inativo
+
+### Impacto no restante do sistema
+- alimenta o Assistente Financeiro com contexto de intenções e decisões já assumidas
+- pode ser consultado em leituras estratégicas futuras
+- serve como base de rastreabilidade para recomendações e ações combinadas com o usuário
+
+### O que já está funcional
+- cadastro, edição, conclusão, cancelamento e exclusão lógica
+- tela própria para gerenciamento
+- integração com o Assistente Financeiro para transformar sugestões em registros reais
+- leitura de compromissos ativos para contextualizar novas análises
+
+### Evoluções futuras
+- vínculo mais direto com o Plano Estratégico Financeiro
+- indicadores de execução por compromisso
+- alertas de compromissos atrasados
+- visão consolidada de intenções assumidas versus intenções concluídas
+
+## Lançamentos
 
 ### Finalidade
 Ã‰ o nÃºcleo operacional do sistema. Aqui o usuÃ¡rio registra receitas e despesas, organiza o passado e o futuro financeiro e constrÃ³i a base de quase todas as leituras do produto.
@@ -626,5 +629,9 @@ A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design
 ### Evolução futura imediata
 
 - a próxima etapa visual será a exibição da análise aprofundada usando essa memória como base histórica
-- a evolução posterior da Base de Conhecimento incluirá **Interpretador Estratégico**, **IA Estratégica** e **Compromissos Financeiros**
+- a evolução posterior da Base de Conhecimento incluirá **Interpretador Estratégico** e **IA Estratégica**
+
+
+
+
 

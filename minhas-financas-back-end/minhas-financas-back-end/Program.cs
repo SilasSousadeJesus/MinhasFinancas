@@ -131,6 +131,8 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IPerfilFinanceiroRepository, PerfilFinanceiroRepository>();
             builder.Services.AddScoped<IPlanoEstrategicoFinanceiroAppService, PlanoEstrategicoFinanceiroAppService>();
             builder.Services.AddScoped<IPlanoEstrategicoFinanceiroRepository, PlanoEstrategicoFinanceiroRepository>();
+            builder.Services.AddScoped<ICompromissoFinanceiroAppService, CompromissoFinanceiroAppService>();
+            builder.Services.AddScoped<ICompromissoFinanceiroRepository, CompromissoFinanceiroRepository>();
 
             builder.Services.AddScoped<ISorteiosAppService, SorteiosAppService>();
 

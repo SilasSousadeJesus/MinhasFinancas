@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { BrainCircuit, HeartPulse } from "lucide-react";
+import { BrainCircuit, Handshake, HeartPulse } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -274,6 +274,26 @@ export function MenuNavegacao({
                 }`}
               >
                 Plano estratégico
+              </span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
+          <Link href="/compromissos-financeiros" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                "justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <Handshake className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Compromissos financeiros
               </span>
             </NavigationMenuLink>
           </Link>

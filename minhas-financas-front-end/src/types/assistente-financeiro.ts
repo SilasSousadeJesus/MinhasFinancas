@@ -81,6 +81,7 @@ export interface AnaliseAssistenteExibida {
   id?: string | null;
   perguntaUsuario: string;
   conteudo: string;
+  sugestaoCompromisso?: string | null;
   modelo: string;
   provedor: string;
   tempoTotalMs: number;

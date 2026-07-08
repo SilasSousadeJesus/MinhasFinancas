@@ -14,6 +14,7 @@ namespace MinhasFinancas.Infra.IA.Modelos
         public List<string> MemoriaFinanceiraResumida { get; set; } = [];
         public string ResumoEvolucaoFinanceira { get; set; } = string.Empty;
         public List<string> EvolucaoFinanceira { get; set; } = [];
+        public List<string> CompromissosFinanceiros { get; set; } = [];
         public string ResumoExecutivo { get; set; } = string.Empty;
         public string ContextoTextual { get; set; } = string.Empty;
         public string PerguntaUsuario { get; set; } = string.Empty;

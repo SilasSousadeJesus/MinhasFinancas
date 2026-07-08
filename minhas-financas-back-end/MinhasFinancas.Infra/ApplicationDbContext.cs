@@ -29,6 +29,7 @@ namespace MinhasFinancas.Infra
         public DbSet<ConfiguracaoPerfilFinanceiro> ConfiguracaoPerfilFinanceiro { get; set; }
         public DbSet<PlanoEstrategicoFinanceiro> PlanoEstrategicoFinanceiro { get; set; }
         public DbSet<ObjetivoPlanoEstrategico> ObjetivoPlanoEstrategico { get; set; }
+        public DbSet<CompromissoFinanceiro> CompromissoFinanceiro { get; set; }
         public DbSet<Projecao> Projecao { get; set; }
         public DbSet<RendaProjecao> RendaProjecao { get; set; }
         public DbSet<RendaExtraProjecaoMensal> RendaExtraProjecaoMensal { get; set; }
@@ -106,6 +107,15 @@ namespace MinhasFinancas.Infra
 
             modelBuilder.Entity<ObjetivoPlanoEstrategico>()
                 .HasIndex(x => new { x.PlanoEstrategicoFinanceiroId, x.Ordem });
+
+            modelBuilder.Entity<CompromissoFinanceiro>()
+                .HasOne(x => x.Usuario)
+                .WithMany()
+                .HasForeignKey(x => x.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CompromissoFinanceiro>()
+                .HasIndex(x => new { x.UsuarioId, x.Ativo, x.Status });
 
             modelBuilder.Entity<SimulacaoFinanceira>()
                 .HasMany(x => x.Acoes)

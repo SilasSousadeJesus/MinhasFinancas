@@ -1,5 +1,7 @@
 using System.Globalization;
 using System.Text;
+using MinhasFinancas.Domain.Entities;
+using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Enums;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos;
 using MinhasFinancas.Infra.IA.Enums;
@@ -30,7 +32,8 @@ namespace MinhasFinancas.Infra.IA.Construtores
             IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
             DecisaoFinanceiraIA? decisaoFinanceira = null,
             InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null,
-            ConsistenciaEstrategicaIA? consistenciaEstrategica = null)
+            ConsistenciaEstrategicaIA? consistenciaEstrategica = null,
+            IEnumerable<CompromissoFinanceiro>? compromissosFinanceiros = null)
         {
             var cultura = new CultureInfo("pt-BR");
 
@@ -85,6 +88,10 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 AlertasEstrategicos = ["Nao ha Plano Estrategico Financeiro vigente cadastrado."]
             };
             var narrativaPlanoEstrategico = _interpretadorEstrategico.InterpretarPlanoParaContexto(interpretacaoPlano);
+            var compromissosAtivos = compromissosFinanceiros?
+                .Where(item => item is not null)
+                .Select(item => MontarLinhaCompromissoFinanceiro(item!))
+                .ToList() ?? [];
             var consistencia = consistenciaEstrategica ?? new ConsistenciaEstrategicaIA
             {
                 PossuiPlano = false,
@@ -151,6 +158,10 @@ namespace MinhasFinancas.Infra.IA.Construtores
                     narrativaPlanoEstrategico,
                     "- Nao ha Plano Estrategico Financeiro vigente cadastrado."),
                 MontarSecao(
+                    "Compromissos Financeiros",
+                    compromissosAtivos,
+                    "- Nenhum compromisso financeiro ativo foi encontrado."),
+                MontarSecao(
                     "Consistencia Estrategica",
                     MontarLinhasConsistenciaEstrategica(consistencia),
                     "- Nao foi possivel calcular consistencia estrategica."),
@@ -185,6 +196,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 MemoriaFinanceiraResumida = memoriaFinanceiraResumida,
                 ResumoEvolucaoFinanceira = interpretacaoMemoria.ResumoEvolucao,
                 EvolucaoFinanceira = interpretacaoMemoria.Narrativas,
+                CompromissosFinanceiros = compromissosAtivos,
                 ResumoExecutivo = resumoFinanceiroIA.ResumoExecutivo,
                 DecisaoFinanceira = decisaoInterpretada,
                 InterpretacaoPlanoEstrategico = interpretacaoPlano,
@@ -312,6 +324,26 @@ namespace MinhasFinancas.Infra.IA.Construtores
             }
 
             yield return $"- Grau de confiança: {decisaoFinanceira.GrauConfiancaInterpretacao}/100";
+        }
+
+        private static string MontarLinhaCompromissoFinanceiro(CompromissoFinanceiro compromisso)
+        {
+            var origem = compromisso.Origem switch
+            {
+                EnumOrigemCompromissoFinanceiro.Manual => "Manual",
+                EnumOrigemCompromissoFinanceiro.IA => "IA",
+                _ => "Indefinida"
+            };
+
+            var status = compromisso.Status switch
+            {
+                EnumStatusCompromissoFinanceiro.EmAndamento => "Em andamento",
+                EnumStatusCompromissoFinanceiro.Concluido => "Concluído",
+                EnumStatusCompromissoFinanceiro.Cancelado => "Cancelado",
+                _ => "Indefinido"
+            };
+
+            return $"- {compromisso.Descricao} (Origem: {origem}; Status: {status})";
         }
 
         private static string FormatarNivelConsistencia(NivelConsistenciaEstrategica nivel)

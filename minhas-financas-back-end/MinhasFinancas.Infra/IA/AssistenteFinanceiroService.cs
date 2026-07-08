@@ -32,7 +32,8 @@ namespace MinhasFinancas.Infra.IA
             IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
             DecisaoFinanceiraIA? decisaoFinanceira = null,
             PlanoEstrategicoFinanceiro? planoEstrategicoFinanceiro = null,
-            InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
+            InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null,
+            IEnumerable<CompromissoFinanceiro>? compromissosFinanceiros = null)
         {
             var consistenciaEstrategica = _avaliadorConsistenciaEstrategica.Avaliar(
                 resumoFinanceiroIA,
@@ -47,7 +48,8 @@ namespace MinhasFinancas.Infra.IA
                 memoriaFinanceira,
                 decisaoFinanceira,
                 interpretacaoPlanoEstrategico,
-                consistenciaEstrategica);
+                consistenciaEstrategica,
+                compromissosFinanceiros);
         }
 
         public RequisicaoIA PrepararRequisicao(
@@ -56,7 +58,8 @@ namespace MinhasFinancas.Infra.IA
             IEnumerable<MemoriaFinanceiraResumidaIA>? memoriaFinanceira = null,
             DecisaoFinanceiraIA? decisaoFinanceira = null,
             PlanoEstrategicoFinanceiro? planoEstrategicoFinanceiro = null,
-            InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null)
+            InterpretacaoPlanoEstrategicoIA? interpretacaoPlanoEstrategico = null,
+            IEnumerable<CompromissoFinanceiro>? compromissosFinanceiros = null)
         {
             var contexto = PrepararContexto(
                 resumoFinanceiroIA,
@@ -64,7 +67,8 @@ namespace MinhasFinancas.Infra.IA
                 memoriaFinanceira,
                 decisaoFinanceira,
                 planoEstrategicoFinanceiro,
-                interpretacaoPlanoEstrategico);
+                interpretacaoPlanoEstrategico,
+                compromissosFinanceiros);
             return _construtorPromptIA.Construir(contexto);
         }
 

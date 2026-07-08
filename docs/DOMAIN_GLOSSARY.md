@@ -1,4 +1,4 @@
-# GlossÃ¡rio do DomÃ­nio - Minhas FinanÃ§as
+﻿# GlossÃ¡rio do DomÃ­nio - Minhas FinanÃ§as
 
 Este documento registra os conceitos oficiais do domÃ­nio financeiro do sistema.
 
@@ -341,13 +341,25 @@ Camada que transforma a pergunta do usuário em `DecisãoFinanceiraIA`, identifi
 
 ## Compromissos Financeiros
 
-Registro de ações e decisões combinadas entre usuário e Assistente Financeiro.
+Registro de intenções e decisões financeiras que o usuário deseja acompanhar ao longo do tempo.
+
+Esse conceito funciona como memória operacional das ações assumidas com o próprio planejamento financeiro ou com sugestões vindas do Assistente Financeiro.
+
+Campos conceituais principais:
+
+- descrição do compromisso
+- origem do compromisso
+- status atual
+- data de criação
+- data de conclusão, quando aplicável
+- data de cancelamento, quando aplicável
+- observações complementares
+- ativo/inativo
 
 Exemplos:
 
-- fortalecer a reserva
-- reduzir uso do cartão
-- adiar compra não prioritária
+- fortalecer a reserva de emergência
+- reduzir uso do cartão de crédito
+- adiar uma compra não prioritária
 
-No futuro, esses compromissos poderão ser acompanhados por status, data e evolução.
-
+No futuro, os compromissos poderão receber indicadores de execução, alertas e vínculo mais direto com o Plano Estratégico Financeiro.

@@ -1,4 +1,4 @@
-# Product Vision - Minhas Financas
+﻿# Product Vision - Minhas Financas
 
 ## Objetivo do sistema
 
@@ -72,6 +72,8 @@ Nenhuma camada deve substituir a anterior.
 
 Cada uma existe para enriquecer a compreensao da situacao financeira do usuario.
 
+Quando o Assistente Financeiro identifica uma intenção relevante, ela pode ser convertida em um compromisso rastreável sem perder o contexto original.
+
 Para uma leitura mais humana e inspiradora da jornada do Assistente, consulte `docs/ASSISTANT_VISION.md`.
 
 ## Integracao com IA como evolucao em duas etapas
@@ -134,3 +136,4 @@ Antes de criar qualquer nova feature, responder:
 - A funcionalidade melhora operacao, leitura, planejamento ou patrimonio?
 - Existe rastreabilidade suficiente?
 - A informacao produz valor recorrente ou apenas ocupa espaco?
+
