@@ -1,4 +1,4 @@
-using MinhasFinancas.Infra.IA.Modelos;
+﻿using MinhasFinancas.Infra.IA.Modelos;
 
 namespace MinhasFinancas.Infra.IA.Construtores
 {
@@ -74,6 +74,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
             - nunca contradizer o Avaliador de Consistencia Estrategica
             - nao crie nem altere estrategia; apenas interprete o plano vigente
             - nao crie nem altere compromissos; apenas respeite o que ja foi assumido
+            - atualize recomendacoes quando a nova informacao mudar a leitura anterior
             - explique por que a decisao esta alinhada ou desalinhada ao plano vigente
             - cite os objetivos impactados quando houver consistencia estrategica
             - quando os pareceres dos especialistas trouxerem sinais complementares, integre-os sem repetir literalmente os textos tecnicos
@@ -89,7 +90,6 @@ namespace MinhasFinancas.Infra.IA.Construtores
             - use portugues brasileiro natural, profissional e respeitoso
             - nao faca promessas absolutas
             - nao substitua consultoria financeira profissional
-
             ## Estrutura da resposta
 
             1. Diagnostico
@@ -110,3 +110,4 @@ namespace MinhasFinancas.Infra.IA.Construtores
         }
     }
 }
+

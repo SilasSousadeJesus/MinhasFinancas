@@ -76,6 +76,8 @@ Cada uma existe para enriquecer a compreensao da situacao financeira do usuario.
 
 Quando o Assistente Financeiro identifica uma intenção relevante, ela pode ser convertida em um compromisso rastreável sem perder o contexto original.
 
+A conversa do usuário também pode permanecer aberta por mais tempo, para que o sistema acompanhe o raciocínio em andamento sem obrigá-lo a repetir tudo a cada nova pergunta.
+
 Para uma leitura mais humana e inspiradora da jornada do Assistente, consulte `docs/ASSISTANT_VISION.md`.
 
 ## Integracao com IA como evolucao em duas etapas

@@ -523,8 +523,9 @@ ObservaÃ§Ã£o importante:
 
 ### Próxima implementação prevista
 
-- Fase 4.2.7 — Conversa Contínua no roadmap de Inteligência Financeira
+- Fase 4.2.8 — Simulador Inteligente no roadmap de Inteligência Financeira
 - a Fase 4.2.4 — Compromissos Financeiros foi concluída e passou a integrar a cadeia do Assistente Financeiro
+- a etapa de continuidade conversacional foi retirada da visão oficial, mantendo o Assistente Financeiro como consultor e não como chat contínuo
 - a intenção do usuário já pode ser interpretada como `DecisaoFinanceiraIA` antes da montagem do contexto estratégico
 - evolução da Base de Conhecimento Financeira para registrar direção estratégica do usuário ao longo do tempo
 - consolidação da tela de gestão do Plano Estratégico Financeiro no frontend, com edição por nova versão e histórico simples

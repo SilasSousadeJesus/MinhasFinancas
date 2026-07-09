@@ -4,6 +4,9 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 08/07/2026
 
+- Rollback da Fase 4.2.7 - Conversa Contínua, removendo a experiência de chat contínuo para manter o Assistente Financeiro como consultor financeiro e não como conversa persistida.
+- Atualização do roadmap e das visões de produto para retirar a Conversa Contínua da linha oficial do produto e registrar a próxima etapa como Simulador Inteligente.
+- Atualização da documentação funcional e conceitual para refletir a remoção da Conversa Contínua do fluxo do Assistente Financeiro.
 - Consolidacao da Fase 4.2.5 - IA Estrategica, com revisao do prompt oficial para conectar estado atual, evolucao, plano estrategico, consistencia e compromissos em uma narrativa consultiva.
 - Atualizacao da documentacao de produto, roadmap, visao do assistente e AI context para refletir a IA Estrategica como fase concluida.
 - Criacao do documento `docs/ASSISTANT_VISION.md`, com a visao humana e evolutiva do Assistente Financeiro.

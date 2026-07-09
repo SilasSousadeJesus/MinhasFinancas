@@ -106,6 +106,7 @@ Este arquivo nÃ£o substitui:
 - transforma sugestões da IA em compromissos financeiros reais
 - acompanha uma leitura estratégica que conecta estado atual, evolução, plano, consistência e compromissos
 - recebe pareceres internos de especialistas por domínio financeiro
+- continua conversas persistentes com o Assistente Financeiro usando o contexto recente da interação atual
 
 ### Dados gerados ou mantidos
 - consome `ResumoFinanceiroIA` como base consolidada
@@ -133,10 +134,11 @@ Este arquivo nÃ£o substitui:
 - ações de copiar, gerar novamente e recarregar análises anteriores
 - IA Estratégica já consolidada no texto final, conectando estado atual, evolução, plano e compromissos
 - especialistas internos alimentando a leitura final do assistente com pareceres por domínio
+- conversa contínua com histórico persistido, seleção de diálogos anteriores e envio de novas mensagens no mesmo contexto
 
 ### Evoluções futuras
 - especialistas temáticos reutilizando a mesma infraestrutura
-- conversa contínua com o assistente financeiro
+- simulador inteligente integrado ao contexto do assistente financeiro
 
 ## Compromissos Financeiros
 

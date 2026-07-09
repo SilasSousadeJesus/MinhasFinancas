@@ -86,17 +86,17 @@ O frontend Ã© responsÃ¡vel por:
 
 O contexto enviado para a IA nasce exclusivamente do `ResumoFinanceiroIA`.
 
-Ele Ã© estruturado pelo `ConstrutorContextoIA` em blocos organizados, incluindo:
+Ele é estruturado pelo `ConstrutorContextoIA` em blocos organizados, incluindo:
 
-- data de referÃªncia
-- pontuaÃ§Ã£o da saÃºde financeira
-- classificaÃ§Ã£o
+- data de referência
+- pontuação da saúde financeira
+- classificação
 - resumo executivo do sistema
-- evoluÃ§Ã£o financeira interpretada a partir da memÃ³ria
-- plano estratÃ©gico financeiro interpretado a partir da direÃ§Ã£o vigente do usuÃ¡rio
+- evolução financeira interpretada a partir da memória
+- plano estratégico financeiro interpretado a partir da direção vigente do usuário
 - prioridades imediatas
 - destaques positivos
-- insights prioritÃ¡rios
+- insights prioritários
 
 O contexto deve ser suficiente para gerar uma boa resposta sem expor a base inteira do sistema.
 
@@ -245,14 +245,13 @@ Essa camada nÃ£o consulta banco e nÃ£o substitui indicadores ou insights.
 
 SituaÃ§Ã£o atual da evoluÃ§Ã£o:
 
-- Fase 4.1 concluÃ­da: integraÃ§Ã£o tÃ©cnica com IA jÃ¡ existe
-- Fase 4.2 iniciada: primeiro prompt oficial de anÃ¡lise financeira com IA implementado
-- Fase 4.2.2 implementada no frontend: experiÃªncia visual da anÃ¡lise aprofundada integrada Ã  tela do Assistente Financeiro
-- Fase 4.2.2.1 implementada no backend: interpretaÃ§Ã£o da memÃ³ria histÃ³rica antes da chamada Ã  IA
+- Fase 4.1 concluída: integração técnica com IA já existe
+- Fase 4.2 iniciada: primeiro prompt oficial de análise financeira com IA implementado
+- Fase 4.2.2 implementada no frontend: experiência visual da análise aprofundada integrada à tela do Assistente Financeiro
+- Fase 4.2.2.1 implementada no backend: interpretação da memória histórica antes da chamada à IA
 - Fase 4.2.3.3 implementada no backend: Consistência Estratégica calculada pelo sistema e enviada ao contexto da IA
-- Fase 4.2.5 concluÃ­da: IA EstratÃ©gica consolidada com leitura consultiva baseada em estado atual, evoluÃ§Ã£o, plano, consistÃªncia e compromissos
-- Fase 4.2.6 concluÃ­da: especialistas internos analisam domÃ­nios especÃ­ficos antes da consolidaÃ§Ã£o do contexto final
-
+- Fase 4.2.5 concluída: IA Estratégica consolidada com leitura consultiva baseada em estado atual, evolução, plano, consistência e compromissos
+- Fase 4.2.6 concluída: especialistas internos analisam domínios específicos antes da consolidação do contexto final
 Nesta etapa, o foco Ã© melhorar:
 
 - qualidade do prompt
@@ -286,7 +285,6 @@ A subfase 4.2.2 tornou a análise aprofundada acessível diretamente na tela do 
 - não existem especialistas
 - a persistência da Memória Financeira continua sendo responsabilidade do backend
 - o frontend apenas consulta, apresenta e aciona a exclusão lógica do histórico existente
-
 ## Atualização — IA Estratégica
 
 A Fase 4.2.5 consolidou a IA Estratégica como a camada responsável por transformar o contexto consolidado em um parecer mais profundo e consultivo.

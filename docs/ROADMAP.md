@@ -10,7 +10,7 @@ O projeto se encontra atualmente na **Fase 4.2.6 concluída** do roadmap de Inte
 
 A subfase **Fase 4.2.3.1.1 — Gestão do Plano Estratégico Financeiro** também foi concluída no frontend.
 
-A próxima etapa oficial é a **Fase 4.2.7 — Conversa Contínua**.
+A próxima etapa oficial é a **Fase 4.2.8 — Simulador Inteligente**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -292,19 +292,6 @@ Criar especialistas temáticos utilizando a mesma base técnica da IA estratégi
 - integração dos pareceres ao contexto consolidado do Assistente Financeiro
 - documentação oficial de cada especialista para evolução futura
 
-### Fase 4.2.7 — Conversa Contínua
-
-**Status:** futura
-
-Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o contexto financeiro jÃ¡ consolidado.
-
-**Exemplos:**
-
-- Vale a pena quitar meu emprÃ©stimo?
-- E se eu comprar uma casa?
-- Quanto posso gastar em um carro?
-- Essa simulaÃ§Ã£o Ã© saudÃ¡vel?
-
 ## ConcluÃ­do
 
 ### FundaÃ§Ã£o
@@ -366,7 +353,7 @@ Permitir que o usuÃ¡rio converse com o Assistente Financeiro utilizando todo o
 
 ### Inteligência Financeira / Assistente Financeiro
 
-- Fase 4.2.7 — Conversa Contínua
+- Fase 4.2.8 — Simulador Inteligente
 
 ### Dashboard
 
@@ -430,7 +417,7 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2.3.3 — Consistência Estratégica** está **concluída**
 - a **Fase 4.2.5 — IA Estratégica** está **concluída**
 - a **Fase 4.2.6 — Especialistas Financeiros** está **concluída**
-- a **próxima etapa oficial** é a **Fase 4.2.7 — Conversa Contínua**
+- a **próxima etapa oficial** é a **Fase 4.2.8 — Simulador Inteligente**
 
 ### Entregas já consolidadas
 
@@ -466,6 +453,10 @@ Ela passa a ser formada por três conceitos:
 A Base de Conhecimento Financeira pertence ao domínio do sistema.
 
 A IA pode consultar essa base para enriquecer respostas, mas não é dona dela.
+
+
+
+
 
 
 

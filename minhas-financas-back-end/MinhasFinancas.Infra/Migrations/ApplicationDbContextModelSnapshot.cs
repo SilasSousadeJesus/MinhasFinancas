@@ -571,6 +571,7 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("Conta");
                 });
 
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.DividaManualProjecaoMensal", b =>
                 {
                     b.Property<Guid>("Id")
@@ -728,6 +729,7 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.ToTable("LancamentoParcelado");
                 });
+
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Meta", b =>
                 {
@@ -1303,6 +1305,7 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.DividaManualProjecaoMensal", b =>
                 {
                     b.HasOne("MinhasFinancas.Domain.Entities.Projecao", "Projecao")
@@ -1364,6 +1367,7 @@ namespace MinhasFinancas.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
+
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Meta", b =>
                 {
@@ -1505,6 +1509,7 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Navigation("BensPatrimoniais");
                 });
 
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Lancamento", b =>
                 {
                     b.Navigation("LancamentoParcelado");
@@ -1576,3 +1581,4 @@ namespace MinhasFinancas.Infra.Migrations
         }
     }
 }
+

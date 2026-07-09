@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MinhasFinancas.Domain.Entities;
+using MinhasFinancas.CrossCutting.Util.Enum;
 
 namespace MinhasFinancas.Infra
 {

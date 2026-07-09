@@ -356,6 +356,7 @@ Campos conceituais principais:
 - observações complementares
 - ativo/inativo
 
+
 ## Especialistas Financeiros
 
 Camada interna do Assistente Financeiro responsável por aprofundar a leitura de domínios específicos sem criar uma segunda IA.
@@ -378,3 +379,4 @@ Exemplos:
 - adiar uma compra não prioritária
 
 No futuro, os compromissos poderão receber indicadores de execução, alertas e vínculo mais direto com o Plano Estratégico Financeiro.
+

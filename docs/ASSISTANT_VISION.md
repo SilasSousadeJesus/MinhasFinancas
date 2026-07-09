@@ -1,4 +1,4 @@
-# Visão do Assistente Financeiro
+﻿# Visão do Assistente Financeiro
 
 O Assistente Financeiro foi pensado para algo maior do que responder perguntas.
 
@@ -207,20 +207,6 @@ O usuário vê um assistente só.
 
 O sistema trabalha com vários pontos de vista.
 
-### Conversa Contínua
-
-Hoje cada pergunta ainda pode ser tratada como algo mais isolado.
-
-No futuro, o assistente vai acompanhar uma jornada mais longa.
-
-Ele vai lembrar contexto.
-
-Vai perceber evolução.
-
-Vai responder com continuidade.
-
-Isso aproxima o produto de um acompanhamento financeiro real.
-
 ### Simulador Inteligente
 
 Talvez essa seja uma das camadas mais poderosas de toda a visão.
@@ -290,15 +276,9 @@ Especialistas
 
 ↓
 
-Conversa Contínua
-
-“Acompanhe minha jornada.”
-
-↓
-
 Simulador Inteligente
 
-“Mostre o futuro antes da decisão.”
+"Mostre o futuro antes da decisão."
 
 ## O que torna esse projeto diferente
 
@@ -325,3 +305,4 @@ Ajudar o usuário a pensar melhor.
 Não apenas aconselhar.
 
 Ensinar também.
+
