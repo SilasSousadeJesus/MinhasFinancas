@@ -9,6 +9,7 @@ Ele é a referência principal sempre que um indicador mudar.
 - Os indicadores são derivados de dados já persistidos no sistema.
 - A camada analítica não consulta a interface.
 - A pontuação da saúde financeira usa uma média ponderada dos indicadores.
+- O modelo oficial de risco financeiro é o `MF Score`, que organiza os indicadores em pilares, aplica pesos e pode sofrer penalizações críticas.
 - Indicadores de configuração continuam visíveis quando faltam parâmetros no perfil financeiro, mas não devem distorcer a leitura como se fossem crise financeira real.
 - O comprometimento de curto prazo e a pressão financeira acumulada fazem parte da leitura analítica porque o sistema já possui lançamentos programados, parcelados e recorrentes.
 - Os indicadores temporais expõem de forma explícita o valor das obrigações previstas, o valor da receita prevista e o percentual de comprometimento calculado.
@@ -163,6 +164,7 @@ A pontuação geral é calculada a partir dos indicadores disponíveis, usando p
 - Indicadores com status `Excelente` ou `Bom` podem gerar destaques positivos.
 - Indicadores de configuração ausente devem aparecer como lembrete de régua pessoal, não como falha financeira absoluta.
 - O indicador de comprometimento financeiro futuro existe para complementar o comprometimento da renda nos próximos 30 dias, enquanto os horizontes maiores representam pressão financeira acumulada.
+- A saúde financeira deixa de ser apenas uma média simples e passa a alimentar o `MF Score`, que aplica pilares, pesos e regras críticas documentadas em `docs/MF_SCORE.md`.
 
 ## Relação com as telas
 

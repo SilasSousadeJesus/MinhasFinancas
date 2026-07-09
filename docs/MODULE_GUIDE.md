@@ -57,6 +57,8 @@ Este arquivo nÃ£o substitui:
 ### Finalidade
 Ã‰ a tela analÃ­tica da saÃºde financeira. Seu papel Ã© traduzir os indicadores da anÃ¡lise financeira em uma leitura detalhada da situaÃ§Ã£o atual do usuÃ¡rio.
 
+Nesta evoluÃ§Ã£o, a tela passa a exibir oficialmente o `MF Score`, com classificaÃ§Ã£o de risco, notas dos cinco pilares e indicadores crÃ­ticos.
+
 ### O que o usuÃ¡rio faz aqui
 - visualiza a pontuaÃ§Ã£o geral da saÃºde financeira
 - entende a classificaÃ§Ã£o atual
@@ -98,7 +100,7 @@ Este arquivo nÃ£o substitui:
 É a tela executiva da inteligência financeira. Seu papel é transformar o resumo consolidado do sistema em uma leitura clara, consultiva e orientada à decisão.
 
 ### O que o usuário faz aqui
-- acompanha a saúde financeira em uma visão executiva
+- acompanha a saúde financeira em uma visão executiva baseada no `MF Score`
 - lê resumo, prioridades, principais indicadores, leitura estratégica e conclusão
 - consulta o histórico visual das últimas análises
 - gera uma nova análise aprofundada com IA

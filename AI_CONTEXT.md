@@ -12,6 +12,8 @@ InformaÃ§Ãµes de produto, roadmap, changelog e glossÃ¡rio de domÃ­nio fi
 
 A camada `AnaliseFinanceira` distingue o comprometimento financeiro futuro de curto prazo da pressão financeira acumulada em horizontes maiores e agora expõe explicitamente, nesses indicadores, obrigações previstas, receita prevista e percentual de comprometimento.
 
+O modelo oficial de risco financeiro do sistema é o `MF Score`, que organiza os indicadores em cinco pilares e passa a orientar a leitura da Saúde Financeira, do Assistente Financeiro e das integrações futuras.
+
 ## Arquitetura da soluÃ§Ã£o
 
 O backend segue uma arquitetura em camadas prÃ³xima de `Clean Architecture` / `Onion`, sem rigidez acadÃªmica absoluta:

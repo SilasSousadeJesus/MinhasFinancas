@@ -70,10 +70,14 @@ function obterAbertura(classificacao?: string) {
   switch (classificacao) {
     case "Excelente":
       return "Sua vida financeira apresenta um cenário bastante sólido neste momento.";
+    case "Muito Bom":
+      return "Sua situação financeira mostra uma base muito consistente e com boa margem de proteção.";
     case "Boa":
       return "Sua situação financeira mostra sinais consistentes de equilíbrio.";
     case "Crítica":
       return "O momento financeiro exige cautela e reorganização das prioridades.";
+    case "Muito Crítico":
+      return "O momento financeiro exige intervenção imediata e reorganização profunda das prioridades.";
     default:
       return "Sua situação financeira ainda exige alguns ajustes importantes.";
   }
@@ -149,7 +153,7 @@ function interpretarPontoAtencao(indicador: IndicadorResumoFinanceiroIA | null) 
 
 function interpretarDirecao(indicador: IndicadorResumoFinanceiroIA | null, classificacao?: string) {
   if (!indicador) {
-    if (classificacao === "Excelente" || classificacao === "Boa") {
+    if (classificacao === "Excelente" || classificacao === "Muito Bom" || classificacao === "Boa") {
       return "preservar a disciplina atual e transformar estabilidade em crescimento consistente";
     }
 
@@ -186,8 +190,10 @@ function interpretarDirecao(indicador: IndicadorResumoFinanceiroIA | null, class
 
 export class ConclusaoFinanceiraBuilder {
   static construir(resumo: ResumoFinanceiroIAData, indicadores: IndicadorResumoFinanceiroIA[]) {
-    const pontuacao = resumo.saudeFinanceira.pontuacaoGeral ?? 0;
-    const classificacao = resumo.saudeFinanceira.classificacao ?? "Atenção";
+    const mfScore = resumo.saudeFinanceira.mfScore;
+    const pontuacao = mfScore?.pontuacaoFinal ?? resumo.saudeFinanceira.pontuacaoGeral ?? 0;
+    const classificacao = mfScore?.classificacao ?? resumo.saudeFinanceira.classificacao ?? "Atenção";
+    const risco = mfScore?.risco ?? "Risco não informado";
 
     const principalPontoForte = buscarIndicadorPorOrdem(
       indicadores,
@@ -206,6 +212,6 @@ export class ConclusaoFinanceiraBuilder {
     const pontoAtencao = interpretarPontoAtencao(principalPontoAtencao);
     const direcao = interpretarDirecao(principalPontoAtencao, classificacao);
 
-    return `${abertura} Com ${pontuacao}/100 e classificação ${classificacao}, o quadro atual combina ${pontoForte}. O principal fator de pressão hoje é ${pontoAtencao}. Para o próximo ciclo, a direção mais prudente é ${direcao}.`;
+    return `${abertura} Com MF Score de ${pontuacao}/100, classificação ${classificacao} e ${risco.toLowerCase()}, o quadro atual combina ${pontoForte}. O principal fator de pressão hoje é ${pontoAtencao}. Para o próximo ciclo, a direção mais prudente é ${direcao}.`;
   }
 }

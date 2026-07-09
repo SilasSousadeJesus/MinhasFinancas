@@ -1,4 +1,10 @@
-﻿# Changelog - Minhas Financas
+﻿## 08/07/2026
+
+- Criação oficial do MF Score como modelo de risco financeiro pessoal.
+- Estrutura dos cinco pilares: Fluxo de Caixa, Liquidez e Reserva, Endividamento e Obrigações, Patrimônio e Planejamento e Disciplina.
+- Introdução de score base, penalizações críticas, classificação própria e tendência preparada.
+- Atualização da Saúde Financeira, do Assistente Financeiro e da documentação técnica e funcional.
+# Changelog - Minhas Financas
 
 Registrar aqui apenas mudancas relevantes do sistema.
 
@@ -62,6 +68,7 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 - O projeto evoluiu de frontend majoritariamente visual para aplicacao integrada de ponta a ponta.
 - Os modulos centrais hoje ja possuem fluxo real entre interface, API e persistencia.
+
 
 
 

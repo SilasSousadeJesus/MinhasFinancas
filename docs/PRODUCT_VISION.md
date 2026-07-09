@@ -143,3 +143,9 @@ Antes de criar qualquer nova feature, responder:
 - Existe rastreabilidade suficiente?
 - A informacao produz valor recorrente ou apenas ocupa espaco?
 
+
+## MF Score como visão central
+
+A avaliação financeira do sistema deve ser guiada pelo MF Score, que trata a saúde financeira como risco, e não apenas como soma de números positivos ou negativos.
+
+Os produtos e telas futuras devem usar esse modelo como referência para interpretar estabilidade, pressão, proteção, tendência e maturidade financeira.

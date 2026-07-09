@@ -114,9 +114,11 @@ function obterVariantBadge(status: number): "default" | "secondary" | "destructi
 function obterVariantClassificacao(classificacao: string): "default" | "secondary" | "destructive" | "outline" {
   switch (classificacao) {
     case "Excelente":
+    case "Muito Bom":
       return "secondary";
     case "Boa":
       return "outline";
+    case "Muito Crítico":
     case "Crítica":
     case "Critica":
       return "destructive";
@@ -680,14 +682,14 @@ export function AssistenteFinanceiroManager() {
               <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex items-end gap-3">
                   <p className="text-5xl font-bold tracking-tight">
-                    {resumo?.saudeFinanceira.pontuacaoGeral ?? 0}
+                    {resumo?.saudeFinanceira.mfScore.pontuacaoFinal ?? resumo?.saudeFinanceira.pontuacaoGeral ?? 0}
                     <span className="text-xl text-muted-foreground">/100</span>
                   </p>
                   <Badge
-                    variant={obterVariantClassificacao(resumo?.saudeFinanceira.classificacao ?? "Atenção")}
+                    variant={obterVariantClassificacao(resumo?.saudeFinanceira.mfScore.classificacao ?? resumo?.saudeFinanceira.classificacao ?? "Atenção")}
                     className="mb-1"
                   >
-                    {resumo?.saudeFinanceira.classificacao ?? "Atenção"}
+                    {resumo?.saudeFinanceira.mfScore.classificacao ?? resumo?.saudeFinanceira.classificacao ?? "Atenção"}
                   </Badge>
                 </div>
 
@@ -879,7 +881,7 @@ export function AssistenteFinanceiroManager() {
                 <div className="rounded-xl border border-border/60 bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
                   {analiseExibida
                     ? `Análise aberta: ${truncarTexto(analiseExibida.perguntaUsuario, 90)}. Pontuação ${
-                        resumo?.saudeFinanceira.pontuacaoGeral ?? 0
+                        resumo?.saudeFinanceira.mfScore.pontuacaoFinal ?? resumo?.saudeFinanceira.pontuacaoGeral ?? 0
                       }/100.`
                     : "Nenhuma análise carregada no momento. Gere uma análise aprofundada para começar a construir sua Memória Financeira."}
                 </div>
@@ -1274,6 +1276,9 @@ export function AssistenteFinanceiroManager() {
     </div>
   );
 }
+
+
+
 
 
 

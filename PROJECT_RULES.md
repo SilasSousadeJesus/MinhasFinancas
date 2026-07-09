@@ -1,4 +1,4 @@
-# Project Rules
+﻿# Project Rules
 
 Use este arquivo para registrar apenas regras permanentes de desenvolvimento do projeto.
 
@@ -157,3 +157,10 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Toda fase concluída, implementação relevante ou evolução arquitetural deve ser registrada em `docs/CHANGELOG.md`.
 - As entradas do changelog devem seguir a ordem cronológica real do trabalho, usando a data correspondente ao registro.
 - O changelog complementa o roadmap e o AI_CONTEXT, mas não os substitui.
+
+
+## MF Score
+
+- O `MF Score` é o modelo oficial de avaliação de risco financeiro pessoal do sistema.
+- Sempre que um indicador, peso, fórmula, pilar, penalidade, regra crítica, classificação ou tendência do `MF Score` mudar, devem ser atualizados obrigatoriamente `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE.md`.
+- Nenhuma alteração no `MF Score` deve ser considerada concluída sem a sincronização simultânea desses dois documentos.

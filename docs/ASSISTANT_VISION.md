@@ -308,3 +308,9 @@ Não apenas aconselhar.
 
 Ensinar também.
 
+
+## MF Score
+
+O Assistente Financeiro passa a interpretar o usuário com base no MF Score, que sintetiza risco, pilares, regras críticas e tendência.
+
+A IA continua como comunicadora da inteligência já calculada pelo sistema, enquanto o MF Score garante a base oficial de leitura.

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -77,14 +77,21 @@ function obterVariantBadge(status: number): "default" | "secondary" | "destructi
 function obterVariantClassificacao(classificacao: string): "default" | "secondary" | "destructive" | "outline" {
   switch (classificacao) {
     case "Excelente":
+    case "Muito Bom":
       return "secondary";
     case "Boa":
       return "outline";
-    case "CrÃ­tica":
+    case "Muito Crítico":
+    case "Crítica":
+    case "Critica":
       return "destructive";
     default:
       return "default";
   }
+}
+
+function obterTextoRisco(risco?: string | null) {
+  return risco?.trim() || "Risco não informado";
 }
 
 function obterTextoTipoInsight(tipo: number) {
@@ -196,27 +203,38 @@ export function SaudeFinanceiraManager() {
         <div className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Resumo geral</CardTitle>
-              <CardDescription>Pontuação consolidada, classificação atual e principais pontos de atenção da sua saúde financeira.</CardDescription>
+              <CardTitle>MF Score</CardTitle>
+              <CardDescription>Modelo oficial de risco financeiro pessoal, com pilares, classificação, risco e pontos de atenção.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-2xl border border-border/70 bg-background/70 p-6">
-                  <p className="text-sm text-muted-foreground">Pontuação geral</p>
+                  <p className="text-sm text-muted-foreground">Pontuação base e final</p>
                   <p className="mt-2 text-5xl font-bold tracking-tight">
-                    {saudeFinanceira?.resumo.pontuacaoGeral ?? 0}
+                    {saudeFinanceira?.resumo.mfScore.pontuacaoFinal ?? saudeFinanceira?.resumo.pontuacaoGeral ?? 0}
+                    <span className="text-xl text-muted-foreground">/100</span>
                   </p>
-                  <p className="mt-2 text-sm text-muted-foreground">Escala de 0 a 100.</p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Base: {saudeFinanceira?.resumo.mfScore.pontuacaoBase ?? 0}/100
+                  </p>
                 </div>
                 <div className="rounded-2xl border border-border/70 bg-background/70 p-6">
-                  <p className="text-sm text-muted-foreground">Classificação</p>
-                  <div className="mt-3">
-                    <Badge variant={obterVariantClassificacao(saudeFinanceira?.resumo.classificacao ?? "Atenção")}>
-                      {saudeFinanceira?.resumo.classificacao ?? "Atenção"}
+                  <p className="text-sm text-muted-foreground">Classificação e risco</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Badge
+                      variant={obterVariantClassificacao(
+                        saudeFinanceira?.resumo.mfScore.classificacao ?? saudeFinanceira?.resumo.classificacao ?? "Atenção"
+                      )}
+                    >
+                      {saudeFinanceira?.resumo.mfScore.classificacao ?? saudeFinanceira?.resumo.classificacao ?? "Atenção"}
+                    </Badge>
+                    <Badge variant="outline">
+                      {obterTextoRisco(saudeFinanceira?.resumo.mfScore.risco)}
                     </Badge>
                   </div>
                   <p className="mt-4 text-sm text-muted-foreground">
-                    A classificação resume o equilíbrio atual entre renda, dívidas, patrimônio e reserva.
+                    {saudeFinanceira?.resumo.mfScore.descricao ??
+                      "O score interpreta o risco financeiro pessoal a partir de fluxo de caixa, liquidez, obrigações, patrimônio e planejamento."}
                   </p>
                 </div>
               </div>
@@ -247,6 +265,25 @@ export function SaudeFinanceiraManager() {
                       Nenhum ponto de atenção relevante no momento.
                     </div>
                   )}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-border/70 bg-background/70 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium">Notas dos cinco pilares</p>
+                    <p className="text-xs text-muted-foreground">Cada pilar resume uma dimensão do risco financeiro.</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+                  {saudeFinanceira?.resumo.mfScore.pilares?.map((pilar) => (
+                    <div key={pilar.codigo} className="rounded-xl border border-border/70 bg-background/70 p-4">
+                      <p className="text-sm font-medium">{pilar.nome}</p>
+                      <p className="mt-2 text-2xl font-semibold">{pilar.nota}/100</p>
+                      <p className="mt-2 text-xs text-muted-foreground">{pilar.descricao}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </CardContent>
@@ -413,3 +450,5 @@ export function SaudeFinanceiraManager() {
     </div>
   );
 }
+
+

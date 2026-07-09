@@ -13,6 +13,43 @@ export interface IndicadorFinanceiroSaude {
   formato: number;
 }
 
+export interface PilarMfScoreFinanceiro {
+  codigo: number;
+  nome: string;
+  peso: number;
+  nota: number;
+  descricao: string;
+  indicadores: string[];
+}
+
+export interface IndicadorCriticoMfScoreFinanceiro {
+  codigoIndicador: number;
+  nome: string;
+  motivo: string;
+  penalidade: number;
+  pilarRelacionado: string;
+}
+
+export interface TendenciaMfScoreFinanceiro {
+  direcao: number;
+  descricao: string;
+  historicoNotas: number[];
+}
+
+export interface MfScoreFinanceiro {
+  pontuacaoBase: number;
+  pontuacaoFinal: number;
+  classificacao: string;
+  risco: string;
+  tendencia: TendenciaMfScoreFinanceiro;
+  pilares: PilarMfScoreFinanceiro[];
+  indicadoresCriticos: IndicadorCriticoMfScoreFinanceiro[];
+  resumoExecutivoDosPilares: string[];
+  regrasCriticasAplicadas: string[];
+  descricao: string;
+  penalidadeTotal: number;
+}
+
 export interface PainelIndicadoresFinanceirosSaude {
   economiaMensal: IndicadorFinanceiroSaude;
   percentualEconomia: IndicadorFinanceiroSaude;
@@ -39,6 +76,7 @@ export interface PontoAtencaoSaudeFinanceira {
 export interface ResumoSaudeFinanceira {
   pontuacaoGeral: number;
   classificacao: string;
+  mfScore: MfScoreFinanceiro;
   pontosAtencao: PontoAtencaoSaudeFinanceira[];
 }
 

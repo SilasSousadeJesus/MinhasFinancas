@@ -10,6 +10,8 @@ O projeto se encontra atualmente na **Fase 4.2.6 concluída** do roadmap de Inte
 
 A subfase **Fase 4.2.3.1.1 — Gestão do Plano Estratégico Financeiro** também foi concluída no frontend.
 
+O modelo oficial de avaliação financeira evoluiu para o **MF Score**, que passa a ser a referência de risco do sistema e da Inteligência Financeira.
+
 A próxima etapa oficial é a **Fase 4.2.8 — Simulador Inteligente**.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
@@ -453,6 +455,7 @@ Ela passa a ser formada por três conceitos:
 A Base de Conhecimento Financeira pertence ao domínio do sistema.
 
 A IA pode consultar essa base para enriquecer respostas, mas não é dona dela.
+
 
 
 

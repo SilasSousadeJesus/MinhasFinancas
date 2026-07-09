@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Enums;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos;
 
@@ -240,8 +240,10 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             return classificacao switch
             {
                 "Excelente" => "Sua situação financeira apresenta um cenário bastante sólido neste momento.",
+                "Muito Bom" => "Sua situação financeira apresenta uma base muito consistente neste momento.",
                 "Boa" => "Sua situação financeira mostra sinais consistentes de equilíbrio.",
                 "Crítica" => "O momento financeiro pede cautela e reorganização das prioridades.",
+                "Muito Crítico" => "O momento financeiro exige correção imediata e reorganização profunda das prioridades.",
                 _ => "Sua situação financeira exige alguns ajustes importantes neste momento."
             };
         }
@@ -377,3 +379,4 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
         }
     }
 }
+

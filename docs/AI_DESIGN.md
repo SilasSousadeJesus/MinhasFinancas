@@ -359,3 +359,9 @@ Objetivo:
 
 Permitir continuidade consultiva, para que a IA consiga perceber evolução, mudança de prioridades e histórico recente do usuário.
 
+
+## MF Score na IA
+
+A IA deve tratar o MF Score como a métrica oficial de risco financeiro do sistema.
+
+Ela nunca recalcula o score por conta própria. Sempre interpreta o resultado preparado pelo backend, os pilares, os indicadores críticos e a tendência oficial.

@@ -406,3 +406,24 @@ Ele não representa obrigações futuras de cartão, parcelas ou lançamentos pe
 Medida sintética de 0 a 100 calculada a partir de uma média ponderada dos indicadores financeiros, incluindo leituras de curto prazo e pressão financeira acumulada em horizontes maiores.
 
 Indicadores de contexto ou configuração têm peso reduzido quando servem mais como régua pessoal do que como medida direta de desempenho.
+
+## MF Score
+
+Modelo oficial de avaliação de risco financeiro pessoal do sistema.
+
+Ele substitui conceitualmente a antiga leitura de pontuação simples e passa a organizar os indicadores em cinco pilares:
+
+- Fluxo de Caixa
+- Liquidez e Reserva
+- Endividamento e Obrigações
+- Patrimônio
+- Planejamento e Disciplina
+
+O MF Score produz:
+
+- nota base;
+- nota final;
+- classificação;
+- risco textual;
+- tendência;
+- indicadores críticos que aplicam penalizações.
