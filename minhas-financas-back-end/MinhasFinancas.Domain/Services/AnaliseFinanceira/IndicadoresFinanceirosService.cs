@@ -30,6 +30,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 ReservaEmergenciaAtual = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ReservaEmergenciaAtual),
                 ReservaEmergenciaIdeal = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal),
                 ComprometimentoRenda = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoRenda),
+                ComprometimentoFinanceiroFuturo = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo),
                 Endividamento = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.Endividamento),
                 PatrimonioLiquidoAtual = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual),
                 PercentualPatrimonioAlvo = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo),
@@ -92,7 +93,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
             var comprometimentoRendaAtual = receitaMensalAtual > 0
                 ? (despesaMensalAtual / receitaMensalAtual) * 100m
-                : 0m;
+                : (despesaMensalAtual > 0 ? 100m : 0m);
+
+            var obrigacoesFinanceirasFuturas30Dias = lancamentosValidos
+                .Where(lancamento =>
+                    lancamento.Tipo == EnumTipoLancamento.Despesa &&
+                    lancamento.StatusLancamento == EnumStatusLancamento.Pendente &&
+                    lancamento.DataVencimento.Date >= dataReferencia &&
+                    lancamento.DataVencimento.Date <= dataReferencia.AddDays(30))
+                .Sum(lancamento => lancamento.Valor);
+
+            var comprometimentoFinanceiroFuturoAtual = receitaMensalAtual > 0
+                ? (obrigacoesFinanceirasFuturas30Dias / receitaMensalAtual) * 100m
+                : (obrigacoesFinanceirasFuturas30Dias > 0 ? 100m : 0m);
 
             var endividamentoAtual = totalAtivos > 0
                 ? (totalPassivos / totalAtivos) * 100m
@@ -117,6 +130,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 ReservaEmergenciaIdealConfigurada = reservaEmergenciaIdealConfigurada,
                 CoberturaReservaEmMeses = coberturaReservaEmMeses,
                 ComprometimentoRendaAtual = comprometimentoRendaAtual,
+                ObrigacoesFinanceirasFuturas30Dias = obrigacoesFinanceirasFuturas30Dias,
+                ComprometimentoFinanceiroFuturoAtual = comprometimentoFinanceiroFuturoAtual,
                 EndividamentoAtual = endividamentoAtual,
                 PatrimonioAlvo = patrimonioAlvo,
                 PercentualPatrimonioAlvoAtual = percentualPatrimonioAlvoAtual

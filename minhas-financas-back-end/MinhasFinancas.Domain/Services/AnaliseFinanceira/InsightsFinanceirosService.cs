@@ -68,11 +68,35 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                         "Sem uma meta clara de proteção, a leitura do nível de segurança financeira perde precisão.",
                         "Configure no perfil financeiro a meta de reserva para orientar melhor as próximas decisões."),
 
+                CodigoIndicadorFinanceiro.ComprometimentoRenda when indicador.ValorIdeal <= 0
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
+                        "Ainda falta definir o limite de comprometimento da renda.",
+                        "Sem essa régua no perfil financeiro, o sistema não consegue diferenciar com precisão o que é um nível confortável e o que já representa pressão excessiva.",
+                        "Defina no perfil financeiro o percentual máximo desejado para o comprometimento da renda."),
+
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo when indicador.ValorIdeal <= 0
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
+                        "Ainda falta definir a régua dos compromissos futuros.",
+                        "Sem um limite máximo de comprometimento da renda, a leitura dos próximos 30 dias fica menos precisa.",
+                        "Use o perfil financeiro para definir o percentual máximo desejado para compromissos futuros."),
+
+                CodigoIndicadorFinanceiro.Endividamento when indicador.ValorIdeal <= 0
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
+                        "Ainda falta definir o limite de endividamento.",
+                        "Sem essa referência no perfil financeiro, o sistema não consegue calibrar com precisão a leitura do seu nível de dívida.",
+                        "Defina no perfil financeiro o percentual máximo desejado para o endividamento."),
+
                 CodigoIndicadorFinanceiro.ComprometimentoRenda when indicador.Status == StatusIndicadorFinanceiro.Atencao
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
                         "O orçamento mensal está pressionado.",
                         "Uma parcela relevante da renda já está comprometida, o que reduz flexibilidade para reagir a imprevistos ou aproveitar oportunidades.",
                         "Revise despesas recorrentes e contratos parcelados para recuperar margem de decisão no mês."),
+
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
+                        "Os próximos 30 dias já trazem compromissos relevantes.",
+                        "O volume de despesas futuras em relação à renda prevista começa a reduzir a flexibilidade de caixa do curto prazo.",
+                        "Reorganize os compromissos mais próximos para evitar pressão excessiva no próximo ciclo."),
 
                 CodigoIndicadorFinanceiro.Endividamento when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
@@ -109,6 +133,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.EconomiaMensal or
                 CodigoIndicadorFinanceiro.PercentualEconomia or
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo or
                 CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual or
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => CriarInsight(indicador, TipoInsightFinanceiro.DestaquePositivo, PrioridadeInsightFinanceiro.Baixa,

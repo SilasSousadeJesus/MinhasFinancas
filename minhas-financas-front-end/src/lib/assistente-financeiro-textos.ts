@@ -12,6 +12,7 @@ const INDICADOR_COMPROMETIMENTO_RENDA = 4;
 const INDICADOR_ENDIVIDAMENTO = 5;
 const INDICADOR_PATRIMONIO_LIQUIDO_ATUAL = 6;
 const INDICADOR_PERCENTUAL_PATRIMONIO_ALVO = 7;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO = 8;
 
 function estaPositivo(status: number) {
   return status === STATUS_EXCELENTE || status === STATUS_BOM;
@@ -66,6 +67,17 @@ export function obterTextoExecutivoIndicador(indicador: IndicadorResumoFinanceir
 
       return "O orçamento está bastante pressionado e exige reorganização para recuperar margem de decisão.";
 
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
+      if (estaPositivo(indicador.status)) {
+        return "Os compromissos dos próximos 30 dias ainda cabem com conforto dentro da renda prevista.";
+      }
+
+      if (estaEmAtencao(indicador.status)) {
+        return "Os compromissos dos próximos 30 dias já começam a reduzir a folga disponível no curto prazo.";
+      }
+
+      return "Os compromissos dos próximos 30 dias estão pressionando o caixa futuro e pedem revisão.";
+
     case INDICADOR_ENDIVIDAMENTO:
       if (estaPositivo(indicador.status)) {
         return "O endividamento permanece controlado e não interfere de forma relevante na evolução patrimonial.";
@@ -111,6 +123,8 @@ export function obterTextoPontoAtencao(indicador: IndicadorResumoFinanceiroIA) {
       return "A reserva de emergência ainda oferece pouca proteção diante de imprevistos ou oscilações de renda.";
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "O comprometimento da renda está reduzindo a margem disponível para ajustes e novas decisões.";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
+      return "Os compromissos futuros já começam a pressionar a flexibilidade do caixa.";
     case INDICADOR_ENDIVIDAMENTO:
       return "O peso atual das dívidas limita a capacidade de crescimento financeiro e aumenta a pressão futura.";
     case INDICADOR_PATRIMONIO_LIQUIDO_ATUAL:

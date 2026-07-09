@@ -380,3 +380,15 @@ Exemplos:
 
 No futuro, os compromissos poderão receber indicadores de execução, alertas e vínculo mais direto com o Plano Estratégico Financeiro.
 
+## Comprometimento financeiro futuro
+
+Leitura analítica que mostra quanto da renda dos próximos 30 dias já está comprometida com despesas pendentes.
+
+Ela complementa o `Comprometimento da renda` ao observar a pressão do caixa no curtíssimo prazo.
+
+## Pontuação de Saúde Financeira
+
+Medida sintética de 0 a 100 calculada a partir de uma média ponderada dos indicadores financeiros.
+
+Indicadores de contexto ou configuração têm peso reduzido quando servem mais como régua pessoal do que como medida direta de desempenho.
+

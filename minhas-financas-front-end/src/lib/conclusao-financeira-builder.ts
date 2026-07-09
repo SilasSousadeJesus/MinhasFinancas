@@ -13,10 +13,12 @@ const INDICADOR_COMPROMETIMENTO_RENDA = 4;
 const INDICADOR_ENDIVIDAMENTO = 5;
 const INDICADOR_PATRIMONIO_LIQUIDO_ATUAL = 6;
 const INDICADOR_PERCENTUAL_PATRIMONIO_ALVO = 7;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO = 8;
 
 const ORDEM_PRIORIDADE_ATENCAO = [
   INDICADOR_RESERVA_EMERGENCIA_ATUAL,
   INDICADOR_ENDIVIDAMENTO,
+  INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO,
   INDICADOR_COMPROMETIMENTO_RENDA,
   INDICADOR_PERCENTUAL_PATRIMONIO_ALVO,
   INDICADOR_PATRIMONIO_LIQUIDO_ATUAL,
@@ -30,6 +32,7 @@ const ORDEM_PRIORIDADE_FORCA = [
   INDICADOR_PERCENTUAL_ECONOMIA,
   INDICADOR_ECONOMIA_MENSAL,
   INDICADOR_RESERVA_EMERGENCIA_ATUAL,
+  INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO,
   INDICADOR_ENDIVIDAMENTO,
   INDICADOR_COMPROMETIMENTO_RENDA,
   INDICADOR_PERCENTUAL_PATRIMONIO_ALVO,
@@ -86,6 +89,8 @@ function interpretarPontoForte(indicador: IndicadorResumoFinanceiroIA | null) {
       return "o endividamento sob controle, que preserva margem para decisões futuras";
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "a boa folga no orçamento, que reduz a pressão sobre a renda mensal";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
+      return "os compromissos dos próximos 30 dias, que ainda cabem com conforto dentro da renda prevista";
     case INDICADOR_PERCENTUAL_PATRIMONIO_ALVO:
       return "a proximidade gradual do patrimônio em relação ao objetivo planejado";
     default:
@@ -108,6 +113,8 @@ function interpretarPontoAtencao(indicador: IndicadorResumoFinanceiroIA | null) 
       return "o nível atual de endividamento reduz sua capacidade de crescimento financeiro";
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "o comprometimento atual da renda limita a folga necessária para avançar com mais segurança";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
+      return "os compromissos dos próximos 30 dias já começam a reduzir a folga disponível no curto prazo";
     case INDICADOR_PERCENTUAL_ECONOMIA:
       return "a taxa de economia ainda está abaixo do ritmo desejado para sustentar sua evolução";
     case INDICADOR_ECONOMIA_MENSAL:
@@ -136,6 +143,8 @@ function interpretarDirecao(indicador: IndicadorResumoFinanceiroIA | null, class
       return "reduzir o peso das dívidas e recuperar margem para evolução patrimonial";
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "diminuir o comprometimento da renda para restabelecer folga no orçamento";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
+      return "rever os compromissos dos próximos 30 dias para aliviar a pressão do caixa futuro";
     case INDICADOR_PERCENTUAL_PATRIMONIO_ALVO:
       return "aproximar o patrimônio do objetivo definido com constância nos aportes";
     case INDICADOR_PATRIMONIO_LIQUIDO_ATUAL:

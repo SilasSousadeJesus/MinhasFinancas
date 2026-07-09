@@ -250,6 +250,7 @@ ObservaÃ§Ã£o importante:
   - reserva de emergÃªncia atual
   - reserva de emergÃªncia ideal
   - comprometimento da renda
+  - comprometimento financeiro futuro
   - endividamento
   - patrimÃ´nio lÃ­quido atual
   - percentual do patrimÃ´nio alvo
@@ -261,6 +262,7 @@ ObservaÃ§Ã£o importante:
 - `SaudeFinanceiraService` interpreta os indicadores e gera pontuaÃ§Ã£o, classificaÃ§Ã£o e pontos de atenÃ§Ã£o
 - `InsightsFinanceirosService` transforma indicadores e saÃºde financeira em alertas, oportunidades, destaques positivos e orientaÃ§Ãµes acionÃ¡veis
 - `ResumoFinanceiroIAService` consolida saÃºde financeira, indicadores e insights em um payload Ãºnico pronto para consumo por interfaces e futuras integraÃ§Ãµes com IA
+- as fórmulas oficiais, pesos e regras de interpretação dos indicadores ficam documentadas em `docs/INDICADORES_FINANCEIROS.md`
 - o dashboard consome essa camada e nÃ£o deve recalcular indicadores diretamente
 - a inteligÃªncia financeira deve evoluir respeitando a cadeia `Dados -> Indicadores -> SaÃºde Financeira -> Insights -> ResumoFinanceiroIA`
 

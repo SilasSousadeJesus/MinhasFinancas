@@ -1,13 +1,15 @@
-# Changelog - Minhas Financas
+﻿# Changelog - Minhas Financas
 
 Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 08/07/2026
 
-- Refinamento da Memória Financeira e da IA Estratégica para reforçar continuidade consultiva entre análises relacionadas, destacando recorrência, evolução de entendimento e comparação com leituras anteriores.
-- Rollback da Fase 4.2.7 - Conversa Contínua, removendo a experiência de chat contínuo para manter o Assistente Financeiro como consultor financeiro e não como conversa persistida.
-- Atualização do roadmap e das visões de produto para retirar a Conversa Contínua da linha oficial do produto e registrar a próxima etapa como Simulador Inteligente.
-- Atualização da documentação funcional e conceitual para refletir a remoção da Conversa Contínua do fluxo do Assistente Financeiro.
+- Refinamento da camada `AnaliseFinanceira` com revisão dos pesos da saúde financeira, correção da leitura de compromissos futuros e criação do documento oficial `docs/INDICADORES_FINANCEIROS.md`.
+
+- Refinamento da MemÃ³ria Financeira e da IA EstratÃ©gica para reforÃ§ar continuidade consultiva entre anÃ¡lises relacionadas, destacando recorrÃªncia, evoluÃ§Ã£o de entendimento e comparaÃ§Ã£o com leituras anteriores.
+- Rollback da Fase 4.2.7 - Conversa ContÃ­nua, removendo a experiÃªncia de chat contÃ­nuo para manter o Assistente Financeiro como consultor financeiro e nÃ£o como conversa persistida.
+- AtualizaÃ§Ã£o do roadmap e das visÃµes de produto para retirar a Conversa ContÃ­nua da linha oficial do produto e registrar a prÃ³xima etapa como Simulador Inteligente.
+- AtualizaÃ§Ã£o da documentaÃ§Ã£o funcional e conceitual para refletir a remoÃ§Ã£o da Conversa ContÃ­nua do fluxo do Assistente Financeiro.
 - Consolidacao da Fase 4.2.5 - IA Estrategica, com revisao do prompt oficial para conectar estado atual, evolucao, plano estrategico, consistencia e compromissos em uma narrativa consultiva.
 - Atualizacao da documentacao de produto, roadmap, visao do assistente e AI context para refletir a IA Estrategica como fase concluida.
 - Criacao do documento `docs/ASSISTANT_VISION.md`, com a visao humana e evolutiva do Assistente Financeiro.
@@ -52,3 +54,6 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 - O projeto evoluiu de frontend majoritariamente visual para aplicacao integrada de ponta a ponta.
 - Os modulos centrais hoje ja possuem fluxo real entre interface, API e persistencia.
+
+
+

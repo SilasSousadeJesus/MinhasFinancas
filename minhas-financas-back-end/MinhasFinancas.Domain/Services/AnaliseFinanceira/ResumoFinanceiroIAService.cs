@@ -10,6 +10,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
         [
             CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
             CodigoIndicadorFinanceiro.Endividamento,
+            CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo,
             CodigoIndicadorFinanceiro.ComprometimentoRenda,
             CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo,
             CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual,
@@ -23,6 +24,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             CodigoIndicadorFinanceiro.PercentualEconomia,
             CodigoIndicadorFinanceiro.EconomiaMensal,
             CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
+            CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo,
             CodigoIndicadorFinanceiro.Endividamento,
             CodigoIndicadorFinanceiro.ComprometimentoRenda,
             CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
@@ -66,6 +68,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     continue;
                 }
 
+                if (indicador.ValorIdeal <= 0 && IndicadorDependeDeConfiguracao(indicador.Codigo))
+                {
+                    continue;
+                }
+
                 var prioridade = ObterTextoPrioridade(indicador);
 
                 if (!string.IsNullOrWhiteSpace(prioridade) && !prioridades.Contains(prioridade))
@@ -82,6 +89,15 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             return prioridades.Take(3).ToList();
         }
 
+        private static bool IndicadorDependeDeConfiguracao(CodigoIndicadorFinanceiro codigo)
+        {
+            return codigo is CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal
+                or CodigoIndicadorFinanceiro.ComprometimentoRenda
+                or CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
+                or CodigoIndicadorFinanceiro.Endividamento
+                or CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo;
+        }
+
         private static void AdicionarPrioridadeConfiguracao(
             IReadOnlyCollection<IndicadorFinanceiro> indicadores,
             ICollection<string> prioridades)
@@ -91,6 +107,20 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             if (reservaIdeal is not null && reservaIdeal.ValorIdeal <= 0)
             {
                 prioridades.Add("Configurar a meta de reserva de emergência.");
+            }
+
+            var comprometimentoRenda = indicadores.FirstOrDefault(item => item.Codigo == CodigoIndicadorFinanceiro.ComprometimentoRenda);
+
+            if (comprometimentoRenda is not null && comprometimentoRenda.ValorIdeal <= 0)
+            {
+                prioridades.Add("Definir limite de comprometimento da renda.");
+            }
+
+            var endividamento = indicadores.FirstOrDefault(item => item.Codigo == CodigoIndicadorFinanceiro.Endividamento);
+
+            if (endividamento is not null && endividamento.ValorIdeal <= 0)
+            {
+                prioridades.Add("Definir limite de endividamento.");
             }
 
             var patrimonioAlvo = indicadores.FirstOrDefault(item => item.Codigo == CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo);
@@ -182,11 +212,18 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
                 if (indicador is not null)
                 {
+                    if (indicador.ValorIdeal <= 0 && IndicadorDependeDeConfiguracao(indicador.Codigo))
+                    {
+                        continue;
+                    }
+
                     return indicador;
                 }
             }
 
-            return indicadores.FirstOrDefault(item => statusPermitidos.Contains(item.Status));
+            return indicadores.FirstOrDefault(item =>
+                statusPermitidos.Contains(item.Status) &&
+                !(item.ValorIdeal <= 0 && IndicadorDependeDeConfiguracao(item.Codigo)));
         }
 
         private static string ObterAberturaResumo(string classificacao)
@@ -221,6 +258,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     => "o nível de endividamento permanece controlado e preserva margem para decisões futuras.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "o orçamento ainda mantém boa capacidade para absorver compromissos sem pressionar excessivamente a renda.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
+                    => "os compromissos dos próximos 30 dias ainda cabem com folga na estrutura de renda atual.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "o patrimônio avança de forma compatível com o objetivo traçado para o longo prazo.",
                 _ => string.Empty
@@ -244,6 +283,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     => "o peso atual das dívidas reduz a margem para crescimento e limita decisões futuras.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "uma parcela elevada da renda continua comprometida, o que reduz a flexibilidade do mês.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
+                    => "os compromissos dos próximos 30 dias já começam a limitar a folga do caixa futuro.",
                 CodigoIndicadorFinanceiro.PercentualEconomia
                     => "a taxa de economia ainda está abaixo do ritmo necessário para acelerar sua evolução financeira.",
                 CodigoIndicadorFinanceiro.EconomiaMensal
@@ -264,6 +305,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     => "Reduzir o nível de endividamento.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "Reduzir o comprometimento da renda.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
+                    => "Rever os compromissos dos próximos 30 dias.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "Aproximar o patrimônio do objetivo definido.",
                 CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual
@@ -292,6 +335,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     => "Endividamento sob controle.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "Boa folga no orçamento mensal.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
+                    => "Boa previsibilidade dos compromissos futuros.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "Evolução consistente rumo ao patrimônio-alvo.",
                 _ => indicador.Nome

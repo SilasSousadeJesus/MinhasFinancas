@@ -37,6 +37,12 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Dashboards, telas, exportações e APIs nunca devem recalcular indicadores diretamente.
 - Toda informação analítica deve ser consumida dessa camada.
 
+## Indicadores financeiros oficiais
+
+- As fórmulas, pesos, classificações e prioridades dos indicadores financeiros devem ser documentados e mantidos em `docs/INDICADORES_FINANCEIROS.md`.
+- Sempre que um indicador for criado, removido, alterado ou tiver fórmula, peso, classificação ou texto oficial modificado, a documentação dos indicadores deve ser atualizada na mesma entrega.
+- Nenhuma alteração em indicador financeiro deve ser considerada concluída sem sincronizar o documento oficial de indicadores.
+
 ## Dados x Informação x Inteligência
 
 - O projeto deve manter uma separação clara entre três níveis.

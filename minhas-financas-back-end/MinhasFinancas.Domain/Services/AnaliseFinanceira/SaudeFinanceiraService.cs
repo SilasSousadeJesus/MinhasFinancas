@@ -5,12 +5,30 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 {
     public class SaudeFinanceiraService : ISaudeFinanceiraService
     {
+        private static readonly IReadOnlyDictionary<CodigoIndicadorFinanceiro, decimal> PesosIndicadores = new Dictionary<CodigoIndicadorFinanceiro, decimal>
+        {
+            { CodigoIndicadorFinanceiro.EconomiaMensal, 1.0m },
+            { CodigoIndicadorFinanceiro.PercentualEconomia, 1.0m },
+            { CodigoIndicadorFinanceiro.ReservaEmergenciaAtual, 1.5m },
+            { CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal, 0.5m },
+            { CodigoIndicadorFinanceiro.ComprometimentoRenda, 1.5m },
+            { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo, 1.5m },
+            { CodigoIndicadorFinanceiro.Endividamento, 1.5m },
+            { CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual, 1.25m },
+            { CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo, 0.75m },
+        };
+
         public PainelSaudeFinanceira GerarPainel(PainelIndicadoresFinanceiros indicadores)
         {
             var lista = indicadores.Todos;
-            var pontuacao = lista.Count == 0
+            var indicadoresPontuados = lista
+                .Where(indicador => PesosIndicadores.ContainsKey(indicador.Codigo))
+                .ToList();
+
+            var somaPesos = indicadoresPontuados.Sum(indicador => PesosIndicadores[indicador.Codigo]);
+            var pontuacao = indicadoresPontuados.Count == 0 || somaPesos <= 0
                 ? 0
-                : (int)Math.Round(lista.Average(indicador => ObterPontuacao(indicador.Status)));
+                : (int)Math.Round(indicadoresPontuados.Sum(indicador => ObterPontuacao(indicador.Status) * PesosIndicadores[indicador.Codigo]) / somaPesos);
 
             return new PainelSaudeFinanceira
             {

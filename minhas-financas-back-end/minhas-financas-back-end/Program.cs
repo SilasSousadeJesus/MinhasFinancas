@@ -97,6 +97,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, ReservaEmergenciaAtualIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, ReservaEmergenciaIdealIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, ComprometimentoRendaIndicador>();
+            builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, ComprometimentoFinanceiroFuturoIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, EndividamentoIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, PatrimonioLiquidoIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, PercentualPatrimonioAlvoIndicador>();

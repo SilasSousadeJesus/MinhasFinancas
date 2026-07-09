@@ -9,6 +9,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Enums
         ComprometimentoRenda = 4,
         Endividamento = 5,
         PatrimonioLiquidoAtual = 6,
-        PercentualPatrimonioAlvo = 7
+        PercentualPatrimonioAlvo = 7,
+        ComprometimentoFinanceiroFuturo = 8
     }
 }

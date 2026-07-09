@@ -33,7 +33,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
 
             if (valorMeta <= 0)
             {
-                return StatusIndicadorFinanceiro.Critico;
+                return StatusIndicadorFinanceiro.Atencao;
             }
 
             if (valorAtual <= valorMeta)

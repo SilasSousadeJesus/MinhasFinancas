@@ -140,6 +140,11 @@ Este arquivo nÃ£o substitui:
 - especialistas temáticos reutilizando a mesma infraestrutura
 - simulador inteligente integrado ao contexto do assistente financeiro
 
+### Nota sobre indicadores
+
+- a leitura da Saúde Financeira e do Assistente Financeiro agora considera também compromissos financeiros futuros de curto prazo
+- os indicadores oficiais, fórmulas e pesos estão documentados em `docs/INDICADORES_FINANCEIROS.md`
+
 ## Compromissos Financeiros
 
 ### Finalidade
