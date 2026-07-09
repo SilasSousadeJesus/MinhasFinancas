@@ -647,6 +647,30 @@ A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design
 - a próxima etapa visual será a exibição da análise aprofundada usando essa memória como base histórica
 - a evolução posterior da Base de Conhecimento seguirá aprofundando a memória analítica e os especialistas temáticos
 
+## MF Score e calibração do motor financeiro
+
+O `MF Score` já é a referência oficial de risco financeiro do sistema.
+
+### O que isso significa para os módulos
+
+- a **Saúde Financeira** passou a exibir a leitura detalhada do score, seus pilares, classificação, risco e indicadores críticos
+- o **Assistente Financeiro** passou a usar o score como base executiva da análise
+- o **Dashboard** deve consumir apenas o resumo já consolidado, sem recalcular nada
+- futuras telas e integrações devem tratar o score como a régua central de avaliação
+
+### O que a nova etapa de calibração faz
+
+- revisa indicadores, pesos, pilares, penalizações e regras críticas
+- valida cenários oficiais de teste
+- consolida explicações sobre subida, queda e tendência do score
+- prepara o terreno para o `MF Score Potencial` como evolução futura
+
+### Impacto no sistema
+
+- o Motor Financeiro passa a ser o principal ativo intelectual do produto
+- a IA continua apenas comunicando o conhecimento produzido pelo sistema
+- qualquer evolução futura deve preservar a arquitetura `Dados -> Indicadores -> MF Score -> IA`
+
 
 
 

@@ -427,3 +427,21 @@ O MF Score produz:
 - risco textual;
 - tendência;
 - indicadores críticos que aplicam penalizações.
+
+## Calibração do MF Score
+
+Etapa contínua de amadurecimento do modelo oficial de risco.
+
+Ela revisa:
+
+- indicadores
+- fórmulas
+- pesos
+- pilares
+- penalizações
+- classificações
+- textos e interpretações
+
+## MF Score Potencial
+
+Versão futura do score que representa o ponto de evolução possível do usuário caso a trajetória atual seja mantida e os principais pontos de pressão sejam corrigidos.

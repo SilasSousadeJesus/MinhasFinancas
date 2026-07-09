@@ -12,7 +12,9 @@ A subfase **Fase 4.2.3.1.1 — Gestão do Plano Estratégico Financeiro** també
 
 O modelo oficial de avaliação financeira evoluiu para o **MF Score**, que passa a ser a referência de risco do sistema e da Inteligência Financeira.
 
-A próxima etapa oficial é a **Fase 4.2.8 — Simulador Inteligente**.
+A próxima etapa oficial passou a ser a **Fase 4.2.7 — Evolução e Calibração do MF Score**.
+
+O **Simulador Inteligente** agora fica depois dessa etapa de amadurecimento do Motor Financeiro.
 
 ## Roadmap da InteligÃªncia Financeira / Assistente Financeiro
 
@@ -294,6 +296,48 @@ Criar especialistas temáticos utilizando a mesma base técnica da IA estratégi
 - integração dos pareceres ao contexto consolidado do Assistente Financeiro
 - documentação oficial de cada especialista para evolução futura
 
+#### Fase 4.2.7 — Evolução e Calibração do MF Score
+
+**Status:** em andamento
+
+**Objetivo:**
+
+Transformar o MF Score em um modelo cada vez mais próximo de uma avaliação real de risco financeiro pessoal.
+
+**Foco da etapa:**
+
+- revisar indicadores
+- revisar fórmulas
+- revisar pesos
+- revisar pilares
+- revisar penalidades
+- revisar regras críticas
+- revisar classificação
+- revisar textos e interpretações
+- consolidar a explicação do score
+- consolidar tendência e histórico
+- documentar casos oficiais de validação
+
+**Diretriz oficial:**
+
+O diferencial competitivo do produto é o Motor Financeiro.
+
+A IA apenas comunica o conhecimento produzido por esse motor.
+
+**Evoluções registradas nesta etapa:**
+
+- consolidação do `MF Score` como modelo de risco
+- documentação oficial do `MF Score Potencial` como evolução futura
+- criação de cenários oficiais de teste para calibração contínua
+
+#### Fase 4.2.8 — Simulador Inteligente
+
+**Status:** futura
+
+**Objetivo:**
+
+Permitir testar cenários futuros antes da decisão, usando o Motor Financeiro já amadurecido como referência de risco e contexto.
+
 ## ConcluÃ­do
 
 ### FundaÃ§Ã£o
@@ -355,6 +399,7 @@ Criar especialistas temáticos utilizando a mesma base técnica da IA estratégi
 
 ### Inteligência Financeira / Assistente Financeiro
 
+- Fase 4.2.7 — Evolução e Calibração do MF Score
 - Fase 4.2.8 — Simulador Inteligente
 
 ### Dashboard
@@ -419,6 +464,7 @@ Esta seção registra o estado oficial mais recente da evolução do Assistente 
 - a **Fase 4.2.3.3 — Consistência Estratégica** está **concluída**
 - a **Fase 4.2.5 — IA Estratégica** está **concluída**
 - a **Fase 4.2.6 — Especialistas Financeiros** está **concluída**
+- a **Fase 4.2.7 — Evolução e Calibração do MF Score** está **em andamento**
 - a **próxima etapa oficial** é a **Fase 4.2.8 — Simulador Inteligente**
 
 ### Entregas já consolidadas

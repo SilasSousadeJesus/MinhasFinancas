@@ -54,6 +54,12 @@ Mais tarde começou a entender intenção, direção e coerência.
 
 Agora ele já consegue ir além do diagnóstico pontual e começar a enxergar a vida financeira como uma história contínua.
 
+O Assistente também passou a ser guiado pelo MF Score, que organiza o risco financeiro pessoal em pilares, tendência e regras críticas.
+
+Isso reforça a filosofia do projeto:
+
+**o Motor Financeiro produz conhecimento. A IA apenas comunica esse conhecimento.**
+
 ### Estado Financeiro
 
 É a pergunta mais básica e mais importante:

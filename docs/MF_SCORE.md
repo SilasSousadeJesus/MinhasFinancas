@@ -124,6 +124,70 @@ Na primeira versão:
 - o histórico visual de evolução pode ser acrescentado depois;
 - o modelo já nasce preparado para receber séries históricas futuras.
 
+## Explicação da variação do score
+
+O backend deve conseguir explicar por que o score subiu ou caiu.
+
+A explicação deve ser produzida de forma determinística pelo sistema, com base em:
+
+- mudança de compromissos
+- mudança de reserva
+- mudança de pressão financeira
+- mudança de endividamento
+- mudança de patrimônio
+
+A IA apenas organiza e apresenta essa explicação em linguagem natural.
+
+## Calibração contínua
+
+O MF Score não é estático.
+
+Ele deve ser calibrado continuamente para refletir melhor o risco financeiro real do usuário.
+
+A etapa de calibração revisa:
+
+- indicadores
+- fórmulas
+- pesos
+- pilares
+- penalizações
+- indicadores críticos
+- classificação
+- tendência
+- textos oficiais
+- interpretação executiva
+
+## Casos oficiais de validação
+
+O modelo deve ser testado sempre com cenários recorrentes para evitar distorções.
+
+Exemplos oficiais:
+
+- pessoa com alta renda, reserva elevada e sem dívidas
+- pessoa com boa renda, mas cartão elevado e reserva zero
+- pessoa com patrimônio alto, porém comprometimento extremo
+- pessoa sem patrimônio, mas excelente fluxo de caixa
+- pessoa inadimplente
+
+Esses cenários servem como base para validar alterações futuras do Motor Financeiro.
+
+## MF Score Potencial
+
+O `MF Score Potencial` representa o ponto para onde o usuário poderia evoluir caso mantenha a estratégia atual e elimine os principais pontos de pressão financeira.
+
+Na versão atual, esse conceito ainda é apenas documentado como evolução futura.
+
+Exemplo:
+
+- MF Score atual: 64
+- MF Score potencial: 87
+
+Objetivo:
+
+- mostrar ao usuário onde ele pode chegar
+- apoiar planejamento e motivação
+- reforçar que o score é uma trajetória, não apenas uma fotografia
+
 ## Relação com outras camadas
 
 - `AnaliseFinanceira` calcula os pilares e o MF Score.

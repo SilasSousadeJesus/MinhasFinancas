@@ -74,6 +74,16 @@ Nenhuma camada deve substituir a anterior.
 
 Cada uma existe para enriquecer a compreensao da situacao financeira do usuario.
 
+O diferencial competitivo do produto nao e a IA.
+
+O diferencial competitivo e o Motor Financeiro.
+
+O Motor Financeiro produz conhecimento.
+
+A IA apenas comunica esse conhecimento.
+
+Toda decisao futura deve preservar essa arquitetura e manter o MF Score como referencia central de risco financeiro pessoal.
+
 Quando o Assistente Financeiro identifica uma intenção relevante, ela pode ser convertida em um compromisso rastreável sem perder o contexto original.
 
 A conversa do usuário também pode permanecer aberta por mais tempo, para que o sistema acompanhe o raciocínio em andamento sem obrigá-lo a repetir tudo a cada nova pergunta.

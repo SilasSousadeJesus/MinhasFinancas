@@ -176,3 +176,16 @@ A pontuação geral é calculada a partir dos indicadores disponíveis, usando p
 ## Regra de manutenção
 
 Sempre que uma fórmula, peso, classificação, prioridade ou texto oficial mudar, este documento deve ser atualizado na mesma entrega.
+
+## Calibração do MF Score
+
+As mudanças nesses indicadores não devem ser feitas apenas por ajuste numérico.
+
+Cada revisão deve responder se a alteração melhora a capacidade do `MF Score` representar corretamente o risco financeiro do usuário.
+
+Quando houver dúvida entre duas formulações equivalentes, preferir a que:
+
+- aumente a rastreabilidade;
+- deixe a interpretação mais clara;
+- produza leitura mais próxima do comportamento financeiro real;
+- preserve a consistência com os cenários oficiais de validação.

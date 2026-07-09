@@ -365,3 +365,7 @@ Permitir continuidade consultiva, para que a IA consiga perceber evolução, mud
 A IA deve tratar o MF Score como a métrica oficial de risco financeiro do sistema.
 
 Ela nunca recalcula o score por conta própria. Sempre interpreta o resultado preparado pelo backend, os pilares, os indicadores críticos e a tendência oficial.
+
+O avanço da Fase 4.2 agora passa pela calibração contínua do Motor Financeiro, que revisa regras, pesos, pilares e textos até o modelo representar melhor o risco financeiro real do usuário.
+
+A IA acompanha essa evolução como camada de comunicação, não como origem das regras.

@@ -162,5 +162,6 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 ## MF Score
 
 - O `MF Score` é o modelo oficial de avaliação de risco financeiro pessoal do sistema.
+- Toda alteração no Motor Financeiro deve responder obrigatoriamente: `Essa mudança melhora a capacidade do MF Score representar corretamente o risco financeiro do usuário?`
 - Sempre que um indicador, peso, fórmula, pilar, penalidade, regra crítica, classificação ou tendência do `MF Score` mudar, devem ser atualizados obrigatoriamente `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE.md`.
 - Nenhuma alteração no `MF Score` deve ser considerada concluída sem a sincronização simultânea desses dois documentos.

@@ -14,6 +14,8 @@ A camada `AnaliseFinanceira` distingue o comprometimento financeiro futuro de cu
 
 O modelo oficial de risco financeiro do sistema é o `MF Score`, que organiza os indicadores em cinco pilares e passa a orientar a leitura da Saúde Financeira, do Assistente Financeiro e das integrações futuras.
 
+O `MF Score` agora também possui uma etapa oficial de calibração contínua, com cenários de validação, explicação de variação, tendência e documentação dedicada em `docs/MF_SCORE.md` e `docs/INDICADORES_FINANCEIROS.md`.
+
 ## Arquitetura da soluÃ§Ã£o
 
 O backend segue uma arquitetura em camadas prÃ³xima de `Clean Architecture` / `Onion`, sem rigidez acadÃªmica absoluta:
