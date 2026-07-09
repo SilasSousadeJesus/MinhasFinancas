@@ -163,3 +163,5 @@ A avaliação financeira do sistema deve ser guiada pelo MF Score, que trata a s
 Os produtos e telas futuras devem usar esse modelo como referência para interpretar estabilidade, pressão, proteção, tendência e maturidade financeira.
 
 Para preservar essa confiança, a evolução do `MF Score` não depende apenas de documentação. O projeto agora possui também uma auditoria operacional interna, baseada em personas sintéticas e no motor oficial, para confirmar se a calibração continua coerente ao longo do tempo.
+
+Além disso, a evolução do Motor Financeiro passa a ser acompanhada por uma auditoria arquitetural permanente, que registra limitações e lacunas conhecidas sem exigir correção imediata. O objetivo é permitir amadurecimento consciente do modelo, e não evolução por tentativa e erro sem memória técnica.

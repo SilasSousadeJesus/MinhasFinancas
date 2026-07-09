@@ -172,3 +172,4 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
   3. executar a auditoria oficial do `MF Score`
   4. registrar o resultado da planilha de auditoria no relatório de entrega
   5. atualizar `docs/CHANGELOG.md`
+- Sempre que qualquer desenvolvedor ou IA identificar limitação, comportamento inesperado, ausência conceitual, oportunidade de melhoria ou dívida técnica relacionada ao Motor Financeiro, essa informação deve ser registrada em `docs/MF_SCORE_AUDIT.md`, mesmo quando nenhuma implementação for realizada na mesma entrega.

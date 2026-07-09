@@ -375,3 +375,16 @@ A validade do modelo deve ser preservada por uma suíte oficial de cenários can
 Além da suíte conceitual, a arquitetura agora conta com uma auditoria operacional interna do `MF Score`, executada fora da IA e baseada exclusivamente no motor determinístico do backend.
 
 A IA nunca participa dessa auditoria nem corrige o score por conta própria. Ela apenas consome um Motor Financeiro já calibrado e rastreável.
+
+## Governança do Motor Financeiro
+
+A evolução do `MF Score` não deve depender apenas de testes e validação numérica.
+
+O projeto passa a manter uma auditoria arquitetural permanente em `docs/MF_SCORE_AUDIT.md`, onde ficam registradas:
+
+- limitações conhecidas do modelo;
+- achados de auditoria;
+- cobertura atual dos pilares;
+- dívida técnica do Motor Financeiro.
+
+Isso reforça que a IA trabalha sobre uma régua financeira auditada, e não sobre conhecimento implícito disperso no projeto.

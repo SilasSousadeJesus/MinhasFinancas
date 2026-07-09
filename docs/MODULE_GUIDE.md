@@ -704,3 +704,7 @@ Fornecer uma ferramenta técnica de calibração do Motor Financeiro sem criar t
 - ampliar a base de personas
 - registrar histórico comparativo entre versões do motor
 - usar a auditoria como apoio para calibração mais fina do `MF Score`
+
+### Governança técnica
+- `docs/MF_SCORE_AUDIT.md` passou a funcionar como documento oficial de governança técnica do Motor Financeiro
+- nele ficam registradas coberturas, lacunas, achados e dívida técnica que afetam Saúde Financeira, Assistente Financeiro e futuras camadas analíticas

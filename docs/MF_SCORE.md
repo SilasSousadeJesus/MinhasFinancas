@@ -241,3 +241,31 @@ Características:
 - reforça a etapa de calibração contínua do Motor Financeiro.
 
 O detalhamento operacional dessa auditoria fica em `docs/MF_SCORE_AUDIT.md`.
+
+## Governança técnica do Motor Financeiro
+
+Além de explicar o modelo e sua validação, o projeto agora mantém uma auditoria arquitetural permanente do Motor Financeiro em `docs/MF_SCORE_AUDIT.md`.
+
+Esse documento passa a registrar:
+
+- cobertura atual dos pilares;
+- cobertura conceitual do domínio;
+- limitações conhecidas;
+- achados formais de auditoria;
+- dívida técnica do Motor Financeiro.
+
+Essa separação existe para que a evolução do `MF Score` não dependa apenas de memória informal durante as implementações.
+
+## Observação importante sobre o pilar Planejamento
+
+Na versão atual do Motor Financeiro, o pilar `Planejamento` ainda é avaliado principalmente por proxies de organização financeira.
+
+Isso significa que o score ainda não considera diretamente, de forma madura e completa:
+
+- o plano estratégico vigente;
+- os compromissos financeiros ativos;
+- o histórico de cumprimento dos compromissos;
+- a consistência de execução do plano;
+- a evolução do comportamento estratégico ao longo do tempo.
+
+Essa limitação está registrada oficialmente no achado `MF-001` em `docs/MF_SCORE_AUDIT.md`.

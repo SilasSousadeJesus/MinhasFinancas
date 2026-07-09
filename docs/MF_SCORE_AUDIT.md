@@ -1,3 +1,116 @@
+## Governança técnica do Motor Financeiro
+
+A partir desta etapa, este documento deixa de ser apenas um resumo do estado do `MF Score`.
+
+Ele passa a ser o documento oficial de governança técnica do Motor Financeiro.
+
+Este arquivo passa a responder, de forma permanente, três perguntas:
+
+1. Como o Motor Financeiro funciona?
+2. Como validamos se ele continua correto?
+3. Quais limitações conhecidas ainda existem?
+
+### O que deve ser registrado aqui
+
+- limitações conhecidas;
+- lacunas conceituais;
+- oportunidades de evolução;
+- cobertura atual do modelo;
+- achados encontrados durante implementações;
+- dívida técnica do Motor Financeiro.
+
+Nem toda limitação precisa ser corrigida imediatamente.
+
+Mas toda limitação relevante deve ser registrada aqui.
+
+## Auditoria Arquitetural do Motor Financeiro
+
+### Cobertura atual dos pilares
+
+| Pilar | Cobertura atual | Avaliação técnica |
+| --- | --- | --- |
+| Fluxo de Caixa | Excelente | O modelo mede economia mensal, percentual de economia, comprometimento da renda e pressão futura de curto prazo com boa clareza operacional. |
+| Liquidez | Excelente | Reserva atual, cobertura e reserva ideal já formam uma leitura robusta de proteção imediata. |
+| Endividamento | Boa | O modelo cobre endividamento patrimonial e pressão futura em múltiplos horizontes, mas ainda não representa toda a inadimplência real e alguns estados comportamentais de dívida. |
+| Patrimônio | Boa | O patrimônio líquido atual e o patrimônio-alvo já entram no score, mas a leitura ainda não incorpora profundamente qualidade patrimonial, liquidez do patrimônio e evolução histórica no próprio cálculo. |
+| Planejamento | Parcial | O pilar ainda depende majoritariamente de proxies de organização financeira e não usa de forma madura os elementos estratégicos completos do domínio. |
+
+### Cobertura do domínio
+
+| Conceito | Cobertura atual | Observação |
+| --- | --- | --- |
+| Fluxo de Caixa | Completo | Bem representado no curto prazo e no mês corrente. |
+| Liquidez | Completo | Reserva atual e meta ideal já oferecem leitura sólida. |
+| Reserva | Completo | O conceito está bem refletido na camada analítica atual. |
+| Patrimônio | Parcial | Há boa leitura do patrimônio líquido atual, mas ainda com pouca profundidade qualitativa no score. |
+| Endividamento | Parcial | Bem representado no patrimonial e no futuro previsto, mas ainda sem leitura plena de inadimplência e comportamento de dívida real. |
+| Pressão Financeira | Completo | Os horizontes de 30, 90, 180 e 365 dias já dão boa cobertura. |
+| Planejamento | Parcial | Ainda depende de sinais indiretos. |
+| Consistência Estratégica | Não implementado no score | Existe no domínio e no contexto da IA, mas ainda não pesa diretamente no cálculo do `MF Score`. |
+| Compromissos | Não implementado no score | Já existem no domínio, mas ainda não participam diretamente do pilar Planejamento. |
+| Histórico Financeiro | Parcial | O projeto possui histórico, mas o score ainda não o utiliza de forma madura como comportamento temporal. |
+| Evolução Temporal | Parcial | A tendência existe conceitualmente, porém o comportamento histórico ainda está em amadurecimento. |
+| Comportamento Financeiro | Parcial | O modelo já infere parte do comportamento por sinais operacionais, mas ainda não mede execução estratégica de forma completa. |
+
+## Limitações Conhecidas
+
+- O pilar `Planejamento` ainda utiliza proxies de organização financeira e não reflete plenamente a execução estratégica do usuário.
+- O `MF Score` ainda não incorpora diretamente o plano estratégico vigente no cálculo oficial.
+- Os compromissos financeiros ativos ainda não alteram diretamente a nota do score.
+- O histórico de cumprimento ou descumprimento de compromissos ainda não é usado como sinal analítico do motor.
+- A consistência entre plano estratégico e comportamento financeiro ainda não participa diretamente da pontuação final.
+- A leitura de inadimplência ainda é aproximada em alguns cenários de auditoria, pois o domínio atual não expõe toda a semântica de atraso real como componente analítico do score.
+- O pilar Patrimônio ainda não diferencia com profundidade qualidade patrimonial, liquidez dos ativos e evolução patrimonial histórica no próprio cálculo.
+- A tendência do score já existe como conceito, mas ainda não representa uma leitura histórica plenamente madura do comportamento financeiro ao longo do tempo.
+
+## Achados da Auditoria
+
+### Estrutura oficial dos achados
+
+Cada achado do Motor Financeiro deve registrar:
+
+- ID
+- título
+- descrição
+- impacto
+- prioridade
+- status
+- possível evolução futura
+
+### MF-001 - Pilar Planejamento utiliza proxies
+
+- **ID:** `MF-001`
+- **Título:** Pilar Planejamento utiliza proxies
+- **Descrição:** Hoje o pilar Planejamento e Disciplina ainda não utiliza diretamente os elementos estratégicos do domínio. Sua avaliação é feita principalmente através de proxies de organização financeira, como perfil financeiro configurado, metas preenchidas e objetivos financeiros configurados. Atualmente o cálculo do `MF Score` ainda não considera diretamente o plano estratégico vigente, os compromissos financeiros, o histórico de cumprimento dos compromissos, a consistência da execução do plano e a evolução do comportamento estratégico.
+- **Impacto:** Usuários altamente organizados podem receber nota inferior ao que seria esperado em um modelo completamente maduro.
+- **Prioridade:** Alta
+- **Status:** Aberto
+- **Possível evolução futura:** incorporar sinais estratégicos reais do domínio ao pilar Planejamento sem quebrar a rastreabilidade e a coerência do modelo.
+
+## Dívida Técnica do Motor Financeiro
+
+Esta seção passa a funcionar como backlog técnico permanente do `MF Score`.
+
+### Itens atuais
+
+- amadurecer o pilar `Planejamento` para consumir elementos estratégicos reais do domínio;
+- incorporar compromissos financeiros como sinal determinístico do Motor Financeiro;
+- avaliar uso do histórico de cumprimento de compromissos como medidor de disciplina financeira;
+- evoluir a leitura de consistência estratégica para eventual participação direta no score;
+- fortalecer a representação de inadimplência real dentro da camada analítica;
+- amadurecer a leitura histórica de tendência e comportamento financeiro;
+- avaliar enriquecimento do pilar Patrimônio com qualidade e liquidez patrimonial.
+
+## Recomendações para a próxima calibração
+
+Durante as próximas evoluções do `MF Score`, os próximos achados que merecem acompanhamento especial são:
+
+1. como o motor deve representar inadimplência real de forma mais determinística;
+2. como diferenciar melhor patrimônio alto com baixa liquidez patrimonial;
+3. como incorporar compromissos e consistência estratégica sem transformar o pilar Planejamento em uma soma de sinais frágeis;
+4. como usar histórico temporal sem criar ruído ou duplicação entre tendência, memória e score;
+5. como evitar que bons números operacionais de curto prazo escondam fragilidades estruturais de disciplina e execução estratégica.
+
 # Auditoria do MF Score
 
 Este documento foi criado para ser a leitura única e consolidada do estado atual do `MF Score`.

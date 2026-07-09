@@ -13,6 +13,9 @@ Registrar aqui apenas mudancas relevantes do sistema.
 - Implementação de personas sintéticas oficiais para validar cenários canônicos do Motor Financeiro sem duplicar fórmulas.
 - Reuso da infraestrutura existente de exportação Excel para produzir abas de resumo, cenários, pilares, indicadores críticos e dados de entrada.
 - Sincronização da documentação para registrar a auditoria como evidência obrigatória em mudanças relevantes do Motor Financeiro.
+- Expansão do `docs/MF_SCORE_AUDIT.md` para funcionar como documento oficial de governança técnica do Motor Financeiro.
+- Criação da Auditoria Arquitetural do Motor Financeiro, com cobertura dos pilares, cobertura do domínio, limitações conhecidas, achados formais e dívida técnica.
+- Registro oficial do achado `MF-001`, documentando que o pilar Planejamento ainda utiliza proxies e não mede diretamente toda a execução estratégica do usuário.
 
 ## 08/07/2026
 

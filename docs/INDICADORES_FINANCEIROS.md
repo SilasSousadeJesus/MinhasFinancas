@@ -202,3 +202,11 @@ Essa auditoria:
 - não recalcula indicadores fora da camada `AnaliseFinanceira`;
 - gera planilha `.xlsx` com score, pilares, indicadores críticos e dados de entrada;
 - deve ser usada como evidência técnica sempre que houver mudança relevante no Motor Financeiro.
+
+## Governança de lacunas e cobertura
+
+Quando a limitação não estiver na fórmula de um indicador isolado, mas na cobertura conceitual do modelo, ela deve ser registrada em `docs/MF_SCORE_AUDIT.md`.
+
+Exemplo atual:
+
+- o pilar `Planejamento` ainda usa proxies e não mede diretamente toda a execução estratégica do usuário.

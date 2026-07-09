@@ -19,7 +19,7 @@ namespace MinhasFinancas.API.Controllers
             _environment = environment;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("GerarPlanilha")]
         public async Task<IActionResult> GerarPlanilha()
         {

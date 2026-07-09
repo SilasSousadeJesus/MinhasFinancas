@@ -469,3 +469,17 @@ Ela existe para apoiar calibração, validação de regressão e leitura objetiv
 ## Persona de auditoria do MF Score
 
 Cenário financeiro sintético, construído em memória, usado para validar se o Motor Financeiro continua respondendo de forma coerente a perfis de risco conhecidos.
+
+## Achado da Auditoria do MF Score
+
+Registro formal de uma limitação, lacuna conceitual, comportamento inesperado ou oportunidade relevante de evolução identificada no Motor Financeiro.
+
+Cada achado deve possuir identificação própria, descrição, impacto, prioridade, status e possível evolução futura.
+
+## Limitação conhecida do Motor Financeiro
+
+Comportamento, ausência de cobertura ou simplificação relevante já reconhecida pelo projeto, mesmo quando ainda não houver correção imediata prevista.
+
+## Dívida técnica do Motor Financeiro
+
+Conjunto estruturado de limitações, lacunas e pontos de evolução que precisam acompanhar o amadurecimento do `MF Score` ao longo do tempo.

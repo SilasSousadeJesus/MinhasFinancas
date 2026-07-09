@@ -418,4 +418,21 @@ Endpoint interno de desenvolvimento:
 
 O uso dessa auditoria é obrigatório sempre que indicadores, pesos, pilares, penalizações, classificações ou tendências do `MF Score` forem alterados.
 
+## Diferença entre validação e auditoria arquitetural
+
+Este documento responde principalmente à pergunta:
+
+`Como validamos se o Motor Financeiro continua coerente?`
+
+Já `docs/MF_SCORE_AUDIT.md` responde também:
+
+- o que o Motor Financeiro ainda não cobre bem;
+- quais limitações relevantes já são conhecidas;
+- quais achados e dívidas técnicas precisam acompanhar a calibração futura.
+
+As duas visões são complementares:
+
+- `MF_SCORE_VALIDATION.md` protege a coerência do comportamento;
+- `MF_SCORE_AUDIT.md` governa a evolução técnica do modelo.
+
 
