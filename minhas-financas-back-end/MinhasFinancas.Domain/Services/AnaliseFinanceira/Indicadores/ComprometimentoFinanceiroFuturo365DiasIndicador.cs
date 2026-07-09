@@ -14,19 +14,22 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
             return new IndicadorFinanceiro
             {
                 Codigo = Codigo,
-                Nome = "Comprometimento financeiro futuro - 12 meses",
+                Nome = "Pressão financeira acumulada - 12 meses",
                 ValorAtual = dadosReferencia.ComprometimentoFinanceiroFuturo365DiasAtual,
                 ValorIdeal = percentualMaximo,
                 Percentual = percentualMaximo > 0
                     ? (dadosReferencia.ComprometimentoFinanceiroFuturo365DiasAtual / percentualMaximo) * 100m
                     : 0m,
+                ValorObrigacoesPrevistas = dadosReferencia.ObrigacoesFinanceirasFuturas365Dias,
+                ValorReceitaPrevista = dadosReferencia.ReceitaPrevista365Dias,
+                PercentualComprometimento = dadosReferencia.ComprometimentoFinanceiroFuturo365DiasAtual,
                 Status = ResolutorStatusIndicadorFinanceiro.ResolverMetaMaxima(
                     dadosReferencia.ComprometimentoFinanceiroFuturo365DiasAtual,
                     percentualMaximo),
-                Descricao = "Percentual da renda que já está comprometido com despesas pendentes nos próximos 12 meses.",
+                Descricao = "Percentual da renda prevista para os próximos 12 meses que já está comprometido por despesas e obrigações futuras.",
                 Observacao = percentualMaximo > 0
-                    ? $"Considera {dadosReferencia.ObrigacoesFinanceirasFuturas365Dias:N2} em despesas pendentes com vencimento nos próximos 12 meses."
-                    : "Sem limite máximo de comprometimento da renda configurado no perfil financeiro.",
+                    ? $"Considera {dadosReferencia.ObrigacoesFinanceirasFuturas365Dias:N2} em obrigações futuras sobre {dadosReferencia.ReceitaPrevista365Dias:N2} de receita prevista para os próximos 12 meses."
+                    : "Sem limite máximo configurado no perfil financeiro para medir a pressão financeira acumulada de 12 meses.",
                 Formato = FormatoValorIndicadorFinanceiro.Percentual
             };
         }

@@ -722,8 +722,8 @@ namespace MinhasFinancas.Infra.IA.Provedores
             }
 
             var regex = new Regex(
-                @"(?:^|\n)\s*(?:#{2,3}\s*)?Sugest[aã]o de compromisso\s*:?\s*(?<texto>.+?)(?=\n#{2,3}\s|\n---|\s*$)",
-                RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                @"(?:^|\n)\s*(?:#{1,3}\s*|[-*+]\s*)?(?:\*{0,2})?Sugest[aã]o de compromisso(?:\*{0,2})?\s*[:\-–—]?\s*(?<texto>.*?)(?=\n\s*(?:#{1,3}\s+|[-*+]\s+|\d+\.\s+|(?:\*{0,2})?Sugest[aã]o de compromisso)|\n---|\s*$)",
+                RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
             var match = regex.Match(conteudo);
             if (!match.Success)

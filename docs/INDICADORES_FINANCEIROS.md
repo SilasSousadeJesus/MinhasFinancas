@@ -1,4 +1,4 @@
-# Indicadores Financeiros Oficiais
+﻿# Indicadores Financeiros Oficiais
 
 Este documento registra as fórmulas, a intenção e os pesos oficiais da camada `AnaliseFinanceira`.
 
@@ -10,7 +10,8 @@ Ele é a referência principal sempre que um indicador mudar.
 - A camada analítica não consulta a interface.
 - A pontuação da saúde financeira usa uma média ponderada dos indicadores.
 - Indicadores de configuração continuam visíveis quando faltam parâmetros no perfil financeiro, mas não devem distorcer a leitura como se fossem crise financeira real.
-- Compromissos futuros fazem parte da leitura analítica porque o sistema já possui lançamentos programados, parcelados e recorrentes.
+- O comprometimento de curto prazo e a pressão financeira acumulada fazem parte da leitura analítica porque o sistema já possui lançamentos programados, parcelados e recorrentes.
+- Os indicadores temporais expõem de forma explícita o valor das obrigações previstas, o valor da receita prevista e o percentual de comprometimento calculado.
 
 ## Escala de status
 
@@ -33,9 +34,9 @@ A pontuação geral é calculada a partir dos indicadores disponíveis, usando p
 - `ReservaEmergenciaIdeal` = 0.5
 - `ComprometimentoRenda` = 1.5
 - `ComprometimentoFinanceiroFuturo` = 1.5
-- `ComprometimentoFinanceiroFuturo90Dias` = 1.25
-- `ComprometimentoFinanceiroFuturo180Dias` = 1.0
-- `ComprometimentoFinanceiroFuturo365Dias` = 0.75
+- `ComprometimentoFinanceiroFuturo90Dias` = 1.0
+- `ComprometimentoFinanceiroFuturo180Dias` = 0.75
+- `ComprometimentoFinanceiroFuturo365Dias` = 0.5
 - `Endividamento patrimonial` = 1.5
 - `PatrimonioLiquidoAtual` = 1.25
 - `PercentualPatrimonioAlvo` = 0.75
@@ -93,39 +94,43 @@ A pontuação geral é calculada a partir dos indicadores disponíveis, usando p
 
 ### Comprometimento financeiro futuro
 
-- **Finalidade:** medir a pressão dos próximos 30 dias sobre a renda disponível.
-- **Fórmula:** `(obrigacoesFinanceirasFuturas30Dias / receitaMensalAtual) * 100`
+- **Finalidade:** medir quanto da renda prevista para os próximos 30 dias já está comprometido com despesas e obrigações futuras.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas30Dias / receitaPrevista30Dias) * 100`
 - **Fallback quando a renda é zero e existem obrigações futuras:** considera 100% para não esconder risco.
-- **Fonte:** lançamentos pendentes com vencimento entre a data de referência e os próximos 30 dias.
+- **Fonte:** lançamentos pendentes de receita e despesa com vencimento entre a data de referência e os próximos 30 dias.
 - **Formato:** percentual.
 - **Leitura:** mostra a folga do caixa no curto prazo.
+- **Campos de transparência:** `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`.
 
-### Comprometimento financeiro futuro - 90 dias
+### Pressão financeira acumulada - 90 dias
 
-- **Finalidade:** medir a pressão dos próximos 90 dias sobre a renda disponível.
-- **Fórmula:** `(obrigacoesFinanceirasFuturas90Dias / receitaMensalAtual) * 100`
+- **Finalidade:** medir a pressão financeira acumulada dos próximos 90 dias sobre a renda prevista do mesmo período.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas90Dias / receitaPrevista90Dias) * 100`
 - **Fallback quando a renda é zero e existem obrigações futuras:** considera 100% para não esconder risco.
-- **Fonte:** lançamentos pendentes com vencimento entre a data de referência e os próximos 90 dias.
+- **Fonte:** lançamentos pendentes de receita e despesa com vencimento entre a data de referência e os próximos 90 dias.
 - **Formato:** percentual.
 - **Leitura:** complementa a visão de curto prazo com uma leitura de trimestre.
+- **Campos de transparência:** `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`.
 
-### Comprometimento financeiro futuro - 180 dias
+### Pressão financeira acumulada - 180 dias
 
-- **Finalidade:** medir a pressão dos próximos 180 dias sobre a renda disponível.
-- **Fórmula:** `(obrigacoesFinanceirasFuturas180Dias / receitaMensalAtual) * 100`
+- **Finalidade:** medir a pressão financeira acumulada dos próximos 180 dias sobre a renda prevista do mesmo período.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas180Dias / receitaPrevista180Dias) * 100`
 - **Fallback quando a renda é zero e existem obrigações futuras:** considera 100% para não esconder risco.
-- **Fonte:** lançamentos pendentes com vencimento entre a data de referência e os próximos 180 dias.
+- **Fonte:** lançamentos pendentes de receita e despesa com vencimento entre a data de referência e os próximos 180 dias.
 - **Formato:** percentual.
 - **Leitura:** ajuda a enxergar o médio prazo com mais antecedência.
+- **Campos de transparência:** `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`.
 
-### Comprometimento financeiro futuro - 12 meses
+### Pressão financeira acumulada - 12 meses
 
-- **Finalidade:** medir a pressão dos próximos 12 meses sobre a renda disponível.
-- **Fórmula:** `(obrigacoesFinanceirasFuturas365Dias / receitaMensalAtual) * 100`
+- **Finalidade:** medir a pressão financeira acumulada dos próximos 12 meses sobre a renda prevista do mesmo período.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas365Dias / receitaPrevista365Dias) * 100`
 - **Fallback quando a renda é zero e existem obrigações futuras:** considera 100% para não esconder risco.
-- **Fonte:** lançamentos pendentes com vencimento entre a data de referência e os próximos 12 meses.
+- **Fonte:** lançamentos pendentes de receita e despesa com vencimento entre a data de referência e os próximos 12 meses.
 - **Formato:** percentual.
 - **Leitura:** mostra se o longo prazo ainda preserva folga ou já pede revisão estrutural.
+- **Campos de transparência:** `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`.
 
 ### Endividamento patrimonial
 
@@ -157,7 +162,7 @@ A pontuação geral é calculada a partir dos indicadores disponíveis, usando p
 - Indicadores com status `Atenção` ou `Crítica` alimentam pontos de atenção e insights.
 - Indicadores com status `Excelente` ou `Bom` podem gerar destaques positivos.
 - Indicadores de configuração ausente devem aparecer como lembrete de régua pessoal, não como falha financeira absoluta.
-- O indicador de comprometimento financeiro futuro existe para complementar o comprometimento da renda, não para substituí-lo.
+- O indicador de comprometimento financeiro futuro existe para complementar o comprometimento da renda nos próximos 30 dias, enquanto os horizontes maiores representam pressão financeira acumulada.
 
 ## Relação com as telas
 

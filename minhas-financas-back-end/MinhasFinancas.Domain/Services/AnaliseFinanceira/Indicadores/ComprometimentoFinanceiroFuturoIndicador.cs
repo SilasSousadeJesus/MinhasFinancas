@@ -20,12 +20,15 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 Percentual = percentualMaximo > 0
                     ? (dadosReferencia.ComprometimentoFinanceiroFuturoAtual / percentualMaximo) * 100m
                     : 0m,
+                ValorObrigacoesPrevistas = dadosReferencia.ObrigacoesFinanceirasFuturas30Dias,
+                ValorReceitaPrevista = dadosReferencia.ReceitaPrevista30Dias,
+                PercentualComprometimento = dadosReferencia.ComprometimentoFinanceiroFuturoAtual,
                 Status = ResolutorStatusIndicadorFinanceiro.ResolverMetaMaxima(
                     dadosReferencia.ComprometimentoFinanceiroFuturoAtual,
                     percentualMaximo),
-                Descricao = "Percentual da renda que já está comprometido com despesas pendentes nos próximos 30 dias.",
+                Descricao = "Percentual da renda prevista para os próximos 30 dias que já está comprometido com despesas e obrigações futuras.",
                 Observacao = percentualMaximo > 0
-                    ? $"Considera {dadosReferencia.ObrigacoesFinanceirasFuturas30Dias:N2} em despesas pendentes com vencimento nos próximos 30 dias."
+                    ? $"Considera {dadosReferencia.ObrigacoesFinanceirasFuturas30Dias:N2} em despesas pendentes sobre {dadosReferencia.ReceitaPrevista30Dias:N2} de receita prevista para os próximos 30 dias."
                     : "Sem limite máximo de comprometimento da renda configurado no perfil financeiro.",
                 Formato = FormatoValorIndicadorFinanceiro.Percentual
             };

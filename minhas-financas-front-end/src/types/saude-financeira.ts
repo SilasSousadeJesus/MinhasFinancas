@@ -4,6 +4,9 @@ export interface IndicadorFinanceiroSaude {
   valorAtual: number;
   valorIdeal: number;
   percentual: number;
+  valorObrigacoesPrevistas?: number | null;
+  valorReceitaPrevista?: number | null;
+  percentualComprometimento?: number | null;
   status: number;
   descricao: string;
   observacao: string;

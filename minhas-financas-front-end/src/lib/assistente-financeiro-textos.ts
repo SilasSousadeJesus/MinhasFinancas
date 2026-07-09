@@ -27,16 +27,17 @@ function estaEmAtencao(status: number) {
 
 function textoCompromissoFuturo(indicador: IndicadorResumoFinanceiroIA, dias: number) {
   const periodo = dias === 365 ? "12 meses" : `${dias} dias`;
+  const conceito = dias === 30 ? "O comprometimento financeiro futuro" : "A pressão financeira acumulada";
 
   if (estaPositivo(indicador.status)) {
-    return `Os compromissos dos próximos ${periodo} ainda cabem de forma administrável na renda prevista.`;
+    return `${conceito} dos próximos ${periodo} ainda cabe de forma administrável na renda prevista.`;
   }
 
   if (estaEmAtencao(indicador.status)) {
-    return `Os compromissos dos próximos ${periodo} já pedem acompanhamento para não reduzir a folga do período.`;
+    return `${conceito} dos próximos ${periodo} já pede acompanhamento para não reduzir a folga do período.`;
   }
 
-  return `Os compromissos dos próximos ${periodo} já estão pressionando a flexibilidade do caixa.`;
+  return `${conceito} dos próximos ${periodo} já está pressionando a flexibilidade do caixa.`;
 }
 
 export function obterTextoExecutivoIndicador(indicador: IndicadorResumoFinanceiroIA) {
@@ -144,11 +145,11 @@ export function obterTextoPontoAtencao(indicador: IndicadorResumoFinanceiroIA) {
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
       return "Os compromissos futuros dos próximos 30 dias já começam a pressionar a flexibilidade do caixa.";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90:
-      return "Os compromissos futuros dos próximos 90 dias já pedem monitoramento para evitar aperto no trimestre.";
+      return "A pressão financeira acumulada dos próximos 90 dias já pede monitoramento para evitar aperto no trimestre.";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180:
-      return "Os compromissos futuros dos próximos 180 dias já exigem planejamento para não comprometer o ritmo financeiro.";
+      return "A pressão financeira acumulada dos próximos 180 dias já exige planejamento para não comprometer o ritmo financeiro.";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365:
-      return "Os compromissos de longo prazo precisam de acompanhamento para não limitar os objetivos futuros.";
+      return "A pressão financeira acumulada de longo prazo precisa de acompanhamento para não limitar os objetivos futuros.";
     case INDICADOR_ENDIVIDAMENTO:
       return "O peso atual das dívidas limita a capacidade de crescimento financeiro e aumenta a pressão futura.";
     case INDICADOR_PATRIMONIO_LIQUIDO_ATUAL:

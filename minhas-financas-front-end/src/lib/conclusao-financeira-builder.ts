@@ -99,13 +99,13 @@ function interpretarPontoForte(indicador: IndicadorResumoFinanceiroIA | null) {
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "a boa folga no orçamento, que reduz a pressão sobre a renda mensal";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
-      return "os compromissos dos próximos 30 dias, que ainda cabem com conforto dentro da renda prevista";
+      return "o comprometimento financeiro futuro dos próximos 30 dias, que ainda cabe com conforto dentro da renda prevista";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90:
-      return "os compromissos dos próximos 90 dias, que ainda permanecem administráveis na renda prevista";
+      return "a pressão financeira acumulada dos próximos 90 dias, que ainda permanece administrável";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180:
-      return "a pressão projetada para os próximos 180 dias, que ainda se mantém dentro de uma faixa sustentável";
+      return "a pressão financeira acumulada dos próximos 180 dias, que ainda se mantém dentro de uma faixa sustentável";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365:
-      return "os compromissos de longo prazo, que continuam compatíveis com a renda projetada";
+      return "a pressão financeira acumulada de longo prazo, que continua compatível com a renda projetada";
     case INDICADOR_PERCENTUAL_PATRIMONIO_ALVO:
       return "a proximidade gradual do patrimônio em relação ao objetivo planejado";
     default:
@@ -129,17 +129,17 @@ function interpretarPontoAtencao(indicador: IndicadorResumoFinanceiroIA | null) 
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "o comprometimento atual da renda limita a folga necessária para avançar com mais segurança";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
-      return "os compromissos dos próximos 30 dias já começam a reduzir a folga disponível no curto prazo";
+      return "o comprometimento financeiro futuro dos próximos 30 dias já começa a reduzir a folga disponível no curto prazo";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90:
-      return "os compromissos dos próximos 90 dias já pedem atenção para não reduzir a flexibilidade do trimestre";
+      return "a pressão financeira acumulada dos próximos 90 dias já pede atenção para não reduzir a flexibilidade do trimestre";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180:
-      return "os compromissos dos próximos 180 dias já exigem organização para não comprometer o ritmo financeiro";
+      return "a pressão financeira acumulada dos próximos 180 dias já exige organização para não comprometer o ritmo financeiro";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365:
-      return "os compromissos de longo prazo ainda precisam de acompanhamento para não limitar os objetivos futuros";
+      return "a pressão financeira acumulada de longo prazo ainda precisa de acompanhamento para não limitar os objetivos futuros";
     case INDICADOR_PERCENTUAL_ECONOMIA:
       return "a taxa de economia ainda está abaixo do ritmo desejado para sustentar sua evolução";
     case INDICADOR_ECONOMIA_MENSAL:
-      return "a sobra mensal segue apertada para dar conforto ao planejamento do curto prazo";
+      return "a sobra mensal segue frágil e pressiona a estabilidade do curto prazo";
     case INDICADOR_PATRIMONIO_LIQUIDO_ATUAL:
       return "a base patrimonial ainda está em fase inicial de consolidação";
     default:
@@ -165,13 +165,13 @@ function interpretarDirecao(indicador: IndicadorResumoFinanceiroIA | null, class
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "diminuir o comprometimento da renda para restabelecer folga no orçamento";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
-      return "rever os compromissos dos próximos 30 dias para aliviar a pressão do caixa futuro";
+      return "rever o comprometimento financeiro futuro dos próximos 30 dias para aliviar a pressão do caixa futuro";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90:
-      return "organizar os próximos 90 dias para manter equilíbrio entre previsibilidade e flexibilidade";
+      return "organizar a pressão financeira acumulada dos próximos 90 dias para manter equilíbrio entre previsibilidade e flexibilidade";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180:
-      return "planejar com mais antecedência os próximos 180 dias para evitar acúmulo de pressão";
+      return "planejar a pressão financeira acumulada dos próximos 180 dias para evitar acúmulo de peso";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365:
-      return "rever a trajetória de longo prazo para não comprometer decisões estratégicas";
+      return "rever a pressão financeira acumulada de longo prazo para não comprometer decisões estratégicas";
     case INDICADOR_PERCENTUAL_PATRIMONIO_ALVO:
       return "aproximar o patrimônio do objetivo definido com constância nos aportes";
     case INDICADOR_PATRIMONIO_LIQUIDO_ATUAL:

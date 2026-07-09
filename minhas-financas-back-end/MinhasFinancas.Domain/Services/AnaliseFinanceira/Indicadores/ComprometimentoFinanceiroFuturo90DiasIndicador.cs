@@ -14,19 +14,22 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
             return new IndicadorFinanceiro
             {
                 Codigo = Codigo,
-                Nome = "Comprometimento financeiro futuro - 90 dias",
+                Nome = "Pressão financeira acumulada - 90 dias",
                 ValorAtual = dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual,
                 ValorIdeal = percentualMaximo,
                 Percentual = percentualMaximo > 0
                     ? (dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual / percentualMaximo) * 100m
                     : 0m,
+                ValorObrigacoesPrevistas = dadosReferencia.ObrigacoesFinanceirasFuturas90Dias,
+                ValorReceitaPrevista = dadosReferencia.ReceitaPrevista90Dias,
+                PercentualComprometimento = dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual,
                 Status = ResolutorStatusIndicadorFinanceiro.ResolverMetaMaxima(
                     dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual,
                     percentualMaximo),
-                Descricao = "Percentual da renda que já está comprometido com despesas pendentes nos próximos 90 dias.",
+                Descricao = "Percentual da renda prevista para os próximos 90 dias que já está comprometido por despesas e obrigações futuras.",
                 Observacao = percentualMaximo > 0
-                    ? $"Considera {dadosReferencia.ObrigacoesFinanceirasFuturas90Dias:N2} em despesas pendentes com vencimento nos próximos 90 dias."
-                    : "Sem limite máximo de comprometimento da renda configurado no perfil financeiro.",
+                    ? $"Considera {dadosReferencia.ObrigacoesFinanceirasFuturas90Dias:N2} em obrigações futuras sobre {dadosReferencia.ReceitaPrevista90Dias:N2} de receita prevista para os próximos 90 dias."
+                    : "Sem limite máximo configurado no perfil financeiro para medir a pressão financeira acumulada de 90 dias.",
                 Formato = FormatoValorIndicadorFinanceiro.Percentual
             };
         }

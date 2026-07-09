@@ -82,19 +82,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias when indicador.ValorIdeal <= 0
                     => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
-                        "Ainda falta definir a régua dos compromissos futuros de 90 dias.",
+                        "Ainda falta definir a régua da pressão financeira acumulada de 90 dias.",
                         "Sem essa referência, a leitura do médio prazo perde precisão e deixa o planejamento menos confiável.",
                         "Use o perfil financeiro para definir a referência desejada para os próximos 90 dias."),
 
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias when indicador.ValorIdeal <= 0
                     => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
-                        "Ainda falta definir a régua dos compromissos futuros de 180 dias.",
+                        "Ainda falta definir a régua da pressão financeira acumulada de 180 dias.",
                         "Sem essa referência, o sistema enxerga menos claramente a pressão financeira de médio prazo.",
                         "Use o perfil financeiro para definir a referência desejada para os próximos 180 dias."),
 
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias when indicador.ValorIdeal <= 0
                     => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
-                        "Ainda falta definir a régua dos compromissos futuros de 12 meses.",
+                        "Ainda falta definir a régua da pressão financeira acumulada de 12 meses.",
                         "Sem essa referência, a visão de longo prazo fica menos precisa para orientar o planejamento.",
                         "Use o perfil financeiro para definir a referência desejada para os próximos 12 meses."),
 
@@ -118,20 +118,20 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
-                        "Os próximos 90 dias já trazem pressão relevante.",
+                        "Os próximos 90 dias já trazem pressão financeira acumulada relevante.",
                         "A soma das obrigações pendentes nesse horizonte começa a reduzir a flexibilidade do planejamento de médio prazo.",
                         "Reorganize os compromissos do trimestre para evitar acúmulo de pressão financeira."),
 
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Media,
                         "O horizonte de 180 dias já pede organização.",
-                        "As obrigações acumuladas no médio prazo indicam necessidade de planejamento mais estruturado para evitar aperto futuro.",
+                        "A pressão financeira acumulada no médio prazo indica necessidade de planejamento mais estruturado para evitar aperto futuro.",
                         "Revise o calendário de despesas e distribua melhor os compromissos ao longo dos próximos meses."),
 
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Oportunidade, PrioridadeInsightFinanceiro.Media,
                         "O longo prazo já está sendo pressionado por compromissos futuros.",
-                        "Mesmo em um horizonte maior, a concentração de obrigações pede disciplina para não comprometer flexibilidade estratégica.",
+                        "Mesmo em um horizonte maior, a pressão financeira acumulada pede disciplina para não comprometer flexibilidade estratégica.",
                         "Reveja compromissos de longo prazo antes que eles limitem objetivos maiores."),
 
                 CodigoIndicadorFinanceiro.Endividamento when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico

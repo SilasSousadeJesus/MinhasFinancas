@@ -9,6 +9,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos
         public decimal ValorAtual { get; set; }
         public decimal ValorIdeal { get; set; }
         public decimal Percentual { get; set; }
+        public decimal? ValorObrigacoesPrevistas { get; set; }
+        public decimal? ValorReceitaPrevista { get; set; }
+        public decimal? PercentualComprometimento { get; set; }
         public StatusIndicadorFinanceiro Status { get; set; }
         public string Descricao { get; set; } = string.Empty;
         public string Observacao { get; set; } = string.Empty;

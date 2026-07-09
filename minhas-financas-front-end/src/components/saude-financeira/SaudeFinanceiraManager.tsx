@@ -25,6 +25,10 @@ const TIPO_ALERTA = 0;
 const TIPO_OPORTUNIDADE = 1;
 const TIPO_DESTAQUE_POSITIVO = 2;
 const TIPO_CONFIGURACAO = 3;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO = 8;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90 = 9;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180 = 10;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365 = 11;
 
 const PRIORIDADE_ALTA = 0;
 const PRIORIDADE_MEDIA = 1;
@@ -118,6 +122,15 @@ function obterVariantPrioridade(prioridade: number): "default" | "secondary" | "
     default:
       return "outline";
   }
+}
+
+function ehIndicadorTemporal(codigo: number) {
+  return [
+    INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO,
+    INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90,
+    INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180,
+    INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365,
+  ].includes(codigo);
 }
 
 export function SaudeFinanceiraManager() {
@@ -278,6 +291,41 @@ export function SaudeFinanceiraManager() {
                       <p className="mt-1 font-medium">{indicador.percentual.toFixed(1)}%</p>
                     </div>
                   </div>
+
+                  {ehIndicadorTemporal(indicador.codigo) &&
+                  (indicador.valorObrigacoesPrevistas != null ||
+                    indicador.valorReceitaPrevista != null ||
+                    indicador.percentualComprometimento != null) ? (
+                    <div className="rounded-lg border border-border/60 bg-background/70 p-3 text-sm">
+                      <p className="text-xs uppercase tracking-wide text-muted-foreground">Detalhe temporal</p>
+                      <div className="mt-2 grid gap-2">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-muted-foreground">Obrigações previstas</span>
+                          <span className="font-medium">
+                            {formatarValorIndicador(
+                              indicador.valorObrigacoesPrevistas ?? 0,
+                              FORMATO_MOEDA
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-muted-foreground">Receita prevista</span>
+                          <span className="font-medium">
+                            {formatarValorIndicador(indicador.valorReceitaPrevista ?? 0, FORMATO_MOEDA)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-muted-foreground">Comprometimento calculado</span>
+                          <span className="font-medium">
+                            {formatarValorIndicador(
+                              indicador.percentualComprometimento ?? 0,
+                              FORMATO_PERCENTUAL
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
 
                   <div className="rounded-lg border border-border/60 bg-background/70 p-3 text-sm text-muted-foreground">
                     {indicador.observacao}

@@ -143,6 +143,7 @@ Este arquivo nÃ£o substitui:
 ### Nota sobre indicadores
 
 - a leitura da Saúde Financeira e do Assistente Financeiro agora considera também compromissos financeiros futuros em diferentes horizontes de tempo
+- os indicadores temporais mostram de forma explícita obrigações previstas, receita prevista e percentual de comprometimento
 - os indicadores oficiais, fórmulas e pesos estão documentados em `docs/INDICADORES_FINANCEIROS.md`
 
 ## Compromissos Financeiros
@@ -648,3 +649,6 @@ A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design
 
 
 
+
+
+Nota de leitura: a Saúde Financeira separa o comprometimento financeiro futuro de curto prazo da pressão financeira acumulada em horizontes maiores, para evitar confusão entre risco imediato e peso projetado.

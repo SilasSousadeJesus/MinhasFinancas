@@ -270,11 +270,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
                     => "os compromissos dos próximos 30 dias ainda cabem com folga na estrutura de renda atual.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias
-                    => "os compromissos dos próximos 90 dias seguem administráveis, mas já pedem acompanhamento atento.",
+                    => "a pressão financeira acumulada dos próximos 90 dias segue administrável, mas já pede acompanhamento atento.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias
-                    => "o horizonte de 180 dias ainda parece sustentável, embora mereça planejamento para evitar acúmulo de pressão.",
+                    => "a pressão acumulada dos próximos 180 dias ainda parece sustentável, embora mereça planejamento para evitar acúmulo de peso.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias
-                    => "o compromisso de longo prazo continua compatível com a renda projetada, mas exige disciplina para não perder fôlego.",
+                    => "a pressão de longo prazo continua compatível com a renda projetada, mas exige disciplina para não perder fôlego.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "o patrimônio avança de forma compatível com o objetivo traçado para o longo prazo.",
                 _ => string.Empty
@@ -301,11 +301,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
                     => "os compromissos dos próximos 30 dias já começam a limitar a folga do caixa futuro.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias
-                    => "os compromissos dos próximos 90 dias começam a reduzir a folga disponível para reagir a imprevistos.",
+                    => "a pressão financeira acumulada dos próximos 90 dias começa a reduzir a folga disponível para reagir a imprevistos.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias
-                    => "a pressão projetada para os próximos 180 dias já merece atenção para não comprometer o planejamento.",
+                    => "a pressão financeira acumulada dos próximos 180 dias já merece atenção para não comprometer o planejamento.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias
-                    => "a pressão de longo prazo ainda pede disciplina para não transformar previsibilidade em aperto futuro.",
+                    => "a pressão financeira acumulada de longo prazo ainda pede disciplina para não transformar previsibilidade em aperto futuro.",
                 CodigoIndicadorFinanceiro.PercentualEconomia
                     => "a taxa de economia ainda está abaixo do ritmo necessário para acelerar sua evolução financeira.",
                 CodigoIndicadorFinanceiro.EconomiaMensal
@@ -329,11 +329,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
                     => "Rever os compromissos dos próximos 30 dias.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias
-                    => "Organizar os compromissos dos próximos 90 dias.",
+                    => "Organizar a pressão financeira acumulada dos próximos 90 dias.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias
-                    => "Planejar a pressão dos próximos 180 dias.",
+                    => "Planejar a pressão financeira acumulada dos próximos 180 dias.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias
-                    => "Revisar o peso dos compromissos de longo prazo.",
+                    => "Revisar a pressão financeira acumulada de longo prazo.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "Aproximar o patrimônio do objetivo definido.",
                 CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual
@@ -365,11 +365,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
                     => "Boa previsibilidade dos compromissos futuros.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias
-                    => "Boa previsibilidade no horizonte de 90 dias.",
+                    => "Boa previsibilidade da pressão financeira de 90 dias.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias
-                    => "Boa leitura da pressão financeira de médio prazo.",
+                    => "Boa leitura da pressão financeira acumulada de médio prazo.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias
-                    => "Boa previsibilidade do comprometimento de longo prazo.",
+                    => "Boa previsibilidade da pressão financeira acumulada de longo prazo.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "Evolução consistente rumo ao patrimônio-alvo.",
                 _ => indicador.Nome

@@ -1,40 +1,40 @@
-﻿# GlossÃ¡rio do DomÃ­nio - Minhas FinanÃ§as
+﻿# Glossário do Domínio - Minhas Finanças
 
-Este documento registra os conceitos oficiais do domÃ­nio financeiro do sistema.
+Este documento registra os conceitos oficiais do domínio financeiro do sistema.
 
 Sempre que surgir um novo conceito relevante, ele deve ser documentado aqui.
 
-## LanÃ§amento
+## Lançamento
 
-Registro de uma movimentaÃ§Ã£o financeira do usuÃ¡rio.
+Registro de uma movimentação financeira do usuário.
 
-## Data de lanÃ§amento
+## Data de lançamento
 
 Data em que o registro foi criado no sistema.
 
-NÃ£o representa vencimento, pagamento nem recebimento.
+Não representa vencimento, pagamento nem recebimento.
 
 ## Data de vencimento
 
-Data prevista para a movimentaÃ§Ã£o ocorrer.
+Data prevista para a movimentação ocorrer.
 
-- em despesas, representa o vencimento da obrigaÃ§Ã£o
+- em despesas, representa o vencimento da obrigação
 - em receitas, representa a data prevista de entrada do valor
 
-## Data de efetivaÃ§Ã£o
+## Data de efetivação
 
 Data em que o dinheiro realmente entrou ou saiu.
 
 - em despesas, representa a data do pagamento
 - em receitas, representa a data do recebimento
 
-## Status do lanÃ§amento
+## Status do lançamento
 
-Estado atual do ciclo de vida do lanÃ§amento.
+Estado atual do ciclo de vida do lançamento.
 
 ## Pendente
 
-LanÃ§amento previsto, mas ainda nÃ£o efetivado.
+Lançamento previsto, mas ainda não efetivado.
 
 ## Pago
 
@@ -46,11 +46,11 @@ Status final permitido para receitas efetivadas.
 
 ## Cancelado
 
-LanÃ§amento que nÃ£o deve mais produzir efeito financeiro previsto nem realizado.
+Lançamento que não deve mais produzir efeito financeiro previsto nem realizado.
 
 ## Receita
 
-MovimentaÃ§Ã£o de entrada de recursos.
+Movimentação de entrada de recursos.
 
 Pode assumir apenas:
 
@@ -60,7 +60,7 @@ Pode assumir apenas:
 
 ## Despesa
 
-MovimentaÃ§Ã£o de saÃ­da de recursos.
+Movimentação de saída de recursos.
 
 Pode assumir apenas:
 
@@ -68,24 +68,24 @@ Pode assumir apenas:
 - `Pago`
 - `Cancelado`
 
-## EfetivaÃ§Ã£o
+## Efetivação
 
-Ato de registrar que a movimentaÃ§Ã£o realmente ocorreu.
+Ato de registrar que a movimentação realmente ocorreu.
 
 - receita: `Pendente -> Recebido`
 - despesa: `Pendente -> Pago`
 
 ## Conta
 
-Meio financeiro do usuÃ¡rio usado para organizar saldo e lanÃ§amentos.
+Meio financeiro do usuário usado para organizar saldo e lançamentos.
 
-## CartÃ£o
+## Cartão
 
-Meio de pagamento vinculado ao usuÃ¡rio, utilizado nos lanÃ§amentos e no controle financeiro.
+Meio de pagamento vinculado ao usuário, utilizado nos lançamentos e no controle financeiro.
 
 ## Categoria
 
-ClassificaÃ§Ã£o principal de um lanÃ§amento.
+Classificação principal de um lançamento.
 
 ## Subcategoria
 
@@ -97,21 +97,21 @@ Leitura baseada em datas previstas, especialmente `DataVencimento`.
 
 ## Fluxo de Caixa Realizado
 
-Leitura baseada apenas em movimentaÃ§Ãµes efetivadas, usando `DataEfetivacao`.
+Leitura baseada apenas em movimentações efetivadas, usando `DataEfetivacao`.
 
-## PatrimÃ´nio
+## Patrimônio
 
-Conjunto de ativos e passivos do usuÃ¡rio.
+Conjunto de ativos e passivos do usuário.
 
 ## Ativo patrimonial
 
-Bem ou recurso que compÃµe positivamente o patrimÃ´nio.
+Bem ou recurso que compõe positivamente o patrimônio.
 
 ## Passivo patrimonial
 
-ObrigaÃ§Ã£o financeira que reduz o patrimÃ´nio.
+Obrigação financeira que reduz o patrimônio.
 
-## PatrimÃ´nio lÃ­quido
+## Patrimônio líquido
 
 Resultado de:
 
@@ -119,73 +119,73 @@ Resultado de:
 
 ## Snapshot patrimonial
 
-Fotografia congelada do patrimÃ´nio em uma data de referÃªncia.
+Fotografia congelada do patrimônio em uma data de referência.
 
-## EvoluÃ§Ã£o patrimonial
+## Evolução patrimonial
 
-Leitura histÃ³rica construÃ­da a partir dos snapshots salvos.
+Leitura histórica construída a partir dos snapshots salvos.
 
 ## Meta
 
-Objetivo financeiro acumulativo do usuÃ¡rio.
+Objetivo financeiro acumulativo do usuário.
 
-## ProjeÃ§Ã£o
+## Projeção
 
-SimulaÃ§Ã£o orientada a objetivo financeiro, com acumulado inicial, renda base, renda extra e horizonte temporal.
+Simulação orientada a objetivo financeiro, com acumulado inicial, renda base, renda extra e horizonte temporal.
 
-## SimulaÃ§Ã£o Financeira
+## Simulação Financeira
 
-CenÃ¡rio hipotÃ©tico persistido por usuÃ¡rio para testar decisÃµes futuras sem alterar dados reais.
+Cenário hipotético persistido por usuário para testar decisões futuras sem alterar dados reais.
 
 ## Perfil Financeiro
 
-Conjunto de parÃ¢metros pessoais usados para definir como o usuÃ¡rio deseja medir e avaliar sua prÃ³pria saÃºde financeira.
+Conjunto de parâmetros pessoais usados para definir como o usuário deseja medir e avaliar sua própria saúde financeira.
 
 ## Indicador Financeiro
 
-InformaÃ§Ã£o derivada dos dados financeiros do sistema para mostrar desempenho, risco, equilÃ­brio ou progresso do usuÃ¡rio.
+Informação derivada dos dados financeiros do sistema para mostrar desempenho, risco, equilíbrio ou progresso do usuário.
 
-NÃ£o Ã© um dado bruto persistido.
+Não é um dado bruto persistido.
 
-Ã‰ resultado de cÃ¡lculo sobre lanÃ§amentos, patrimÃ´nio, perfil financeiro, metas, projeÃ§Ãµes ou outras bases existentes.
+É resultado de cálculo sobre lançamentos, patrimônio, perfil financeiro, metas, projeções ou outras bases existentes.
 
-## AnÃ¡lise Financeira
+## Análise Financeira
 
-MÃ³dulo responsÃ¡vel por transformar dados em indicadores reutilizÃ¡veis.
+Módulo responsável por transformar dados em indicadores reutilizáveis.
 
-Essa camada nÃ£o deve depender de tela especÃ­fica.
+Essa camada não deve depender de tela específica.
 
-Ela existe para servir dashboard, relatÃ³rios, exportaÃ§Ãµes, APIs, mÃ³dulos de saÃºde financeira e futuras integraÃ§Ãµes.
+Ela existe para servir dashboard, relatórios, exportações, APIs, módulos de saúde financeira e futuras integrações.
 
-## SaÃºde Financeira
+## Saúde Financeira
 
-Leitura interpretativa construÃ­da a partir dos indicadores financeiros e dos parÃ¢metros definidos no perfil financeiro do usuÃ¡rio.
+Leitura interpretativa construída a partir dos indicadores financeiros e dos parâmetros definidos no perfil financeiro do usuário.
 
-## PontuaÃ§Ã£o de SaÃºde Financeira
+## Pontuação de Saúde Financeira
 
-Medida sintÃ©tica de 0 a 100 calculada a partir do conjunto de indicadores financeiros.
+Medida sintética de 0 a 100 calculada a partir do conjunto de indicadores financeiros.
 
-Ela resume, de forma simples, o equilÃ­brio financeiro atual do usuÃ¡rio.
+Ela resume, de forma simples, o equilíbrio financeiro atual do usuário.
 
 ## Insight Financeiro
 
-Leitura acionÃ¡vel gerada a partir dos indicadores e da saÃºde financeira.
+Leitura acionável gerada a partir dos indicadores e da saúde financeira.
 
 Pode representar:
 
 - alerta
 - oportunidade
 - destaque positivo
-- necessidade de configuraÃ§Ã£o
+- necessidade de configuração
 
 ## ResumoFinanceiroIA
 
-Objeto consolidado da inteligÃªncia financeira do sistema.
+Objeto consolidado da inteligência financeira do sistema.
 
-Ele organiza, em um Ãºnico payload:
+Ele organiza, em um único payload:
 
 - indicadores
-- saÃºde financeira
+- saúde financeira
 - insights
 - prioridades imediatas
 - destaques positivos
@@ -193,59 +193,59 @@ Ele organiza, em um Ãºnico payload:
 
 ## Contexto para IA
 
-RepresentaÃ§Ã£o textual e estruturada do `ResumoFinanceiroIA`, preparada pelo sistema para consumo externo sem expor dados desnecessÃ¡rios do banco.
+Representação textual e estruturada do `ResumoFinanceiroIA`, preparada pelo sistema para consumo externo sem expor dados desnecessários do banco.
 
 ## Provedor de IA
 
-AbstraÃ§Ã£o de infraestrutura responsÃ¡vel por receber um contexto jÃ¡ preparado e, futuramente, enviar esse material para um serviÃ§o externo de IA.
+Abstração de infraestrutura responsável por receber um contexto já preparado e, futuramente, enviar esse material para um serviço externo de IA.
 
 O provedor nunca deve acessar o banco diretamente.
 
 ## Assistente Financeiro
 
-ExperiÃªncia executiva do sistema que organiza saÃºde financeira, indicadores, insights e prioridades a partir do `ResumoFinanceiroIA`.
+Experiência executiva do sistema que organiza saúde financeira, indicadores, insights e prioridades a partir do `ResumoFinanceiroIA`.
 
 Na fase atual, funciona sem IA real e sem chat.
 
-## ParÃ¢metro Financeiro
+## Parâmetro Financeiro
 
-Valor configurado pelo usuÃ¡rio para servir de referÃªncia em anÃ¡lises, indicadores, alertas e comparaÃ§Ãµes futuras.
+Valor configurado pelo usuário para servir de referência em análises, indicadores, alertas e comparações futuras.
 
-## ConfiguraÃ§Ã£o vigente
+## Configuração vigente
 
-Registro atualmente ativo dentro de um histÃ³rico de configuraÃ§Ãµes.
+Registro atualmente ativo dentro de um histórico de configurações.
 
-Em mÃ³dulos histÃ³ricos, representa a configuraÃ§Ã£o que deve ser considerada como referÃªncia atual do usuÃ¡rio.
+Em módulos históricos, representa a configuração que deve ser considerada como referência atual do usuário.
 
-## HistÃ³rico do Perfil Financeiro
+## Histórico do Perfil Financeiro
 
-Conjunto temporal de configuraÃ§Ãµes anteriores do perfil financeiro do usuÃ¡rio.
+Conjunto temporal de configurações anteriores do perfil financeiro do usuário.
 
-Permite saber quais critÃ©rios estavam vÃ¡lidos em cada perÃ­odo.
+Permite saber quais critérios estavam válidos em cada período.
 
-## AÃ§Ã£o de SimulaÃ§Ã£o
+## Ação de Simulação
 
-Evento hipotÃ©tico dentro de uma simulaÃ§Ã£o financeira.
+Evento hipotético dentro de uma simulação financeira.
 
 Na V1 pode representar:
 
-- receita Ãºnica
-- despesa Ãºnica
+- receita única
+- despesa única
 - receita recorrente mensal
 - despesa recorrente mensal
 - despesa parcelada
 
 ## Resultado simulado
 
-ConsolidaÃ§Ã£o mensal que combina base real de lanÃ§amentos com aÃ§Ãµes hipotÃ©ticas.
+Consolidação mensal que combina base real de lançamentos com ações hipotéticas.
 
 ## Saldo real
 
-Saldo mensal obtido apenas dos lanÃ§amentos reais.
+Saldo mensal obtido apenas dos lançamentos reais.
 
 ## Saldo simulado
 
-Saldo mensal obtido ao aplicar as aÃ§Ãµes simuladas sobre a base real.
+Saldo mensal obtido ao aplicar as ações simuladas sobre a base real.
 
 ## Memória Financeira
 
@@ -356,7 +356,6 @@ Campos conceituais principais:
 - observações complementares
 - ativo/inativo
 
-
 ## Especialistas Financeiros
 
 Camada interna do Assistente Financeiro responsável por aprofundar a leitura de domínios específicos sem criar uma segunda IA.
@@ -382,26 +381,28 @@ No futuro, os compromissos poderão receber indicadores de execução, alertas e
 
 ## Comprometimento financeiro futuro
 
-Leitura analítica que mostra quanto da renda futura já está comprometida com despesas pendentes.
+Leitura analítica que mostra quanto da renda prevista nos próximos 30 dias já está comprometida com despesas e obrigações futuras.
 
 Ela complementa o `Comprometimento da renda` ao observar a pressão do caixa em diferentes horizontes.
 
-Na versão atual, o sistema usa quatro leituras:
+A leitura oficial expõe de forma clara o valor das obrigações previstas, o valor da receita prevista e o percentual de comprometimento calculado.
 
-- 30 dias;
-- 90 dias;
-- 180 dias;
-- 12 meses.
+## Pressão financeira acumulada
+
+Leitura analítica que mostra quanto da renda prevista em um horizonte maior já está comprometida com despesas e obrigações futuras.
+
+A camada analítica usa essa leitura para os horizontes de 90 dias, 180 dias e 12 meses.
+
+Assim como o horizonte de 30 dias, essa leitura também expõe obrigações previstas, receita prevista e percentual de comprometimento para tornar a análise transparente.
 
 ## Endividamento patrimonial
 
 Indicador que mede o peso dos passivos patrimoniais sobre a base patrimonial ativa.
 
-Ele não representa obrigações futuras de cartão, parcelas ou lançamentos pendentes. Essa leitura é feita pelos indicadores de comprometimento financeiro futuro e de comprometimento da renda.
+Ele não representa obrigações futuras de cartão, parcelas ou lançamentos pendentes. Essa leitura é feita pelos indicadores de comprometimento financeiro futuro e de pressão financeira acumulada.
 
 ## Pontuação de Saúde Financeira
 
-Medida sintética de 0 a 100 calculada a partir de uma média ponderada dos indicadores financeiros, incluindo leituras de curto, médio e longo prazo sobre compromissos futuros.
+Medida sintética de 0 a 100 calculada a partir de uma média ponderada dos indicadores financeiros, incluindo leituras de curto prazo e pressão financeira acumulada em horizontes maiores.
 
 Indicadores de contexto ou configuração têm peso reduzido quando servem mais como régua pessoal do que como medida direta de desempenho.
-

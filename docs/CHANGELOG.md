@@ -5,6 +5,7 @@ Registrar aqui apenas mudancas relevantes do sistema.
 ## 08/07/2026
 
 - Revisão do motor financeiro para adicionar compromissos futuros em múltiplos horizontes, tornar o endividamento mais claro como endividamento patrimonial e integrar os pontos de atenção ao resumo geral da Saúde Financeira.
+- Refinamento dos indicadores de horizonte temporal para separar o comprometimento financeiro futuro de curto prazo da pressão financeira acumulada em horizontes maiores, revisando fórmulas, pesos e interpretação em toda a inteligência financeira.
 - Refinamento da camada `AnaliseFinanceira` com revisão dos pesos da saúde financeira, correção da leitura de compromissos futuros e criação do documento oficial `docs/INDICADORES_FINANCEIROS.md`.
 
 - Refinamento da MemÃ³ria Financeira e da IA EstratÃ©gica para reforÃ§ar continuidade consultiva entre anÃ¡lises relacionadas, destacando recorrÃªncia, evoluÃ§Ã£o de entendimento e comparaÃ§Ã£o com leituras anteriores.
@@ -18,6 +19,12 @@ Registrar aqui apenas mudancas relevantes do sistema.
 - Criacao da base inicial do `Modelo de Decisao Financeira`, com `DecisaoFinanceiraIA`, `InterpretadorDecisaoFinanceira` e preparacao do contexto do Assistente Financeiro para receber essa camada.
 - Consolidacao da Fase 4.2.6 - Especialistas Financeiros, com pareceres internos por dominio integrados ao contexto consolidado do Assistente Financeiro.
 - Criacao dos documentos de apoio dos especialistas internos em `MinhasFinancas.Infra/IA/Prompts/Especialistas/`, registrando objetivos, regras, prioridades e limitacoes de cada dominio.
+
+## 08/07/2026
+
+- Transparência dos indicadores temporais na Saúde Financeira e no contexto de IA.
+- Exibição explícita de obrigações previstas, receita prevista e percentual de comprometimento nos horizontes de 30, 90, 180 e 365 dias.
+- Atualização da documentação técnica e funcional para refletir a leitura temporal detalhada.
 
 ## 07/07/2026
 
@@ -55,6 +62,7 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 - O projeto evoluiu de frontend majoritariamente visual para aplicacao integrada de ponta a ponta.
 - Os modulos centrais hoje ja possuem fluxo real entre interface, API e persistencia.
+
 
 
 

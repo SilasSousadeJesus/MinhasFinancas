@@ -103,10 +103,15 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             var obrigacoesFinanceirasFuturas180Dias = CalcularObrigacoesFinanceirasFuturas(lancamentosValidos, dataReferencia, 180);
             var obrigacoesFinanceirasFuturas365Dias = CalcularObrigacoesFinanceirasFuturas(lancamentosValidos, dataReferencia, 365);
 
-            var comprometimentoFinanceiroFuturoAtual = CalcularPercentualComprometimentoFinanceiroFuturo(obrigacoesFinanceirasFuturas30Dias, receitaMensalAtual);
-            var comprometimentoFinanceiroFuturo90DiasAtual = CalcularPercentualComprometimentoFinanceiroFuturo(obrigacoesFinanceirasFuturas90Dias, receitaMensalAtual);
-            var comprometimentoFinanceiroFuturo180DiasAtual = CalcularPercentualComprometimentoFinanceiroFuturo(obrigacoesFinanceirasFuturas180Dias, receitaMensalAtual);
-            var comprometimentoFinanceiroFuturo365DiasAtual = CalcularPercentualComprometimentoFinanceiroFuturo(obrigacoesFinanceirasFuturas365Dias, receitaMensalAtual);
+            var receitaPrevista30Dias = CalcularReceitaPrevistaFutura(lancamentosValidos, dataReferencia, 30);
+            var receitaPrevista90Dias = CalcularReceitaPrevistaFutura(lancamentosValidos, dataReferencia, 90);
+            var receitaPrevista180Dias = CalcularReceitaPrevistaFutura(lancamentosValidos, dataReferencia, 180);
+            var receitaPrevista365Dias = CalcularReceitaPrevistaFutura(lancamentosValidos, dataReferencia, 365);
+
+            var comprometimentoFinanceiroFuturoAtual = CalcularPercentualComprometimentoFinanceiroFuturo(obrigacoesFinanceirasFuturas30Dias, receitaPrevista30Dias);
+            var comprometimentoFinanceiroFuturo90DiasAtual = CalcularPercentualPressaoFinanceiraAcumulada(obrigacoesFinanceirasFuturas90Dias, receitaPrevista90Dias);
+            var comprometimentoFinanceiroFuturo180DiasAtual = CalcularPercentualPressaoFinanceiraAcumulada(obrigacoesFinanceirasFuturas180Dias, receitaPrevista180Dias);
+            var comprometimentoFinanceiroFuturo365DiasAtual = CalcularPercentualPressaoFinanceiraAcumulada(obrigacoesFinanceirasFuturas365Dias, receitaPrevista365Dias);
 
             var endividamentoAtual = totalAtivos > 0
                 ? (totalPassivos / totalAtivos) * 100m
@@ -139,6 +144,10 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 ComprometimentoFinanceiroFuturo90DiasAtual = comprometimentoFinanceiroFuturo90DiasAtual,
                 ComprometimentoFinanceiroFuturo180DiasAtual = comprometimentoFinanceiroFuturo180DiasAtual,
                 ComprometimentoFinanceiroFuturo365DiasAtual = comprometimentoFinanceiroFuturo365DiasAtual,
+                ReceitaPrevista30Dias = receitaPrevista30Dias,
+                ReceitaPrevista90Dias = receitaPrevista90Dias,
+                ReceitaPrevista180Dias = receitaPrevista180Dias,
+                ReceitaPrevista365Dias = receitaPrevista365Dias,
                 EndividamentoAtual = endividamentoAtual,
                 PatrimonioAlvo = patrimonioAlvo,
                 PercentualPatrimonioAlvoAtual = percentualPatrimonioAlvoAtual
@@ -164,6 +173,27 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             return receitaMensalAtual > 0
                 ? (obrigacoesFuturas / receitaMensalAtual) * 100m
                 : (obrigacoesFuturas > 0 ? 100m : 0m);
+        }
+
+        private static decimal CalcularPercentualPressaoFinanceiraAcumulada(decimal obrigacoesFuturas, decimal receitaPrevistaPeriodo)
+        {
+            return receitaPrevistaPeriodo > 0
+                ? (obrigacoesFuturas / receitaPrevistaPeriodo) * 100m
+                : (obrigacoesFuturas > 0 ? 100m : 0m);
+        }
+
+        private static decimal CalcularReceitaPrevistaFutura(
+            IEnumerable<Lancamento> lancamentos,
+            DateTime dataReferencia,
+            int dias)
+        {
+            return lancamentos
+                .Where(lancamento =>
+                    lancamento.Tipo == EnumTipoLancamento.Receita &&
+                    lancamento.StatusLancamento == EnumStatusLancamento.Pendente &&
+                    lancamento.DataVencimento.Date >= dataReferencia &&
+                    lancamento.DataVencimento.Date <= dataReferencia.AddDays(dias))
+                .Sum(lancamento => lancamento.Valor);
         }
 
         private static decimal ObterValorAtualAtivo(BemPatrimonial ativo)

@@ -228,7 +228,8 @@ function mapearDetalheHistorico(
 }
 
 function processarConteudoAnalise(conteudo: string, sugestaoCompromissoBackend?: string | null) {
-  const regex = /(?:^|\n)\s*(?:#{2,3}\s*)?Sugest[aã]o de compromisso\s*:?\s*([\s\S]*?)(?=\n(?:#{2,3}\s*|Sugest[aã]o de compromisso\s*:)|\n---|\s*$)/i;
+  const regex =
+    /(?:^|\n)\s*(?:#{1,3}\s*|[-*+]\s*)?(?:\*{0,2})?Sugest[aã]o de compromisso(?:\*{0,2})?\s*[:\-–—]?\s*([\s\S]*?)(?=\n\s*(?:#{1,3}\s+|[-*+]\s+|\d+\.\s+|(?:\*{0,2})?Sugest[aã]o de compromisso)|\n---|\s*$)/i;
   const correspondencia = conteudo.match(regex);
 
   if (sugestaoCompromissoBackend?.trim()) {

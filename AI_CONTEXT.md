@@ -10,6 +10,8 @@ InformaÃ§Ãµes de produto, roadmap, changelog e glossÃ¡rio de domÃ­nio fi
 
 `docs/ASSISTANT_VISION.md` reúne a visão humana e evolutiva do Assistente Financeiro.
 
+A camada `AnaliseFinanceira` distingue o comprometimento financeiro futuro de curto prazo da pressão financeira acumulada em horizontes maiores e agora expõe explicitamente, nesses indicadores, obrigações previstas, receita prevista e percentual de comprometimento.
+
 ## Arquitetura da soluÃ§Ã£o
 
 O backend segue uma arquitetura em camadas prÃ³xima de `Clean Architecture` / `Onion`, sem rigidez acadÃªmica absoluta:
@@ -262,6 +264,7 @@ ObservaÃ§Ã£o importante:
 - `SaudeFinanceiraService` interpreta os indicadores e gera pontuaÃ§Ã£o ponderada, classificaÃ§Ã£o e pontos de atenÃ§Ã£o
 - `InsightsFinanceirosService` transforma indicadores e saÃºde financeira em alertas, oportunidades, destaques positivos e orientaÃ§Ãµes acionÃ¡veis
 - `ResumoFinanceiroIAService` consolida saÃºde financeira, indicadores e insights em um payload Ãºnico pronto para consumo por interfaces e futuras integraÃ§Ãµes com IA
+- os indicadores temporais são serializados com os campos `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`, mantendo a leitura explícita na UI e no contexto enviado à IA
 - as fórmulas oficiais, pesos e regras de interpretação dos indicadores ficam documentadas em `docs/INDICADORES_FINANCEIROS.md`
 - o dashboard consome essa camada e nÃ£o deve recalcular indicadores diretamente
 - a inteligÃªncia financeira deve evoluir respeitando a cadeia `Dados -> Indicadores -> SaÃºde Financeira -> Insights -> ResumoFinanceiroIA`
@@ -592,5 +595,6 @@ As subfases 4.2.1, 4.2.2.1, 4.2.3.2 e 4.2.3.3 adicionaram a primeira versão da 
 - a continuidade histórica passa a ser enviada principalmente como narrativa interpretada em `## Evolução Financeira`
 - as seções `## Memória Financeira` e `## Compromissos Financeiros` permanecem como apoio resumido, e não como blocos principais de interpretação
 - quando não existe histórico, o contexto informa explicitamente que ainda não existem análises suficientes para avaliar evolução
+
 
 

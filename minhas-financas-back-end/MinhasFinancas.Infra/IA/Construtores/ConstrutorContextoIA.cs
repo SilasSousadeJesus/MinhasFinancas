@@ -257,7 +257,14 @@ namespace MinhasFinancas.Infra.IA.Construtores
 
         private static string FormatarIndicador(IndicadorFinanceiro indicador, CultureInfo cultura)
         {
-            return $"- {indicador.Nome} | Atual: {FormatarValor(indicador.ValorAtual, indicador.Formato, cultura)} | Ideal: {FormatarValor(indicador.ValorIdeal, indicador.Formato, cultura)} | Percentual: {indicador.Percentual:N2}% | Status: {FormatarStatus(indicador.Status)} | Descricao: {indicador.Descricao} | Observacao: {indicador.Observacao}";
+            var texto = $"- {indicador.Nome} | Atual: {FormatarValor(indicador.ValorAtual, indicador.Formato, cultura)} | Ideal: {FormatarValor(indicador.ValorIdeal, indicador.Formato, cultura)} | Percentual: {indicador.Percentual:N2}% | Status: {FormatarStatus(indicador.Status)} | Descricao: {indicador.Descricao} | Observacao: {indicador.Observacao}";
+
+            if (indicador.ValorObrigacoesPrevistas.HasValue || indicador.ValorReceitaPrevista.HasValue || indicador.PercentualComprometimento.HasValue)
+            {
+                texto += $" | Detalhe temporal: Obrigacoes previstas {FormatarValor(indicador.ValorObrigacoesPrevistas ?? 0m, FormatoValorIndicadorFinanceiro.Moeda, cultura)}; Receita prevista {FormatarValor(indicador.ValorReceitaPrevista ?? 0m, FormatoValorIndicadorFinanceiro.Moeda, cultura)}; Comprometimento calculado {indicador.PercentualComprometimento ?? 0m:N2}%";
+            }
+
+            return texto;
         }
 
         private static IEnumerable<string> MontarLinhasEvolucaoFinanceira(InterpretacaoMemoriaFinanceiraIA interpretacao)
