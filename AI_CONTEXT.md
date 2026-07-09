@@ -20,6 +20,8 @@ Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_V
 
 Além da suíte conceitual, o projeto agora possui uma auditoria operacional interna do `MF Score`, exposta apenas em desenvolvimento por `POST /api/MfScoreAuditoria/GerarPlanilha`, que monta personas sintéticas em memória, executa o motor oficial (`ContextoAnaliseFinanceira -> IndicadoresFinanceirosService -> SaudeFinanceiraService`) e devolve uma planilha `.xlsx` de conferência.
 
+O projeto passa a ter também uma segunda auditoria interna, `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`, voltada para avaliação humana cega das personas. Ela não aprova nem reprova automaticamente o motor; serve para documentar a nota que um consultor daria e transformar essa leitura em futuros padrões oficiais.
+
 `docs/MF_SCORE_AUDIT.md` deixou de ser apenas um resumo e passou a ser o documento oficial de governança técnica do Motor Financeiro, registrando cobertura, limitações conhecidas, achados de auditoria e dívida técnica.
 
 ## Arquitetura da soluÃ§Ã£o

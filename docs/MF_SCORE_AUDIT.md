@@ -111,6 +111,60 @@ Durante as próximas evoluções do `MF Score`, os próximos achados que merecem
 4. como usar histórico temporal sem criar ruído ou duplicação entre tendência, memória e score;
 5. como evitar que bons números operacionais de curto prazo escondam fragilidades estruturais de disciplina e execução estratégica.
 
+## Auditoria humana das personas
+
+Além da auditoria automática, o projeto agora possui uma auditoria humana dedicada à leitura cega das personas do `MF Score`.
+
+### Objetivo
+
+- permitir que o time avalie cada persona como um consultor financeiro avaliaria;
+- registrar nota humana, faixa humana e percepções qualitativas;
+- identificar se o motor foi severo demais ou permissivo demais;
+- transformar esse aprendizado em futuros padrões oficiais do sistema.
+
+### Endpoint interno
+
+- `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`
+
+### Estrutura esperada da planilha humana
+
+A planilha humana foi desenhada para priorizar leitura e preenchimento manual, contendo:
+
+- instruções de uso;
+- resumo das personas;
+- dados de entrada;
+- indicadores;
+- pilares;
+- penalizações e regras críticas;
+- avaliação humana detalhada;
+- referência automática secundária.
+
+### Regra de governança
+
+Uma persona não deve virar caso canônico apenas porque passou em validação automática.
+
+Antes disso, ela deve passar pela auditoria humana e ter sua faixa esperada sustentada por avaliação documentada.
+
+## Diferença entre validação automática, auditoria humana e calibração oficial
+
+### Validação automática
+
+- compara score calculado com a faixa esperada atual;
+- protege o padrão já aceito pelo sistema;
+- ajuda a identificar regressões.
+
+### Auditoria humana
+
+- não decide aprovação ou falha automaticamente;
+- permite leitura qualitativa de cada persona;
+- ajuda a revisar severidade, permissividade e coerência do motor.
+
+### Calibração oficial
+
+- usa aprendizado da validação automática e da auditoria humana;
+- transforma personas maduras em padrões oficiais;
+- orienta revisões futuras de faixas, casos canônicos e governança do Motor Financeiro.
+
 # Auditoria do MF Score
 
 Este documento foi criado para ser a leitura única e consolidada do estado atual do `MF Score`.

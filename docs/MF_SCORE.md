@@ -242,6 +242,23 @@ Características:
 
 O detalhamento operacional dessa auditoria fica em `docs/MF_SCORE_AUDIT.md`.
 
+## Auditoria humana das personas
+
+Além da auditoria automática, o projeto agora possui uma auditoria humana das personas.
+
+Objetivo:
+
+- permitir que o time avalie cada persona como um consultor financeiro avaliaria;
+- registrar nota humana, faixa humana e percepção qualitativa do caso;
+- decidir com mais cuidado quando uma persona deve virar caso canônico oficial.
+
+Diferença de papéis:
+
+- `GerarPlanilha`: validação automática contra a faixa esperada atual;
+- `GerarPlanilhaAuditoriaHumana`: auditoria manual cega para calibração futura.
+
+A faixa esperada oficial não deve nascer apenas da automação. Ela deve ser apoiada pela avaliação humana documentada.
+
 ## Governança técnica do Motor Financeiro
 
 Além de explicar o modelo e sua validação, o projeto agora mantém uma auditoria arquitetural permanente do Motor Financeiro em `docs/MF_SCORE_AUDIT.md`.

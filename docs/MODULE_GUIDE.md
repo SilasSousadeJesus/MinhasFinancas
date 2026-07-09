@@ -697,8 +697,10 @@ Fornecer uma ferramenta técnica de calibração do Motor Financeiro sem criar t
 
 ### O que já está funcional
 - endpoint interno `POST /api/MfScoreAuditoria/GerarPlanilha`
+- endpoint interno `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`
 - geração da planilha com abas de resumo, cenários, pilares, indicadores críticos e dados de entrada
 - execução do motor oficial em personas sintéticas padronizadas
+- geração de planilha específica para avaliação humana cega das personas, com campos manuais para nota e observações
 
 ### Evoluções futuras
 - ampliar a base de personas

@@ -203,6 +203,8 @@ Essa auditoria:
 - gera planilha `.xlsx` com score, pilares, indicadores críticos e dados de entrada;
 - deve ser usada como evidência técnica sempre que houver mudança relevante no Motor Financeiro.
 
+Além dessa auditoria automática, existe agora uma auditoria humana das personas, usada para avaliar se a nota calculada faz sentido sob a ótica de um consultor financeiro antes de consolidar faixas esperadas como padrão oficial.
+
 ## Governança de lacunas e cobertura
 
 Quando a limitação não estiver na fórmula de um indicador isolado, mas na cobertura conceitual do modelo, ela deve ser registrada em `docs/MF_SCORE_AUDIT.md`.

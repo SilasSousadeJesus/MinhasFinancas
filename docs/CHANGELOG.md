@@ -16,6 +16,9 @@ Registrar aqui apenas mudancas relevantes do sistema.
 - Expansão do `docs/MF_SCORE_AUDIT.md` para funcionar como documento oficial de governança técnica do Motor Financeiro.
 - Criação da Auditoria Arquitetural do Motor Financeiro, com cobertura dos pilares, cobertura do domínio, limitações conhecidas, achados formais e dívida técnica.
 - Registro oficial do achado `MF-001`, documentando que o pilar Planejamento ainda utiliza proxies e não mede diretamente toda a execução estratégica do usuário.
+- Criação do endpoint interno `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana` para gerar a planilha de auditoria humana das personas.
+- Separação explícita entre validação automática do `MF Score` e auditoria humana cega para calibragem futura.
+- Preparação do processo para que personas auditadas manualmente possam evoluir para padrões oficiais do sistema.
 
 ## 08/07/2026
 

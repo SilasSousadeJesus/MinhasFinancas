@@ -135,6 +135,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IExcelReport<LancamentosExcelReportData>, LancamentosExcelReport>();
             builder.Services.AddScoped<IExcelReport<FluxoCaixaSimplesExcelReportData>, FluxoCaixaSimplesExcelReport>();
             builder.Services.AddScoped<IExcelReport<MfScoreAuditoriaExcelReportData>, MfScoreAuditoriaExcelReport>();
+            builder.Services.AddScoped<IExcelReport<MfScoreAuditoriaHumanaExcelReportData>, MfScoreAuditoriaHumanaExcelReport>();
             builder.Services.AddScoped<IPersonaMfScore, VidaFinanceiraExcelentePersonaMfScore>();
             builder.Services.AddScoped<IPersonaMfScore, BoaRendaReservaZeroCartaoAltoPersonaMfScore>();
             builder.Services.AddScoped<IPersonaMfScore, PatrimonioAltoFluxoRuimPersonaMfScore>();

@@ -54,5 +54,41 @@ namespace MinhasFinancas.API.Controllers
 
             return File(arquivo.Conteudo, arquivo.ContentType, arquivo.NomeArquivo);
         }
+
+        //[Authorize]
+        [HttpPost("GerarPlanilhaAuditoriaHumana")]
+        public async Task<IActionResult> GerarPlanilhaAuditoriaHumana()
+        {
+            if (!_environment.IsDevelopment())
+            {
+                return NotFound(new RetornoGenerico(
+                    false,
+                    "Endpoint interno de auditoria indisponivel fora do ambiente de desenvolvimento.",
+                    "Ferramenta interna indisponivel neste ambiente.",
+                    HttpStatusCode.NotFound,
+                    null));
+            }
+
+            var dados = await _appService.GerarPlanilhaAuditoriaHumanaAsync();
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode switch
+                {
+                    HttpStatusCode.Unauthorized => Unauthorized(dados),
+                    HttpStatusCode.NotFound => NotFound(dados),
+                    HttpStatusCode.BadRequest => BadRequest(dados),
+                    HttpStatusCode.InternalServerError => StatusCode(500, dados),
+                    _ => BadRequest(dados)
+                };
+            }
+
+            if (dados.Dados is not ArquivoRelatorioDTO arquivo)
+            {
+                return StatusCode(500, "Arquivo de auditoria humana nao encontrado.");
+            }
+
+            return File(arquivo.Conteudo, arquivo.ContentType, arquivo.NomeArquivo);
+        }
     }
 }

@@ -435,4 +435,27 @@ As duas visões são complementares:
 - `MF_SCORE_VALIDATION.md` protege a coerência do comportamento;
 - `MF_SCORE_AUDIT.md` governa a evolução técnica do modelo.
 
+## Diferença entre validação automática, auditoria humana e calibração oficial
+
+O processo do `MF Score` agora possui três camadas complementares:
+
+1. **Validação automática**
+   - executada pela planilha gerada em `POST /api/MfScoreAuditoria/GerarPlanilha`
+   - compara score calculado com a faixa esperada atual
+   - responde rapidamente se o motor continua coerente com o padrão já conhecido
+
+2. **Auditoria humana**
+   - executada pela planilha gerada em `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`
+   - não aprova nem reprova automaticamente
+   - serve para que um auditor avalie a persona como consultor financeiro, sem depender da decisão automática
+
+3. **Calibração oficial**
+   - acontece quando a leitura humana documentada orienta a revisão de faixas esperadas, casos canônicos e futuras evoluções do motor
+
+Em resumo:
+
+- a validação automática protege o padrão atual;
+- a auditoria humana questiona se o padrão atual ainda faz sentido;
+- a calibração oficial transforma esse aprendizado em evolução controlada do modelo.
+
 
