@@ -371,3 +371,7 @@ O avanço da Fase 4.2 agora passa pela calibração contínua do Motor Financeir
 A IA acompanha essa evolução como camada de comunicação, não como origem das regras.
 
 A validade do modelo deve ser preservada por uma suíte oficial de cenários canônicos, usada sempre que houver qualquer mudança na estrutura do Motor Financeiro.
+
+Além da suíte conceitual, a arquitetura agora conta com uma auditoria operacional interna do `MF Score`, executada fora da IA e baseada exclusivamente no motor determinístico do backend.
+
+A IA nunca participa dessa auditoria nem corrige o score por conta própria. Ela apenas consome um Motor Financeiro já calibrado e rastreável.

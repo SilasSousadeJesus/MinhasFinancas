@@ -166,3 +166,9 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Toda alteração no Motor Financeiro deve responder também: `Essa mudança continua produzindo resultados coerentes para todos os cenários oficiais de validação?`
 - Sempre que um indicador, peso, fórmula, pilar, penalidade, regra crítica, classificação ou tendência do `MF Score` mudar, devem ser atualizados obrigatoriamente `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE.md`.
 - Nenhuma alteração no `MF Score` deve ser considerada concluída sem a sincronização simultânea desses dois documentos.
+- Sempre que houver alteração relevante no Motor Financeiro, também é obrigatório:
+  1. atualizar `docs/MF_SCORE.md`
+  2. atualizar `docs/INDICADORES_FINANCEIROS.md`, quando aplicável
+  3. executar a auditoria oficial do `MF Score`
+  4. registrar o resultado da planilha de auditoria no relatório de entrega
+  5. atualizar `docs/CHANGELOG.md`

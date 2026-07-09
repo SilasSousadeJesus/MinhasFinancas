@@ -678,3 +678,29 @@ O `MF Score` já é a referência oficial de risco financeiro do sistema.
 
 
 Nota de leitura: a Saúde Financeira separa o comprometimento financeiro futuro de curto prazo da pressão financeira acumulada em horizontes maiores, para evitar confusão entre risco imediato e peso projetado.
+
+## Infraestrutura interna de auditoria do MF Score
+
+### Finalidade
+Fornecer uma ferramenta técnica de calibração do Motor Financeiro sem criar tela de usuário.
+
+### O que o usuário faz aqui
+- o usuário final não interage com esse fluxo
+- o uso é interno, para desenvolvimento e auditoria
+
+### Dados gerados ou mantidos
+- planilha `.xlsx` de auditoria com cenários sintéticos, score obtido, score esperado, pilares, indicadores críticos e dados de entrada
+
+### Impacto no restante do sistema
+- protege a coerência do `MF Score`
+- ajuda a validar mudanças que afetam Saúde Financeira, Assistente Financeiro e futuras leituras executivas
+
+### O que já está funcional
+- endpoint interno `POST /api/MfScoreAuditoria/GerarPlanilha`
+- geração da planilha com abas de resumo, cenários, pilares, indicadores críticos e dados de entrada
+- execução do motor oficial em personas sintéticas padronizadas
+
+### Evoluções futuras
+- ampliar a base de personas
+- registrar histórico comparativo entre versões do motor
+- usar a auditoria como apoio para calibração mais fina do `MF Score`

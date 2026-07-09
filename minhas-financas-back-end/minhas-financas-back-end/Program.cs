@@ -10,6 +10,8 @@ using MinhasFinancas.Application.Services;
 using MinhasFinancas.CrossCutting.Reports;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira;
+using MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore;
+using MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Personas;
 using MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores;
 using MinhasFinancas.Infra;
 using MinhasFinancas.Infra.Data.config.configMigrate;
@@ -132,6 +134,16 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<ExcelStyleHelper>();
             builder.Services.AddScoped<IExcelReport<LancamentosExcelReportData>, LancamentosExcelReport>();
             builder.Services.AddScoped<IExcelReport<FluxoCaixaSimplesExcelReportData>, FluxoCaixaSimplesExcelReport>();
+            builder.Services.AddScoped<IExcelReport<MfScoreAuditoriaExcelReportData>, MfScoreAuditoriaExcelReport>();
+            builder.Services.AddScoped<IPersonaMfScore, VidaFinanceiraExcelentePersonaMfScore>();
+            builder.Services.AddScoped<IPersonaMfScore, BoaRendaReservaZeroCartaoAltoPersonaMfScore>();
+            builder.Services.AddScoped<IPersonaMfScore, PatrimonioAltoFluxoRuimPersonaMfScore>();
+            builder.Services.AddScoped<IPersonaMfScore, ExcelenteFluxoPoucoPatrimonioPersonaMfScore>();
+            builder.Services.AddScoped<IPersonaMfScore, InadimplenciaPersonaMfScore>();
+            builder.Services.AddScoped<IPersonaMfScore, ComprometimentoExtremoPersonaMfScore>();
+            builder.Services.AddScoped<IPersonaMfScore, ReservaInexistenteSemDividasPersonaMfScore>();
+            builder.Services.AddScoped<IPersonaMfScore, PlanejamentoExcelentePersonaMfScore>();
+            builder.Services.AddScoped<IMfScoreAuditoriaAppService, MfScoreAuditoriaAppService>();
 
             builder.Services.AddScoped<IDashboardAppService, DashboardAppService>();
             builder.Services.AddScoped<IRelatoriosAppService, RelatoriosAppService>();

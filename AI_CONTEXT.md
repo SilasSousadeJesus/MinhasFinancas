@@ -18,6 +18,8 @@ O `MF Score` agora também possui uma etapa oficial de calibração contínua, c
 
 Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_VALIDATION.md`, usada para confirmar se alterações futuras continuam coerentes com os cenários canônicos do modelo.
 
+Além da suíte conceitual, o projeto agora possui uma auditoria operacional interna do `MF Score`, exposta apenas em desenvolvimento por `POST /api/MfScoreAuditoria/GerarPlanilha`, que monta personas sintéticas em memória, executa o motor oficial (`ContextoAnaliseFinanceira -> IndicadoresFinanceirosService -> SaudeFinanceiraService`) e devolve uma planilha `.xlsx` de conferência.
+
 ## Arquitetura da soluÃ§Ã£o
 
 O backend segue uma arquitetura em camadas prÃ³xima de `Clean Architecture` / `Onion`, sem rigidez acadÃªmica absoluta:

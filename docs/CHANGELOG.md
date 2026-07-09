@@ -9,6 +9,10 @@ Registrar aqui apenas mudancas relevantes do sistema.
 - Consolidação do MF Score como ativo central do Motor Financeiro, com referência explícita ao risco financeiro pessoal.
 - Atualização da documentação de produto, regras, visão de IA, módulos, glossário e referência oficial de indicadores.
 - Registro do conceito de MF Score Potencial como evolução futura.
+- Criação da auditoria operacional interna do MF Score com endpoint de desenvolvimento para geração de planilha `.xlsx`.
+- Implementação de personas sintéticas oficiais para validar cenários canônicos do Motor Financeiro sem duplicar fórmulas.
+- Reuso da infraestrutura existente de exportação Excel para produzir abas de resumo, cenários, pilares, indicadores críticos e dados de entrada.
+- Sincronização da documentação para registrar a auditoria como evidência obrigatória em mudanças relevantes do Motor Financeiro.
 
 ## 08/07/2026
 

@@ -191,3 +191,14 @@ Quando houver dúvida entre duas formulações equivalentes, preferir a que:
 - preserve a consistência com os cenários oficiais de validação.
 
 Toda alteração relevante também deve ser confrontada com a `Suite Oficial de Validação do MF Score`, documentada em `docs/MF_SCORE_VALIDATION.md`.
+
+## Auditoria operacional do motor
+
+Além da validação documental, os indicadores passam a ser conferidos por uma auditoria operacional interna do `MF Score`.
+
+Essa auditoria:
+
+- executa personas sintéticas contra o motor oficial;
+- não recalcula indicadores fora da camada `AnaliseFinanceira`;
+- gera planilha `.xlsx` com score, pilares, indicadores críticos e dados de entrada;
+- deve ser usada como evidência técnica sempre que houver mudança relevante no Motor Financeiro.

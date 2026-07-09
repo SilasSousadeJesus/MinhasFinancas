@@ -221,3 +221,23 @@ O sistema gera um MF Score Base e aplica as regras críticas antes de produzir a
 Sempre que mudar um indicador, peso, fórmula, regra crítica, classificação ou tendência, este documento e `docs/INDICADORES_FINANCEIROS.md` devem ser atualizados na mesma entrega.
 
 Além disso, qualquer mudança deve ser confrontada com a `Suite Oficial de Validação do MF Score` antes de ser considerada concluída.
+
+## Auditoria operacional oficial
+
+Além da validação conceitual, o projeto possui uma auditoria operacional interna do `MF Score`.
+
+Objetivo:
+
+- executar o motor oficial em cenários sintéticos controlados;
+- comparar o score obtido com a faixa esperada de cada persona;
+- registrar o resultado em planilha `.xlsx` para leitura rápida e auditoria humana.
+
+Características:
+
+- usa o fluxo real `ContextoAnaliseFinanceira -> IndicadoresFinanceirosService -> SaudeFinanceiraService`;
+- não duplica fórmulas do score;
+- não depende de interface;
+- existe apenas para uso interno em desenvolvimento;
+- reforça a etapa de calibração contínua do Motor Financeiro.
+
+O detalhamento operacional dessa auditoria fica em `docs/MF_SCORE_AUDIT.md`.

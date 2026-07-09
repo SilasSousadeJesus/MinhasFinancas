@@ -322,3 +322,5 @@ Ensinar também.
 O Assistente Financeiro passa a interpretar o usuário com base no MF Score, que sintetiza risco, pilares, regras críticas e tendência.
 
 A IA continua como comunicadora da inteligência já calculada pelo sistema, enquanto o MF Score garante a base oficial de leitura.
+
+A confiabilidade dessa base passa a ser reforçada por uma auditoria operacional interna do `MF Score`, executada no backend fora da IA. Assim, o Assistente continua interpretando uma régua já calibrada pelo sistema, e não inventando sua própria avaliação.

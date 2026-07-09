@@ -350,3 +350,68 @@ O MF Score hoje está assim:
 O próximo passo natural não é reinventar o score.
 
 É calibrá-lo com rigor.
+## 15. Auditoria operacional implementada
+
+Para transformar a calibração em rotina prática, o projeto passou a ter uma auditoria operacional interna do `MF Score`.
+
+### Endpoint interno
+
+- `POST /api/MfScoreAuditoria/GerarPlanilha`
+
+Regras:
+
+- disponível apenas em ambiente de desenvolvimento;
+- protegido por autenticação;
+- sem tela própria e sem acesso por menu;
+- pensado para uso técnico e auditoria de regressão.
+
+### Motor utilizado
+
+A auditoria não possui fórmula paralela.
+
+Ela executa o fluxo oficial:
+
+`ContextoAnaliseFinanceira -> IndicadoresFinanceirosService -> SaudeFinanceiraService`
+
+Isso garante que a planilha reflita exatamente o comportamento real do Motor Financeiro.
+
+### Personas oficiais da auditoria
+
+Os cenários sintéticos iniciais implementados são:
+
+1. Vida Financeira Excelente
+2. Boa renda, reserva zero e cartão alto
+3. Patrimônio alto com fluxo ruim
+4. Excelente fluxo com pouco patrimônio
+5. Inadimplência
+6. Comprometimento extremo
+7. Reserva inexistente sem dívidas
+8. Planejamento excelente
+
+### Estrutura da planilha
+
+A planilha gerada possui as abas:
+
+- `Resumo`
+- `Cenarios`
+- `Pilares`
+- `Indicadores Criticos`
+- `Dados de Entrada`
+
+### Critério de aprovação
+
+Cada cenário recebe status:
+
+- `OK` quando `ScoreEsperadoMin <= ScoreObtido <= ScoreEsperadoMax`
+- `FALHA` quando o score sai da faixa esperada
+
+### Papel desta auditoria
+
+Essa auditoria não substitui `docs/MF_SCORE.md` nem `docs/MF_SCORE_VALIDATION.md`.
+
+Ela existe para:
+
+- operacionalizar a calibração;
+- reduzir risco de regressão silenciosa;
+- documentar a resposta real do motor em cenários de referência;
+- apoiar entregas futuras com evidência objetiva do comportamento do score.

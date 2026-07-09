@@ -400,4 +400,22 @@ A primeira calibraÃ§Ã£o prÃ¡tica deve comeÃ§ar pelos cenÃ¡rios mais ex
 
 Esses casos mostram rapidamente se o modelo estÃ¡ subestimando risco ou protegendo demais o usuÃ¡rio.
 
+## Execução operacional da validação
+
+A validação conceitual deste documento é complementada por uma auditoria operacional interna.
+
+Essa auditoria:
+
+- monta personas sintéticas em memória;
+- executa o motor oficial do `MF Score`;
+- compara `ScoreObtido` com `ScoreEsperadoMin` e `ScoreEsperadoMax`;
+- marca cada cenário como `OK` ou `FALHA`;
+- gera planilha `.xlsx` para leitura técnica e calibração.
+
+Endpoint interno de desenvolvimento:
+
+- `POST /api/MfScoreAuditoria/GerarPlanilha`
+
+O uso dessa auditoria é obrigatório sempre que indicadores, pesos, pilares, penalizações, classificações ou tendências do `MF Score` forem alterados.
+
 

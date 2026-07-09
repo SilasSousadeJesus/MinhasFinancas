@@ -161,3 +161,5 @@ Antes de criar qualquer nova feature, responder:
 A avaliação financeira do sistema deve ser guiada pelo MF Score, que trata a saúde financeira como risco, e não apenas como soma de números positivos ou negativos.
 
 Os produtos e telas futuras devem usar esse modelo como referência para interpretar estabilidade, pressão, proteção, tendência e maturidade financeira.
+
+Para preservar essa confiança, a evolução do `MF Score` não depende apenas de documentação. O projeto agora possui também uma auditoria operacional interna, baseada em personas sintéticas e no motor oficial, para confirmar se a calibração continua coerente ao longo do tempo.

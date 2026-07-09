@@ -459,3 +459,13 @@ Esses casos protegem o modelo contra regressões graves de interpretação.
 ## Matriz de sensibilidade
 
 Estrutura conceitual que documenta como o MF Score deve reagir quando uma variável importante muda de forma isolada.
+
+## Auditoria operacional do MF Score
+
+Ferramenta interna de desenvolvimento que executa personas sintéticas no motor oficial do `MF Score` e gera uma planilha `.xlsx` de conferência.
+
+Ela existe para apoiar calibração, validação de regressão e leitura objetiva do comportamento do modelo.
+
+## Persona de auditoria do MF Score
+
+Cenário financeiro sintético, construído em memória, usado para validar se o Motor Financeiro continua respondendo de forma coerente a perfis de risco conhecidos.
