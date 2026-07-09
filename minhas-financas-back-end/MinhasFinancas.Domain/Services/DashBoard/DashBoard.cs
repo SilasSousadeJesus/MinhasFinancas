@@ -262,17 +262,18 @@ namespace MinhasFinancas.Domain.Services.DashBoard
             var lancamentosFiltrados = lancamentos.Where(x=> x.Tipo == EnumTipoLancamento.Despesa).ToList();
 
             var agrupados = lancamentosFiltrados
-                .GroupBy(l => l.Categoria)
+                .GroupBy(l => new
+                {
+                    CategoriaId = l.CategoriaId,
+                    NomeCategoria = l.Categoria?.NomeCategoria ?? "Sem categoria",
+                    Icone = l.Categoria?.Icone ?? "SemCategoria.png"
+                })
                 .Select(g => new LancamentosPorCategoriaDashboard
                 {
-                    Id = g.Key.Id,
+                    Id = g.Key.CategoriaId ?? Guid.Empty,
                     Nome = g.Key.NomeCategoria,
                     Icone = g.Key.Icone,
-                    Lancamentos = g.Select(l =>
-                    {
-                        l.Categoria = null;
-                        return l;
-                    }).ToList()
+                    Lancamentos = g.ToList()
                 })
                 .ToList();
 

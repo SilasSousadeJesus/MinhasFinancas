@@ -15,7 +15,13 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos
         public decimal CoberturaReservaEmMeses { get; set; }
         public decimal ComprometimentoRendaAtual { get; set; }
         public decimal ObrigacoesFinanceirasFuturas30Dias { get; set; }
+        public decimal ObrigacoesFinanceirasFuturas90Dias { get; set; }
+        public decimal ObrigacoesFinanceirasFuturas180Dias { get; set; }
+        public decimal ObrigacoesFinanceirasFuturas365Dias { get; set; }
         public decimal ComprometimentoFinanceiroFuturoAtual { get; set; }
+        public decimal ComprometimentoFinanceiroFuturo90DiasAtual { get; set; }
+        public decimal ComprometimentoFinanceiroFuturo180DiasAtual { get; set; }
+        public decimal ComprometimentoFinanceiroFuturo365DiasAtual { get; set; }
         public decimal EndividamentoAtual { get; set; }
         public decimal PatrimonioAlvo { get; set; }
         public decimal PercentualPatrimonioAlvoAtual { get; set; }

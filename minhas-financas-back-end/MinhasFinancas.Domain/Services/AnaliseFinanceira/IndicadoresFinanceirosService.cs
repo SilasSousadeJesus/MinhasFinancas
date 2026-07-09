@@ -31,6 +31,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 ReservaEmergenciaIdeal = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal),
                 ComprometimentoRenda = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoRenda),
                 ComprometimentoFinanceiroFuturo = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo),
+                ComprometimentoFinanceiroFuturo90Dias = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias),
+                ComprometimentoFinanceiroFuturo180Dias = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias),
+                ComprometimentoFinanceiroFuturo365Dias = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias),
                 Endividamento = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.Endividamento),
                 PatrimonioLiquidoAtual = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual),
                 PercentualPatrimonioAlvo = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo),
@@ -95,17 +98,15 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 ? (despesaMensalAtual / receitaMensalAtual) * 100m
                 : (despesaMensalAtual > 0 ? 100m : 0m);
 
-            var obrigacoesFinanceirasFuturas30Dias = lancamentosValidos
-                .Where(lancamento =>
-                    lancamento.Tipo == EnumTipoLancamento.Despesa &&
-                    lancamento.StatusLancamento == EnumStatusLancamento.Pendente &&
-                    lancamento.DataVencimento.Date >= dataReferencia &&
-                    lancamento.DataVencimento.Date <= dataReferencia.AddDays(30))
-                .Sum(lancamento => lancamento.Valor);
+            var obrigacoesFinanceirasFuturas30Dias = CalcularObrigacoesFinanceirasFuturas(lancamentosValidos, dataReferencia, 30);
+            var obrigacoesFinanceirasFuturas90Dias = CalcularObrigacoesFinanceirasFuturas(lancamentosValidos, dataReferencia, 90);
+            var obrigacoesFinanceirasFuturas180Dias = CalcularObrigacoesFinanceirasFuturas(lancamentosValidos, dataReferencia, 180);
+            var obrigacoesFinanceirasFuturas365Dias = CalcularObrigacoesFinanceirasFuturas(lancamentosValidos, dataReferencia, 365);
 
-            var comprometimentoFinanceiroFuturoAtual = receitaMensalAtual > 0
-                ? (obrigacoesFinanceirasFuturas30Dias / receitaMensalAtual) * 100m
-                : (obrigacoesFinanceirasFuturas30Dias > 0 ? 100m : 0m);
+            var comprometimentoFinanceiroFuturoAtual = CalcularPercentualComprometimentoFinanceiroFuturo(obrigacoesFinanceirasFuturas30Dias, receitaMensalAtual);
+            var comprometimentoFinanceiroFuturo90DiasAtual = CalcularPercentualComprometimentoFinanceiroFuturo(obrigacoesFinanceirasFuturas90Dias, receitaMensalAtual);
+            var comprometimentoFinanceiroFuturo180DiasAtual = CalcularPercentualComprometimentoFinanceiroFuturo(obrigacoesFinanceirasFuturas180Dias, receitaMensalAtual);
+            var comprometimentoFinanceiroFuturo365DiasAtual = CalcularPercentualComprometimentoFinanceiroFuturo(obrigacoesFinanceirasFuturas365Dias, receitaMensalAtual);
 
             var endividamentoAtual = totalAtivos > 0
                 ? (totalPassivos / totalAtivos) * 100m
@@ -131,11 +132,38 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CoberturaReservaEmMeses = coberturaReservaEmMeses,
                 ComprometimentoRendaAtual = comprometimentoRendaAtual,
                 ObrigacoesFinanceirasFuturas30Dias = obrigacoesFinanceirasFuturas30Dias,
+                ObrigacoesFinanceirasFuturas90Dias = obrigacoesFinanceirasFuturas90Dias,
+                ObrigacoesFinanceirasFuturas180Dias = obrigacoesFinanceirasFuturas180Dias,
+                ObrigacoesFinanceirasFuturas365Dias = obrigacoesFinanceirasFuturas365Dias,
                 ComprometimentoFinanceiroFuturoAtual = comprometimentoFinanceiroFuturoAtual,
+                ComprometimentoFinanceiroFuturo90DiasAtual = comprometimentoFinanceiroFuturo90DiasAtual,
+                ComprometimentoFinanceiroFuturo180DiasAtual = comprometimentoFinanceiroFuturo180DiasAtual,
+                ComprometimentoFinanceiroFuturo365DiasAtual = comprometimentoFinanceiroFuturo365DiasAtual,
                 EndividamentoAtual = endividamentoAtual,
                 PatrimonioAlvo = patrimonioAlvo,
                 PercentualPatrimonioAlvoAtual = percentualPatrimonioAlvoAtual
             };
+        }
+
+        private static decimal CalcularObrigacoesFinanceirasFuturas(
+            IEnumerable<Lancamento> lancamentos,
+            DateTime dataReferencia,
+            int dias)
+        {
+            return lancamentos
+                .Where(lancamento =>
+                    lancamento.Tipo == EnumTipoLancamento.Despesa &&
+                    lancamento.StatusLancamento == EnumStatusLancamento.Pendente &&
+                    lancamento.DataVencimento.Date >= dataReferencia &&
+                    lancamento.DataVencimento.Date <= dataReferencia.AddDays(dias))
+                .Sum(lancamento => lancamento.Valor);
+        }
+
+        private static decimal CalcularPercentualComprometimentoFinanceiroFuturo(decimal obrigacoesFuturas, decimal receitaMensalAtual)
+        {
+            return receitaMensalAtual > 0
+                ? (obrigacoesFuturas / receitaMensalAtual) * 100m
+                : (obrigacoesFuturas > 0 ? 100m : 0m);
         }
 
         private static decimal ObterValorAtualAtivo(BemPatrimonial ativo)

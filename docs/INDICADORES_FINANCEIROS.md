@@ -33,7 +33,10 @@ A pontuação geral é calculada a partir dos indicadores disponíveis, usando p
 - `ReservaEmergenciaIdeal` = 0.5
 - `ComprometimentoRenda` = 1.5
 - `ComprometimentoFinanceiroFuturo` = 1.5
-- `Endividamento` = 1.5
+- `ComprometimentoFinanceiroFuturo90Dias` = 1.25
+- `ComprometimentoFinanceiroFuturo180Dias` = 1.0
+- `ComprometimentoFinanceiroFuturo365Dias` = 0.75
+- `Endividamento patrimonial` = 1.5
 - `PatrimonioLiquidoAtual` = 1.25
 - `PercentualPatrimonioAlvo` = 0.75
 
@@ -97,9 +100,36 @@ A pontuação geral é calculada a partir dos indicadores disponíveis, usando p
 - **Formato:** percentual.
 - **Leitura:** mostra a folga do caixa no curto prazo.
 
-### Endividamento
+### Comprometimento financeiro futuro - 90 dias
 
-- **Finalidade:** medir o peso dos passivos em relação à base patrimonial ativa.
+- **Finalidade:** medir a pressão dos próximos 90 dias sobre a renda disponível.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas90Dias / receitaMensalAtual) * 100`
+- **Fallback quando a renda é zero e existem obrigações futuras:** considera 100% para não esconder risco.
+- **Fonte:** lançamentos pendentes com vencimento entre a data de referência e os próximos 90 dias.
+- **Formato:** percentual.
+- **Leitura:** complementa a visão de curto prazo com uma leitura de trimestre.
+
+### Comprometimento financeiro futuro - 180 dias
+
+- **Finalidade:** medir a pressão dos próximos 180 dias sobre a renda disponível.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas180Dias / receitaMensalAtual) * 100`
+- **Fallback quando a renda é zero e existem obrigações futuras:** considera 100% para não esconder risco.
+- **Fonte:** lançamentos pendentes com vencimento entre a data de referência e os próximos 180 dias.
+- **Formato:** percentual.
+- **Leitura:** ajuda a enxergar o médio prazo com mais antecedência.
+
+### Comprometimento financeiro futuro - 12 meses
+
+- **Finalidade:** medir a pressão dos próximos 12 meses sobre a renda disponível.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas365Dias / receitaMensalAtual) * 100`
+- **Fallback quando a renda é zero e existem obrigações futuras:** considera 100% para não esconder risco.
+- **Fonte:** lançamentos pendentes com vencimento entre a data de referência e os próximos 12 meses.
+- **Formato:** percentual.
+- **Leitura:** mostra se o longo prazo ainda preserva folga ou já pede revisão estrutural.
+
+### Endividamento patrimonial
+
+- **Finalidade:** medir o peso dos passivos patrimoniais em relação à base patrimonial ativa.
 - **Fórmula:** `(totalPassivos / totalAtivos) * 100`
 - **Fallback quando não há ativos e existem passivos:** considera 100%.
 - **Fonte:** bens patrimoniais e passivos patrimoniais.

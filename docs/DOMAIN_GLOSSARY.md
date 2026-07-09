@@ -382,13 +382,26 @@ No futuro, os compromissos poderão receber indicadores de execução, alertas e
 
 ## Comprometimento financeiro futuro
 
-Leitura analítica que mostra quanto da renda dos próximos 30 dias já está comprometida com despesas pendentes.
+Leitura analítica que mostra quanto da renda futura já está comprometida com despesas pendentes.
 
-Ela complementa o `Comprometimento da renda` ao observar a pressão do caixa no curtíssimo prazo.
+Ela complementa o `Comprometimento da renda` ao observar a pressão do caixa em diferentes horizontes.
+
+Na versão atual, o sistema usa quatro leituras:
+
+- 30 dias;
+- 90 dias;
+- 180 dias;
+- 12 meses.
+
+## Endividamento patrimonial
+
+Indicador que mede o peso dos passivos patrimoniais sobre a base patrimonial ativa.
+
+Ele não representa obrigações futuras de cartão, parcelas ou lançamentos pendentes. Essa leitura é feita pelos indicadores de comprometimento financeiro futuro e de comprometimento da renda.
 
 ## Pontuação de Saúde Financeira
 
-Medida sintética de 0 a 100 calculada a partir de uma média ponderada dos indicadores financeiros.
+Medida sintética de 0 a 100 calculada a partir de uma média ponderada dos indicadores financeiros, incluindo leituras de curto, médio e longo prazo sobre compromissos futuros.
 
 Indicadores de contexto ou configuração têm peso reduzido quando servem mais como régua pessoal do que como medida direta de desempenho.
 

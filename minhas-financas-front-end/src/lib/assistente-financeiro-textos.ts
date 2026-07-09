@@ -13,6 +13,9 @@ const INDICADOR_ENDIVIDAMENTO = 5;
 const INDICADOR_PATRIMONIO_LIQUIDO_ATUAL = 6;
 const INDICADOR_PERCENTUAL_PATRIMONIO_ALVO = 7;
 const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO = 8;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90 = 9;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180 = 10;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365 = 11;
 
 function estaPositivo(status: number) {
   return status === STATUS_EXCELENTE || status === STATUS_BOM;
@@ -20,6 +23,20 @@ function estaPositivo(status: number) {
 
 function estaEmAtencao(status: number) {
   return status === STATUS_ATENCAO;
+}
+
+function textoCompromissoFuturo(indicador: IndicadorResumoFinanceiroIA, dias: number) {
+  const periodo = dias === 365 ? "12 meses" : `${dias} dias`;
+
+  if (estaPositivo(indicador.status)) {
+    return `Os compromissos dos próximos ${periodo} ainda cabem de forma administrável na renda prevista.`;
+  }
+
+  if (estaEmAtencao(indicador.status)) {
+    return `Os compromissos dos próximos ${periodo} já pedem acompanhamento para não reduzir a folga do período.`;
+  }
+
+  return `Os compromissos dos próximos ${periodo} já estão pressionando a flexibilidade do caixa.`;
 }
 
 export function obterTextoExecutivoIndicador(indicador: IndicadorResumoFinanceiroIA) {
@@ -68,26 +85,27 @@ export function obterTextoExecutivoIndicador(indicador: IndicadorResumoFinanceir
       return "O orçamento está bastante pressionado e exige reorganização para recuperar margem de decisão.";
 
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
-      if (estaPositivo(indicador.status)) {
-        return "Os compromissos dos próximos 30 dias ainda cabem com conforto dentro da renda prevista.";
-      }
+      return textoCompromissoFuturo(indicador, 30);
 
-      if (estaEmAtencao(indicador.status)) {
-        return "Os compromissos dos próximos 30 dias já começam a reduzir a folga disponível no curto prazo.";
-      }
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90:
+      return textoCompromissoFuturo(indicador, 90);
 
-      return "Os compromissos dos próximos 30 dias estão pressionando o caixa futuro e pedem revisão.";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180:
+      return textoCompromissoFuturo(indicador, 180);
+
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365:
+      return textoCompromissoFuturo(indicador, 365);
 
     case INDICADOR_ENDIVIDAMENTO:
       if (estaPositivo(indicador.status)) {
-        return "O endividamento permanece controlado e não interfere de forma relevante na evolução patrimonial.";
+        return "O endividamento patrimonial permanece controlado e não interfere de forma relevante na evolução patrimonial.";
       }
 
       if (estaEmAtencao(indicador.status)) {
         return "As dívidas já começam a limitar a capacidade de crescimento e pedem acompanhamento mais próximo.";
       }
 
-      return "O nível atual de endividamento pesa sobre a estrutura financeira e reduz a liberdade para avançar.";
+      return "O nível atual de endividamento patrimonial pesa sobre a estrutura financeira e reduz a liberdade para avançar.";
 
     case INDICADOR_PATRIMONIO_LIQUIDO_ATUAL:
       if (estaPositivo(indicador.status)) {
@@ -124,7 +142,13 @@ export function obterTextoPontoAtencao(indicador: IndicadorResumoFinanceiroIA) {
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "O comprometimento da renda está reduzindo a margem disponível para ajustes e novas decisões.";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
-      return "Os compromissos futuros já começam a pressionar a flexibilidade do caixa.";
+      return "Os compromissos futuros dos próximos 30 dias já começam a pressionar a flexibilidade do caixa.";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90:
+      return "Os compromissos futuros dos próximos 90 dias já pedem monitoramento para evitar aperto no trimestre.";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180:
+      return "Os compromissos futuros dos próximos 180 dias já exigem planejamento para não comprometer o ritmo financeiro.";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365:
+      return "Os compromissos de longo prazo precisam de acompanhamento para não limitar os objetivos futuros.";
     case INDICADOR_ENDIVIDAMENTO:
       return "O peso atual das dívidas limita a capacidade de crescimento financeiro e aumenta a pressão futura.";
     case INDICADOR_PATRIMONIO_LIQUIDO_ATUAL:

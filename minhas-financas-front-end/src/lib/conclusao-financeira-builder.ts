@@ -14,11 +14,17 @@ const INDICADOR_ENDIVIDAMENTO = 5;
 const INDICADOR_PATRIMONIO_LIQUIDO_ATUAL = 6;
 const INDICADOR_PERCENTUAL_PATRIMONIO_ALVO = 7;
 const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO = 8;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90 = 9;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180 = 10;
+const INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365 = 11;
 
 const ORDEM_PRIORIDADE_ATENCAO = [
   INDICADOR_RESERVA_EMERGENCIA_ATUAL,
-  INDICADOR_ENDIVIDAMENTO,
   INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO,
+  INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90,
+  INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180,
+  INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365,
+  INDICADOR_ENDIVIDAMENTO,
   INDICADOR_COMPROMETIMENTO_RENDA,
   INDICADOR_PERCENTUAL_PATRIMONIO_ALVO,
   INDICADOR_PATRIMONIO_LIQUIDO_ATUAL,
@@ -33,6 +39,9 @@ const ORDEM_PRIORIDADE_FORCA = [
   INDICADOR_ECONOMIA_MENSAL,
   INDICADOR_RESERVA_EMERGENCIA_ATUAL,
   INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO,
+  INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90,
+  INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180,
+  INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365,
   INDICADOR_ENDIVIDAMENTO,
   INDICADOR_COMPROMETIMENTO_RENDA,
   INDICADOR_PERCENTUAL_PATRIMONIO_ALVO,
@@ -86,11 +95,17 @@ function interpretarPontoForte(indicador: IndicadorResumoFinanceiroIA | null) {
     case INDICADOR_RESERVA_EMERGENCIA_IDEAL:
       return "a reserva de emergência, que já oferece uma proteção mais confiável contra imprevistos";
     case INDICADOR_ENDIVIDAMENTO:
-      return "o endividamento sob controle, que preserva margem para decisões futuras";
+      return "o endividamento patrimonial sob controle, que preserva margem para decisões futuras";
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "a boa folga no orçamento, que reduz a pressão sobre a renda mensal";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
       return "os compromissos dos próximos 30 dias, que ainda cabem com conforto dentro da renda prevista";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90:
+      return "os compromissos dos próximos 90 dias, que ainda permanecem administráveis na renda prevista";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180:
+      return "a pressão projetada para os próximos 180 dias, que ainda se mantém dentro de uma faixa sustentável";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365:
+      return "os compromissos de longo prazo, que continuam compatíveis com a renda projetada";
     case INDICADOR_PERCENTUAL_PATRIMONIO_ALVO:
       return "a proximidade gradual do patrimônio em relação ao objetivo planejado";
     default:
@@ -110,11 +125,17 @@ function interpretarPontoAtencao(indicador: IndicadorResumoFinanceiroIA | null) 
     case INDICADOR_PERCENTUAL_PATRIMONIO_ALVO:
       return "o patrimônio ainda está abaixo do objetivo planejado";
     case INDICADOR_ENDIVIDAMENTO:
-      return "o nível atual de endividamento reduz sua capacidade de crescimento financeiro";
+      return "o endividamento patrimonial ainda reduz sua capacidade de crescimento financeiro";
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "o comprometimento atual da renda limita a folga necessária para avançar com mais segurança";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
       return "os compromissos dos próximos 30 dias já começam a reduzir a folga disponível no curto prazo";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90:
+      return "os compromissos dos próximos 90 dias já pedem atenção para não reduzir a flexibilidade do trimestre";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180:
+      return "os compromissos dos próximos 180 dias já exigem organização para não comprometer o ritmo financeiro";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365:
+      return "os compromissos de longo prazo ainda precisam de acompanhamento para não limitar os objetivos futuros";
     case INDICADOR_PERCENTUAL_ECONOMIA:
       return "a taxa de economia ainda está abaixo do ritmo desejado para sustentar sua evolução";
     case INDICADOR_ECONOMIA_MENSAL:
@@ -140,11 +161,17 @@ function interpretarDirecao(indicador: IndicadorResumoFinanceiroIA | null, class
     case INDICADOR_RESERVA_EMERGENCIA_IDEAL:
       return "reforçar a reserva de emergência até alcançar um nível mais confortável de proteção";
     case INDICADOR_ENDIVIDAMENTO:
-      return "reduzir o peso das dívidas e recuperar margem para evolução patrimonial";
+      return "reduzir o peso dos passivos patrimoniais e recuperar margem para evolução de longo prazo";
     case INDICADOR_COMPROMETIMENTO_RENDA:
       return "diminuir o comprometimento da renda para restabelecer folga no orçamento";
     case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO:
       return "rever os compromissos dos próximos 30 dias para aliviar a pressão do caixa futuro";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_90:
+      return "organizar os próximos 90 dias para manter equilíbrio entre previsibilidade e flexibilidade";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_180:
+      return "planejar com mais antecedência os próximos 180 dias para evitar acúmulo de pressão";
+    case INDICADOR_COMPROMETIMENTO_FINANCEIRO_FUTURO_365:
+      return "rever a trajetória de longo prazo para não comprometer decisões estratégicas";
     case INDICADOR_PERCENTUAL_PATRIMONIO_ALVO:
       return "aproximar o patrimônio do objetivo definido com constância nos aportes";
     case INDICADOR_PATRIMONIO_LIQUIDO_ATUAL:

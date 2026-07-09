@@ -76,7 +76,7 @@ function obterVariantClassificacao(classificacao: string): "default" | "secondar
       return "secondary";
     case "Boa":
       return "outline";
-    case "Crítica":
+    case "CrÃ­tica":
       return "destructive";
     default:
       return "default";
@@ -168,9 +168,9 @@ export function SaudeFinanceiraManager() {
       <Sidebar />
       <main className="flex-1 bg-gray-50 p-6 dark:bg-[#020817]">
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold">Saúde Financeira</h1>
+          <h1 className="text-2xl font-bold">SaÃºde Financeira</h1>
           <p className="text-sm text-muted-foreground">
-            Leitura analítica detalhada dos indicadores, insights e sinais de evolução financeira.
+            Leitura analÃ­tica detalhada dos indicadores, insights e sinais de evoluÃ§Ã£o financeira.
           </p>
         </div>
 
@@ -180,56 +180,62 @@ export function SaudeFinanceiraManager() {
           </div>
         ) : null}
 
-        <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle>Resumo geral</CardTitle>
-              <CardDescription>Pontuação consolidada e classificação atual da sua saúde financeira.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-2xl border border-border/70 bg-background/70 p-6">
-                <p className="text-sm text-muted-foreground">Pontuação geral</p>
-                <p className="mt-2 text-5xl font-bold tracking-tight">
-                  {saudeFinanceira?.resumo.pontuacaoGeral ?? 0}
-                </p>
-                <p className="mt-2 text-sm text-muted-foreground">Escala de 0 a 100.</p>
-              </div>
-              <div className="rounded-2xl border border-border/70 bg-background/70 p-6">
-                <p className="text-sm text-muted-foreground">Classificação</p>
-                <div className="mt-3">
-                  <Badge variant={obterVariantClassificacao(saudeFinanceira?.resumo.classificacao ?? "Atenção")}>
-                    {saudeFinanceira?.resumo.classificacao ?? "Atenção"}
-                  </Badge>
-                </div>
-                <p className="mt-4 text-sm text-muted-foreground">
-                  A classificação resume o equilíbrio atual entre renda, dívidas, patrimônio e reserva.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
+        <div className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Pontos de atenção</CardTitle>
-              <CardDescription>Os principais itens que mais pesam na sua pontuação atual.</CardDescription>
+              <CardTitle>Resumo geral</CardTitle>
+              <CardDescription>Pontuação consolidada, classificação atual e principais pontos de atenção da sua saúde financeira.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              {saudeFinanceira?.resumo.pontosAtencao.length ? (
-                saudeFinanceira.resumo.pontosAtencao.map((ponto) => (
-                  <div key={ponto.nome} className="rounded-xl border border-border/70 bg-background/70 p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="font-medium">{ponto.nome}</p>
-                      <Badge variant={obterVariantBadge(ponto.status)}>{obterTextoStatus(ponto.status)}</Badge>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">{ponto.descricao}</p>
-                    <p className="mt-2 text-xs text-muted-foreground">{ponto.observacao}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="rounded-xl border border-dashed border-border/70 bg-background/70 p-4 text-sm text-muted-foreground">
-                  Nenhum ponto de atenção relevante no momento.
+            <CardContent className="space-y-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-2xl border border-border/70 bg-background/70 p-6">
+                  <p className="text-sm text-muted-foreground">Pontuação geral</p>
+                  <p className="mt-2 text-5xl font-bold tracking-tight">
+                    {saudeFinanceira?.resumo.pontuacaoGeral ?? 0}
+                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">Escala de 0 a 100.</p>
                 </div>
-              )}
+                <div className="rounded-2xl border border-border/70 bg-background/70 p-6">
+                  <p className="text-sm text-muted-foreground">Classificação</p>
+                  <div className="mt-3">
+                    <Badge variant={obterVariantClassificacao(saudeFinanceira?.resumo.classificacao ?? "Atenção")}>
+                      {saudeFinanceira?.resumo.classificacao ?? "Atenção"}
+                    </Badge>
+                  </div>
+                  <p className="mt-4 text-sm text-muted-foreground">
+                    A classificação resume o equilíbrio atual entre renda, dívidas, patrimônio e reserva.
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-border/70 bg-background/70 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium">Pontos de atenção</p>
+                    <p className="text-xs text-muted-foreground">Os principais itens que mais pesam na leitura atual.</p>
+                  </div>
+                  <Badge variant="outline">{saudeFinanceira?.resumo.pontosAtencao.length ?? 0}</Badge>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  {saudeFinanceira?.resumo.pontosAtencao.length ? (
+                    saudeFinanceira.resumo.pontosAtencao.map((ponto) => (
+                      <div key={ponto.nome} className="rounded-xl border border-border/70 bg-background/70 p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="font-medium">{ponto.nome}</p>
+                          <Badge variant={obterVariantBadge(ponto.status)}>{obterTextoStatus(ponto.status)}</Badge>
+                        </div>
+                        <p className="mt-2 text-sm text-muted-foreground">{ponto.descricao}</p>
+                        <p className="mt-2 text-xs text-muted-foreground">{ponto.observacao}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="rounded-xl border border-dashed border-border/70 bg-background/70 p-4 text-sm text-muted-foreground">
+                      Nenhum ponto de atenção relevante no momento.
+                    </div>
+                  )}
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -238,7 +244,7 @@ export function SaudeFinanceiraManager() {
           <div className="mb-4 space-y-1">
             <h2 className="text-xl font-semibold">Indicadores</h2>
             <p className="text-sm text-muted-foreground">
-              Cada card mostra o valor atual, a régua ideal quando existir, o status e uma observação curta.
+              Cada card mostra o valor atual, a rÃ©gua ideal quando existir, o status e uma observaÃ§Ã£o curta.
             </p>
           </div>
 
@@ -286,7 +292,7 @@ export function SaudeFinanceiraManager() {
           <div className="mb-4 space-y-1">
             <h2 className="text-xl font-semibold">Insights financeiros</h2>
             <p className="text-sm text-muted-foreground">
-              Leituras priorizadas pelo sistema para explicar oportunidades, riscos e ajustes de configuração.
+              Leituras priorizadas pelo sistema para explicar oportunidades, riscos e ajustes de configuraÃ§Ã£o.
             </p>
           </div>
 
@@ -309,7 +315,7 @@ export function SaudeFinanceiraManager() {
                     <p className="text-sm text-muted-foreground">{insight.descricao}</p>
                     {insight.acaoSugerida ? (
                       <div className="rounded-xl border border-border/60 bg-background/70 p-3 text-sm">
-                        <span className="font-medium">Ação sugerida:</span> {insight.acaoSugerida}
+                        <span className="font-medium">AÃ§Ã£o sugerida:</span> {insight.acaoSugerida}
                       </div>
                     ) : null}
                   </CardContent>
@@ -318,7 +324,7 @@ export function SaudeFinanceiraManager() {
             ) : (
               <Card className="xl:col-span-2">
                 <CardContent className="p-6 text-sm text-muted-foreground">
-                  O backend ainda não retornou insights financeiros para o contexto atual.
+                  O backend ainda nÃ£o retornou insights financeiros para o contexto atual.
                 </CardContent>
               </Card>
             )}
@@ -328,28 +334,28 @@ export function SaudeFinanceiraManager() {
         <section className="mt-8">
           <Card>
             <CardHeader>
-              <CardTitle>Gráficos</CardTitle>
+              <CardTitle>GrÃ¡ficos</CardTitle>
               <CardDescription>
-                Espaço centralizado da saúde financeira para evolução patrimonial, economia mensal e reserva de emergência.
+                EspaÃ§o centralizado da saÃºde financeira para evoluÃ§Ã£o patrimonial, economia mensal e reserva de emergÃªncia.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-3">
               <div className="rounded-2xl border border-dashed border-border/70 bg-background/70 p-5">
-                <p className="text-sm font-medium">Evolução patrimonial</p>
+                <p className="text-sm font-medium">EvoluÃ§Ã£o patrimonial</p>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Aguardando série histórica consolidada para exibição gráfica.
+                  Aguardando sÃ©rie histÃ³rica consolidada para exibiÃ§Ã£o grÃ¡fica.
                 </p>
               </div>
               <div className="rounded-2xl border border-dashed border-border/70 bg-background/70 p-5">
                 <p className="text-sm font-medium">Economia mensal</p>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Área reservada para leitura visual sem criar cálculo novo no frontend.
+                  Ãrea reservada para leitura visual sem criar cÃ¡lculo novo no frontend.
                 </p>
               </div>
               <div className="rounded-2xl border border-dashed border-border/70 bg-background/70 p-5">
-                <p className="text-sm font-medium">Reserva de emergência</p>
+                <p className="text-sm font-medium">Reserva de emergÃªncia</p>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Será exibida aqui quando o backend expuser histórico suficiente.
+                  SerÃ¡ exibida aqui quando o backend expuser histÃ³rico suficiente.
                 </p>
               </div>
             </CardContent>

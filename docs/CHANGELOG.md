@@ -4,6 +4,7 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 08/07/2026
 
+- Revisão do motor financeiro para adicionar compromissos futuros em múltiplos horizontes, tornar o endividamento mais claro como endividamento patrimonial e integrar os pontos de atenção ao resumo geral da Saúde Financeira.
 - Refinamento da camada `AnaliseFinanceira` com revisão dos pesos da saúde financeira, correção da leitura de compromissos futuros e criação do documento oficial `docs/INDICADORES_FINANCEIROS.md`.
 
 - Refinamento da MemÃ³ria Financeira e da IA EstratÃ©gica para reforÃ§ar continuidade consultiva entre anÃ¡lises relacionadas, destacando recorrÃªncia, evoluÃ§Ã£o de entendimento e comparaÃ§Ã£o com leituras anteriores.

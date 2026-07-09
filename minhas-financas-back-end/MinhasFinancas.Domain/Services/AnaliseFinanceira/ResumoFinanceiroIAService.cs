@@ -9,8 +9,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
         private static readonly CodigoIndicadorFinanceiro[] OrdemPrioridadeAtencao =
         [
             CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
-            CodigoIndicadorFinanceiro.Endividamento,
             CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo,
+            CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias,
+            CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias,
+            CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias,
+            CodigoIndicadorFinanceiro.Endividamento,
             CodigoIndicadorFinanceiro.ComprometimentoRenda,
             CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo,
             CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual,
@@ -25,6 +28,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             CodigoIndicadorFinanceiro.EconomiaMensal,
             CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
             CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo,
+            CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias,
+            CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias,
+            CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias,
             CodigoIndicadorFinanceiro.Endividamento,
             CodigoIndicadorFinanceiro.ComprometimentoRenda,
             CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
@@ -94,6 +100,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             return codigo is CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal
                 or CodigoIndicadorFinanceiro.ComprometimentoRenda
                 or CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
+                or CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias
+                or CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias
+                or CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias
                 or CodigoIndicadorFinanceiro.Endividamento
                 or CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo;
         }
@@ -255,11 +264,17 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal
                     => "a proteção de liquidez já oferece um colchão mais seguro para lidar com imprevistos.",
                 CodigoIndicadorFinanceiro.Endividamento
-                    => "o nível de endividamento permanece controlado e preserva margem para decisões futuras.",
+                    => "o endividamento patrimonial permanece controlado e preserva margem para decisões futuras.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "o orçamento ainda mantém boa capacidade para absorver compromissos sem pressionar excessivamente a renda.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
                     => "os compromissos dos próximos 30 dias ainda cabem com folga na estrutura de renda atual.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias
+                    => "os compromissos dos próximos 90 dias seguem administráveis, mas já pedem acompanhamento atento.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias
+                    => "o horizonte de 180 dias ainda parece sustentável, embora mereça planejamento para evitar acúmulo de pressão.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias
+                    => "o compromisso de longo prazo continua compatível com a renda projetada, mas exige disciplina para não perder fôlego.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "o patrimônio avança de forma compatível com o objetivo traçado para o longo prazo.",
                 _ => string.Empty
@@ -280,11 +295,17 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "o patrimônio permanece distante do objetivo definido e ainda exige constância nos aportes.",
                 CodigoIndicadorFinanceiro.Endividamento
-                    => "o peso atual das dívidas reduz a margem para crescimento e limita decisões futuras.",
+                    => "o endividamento patrimonial ainda reduz a margem para crescimento e limita decisões futuras.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "uma parcela elevada da renda continua comprometida, o que reduz a flexibilidade do mês.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
                     => "os compromissos dos próximos 30 dias já começam a limitar a folga do caixa futuro.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias
+                    => "os compromissos dos próximos 90 dias começam a reduzir a folga disponível para reagir a imprevistos.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias
+                    => "a pressão projetada para os próximos 180 dias já merece atenção para não comprometer o planejamento.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias
+                    => "a pressão de longo prazo ainda pede disciplina para não transformar previsibilidade em aperto futuro.",
                 CodigoIndicadorFinanceiro.PercentualEconomia
                     => "a taxa de economia ainda está abaixo do ritmo necessário para acelerar sua evolução financeira.",
                 CodigoIndicadorFinanceiro.EconomiaMensal
@@ -302,11 +323,17 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal
                     => "Fortalecer a reserva de emergência.",
                 CodigoIndicadorFinanceiro.Endividamento
-                    => "Reduzir o nível de endividamento.",
+                    => "Reduzir o endividamento patrimonial.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "Reduzir o comprometimento da renda.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
                     => "Rever os compromissos dos próximos 30 dias.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias
+                    => "Organizar os compromissos dos próximos 90 dias.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias
+                    => "Planejar a pressão dos próximos 180 dias.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias
+                    => "Revisar o peso dos compromissos de longo prazo.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "Aproximar o patrimônio do objetivo definido.",
                 CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual
@@ -332,11 +359,17 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal
                     => "Proteção financeira de curto prazo mais robusta.",
                 CodigoIndicadorFinanceiro.Endividamento
-                    => "Endividamento sob controle.",
+                    => "Endividamento patrimonial sob controle.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "Boa folga no orçamento mensal.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
                     => "Boa previsibilidade dos compromissos futuros.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias
+                    => "Boa previsibilidade no horizonte de 90 dias.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias
+                    => "Boa leitura da pressão financeira de médio prazo.",
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias
+                    => "Boa previsibilidade do comprometimento de longo prazo.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "Evolução consistente rumo ao patrimônio-alvo.",
                 _ => indicador.Nome

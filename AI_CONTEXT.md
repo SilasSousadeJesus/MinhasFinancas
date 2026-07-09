@@ -250,8 +250,8 @@ ObservaÃ§Ã£o importante:
   - reserva de emergÃªncia atual
   - reserva de emergÃªncia ideal
   - comprometimento da renda
-  - comprometimento financeiro futuro
-  - endividamento
+  - comprometimento financeiro futuro em múltiplos horizontes
+  - endividamento patrimonial
   - patrimÃ´nio lÃ­quido atual
   - percentual do patrimÃ´nio alvo
 - a camada consome apenas dados jÃ¡ existentes:
@@ -259,7 +259,7 @@ ObservaÃ§Ã£o importante:
   - bens patrimoniais
   - passivos
 - configuraÃ§Ã£o vigente do perfil financeiro
-- `SaudeFinanceiraService` interpreta os indicadores e gera pontuaÃ§Ã£o, classificaÃ§Ã£o e pontos de atenÃ§Ã£o
+- `SaudeFinanceiraService` interpreta os indicadores e gera pontuaÃ§Ã£o ponderada, classificaÃ§Ã£o e pontos de atenÃ§Ã£o
 - `InsightsFinanceirosService` transforma indicadores e saÃºde financeira em alertas, oportunidades, destaques positivos e orientaÃ§Ãµes acionÃ¡veis
 - `ResumoFinanceiroIAService` consolida saÃºde financeira, indicadores e insights em um payload Ãºnico pronto para consumo por interfaces e futuras integraÃ§Ãµes com IA
 - as fórmulas oficiais, pesos e regras de interpretação dos indicadores ficam documentadas em `docs/INDICADORES_FINANCEIROS.md`
@@ -270,7 +270,7 @@ ObservaÃ§Ã£o importante:
 
 - tela dedicada para leitura consolidada da situaÃ§Ã£o financeira do usuÃ¡rio
 - consome o endpoint `api/SaudeFinanceira/{usuarioId}`
-- mostra pontuaÃ§Ã£o geral, classificaÃ§Ã£o textual, pontos de atenÃ§Ã£o e todos os indicadores
+- mostra pontuação geral, classificação textual, resumo geral com pontos de atenção integrados e todos os indicadores
 - centraliza os insights financeiros do `ResumoFinanceiroIA`
 - possui Ã¡rea reservada para grÃ¡ficos analÃ­ticos futuros, como evoluÃ§Ã£o patrimonial, economia mensal e reserva de emergÃªncia
 - usa a mesma base analÃ­tica do dashboard

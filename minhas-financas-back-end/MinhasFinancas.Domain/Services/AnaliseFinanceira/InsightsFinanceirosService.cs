@@ -80,11 +80,29 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                         "Sem um limite máximo de comprometimento da renda, a leitura dos próximos 30 dias fica menos precisa.",
                         "Use o perfil financeiro para definir o percentual máximo desejado para compromissos futuros."),
 
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias when indicador.ValorIdeal <= 0
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
+                        "Ainda falta definir a régua dos compromissos futuros de 90 dias.",
+                        "Sem essa referência, a leitura do médio prazo perde precisão e deixa o planejamento menos confiável.",
+                        "Use o perfil financeiro para definir a referência desejada para os próximos 90 dias."),
+
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias when indicador.ValorIdeal <= 0
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
+                        "Ainda falta definir a régua dos compromissos futuros de 180 dias.",
+                        "Sem essa referência, o sistema enxerga menos claramente a pressão financeira de médio prazo.",
+                        "Use o perfil financeiro para definir a referência desejada para os próximos 180 dias."),
+
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias when indicador.ValorIdeal <= 0
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
+                        "Ainda falta definir a régua dos compromissos futuros de 12 meses.",
+                        "Sem essa referência, a visão de longo prazo fica menos precisa para orientar o planejamento.",
+                        "Use o perfil financeiro para definir a referência desejada para os próximos 12 meses."),
+
                 CodigoIndicadorFinanceiro.Endividamento when indicador.ValorIdeal <= 0
                     => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
-                        "Ainda falta definir o limite de endividamento.",
-                        "Sem essa referência no perfil financeiro, o sistema não consegue calibrar com precisão a leitura do seu nível de dívida.",
-                        "Defina no perfil financeiro o percentual máximo desejado para o endividamento."),
+                        "Ainda falta definir o limite de endividamento patrimonial.",
+                        "Sem essa referência no perfil financeiro, o sistema não consegue calibrar com precisão a leitura dos passivos patrimoniais.",
+                        "Defina no perfil financeiro o percentual máximo desejado para o endividamento patrimonial."),
 
                 CodigoIndicadorFinanceiro.ComprometimentoRenda when indicador.Status == StatusIndicadorFinanceiro.Atencao
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
@@ -98,9 +116,27 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                         "O volume de despesas futuras em relação à renda prevista começa a reduzir a flexibilidade de caixa do curto prazo.",
                         "Reorganize os compromissos mais próximos para evitar pressão excessiva no próximo ciclo."),
 
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
+                        "Os próximos 90 dias já trazem pressão relevante.",
+                        "A soma das obrigações pendentes nesse horizonte começa a reduzir a flexibilidade do planejamento de médio prazo.",
+                        "Reorganize os compromissos do trimestre para evitar acúmulo de pressão financeira."),
+
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Media,
+                        "O horizonte de 180 dias já pede organização.",
+                        "As obrigações acumuladas no médio prazo indicam necessidade de planejamento mais estruturado para evitar aperto futuro.",
+                        "Revise o calendário de despesas e distribua melhor os compromissos ao longo dos próximos meses."),
+
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Oportunidade, PrioridadeInsightFinanceiro.Media,
+                        "O longo prazo já está sendo pressionado por compromissos futuros.",
+                        "Mesmo em um horizonte maior, a concentração de obrigações pede disciplina para não comprometer flexibilidade estratégica.",
+                        "Reveja compromissos de longo prazo antes que eles limitem objetivos maiores."),
+
                 CodigoIndicadorFinanceiro.Endividamento when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
                     => CriarInsight(indicador, TipoInsightFinanceiro.Alerta, PrioridadeInsightFinanceiro.Alta,
-                        "As dívidas estão limitando sua evolução.",
+                        "O endividamento patrimonial está limitando sua evolução.",
                         "O peso atual dos passivos já interfere na capacidade de formar patrimônio e aumenta a pressão sobre os próximos ciclos.",
                         "Considere priorizar amortizações e conter novas dívidas até restabelecer uma faixa mais saudável."),
 
@@ -134,6 +170,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.PercentualEconomia or
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo or
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias or
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias or
+                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias or
                 CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual or
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => CriarInsight(indicador, TipoInsightFinanceiro.DestaquePositivo, PrioridadeInsightFinanceiro.Baixa,

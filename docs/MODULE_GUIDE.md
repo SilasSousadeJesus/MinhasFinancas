@@ -142,7 +142,7 @@ Este arquivo nÃ£o substitui:
 
 ### Nota sobre indicadores
 
-- a leitura da Saúde Financeira e do Assistente Financeiro agora considera também compromissos financeiros futuros de curto prazo
+- a leitura da Saúde Financeira e do Assistente Financeiro agora considera também compromissos financeiros futuros em diferentes horizontes de tempo
 - os indicadores oficiais, fórmulas e pesos estão documentados em `docs/INDICADORES_FINANCEIROS.md`
 
 ## Compromissos Financeiros
