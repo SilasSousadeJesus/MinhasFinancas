@@ -4,6 +4,7 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 08/07/2026
 
+- Refinamento da Memória Financeira e da IA Estratégica para reforçar continuidade consultiva entre análises relacionadas, destacando recorrência, evolução de entendimento e comparação com leituras anteriores.
 - Rollback da Fase 4.2.7 - Conversa Contínua, removendo a experiência de chat contínuo para manter o Assistente Financeiro como consultor financeiro e não como conversa persistida.
 - Atualização do roadmap e das visões de produto para retirar a Conversa Contínua da linha oficial do produto e registrar a próxima etapa como Simulador Inteligente.
 - Atualização da documentação funcional e conceitual para refletir a remoção da Conversa Contínua do fluxo do Assistente Financeiro.

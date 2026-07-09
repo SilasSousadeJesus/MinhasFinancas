@@ -112,6 +112,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 DestaquesPositivos = destaques,
                 InsightsPrioritarios = insightsPrioritarios,
                 MemoriaFinanceiraResumida = memoriaFinanceiraResumida,
+                SinaisContinuidadeMemoriaFinanceira = interpretacaoMemoria.SinaisContinuidade,
                 ResumoEvolucaoFinanceira = interpretacaoMemoria.ResumoEvolucao,
                 EvolucaoFinanceira = interpretacaoMemoria.Narrativas,
                 CompromissosFinanceiros = compromissosAtivos,
@@ -178,6 +179,10 @@ namespace MinhasFinancas.Infra.IA.Construtores
                     "Memoria Financeira",
                     memoriaFinanceiraResumida,
                     "Nao existem analises anteriores."),
+                MontarSecao(
+                    "Continuidade Consultiva",
+                    interpretacaoMemoria.SinaisContinuidade,
+                    "- Ainda nao ha sinais suficientes para comparar continuidade entre analises."),
                 MontarSecao(
                     "Plano Estrategico Financeiro",
                     narrativaPlanoEstrategico,

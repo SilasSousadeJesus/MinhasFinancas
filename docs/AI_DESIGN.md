@@ -252,6 +252,7 @@ SituaÃ§Ã£o atual da evoluÃ§Ã£o:
 - Fase 4.2.3.3 implementada no backend: Consistência Estratégica calculada pelo sistema e enviada ao contexto da IA
 - Fase 4.2.5 concluída: IA Estratégica consolidada com leitura consultiva baseada em estado atual, evolução, plano, consistência e compromissos
 - Fase 4.2.6 concluída: especialistas internos analisam domínios específicos antes da consolidação do contexto final
+- a memória financeira agora reforça continuidade consultiva entre análises relacionadas, identificando recorrência, mudança de entendimento e evolução de prioridades
 Nesta etapa, o foco Ã© melhorar:
 
 - qualidade do prompt
@@ -281,7 +282,7 @@ A subfase 4.2.2 tornou a análise aprofundada acessível diretamente na tela do 
 ### Limites desta fase
 
 - não existe chat
-- não existe conversa contínua
+- não existe diálogo persistido
 - não existem especialistas
 - a persistência da Memória Financeira continua sendo responsabilidade do backend
 - o frontend apenas consulta, apresenta e aciona a exclusão lógica do histórico existente

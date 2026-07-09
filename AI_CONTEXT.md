@@ -332,13 +332,13 @@ ObservaÃ§Ã£o importante:
 
 - localizada em `MinhasFinancas.Infra/IA`
 - `AssistenteFinanceiroService` orquestra a preparação de contexto, prompt e resposta
-- `InterpretadorMemoriaFinanceira` transforma o histórico resumido em narrativa de evolução antes da chamada à IA
+- `InterpretadorMemoriaFinanceira` transforma o histórico resumido em narrativa de evolução e continuidade consultiva antes da chamada à IA
 - `AvaliadorConsistenciaEstrategica` calcula de forma determinística o nível de consistência entre a pergunta do usuário, a situação financeira atual e o plano estratégico vigente
 - `ConstrutorContextoIA` transforma `ResumoFinanceiroIA` em contexto textual estruturado e seguro para consumo externo
 - `ConstrutorPromptIA` monta a requisiÃ§Ã£o final a partir do contexto preparado e do prompt base versionado em arquivo
 - `IProvedorIA` abstrai provedores externos para evitar acoplamento com uma implementaÃ§Ã£o especÃ­fica
 - `OpenAIProvider` agora possui implementaÃ§Ã£o real via HTTP para a API da OpenAI
-- a chamada externa usa apenas `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Plano Estratégico Financeiro -> InterpretadorEstrategico -> Consistência Estratégica -> CompromissosFinanceiros -> Pareceres dos Especialistas -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
+- a chamada externa usa apenas `ResumoFinanceiroIA -> Memória Financeira -> InterpretadorMemoriaFinanceira -> Continuidade Consultiva -> Plano Estratégico Financeiro -> InterpretadorEstrategico -> Consistência Estratégica -> CompromissosFinanceiros -> Pareceres dos Especialistas -> ConstrutorContextoIA -> ConstrutorPromptIA -> IProvedorIA`
 - a Fase 4.2.5 consolidou a IA Estratégica, que passa a conectar estado atual, evolução, plano, consistência e compromissos em uma única narrativa consultiva
 - a Fase 4.2.6 adicionou especialistas internos por domínio, sem criar uma segunda IA
 - o provedor trata timeout, retry simples, respostas vazias, autenticaÃ§Ã£o invÃ¡lida e falhas transitÃ³rias

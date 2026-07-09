@@ -134,7 +134,7 @@ Este arquivo nÃ£o substitui:
 - ações de copiar, gerar novamente e recarregar análises anteriores
 - IA Estratégica já consolidada no texto final, conectando estado atual, evolução, plano e compromissos
 - especialistas internos alimentando a leitura final do assistente com pareceres por domínio
-- conversa contínua com histórico persistido, seleção de diálogos anteriores e envio de novas mensagens no mesmo contexto
+- memória financeira reforçando continuidade consultiva entre análises relacionadas, sem transformar a experiência em chat
 
 ### Evoluções futuras
 - especialistas temáticos reutilizando a mesma infraestrutura
@@ -637,7 +637,7 @@ A partir da Fase 4.2, o módulo passa a ter também uma camada oficial de design
 ### Evolução futura imediata
 
 - a próxima etapa visual será a exibição da análise aprofundada usando essa memória como base histórica
-- a evolução posterior da Base de Conhecimento incluirá os especialistas temáticos e a conversa contínua
+- a evolução posterior da Base de Conhecimento seguirá aprofundando a memória analítica e os especialistas temáticos
 
 
 

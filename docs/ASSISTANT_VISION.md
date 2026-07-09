@@ -40,6 +40,8 @@ A IA recebe esse contexto já organizado e o transforma em linguagem natural, de
 
 Assim, o usuário não depende de uma resposta “inteligente” no sentido vago da palavra. Ele recebe uma resposta construída sobre uma base consistente.
 
+A Memória Financeira ajuda o assistente a perceber continuidade entre temas relacionados, reconhecer evolução e evitar que cada nova resposta comece do zero.
+
 ## A jornada de evolução
 
 O Assistente Financeiro cresce como uma jornada.

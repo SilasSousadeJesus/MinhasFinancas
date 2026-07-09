@@ -21,6 +21,7 @@ namespace MinhasFinancas.Infra.IA.Interpretadores
                     PossuiHistorico = false,
                     PossuiEvolucaoComparavel = false,
                     ResumoEvolucao = "Ainda nao existem analises anteriores suficientes para avaliar a evolucao financeira do usuario.",
+                    SinaisContinuidade = ["- Ainda nao ha base suficiente para comparar assuntos, decidir continuidade ou identificar recorrencia."],
                     Narrativas = ["- Esta sera a primeira leitura historica com continuidade analitica do sistema."],
                     MemoriaFinanceiraCompacta = ["- Nenhuma analise anterior registrada."]
                 };
@@ -43,6 +44,11 @@ namespace MinhasFinancas.Infra.IA.Interpretadores
                 interpretacao.ResumoEvolucao =
                     $"Existe apenas uma analise anterior registrada, referente a {unica.PeriodoReferencia.ToString("MMMM 'de' yyyy", Cultura)}, com pontuacao {unica.PontuacaoSaudeFinanceira}/100 e classificacao {unica.ClassificacaoSaudeFinanceira}.";
 
+                interpretacao.SinaisContinuidade =
+                [
+                    "- Ainda nao existe comparacao suficiente para confirmar tendencia, mas a analise atual ja deve considerar o que foi concluido ou pendente naquela leitura."
+                ];
+
                 var narrativas = new List<string>
                 {
                     "- Ainda nao ha base suficiente para falar em tendencia, melhora ou piora historica."
@@ -52,6 +58,7 @@ namespace MinhasFinancas.Infra.IA.Interpretadores
                 if (!string.IsNullOrWhiteSpace(prioridade))
                 {
                     narrativas.Add($"- A principal prioridade registrada naquela leitura foi: {prioridade}.");
+                    narrativas.Add($"- O mesmo eixo de prioridade deve ser observado para verificar se houve continuidade ou avanço desde aquela análise.");
                 }
 
                 var risco = BuscarPrimeiroItem(unica.PrincipaisRiscos);
@@ -69,6 +76,7 @@ namespace MinhasFinancas.Infra.IA.Interpretadores
             var variacaoPontuacao = ultima.PontuacaoSaudeFinanceira - primeira.PontuacaoSaudeFinanceira;
 
             interpretacao.ResumoEvolucao = MontarResumoPontuacao(lista.Count, primeira, ultima, variacaoPontuacao);
+            interpretacao.SinaisContinuidade = MontarSinaisContinuidade(lista, primeira, ultima, variacaoPontuacao);
 
             var narrativasEvolucao = new List<string>
             {
@@ -108,6 +116,96 @@ namespace MinhasFinancas.Infra.IA.Interpretadores
 
             interpretacao.Narrativas = narrativasEvolucao;
             return interpretacao;
+        }
+
+        private static List<string> MontarSinaisContinuidade(
+            IReadOnlyList<MemoriaFinanceiraResumidaIA> lista,
+            MemoriaFinanceiraResumidaIA primeira,
+            MemoriaFinanceiraResumidaIA ultima,
+            int variacaoPontuacao)
+        {
+            var sinais = new List<string>();
+
+            if (variacaoPontuacao >= 4)
+            {
+                sinais.Add("- A evolucao recente e positiva, entao a analise atual deve partir do que melhorou e nao do zero.");
+            }
+            else if (variacaoPontuacao <= -4)
+            {
+                sinais.Add("- Houve piora recente, entao a leitura atual deve comparar o que mudou para evitar repetir o mesmo alerta sem contexto.");
+            }
+            else
+            {
+                sinais.Add("- A pontuacao ficou relativamente estavel, o que indica que a continuidade da leitura depende mais dos temas recorrentes do que da variacao da nota.");
+            }
+
+            var temasRecorrentes = new List<string>();
+            temasRecorrentes.AddRange(BuscarItensRecorrentes(lista.SelectMany(x => x.Prioridades)));
+            temasRecorrentes.AddRange(BuscarItensRecorrentes(lista.SelectMany(x => x.PrincipaisRecomendacoes)));
+            temasRecorrentes.AddRange(BuscarItensRecorrentes(lista.SelectMany(x => x.PrincipaisRiscos)));
+
+            temasRecorrentes = temasRecorrentes
+                .Where(item => !string.IsNullOrWhiteSpace(item))
+                .DistinctBy(item => item.Trim().ToUpperInvariant())
+                .Take(3)
+                .ToList();
+
+            if (temasRecorrentes.Count > 0)
+            {
+                sinais.Add($"- Os temas recorrentes mais relevantes sao: {FormatarLista(temasRecorrentes)}.");
+            }
+
+            var prioridadeAnterior = BuscarPrimeiroItem(primeira.Prioridades);
+            var prioridadeAtual = BuscarPrimeiroItem(ultima.Prioridades);
+
+            if (!string.IsNullOrWhiteSpace(prioridadeAnterior) && !string.IsNullOrWhiteSpace(prioridadeAtual))
+            {
+                if (Equivale(prioridadeAnterior, prioridadeAtual))
+                {
+                    sinais.Add($"- A prioridade principal permaneceu a mesma ao longo do historico: {prioridadeAtual}.");
+                }
+                else
+                {
+                    sinais.Add($"- A prioridade principal mudou de {prioridadeAnterior} para {prioridadeAtual}, indicando evolucao de foco.");
+                }
+            }
+
+            var recomendacaoAnterior = BuscarPrimeiroItem(primeira.PrincipaisRecomendacoes);
+            var recomendacaoAtual = BuscarPrimeiroItem(ultima.PrincipaisRecomendacoes);
+
+            if (!string.IsNullOrWhiteSpace(recomendacaoAnterior) && !string.IsNullOrWhiteSpace(recomendacaoAtual))
+            {
+                if (Equivale(recomendacaoAnterior, recomendacaoAtual))
+                {
+                    sinais.Add($"- A recomendacao principal continua valida: {recomendacaoAtual}.");
+                }
+                else
+                {
+                    sinais.Add("- A recomendacao principal evoluiu, entao a analise atual deve refletir essa mudanca em vez de repetir a leitura anterior.");
+                }
+            }
+
+            var riscoAnterior = BuscarPrimeiroItem(primeira.PrincipaisRiscos);
+            var riscoAtual = BuscarPrimeiroItem(ultima.PrincipaisRiscos);
+
+            if (!string.IsNullOrWhiteSpace(riscoAnterior) && !string.IsNullOrWhiteSpace(riscoAtual))
+            {
+                if (Equivale(riscoAnterior, riscoAtual))
+                {
+                    sinais.Add($"- O mesmo risco permanece presente no historico: {riscoAtual}.");
+                }
+                else
+                {
+                    sinais.Add("- O mapa de riscos mudou, o que sinaliza uma nova leitura do contexto financeiro.");
+                }
+            }
+
+            if (sinais.Count == 0)
+            {
+                sinais.Add("- A memoria mostra continuidade suficiente para contextualizar a nova analise, mesmo sem repeticao forte de temas.");
+            }
+
+            return sinais;
         }
 
         private static string MontarResumoPontuacao(
