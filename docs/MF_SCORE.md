@@ -259,6 +259,27 @@ Diferença de papéis:
 
 A faixa esperada oficial não deve nascer apenas da automação. Ela deve ser apoiada pela avaliação humana documentada.
 
+## Personas de calibração persistidas
+
+Além das personas fixas usadas pela auditoria operacional, o projeto agora possui uma ferramenta interna com persistência própria para cadastrar `Personas de Calibração do MF Score`.
+
+Fluxo principal:
+
+- cadastrar a persona sintética;
+- preencher dados financeiros simulados;
+- registrar score humano, faixa esperada e justificativa;
+- rodar o motor oficial do `MF Score`;
+- marcar a persona como auditada;
+- promover a persona madura a `caso canônico`, quando fizer sentido.
+
+Essa ferramenta fica disponível pela tela `/mf-score-personas` e pelos endpoints `api/MfScorePersonas`.
+
+Importante:
+
+- a persona não é um usuário real;
+- a ferramenta existe para calibrar o motor, não para substituir módulos finais do produto;
+- o endpoint `RodarScore` reutiliza o fluxo oficial do motor e não cria fórmula paralela.
+
 ## Governança técnica do Motor Financeiro
 
 Além de explicar o modelo e sua validação, o projeto agora mantém uma auditoria arquitetural permanente do Motor Financeiro em `docs/MF_SCORE_AUDIT.md`.

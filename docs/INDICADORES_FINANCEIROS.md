@@ -205,6 +205,8 @@ Essa auditoria:
 
 Além dessa auditoria automática, existe agora uma auditoria humana das personas, usada para avaliar se a nota calculada faz sentido sob a ótica de um consultor financeiro antes de consolidar faixas esperadas como padrão oficial.
 
+O projeto agora também possui um CRUD persistido de personas de calibração. Essa tela não recalcula indicadores por conta própria: ela apenas coleta dados sintéticos e reaproveita o motor oficial para produzir os mesmos indicadores e o mesmo `MF Score` usados no restante do sistema.
+
 ## Governança de lacunas e cobertura
 
 Quando a limitação não estiver na fórmula de um indicador isolado, mas na cobertura conceitual do modelo, ela deve ser registrada em `docs/MF_SCORE_AUDIT.md`.

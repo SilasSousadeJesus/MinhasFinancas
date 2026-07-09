@@ -710,3 +710,41 @@ Fornecer uma ferramenta técnica de calibração do Motor Financeiro sem criar t
 ### Governança técnica
 - `docs/MF_SCORE_AUDIT.md` passou a funcionar como documento oficial de governança técnica do Motor Financeiro
 - nele ficam registradas coberturas, lacunas, achados e dívida técnica que afetam Saúde Financeira, Assistente Financeiro e futuras camadas analíticas
+
+## Personas de calibração do MF Score
+
+### Finalidade
+É uma ferramenta interna de desenvolvimento para cadastrar cenários sintéticos usados na calibração do Motor Financeiro.
+
+### O que o usuário faz aqui
+- cria personas de calibração
+- edita cenários sintéticos
+- preenche score humano e faixa esperada
+- roda o MF Score da persona
+- marca a persona como auditada
+- promove a persona a caso canônico quando estiver madura
+
+### Dados gerados ou mantidos
+- dados financeiros simulados
+- sinais sintéticos de planejamento
+- score humano sugerido
+- faixa esperada
+- justificativa humana
+- status de auditoria da persona
+
+### Impacto no restante do sistema
+- fortalece a calibração do `MF Score`
+- melhora a governança do Motor Financeiro
+- prepara a evolução de novos casos canônicos sem depender apenas de código fixo
+
+### O que já está funcional
+- CRUD persistido
+- tela autenticada no sistema
+- execução do motor oficial na persona cadastrada
+- marcação como auditada
+- marcação como caso canônico
+
+### Evoluções futuras
+- consumo dessas personas pela auditoria oficial em planilha
+- histórico comparativo entre versões do motor
+- ampliação da base de personas canônicas

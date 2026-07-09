@@ -22,6 +22,8 @@ Além da suíte conceitual, o projeto agora possui uma auditoria operacional int
 
 O projeto passa a ter também uma segunda auditoria interna, `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`, voltada para avaliação humana cega das personas. Ela não aprova nem reprova automaticamente o motor; serve para documentar a nota que um consultor daria e transformar essa leitura em futuros padrões oficiais.
 
+O fluxo de calibração do `MF Score` agora também possui um CRUD persistido de `Personas de Calibração`, exposto por `api/MfScorePersonas` e pela tela autenticada `/mf-score-personas`. Essas personas não representam usuários reais; são cenários sintéticos internos usados para cadastrar, auditar, rodar o motor oficial e promover casos maduros a `casos canônicos`.
+
 `docs/MF_SCORE_AUDIT.md` deixou de ser apenas um resumo e passou a ser o documento oficial de governança técnica do Motor Financeiro, registrando cobertura, limitações conhecidas, achados de auditoria e dívida técnica.
 
 ## Arquitetura da soluÃ§Ã£o
@@ -414,6 +416,15 @@ ObservaÃ§Ã£o importante:
 - a MemÃ³ria Financeira continua sendo responsabilidade do backend; o frontend apenas solicita a geraÃ§Ã£o e exibe o resultado
 - a IA passou a receber a seção `Evolução Financeira` como interpretação oficial da continuidade histórica, e não apenas uma lista cronológica
 - a IA também recebe a seção `Consistência Estratégica` como avaliação oficial e determinística do alinhamento com o plano vigente
+
+### Personas de Calibração do MF Score
+
+- tela interna autenticada em `/mf-score-personas`
+- CRUD persistido de cenários sintéticos para calibrar o Motor Financeiro
+- permite registrar dados simulados, avaliação humana, faixa esperada e justificativa
+- permite rodar o motor oficial do `MF Score` sem duplicar fórmulas
+- permite marcar a persona como `Auditada` ou `Caso Canônico`
+- nesta V1, a persona persiste sinais de planejamento adicionais, mas o cálculo continua refletindo apenas a cobertura atual do motor oficial
 
 ## Infraestrutura e integraÃ§Ãµes existentes
 

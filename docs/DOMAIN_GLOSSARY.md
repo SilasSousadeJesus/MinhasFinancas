@@ -466,9 +466,21 @@ Ferramenta interna de desenvolvimento que executa personas sintéticas no motor 
 
 Ela existe para apoiar calibração, validação de regressão e leitura objetiva do comportamento do modelo.
 
-## Persona de auditoria do MF Score
+## Persona de calibração do MF Score
 
-Cenário financeiro sintético, construído em memória, usado para validar se o Motor Financeiro continua respondendo de forma coerente a perfis de risco conhecidos.
+Cenário financeiro sintético usado para calibrar, validar e auditar o comportamento do Motor Financeiro.
+
+Essa persona:
+
+- não representa um usuário real;
+- não substitui dados do domínio do usuário;
+- existe para testar se o `MF Score` reage corretamente a perfis de risco conhecidos.
+
+Na fase atual, ela pode existir tanto em código, para auditorias fixas, quanto persistida no CRUD interno de calibração.
+
+## Caso canônico do MF Score
+
+Persona de calibração já madura, auditada e documentada, usada como referência oficial para proteger o Motor Financeiro contra regressões conceituais.
 
 ## Achado da Auditoria do MF Score
 

@@ -4,6 +4,11 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 09/07/2026
 
+- Criação da tela interna `/mf-score-personas` para CRUD de Personas de Calibração do MF Score.
+- Criação da entidade persistida `PersonaMfScore`, com status de auditoria, faixa esperada, justificativa humana e promoção para caso canônico.
+- Criação dos endpoints `GET/POST/PUT/DELETE /api/MfScorePersonas` e das ações `RodarScore`, `MarcarAuditada` e `MarcarCasoCanonico`.
+- Início do fluxo estruturado de calibração humana persistida do MF Score, sem alterar pesos, fórmulas ou regras críticas do motor.
+
 - Mudança oficial de prioridade do roadmap para amadurecer o MF Score antes do Simulador Inteligente.
 - Criação da etapa contínua de Evolução e Calibração do MF Score como fase intermediária oficial.
 - Consolidação do MF Score como ativo central do Motor Financeiro, com referência explícita ao risco financeiro pessoal.

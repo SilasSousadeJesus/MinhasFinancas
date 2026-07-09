@@ -145,6 +145,24 @@ Uma persona não deve virar caso canônico apenas porque passou em validação a
 
 Antes disso, ela deve passar pela auditoria humana e ter sua faixa esperada sustentada por avaliação documentada.
 
+## Personas de calibração persistidas
+
+O projeto agora possui uma ferramenta interna dedicada para persistir `Personas de Calibração do MF Score`.
+
+### Papel dessa ferramenta
+
+- cadastrar cenários sintéticos sem depender de novas classes em código;
+- permitir revisão, edição e inativação desses cenários;
+- registrar score humano sugerido, faixa esperada e justificativa;
+- rodar o Motor Financeiro oficial sobre a persona persistida;
+- promover personas maduras a `casos canônicos`.
+
+### Limitação conhecida desta primeira versão
+
+- a tela persistida não substitui ainda a auditoria em planilha;
+- a planilha oficial continua usando as personas fixas atuais;
+- alguns sinais de planejamento armazenados na persona ainda não alteram diretamente o score, porque essa cobertura ainda não existe no motor oficial e não foi adicionada nesta entrega.
+
 ## Diferença entre validação automática, auditoria humana e calibração oficial
 
 ### Validação automática

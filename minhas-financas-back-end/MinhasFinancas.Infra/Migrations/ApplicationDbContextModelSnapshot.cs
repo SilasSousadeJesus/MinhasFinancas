@@ -571,7 +571,6 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("Conta");
                 });
 
-
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.DividaManualProjecaoMensal", b =>
                 {
                     b.Property<Guid>("Id")
@@ -729,7 +728,6 @@ namespace MinhasFinancas.Infra.Migrations
 
                     b.ToTable("LancamentoParcelado");
                 });
-
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Meta", b =>
                 {
@@ -929,6 +927,121 @@ namespace MinhasFinancas.Infra.Migrations
                     b.HasIndex("PassivoId");
 
                     b.ToTable("PermanenciaPassivo");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.PersonaMfScore", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("CompromissosCumpridos")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataAtualizacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<decimal>("DespesasMensais")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("EhCasoCanonico")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int?>("FaixaEsperadaMax")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FaixaEsperadaMin")
+                        .HasColumnType("int");
+
+                    b.Property<string>("JustificativaNotaHumana")
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("ObjetivoDaPersona")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<decimal>("Obrigacoes12Meses")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Obrigacoes180Dias")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Obrigacoes30Dias")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Obrigacoes90Dias")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Observacoes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
+
+                    b.Property<decimal>("Passivos")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PatrimonioBruto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PatrimonioLiquido")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("PossuiCompromissos")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("PossuiInadimplencia")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("PossuiMetas")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("PossuiPerfilFinanceiroConfigurado")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("PossuiPlanoEstrategico")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<decimal>("ReceitasPrevistas12Meses")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ReceitasPrevistas180Dias")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ReceitasPrevistas30Dias")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ReceitasPrevistas90Dias")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("RendaMensal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ReservaEmergencia")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ScoreHumanoSugerido")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PersonaMfScore");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.PlanoEstrategicoFinanceiro", b =>
@@ -1305,7 +1418,6 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
-
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.DividaManualProjecaoMensal", b =>
                 {
                     b.HasOne("MinhasFinancas.Domain.Entities.Projecao", "Projecao")
@@ -1367,7 +1479,6 @@ namespace MinhasFinancas.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Meta", b =>
                 {
@@ -1509,7 +1620,6 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Navigation("BensPatrimoniais");
                 });
 
-
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Lancamento", b =>
                 {
                     b.Navigation("LancamentoParcelado");
@@ -1581,4 +1691,3 @@ namespace MinhasFinancas.Infra.Migrations
         }
     }
 }
-

@@ -418,6 +418,18 @@ Endpoint interno de desenvolvimento:
 
 O uso dessa auditoria é obrigatório sempre que indicadores, pesos, pilares, penalizações, classificações ou tendências do `MF Score` forem alterados.
 
+## Personas persistidas de calibração
+
+Além da suíte fixa documentada neste arquivo, o projeto agora possui um CRUD persistido de `Personas de Calibração do MF Score`.
+
+Essa ferramenta serve para:
+
+- ampliar a base de cenários sintéticos sem editar código a cada novo caso;
+- registrar score humano sugerido, faixa esperada e justificativa;
+- transformar personas auditadas em futuros casos canônicos.
+
+Nesta primeira versão, a auditoria em planilha ainda continua baseada nas personas fixas em código. O próximo passo natural é permitir que a auditoria operacional também consuma personas cadastradas nessa ferramenta.
+
 ## Diferença entre validação e auditoria arquitetural
 
 Este documento responde principalmente à pergunta:

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { BrainCircuit, Handshake, HeartPulse } from "lucide-react";
+import { BrainCircuit, Gauge, Handshake, HeartPulse } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -114,6 +114,26 @@ export function MenuNavegacao({
                 }`}
               >
                 Assistente financeiro
+              </span>
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="w-full">
+          <Link href="/mf-score-personas" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                "justify-center space-x-2 text-lg",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              <Gauge className="h-5 w-5" />
+              <span
+                className={`space-x-2 text-lg ${
+                  !isSidebarExpanded && "hidden"
+                }`}
+              >
+                Personas do MF Score
               </span>
             </NavigationMenuLink>
           </Link>

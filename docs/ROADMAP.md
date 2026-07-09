@@ -330,6 +330,7 @@ A IA apenas comunica o conhecimento produzido por esse motor.
 - documentação oficial do `MF Score Potencial` como evolução futura
 - criação de cenários oficiais de teste para calibração contínua
 - criação da `Suite Oficial de Validação do MF Score` como base permanente para evolução do Motor Financeiro
+- criação do CRUD interno de `Personas de Calibração do MF Score` para ampliar cenários sintéticos sem depender apenas de código fixo
 
 #### Fase 4.2.8 — Simulador Inteligente
 

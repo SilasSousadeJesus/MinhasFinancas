@@ -25,6 +25,7 @@ namespace MinhasFinancas.Infra
         public DbSet<Meta> Meta { get; set; }
         public DbSet<PermanenciaBemMaterial> PermanenciaBemMaterial { get; set; }
         public DbSet<Passivo> Passivo { get; set; }
+        public DbSet<PersonaMfScore> PersonaMfScore { get; set; }
         public DbSet<SnapshotPatrimonial> SnapshotPatrimonial { get; set; }
         public DbSet<PerfilFinanceiro> PerfilFinanceiro { get; set; }
         public DbSet<ConfiguracaoPerfilFinanceiro> ConfiguracaoPerfilFinanceiro { get; set; }
