@@ -369,3 +369,5 @@ Ela nunca recalcula o score por conta própria. Sempre interpreta o resultado pr
 O avanço da Fase 4.2 agora passa pela calibração contínua do Motor Financeiro, que revisa regras, pesos, pilares e textos até o modelo representar melhor o risco financeiro real do usuário.
 
 A IA acompanha essa evolução como camada de comunicação, não como origem das regras.
+
+A validade do modelo deve ser preservada por uma suíte oficial de cenários canônicos, usada sempre que houver qualquer mudança na estrutura do Motor Financeiro.

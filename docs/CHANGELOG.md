@@ -28,18 +28,6 @@ Registrar aqui apenas mudancas relevantes do sistema.
 - Consolidacao da Fase 4.2.6 - Especialistas Financeiros, com pareceres internos por dominio integrados ao contexto consolidado do Assistente Financeiro.
 - Criacao dos documentos de apoio dos especialistas internos em `MinhasFinancas.Infra/IA/Prompts/Especialistas/`, registrando objetivos, regras, prioridades e limitacoes de cada dominio.
 
-# Changelog - Minhas Financas
-
-Registrar aqui apenas mudancas relevantes do sistema.
-
-## 09/07/2026
-
-- Mudança oficial de prioridade do roadmap para amadurecer o MF Score antes do Simulador Inteligente.
-- Criação da etapa contínua de Evolução e Calibração do MF Score como fase intermediária oficial.
-- Consolidação do MF Score como ativo central do Motor Financeiro, com referência explícita ao risco financeiro pessoal.
-- Atualização da documentação de produto, regras, visão de IA, módulos, glossário e referência oficial de indicadores.
-- Registro do conceito de MF Score Potencial como evolução futura.
-
 ## 08/07/2026
 
 - Transparência dos indicadores temporais na Saúde Financeira e no contexto de IA.

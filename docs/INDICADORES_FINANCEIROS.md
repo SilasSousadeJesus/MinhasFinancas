@@ -189,3 +189,5 @@ Quando houver dúvida entre duas formulações equivalentes, preferir a que:
 - deixe a interpretação mais clara;
 - produza leitura mais próxima do comportamento financeiro real;
 - preserve a consistência com os cenários oficiais de validação.
+
+Toda alteração relevante também deve ser confrontada com a `Suite Oficial de Validação do MF Score`, documentada em `docs/MF_SCORE_VALIDATION.md`.

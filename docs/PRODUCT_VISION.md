@@ -84,6 +84,8 @@ A IA apenas comunica esse conhecimento.
 
 Toda decisao futura deve preservar essa arquitetura e manter o MF Score como referencia central de risco financeiro pessoal.
 
+A evolucao do motor deve ser validada por uma Suite Oficial de Validacao que proteja os cenarios canonicos e a coerencia do modelo ao longo do tempo.
+
 Quando o Assistente Financeiro identifica uma intenção relevante, ela pode ser convertida em um compromisso rastreável sem perder o contexto original.
 
 A conversa do usuário também pode permanecer aberta por mais tempo, para que o sistema acompanhe o raciocínio em andamento sem obrigá-lo a repetir tudo a cada nova pergunta.

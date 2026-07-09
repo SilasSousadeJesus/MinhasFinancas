@@ -414,10 +414,10 @@ Modelo oficial de avaliação de risco financeiro pessoal do sistema.
 Ele substitui conceitualmente a antiga leitura de pontuação simples e passa a organizar os indicadores em cinco pilares:
 
 - Fluxo de Caixa
-- Liquidez e Reserva
-- Endividamento e Obrigações
+- Liquidez
+- Endividamento
 - Patrimônio
-- Planejamento e Disciplina
+- Planejamento
 
 O MF Score produz:
 
@@ -445,3 +445,17 @@ Ela revisa:
 ## MF Score Potencial
 
 Versão futura do score que representa o ponto de evolução possível do usuário caso a trajetória atual seja mantida e os principais pontos de pressão sejam corrigidos.
+
+## Suite Oficial de Validação do MF Score
+
+Conjunto oficial de cenários usados para verificar se o MF Score continua coerente após qualquer alteração relevante do Motor Financeiro.
+
+## Caso canônico
+
+Cenário financeiro que nunca pode produzir resultado incoerente.
+
+Esses casos protegem o modelo contra regressões graves de interpretação.
+
+## Matriz de sensibilidade
+
+Estrutura conceitual que documenta como o MF Score deve reagir quando uma variável importante muda de forma isolada.

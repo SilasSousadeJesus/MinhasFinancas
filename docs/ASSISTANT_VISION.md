@@ -60,6 +60,8 @@ Isso reforça a filosofia do projeto:
 
 **o Motor Financeiro produz conhecimento. A IA apenas comunica esse conhecimento.**
 
+A evolução do score agora depende de validação contínua, usando cenários oficiais e casos canônicos para preservar coerência antes de qualquer novo refinamento.
+
 ### Estado Financeiro
 
 É a pergunta mais básica e mais importante:

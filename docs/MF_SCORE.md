@@ -22,10 +22,10 @@ Ele mede risco, proteção, pressão estrutural e maturidade financeira ao longo
 O MF Score é construído em cinco pilares:
 
 1. Fluxo de Caixa
-2. Liquidez e Reserva
-3. Endividamento e Obrigações
+2. Liquidez
+3. Endividamento
 4. Patrimônio
-5. Planejamento e Disciplina
+5. Planejamento
 
 Cada pilar gera sua própria nota.
 Depois disso o sistema calcula um `MF Score Base`.
@@ -35,10 +35,10 @@ Em seguida, regras críticas podem reduzir a nota para refletir riscos que não 
 ## Pesos iniciais
 
 - Fluxo de Caixa: 30%
-- Liquidez e Reserva: 25%
-- Endividamento e Obrigações: 20%
+- Liquidez: 25%
+- Endividamento: 20%
 - Patrimônio: 15%
-- Planejamento e Disciplina: 10%
+- Planejamento: 10%
 
 ## Indicadores por pilar
 
@@ -49,13 +49,13 @@ Em seguida, regras críticas podem reduzir a nota para refletir riscos que não 
 - Comprometimento da renda
 - Comprometimento financeiro futuro de 30 dias
 
-### Liquidez e Reserva
+### Liquidez
 
 - Reserva atual
 - Cobertura da reserva
 - Reserva ideal configurada
 
-### Endividamento e Obrigações
+### Endividamento
 
 - Endividamento patrimonial
 - Pressão financeira acumulada de 90 dias
@@ -69,7 +69,7 @@ Em seguida, regras críticas podem reduzir a nota para refletir riscos que não 
 - Patrimônio-alvo
 - Percentual de avanço sobre o patrimônio-alvo
 
-### Planejamento e Disciplina
+### Planejamento
 
 - Perfil financeiro configurado
 - Plano estratégico
@@ -157,6 +157,14 @@ A etapa de calibração revisa:
 - textos oficiais
 - interpretação executiva
 
+## Suite oficial de validação
+
+Toda evolução do MF Score deve ser validada contra a suíte oficial de cenários do modelo.
+
+Essa suíte existe para garantir que mudanças futuras continuem produzindo resultados coerentes para casos financeiros representativos.
+
+O detalhamento operacional dos cenários, faixas esperadas e casos canônicos fica em `docs/MF_SCORE_VALIDATION.md`.
+
 ## Casos oficiais de validação
 
 O modelo deve ser testado sempre com cenários recorrentes para evitar distorções.
@@ -201,13 +209,15 @@ Objetivo:
 Se os pilares forem:
 
 - Fluxo de Caixa: 72
-- Liquidez e Reserva: 34
-- Endividamento e Obrigações: 59
+- Liquidez: 34
+- Endividamento: 59
 - Patrimônio: 81
-- Planejamento e Disciplina: 93
+- Planejamento: 93
 
 O sistema gera um MF Score Base e aplica as regras críticas antes de produzir a nota final.
 
 ## Regra de manutenção
 
 Sempre que mudar um indicador, peso, fórmula, regra crítica, classificação ou tendência, este documento e `docs/INDICADORES_FINANCEIROS.md` devem ser atualizados na mesma entrega.
+
+Além disso, qualquer mudança deve ser confrontada com a `Suite Oficial de Validação do MF Score` antes de ser considerada concluída.
