@@ -1,35 +1,33 @@
 # Auditoria do MF Score
 
-Este documento foi criado para servir como leitura única e consolidada do estado atual do `MF Score`.
+Este documento foi criado para ser a leitura única e consolidada do estado atual do `MF Score`.
 
-O objetivo é ajudar uma pessoa ou outra IA a entender rapidamente:
+O objetivo é permitir que uma pessoa, ou outra IA, entenda rapidamente:
 
 - o que o MF Score é hoje;
 - como ele funciona;
-- como ele é validado;
-- em que ponto o projeto está;
-- o que já foi consolidado;
-- o que ainda depende de calibração e evolução futura.
+- onde ele está documentado;
+- o que já foi consolidado no sistema;
+- o que ainda está em calibração;
+- qual é a próxima evolução oficial do projeto.
 
-Este documento não substitui os demais documentos oficiais.
-
-Ele os organiza em uma visão única de auditoria.
+Este arquivo não substitui os documentos oficiais do projeto. Ele os organiza em uma visão única de auditoria.
 
 ## 1. Resumo executivo
 
-O `MF Score` já é o modelo oficial de avaliação de risco financeiro pessoal do projeto.
+O `MF Score` já é o modelo oficial de avaliação de risco financeiro pessoal do sistema.
 
-Ele deixou de ser apenas uma pontuação simples e passou a representar uma leitura estruturada de risco, proteção, pressão, maturidade e trajetória financeira.
+Ele deixou de ser uma pontuação simples e passou a representar uma leitura estruturada de risco, proteção, pressão, maturidade e trajetória financeira.
 
 Hoje o projeto está em um ponto em que:
 
-- o modelo principal existe;
+- o modelo principal já existe;
 - a Saúde Financeira já exibe o score;
 - o Assistente Financeiro já consome o score;
 - a suíte oficial de validação já foi criada;
 - o roadmap já foi reposicionado para uma etapa de calibração antes do Simulador Inteligente.
 
-Ou seja:
+Em resumo:
 
 **o MF Score está consolidado como Motor Financeiro, mas ainda está em fase de amadurecimento e calibração contínua.**
 
@@ -55,7 +53,7 @@ O MF Score é composto por cinco pilares:
 4. Patrimônio
 5. Planejamento
 
-Os pesos iniciais documentados são:
+Os pesos oficiais documentados são:
 
 - Fluxo de Caixa: 30%
 - Liquidez: 25%
@@ -147,13 +145,14 @@ A IA apenas organiza o texto.
 - a camada `AnaliseFinanceira` já organiza indicadores em estrutura própria;
 - a Saúde Financeira já deixou de ser uma pontuação simples e passou a exibir o MF Score;
 - os indicadores temporais de curto, médio e longo prazo já estão documentados;
-- a leitura da saúde financeira já usa referências estruturadas do perfil financeiro.
+- a leitura da saúde financeira já usa referências estruturadas do perfil financeiro;
+- a lógica analítica está centralizada e não deve ser recalculada por telas.
 
 ### Na experiência do usuário
 
 - a tela de Saúde Financeira já exibe o score;
 - o Assistente Financeiro já usa o MF Score como base executiva;
-- o Dashboard consome apenas resumo consolidado;
+- o Dashboard consome apenas o resumo consolidado;
 - a inteligência principal do produto já está separada da interface.
 
 ### Na documentação
@@ -210,7 +209,7 @@ Exemplos:
 
 ### Matriz de sensibilidade
 
-A documentação também já prevê uma matriz de sensibilidade para observar o comportamento do score quando apenas uma variável muda.
+A documentação também prevê uma matriz de sensibilidade para observar o comportamento do score quando apenas uma variável muda.
 
 Isso ajuda a calibrar:
 
@@ -219,7 +218,7 @@ Isso ajuda a calibrar:
 - pressão financeira;
 - tendência de risco.
 
-## 9. Em que ponto o projeto está hoje
+## 9. Estado atual do projeto
 
 O estado atual pode ser resumido assim:
 
@@ -249,15 +248,15 @@ As principais pendências conceituais são:
 - evoluir o conceito de `MF Score Potencial`;
 - criar uma base técnica de validação automatizada, se isso fizer sentido depois.
 
-## 11. Relação com os documentos oficiais
+## 11. Como o MF Score aparece nas demais camadas
 
 ### `docs/MF_SCORE.md`
 
-Explica **como o modelo funciona**.
+Explica como o modelo funciona.
 
 ### `docs/MF_SCORE_VALIDATION.md`
 
-Explica **como validamos se o modelo continua coerente**.
+Explica como validamos se o modelo continua coerente.
 
 ### `docs/INDICADORES_FINANCEIROS.md`
 
@@ -308,7 +307,35 @@ Se alguém quiser entender o MF Score em ordem lógica, a leitura recomendada é
 7. `docs/PRODUCT_VISION.md`
 8. `docs/ASSISTANT_VISION.md`
 
-## 13. Síntese final
+## 13. Auditoria prática do que existe hoje
+
+### Já consolidado
+
+- modelo oficial de risco definido;
+- pilares e pesos documentados;
+- classificação oficial documentada;
+- indicadores e fórmulas registrados;
+- leitura detalhada em Saúde Financeira;
+- uso executivo no Assistente Financeiro;
+- suíte oficial de validação criada;
+- roadmap reposicionado para calibração antes do Simulador Inteligente.
+
+### Em evolução
+
+- calibrar o modelo com mais rigor;
+- amadurecer a explicação da variação do score;
+- melhorar o uso histórico e a leitura de tendência;
+- evoluir o conceito de `MF Score Potencial`.
+
+### Próxima etapa oficial
+
+- `Fase 4.2.7 — Evolução e Calibração do MF Score`
+
+### Etapa seguinte depois dela
+
+- `Fase 4.2.8 — Simulador Inteligente`
+
+## 14. Síntese final
 
 O MF Score hoje está assim:
 
