@@ -186,6 +186,34 @@ Registrar intenções e decisões financeiras que o usuário deseja acompanhar a
 - alertas de compromissos atrasados
 - visão consolidada de intenções assumidas versus intenções concluídas
 
+## Jobs e rotinas automáticas
+
+### Finalidade
+Executar tarefas recorrentes de infraestrutura sem depender de um processo separado da API.
+
+### O que o usuário faz aqui
+- não existe interação direta do usuário final
+- em ambiente de desenvolvimento, a equipe pode acompanhar os jobs pelo dashboard `/hangfire`
+
+### Dados gerados ou mantidos
+- histórico mensal do `MF Score`
+- atualizações anuais de permanência dos bens patrimoniais
+
+### Impacto no restante do sistema
+- mantém rotinas operacionais importantes vivas mesmo com arquitetura simplificada
+- evita a necessidade de subir um segundo projeto apenas para jobs
+- garante que a API e os agendamentos compartilhem a mesma configuração, DI e connection string
+
+### O que já está funcional
+- Hangfire consolidado dentro da API principal
+- dashboard disponível em desenvolvimento
+- registro automático dos jobs recorrentes na inicialização da API
+
+### Evoluções futuras
+- novos jobs operacionais e analíticos
+- observabilidade mais rica das execuções
+- melhor integração futura com SignalR para feedback em tempo real
+
 ## Lançamentos
 
 ### Finalidade

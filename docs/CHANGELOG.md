@@ -4,6 +4,12 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 09/07/2026
 
+- Consolidação do Hangfire dentro do projeto principal da API, removendo o projeto separado de agendamentos.
+- Migração da configuração do Hangfire Server, storage MySQL, dashboard e registro dos jobs recorrentes para a API.
+- Migração dos jobs `atualizacao-anual-bens-patrimoniais` e `historico-mensal-mf-score` para a API, preservando a mesma lógica de negócio.
+- Remoção do projeto `Minhas-Financas-Hangfire` e da infraestrutura auxiliar obsoleta da solution.
+- Criação do documento `docs/MF_SCORE_AI_QUESTION_FLOW.md` para organizar a sequência oficial de perguntas de calibração do `MF Score` com apoio de outra IA.
+
 - Reformulação oficial do `MF Score` para escala final de `0 a 1000`, mantendo os pilares em `0 a 100`.
 - Revisão da filosofia do Motor Financeiro para separar nota dos pilares, penalizações críticas, persistência temporal do risco e histórico mensal.
 - Aplicação formal da regra de não dupla penalização, removendo penalizações críticas automáticas redundantes para reserva zero, comprometimento elevado e pressão futura sem risco materializado.

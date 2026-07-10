@@ -1,4 +1,4 @@
-namespace Minhas_Financas_Hangfire.Interfaces
+namespace MinhasFinancas.API.Jobs
 {
     public interface IMfScoreJobs
     {

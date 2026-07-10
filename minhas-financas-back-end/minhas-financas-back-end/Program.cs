@@ -51,7 +51,8 @@ namespace minhas_financas_back_end
             // Configuração do AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-            var connectionString = builder.Configuration.GetConnectionString("ConnectionMinhasFinancas");
+            var connectionString = builder.Configuration.GetConnectionString("ConnectionMinhasFinancas")
+                ?? throw new InvalidOperationException("A connection string 'ConnectionMinhasFinancas' não foi configurada.");
             builder.Services.Configure<ConfiguracaoOpenAI>(builder.Configuration.GetSection("OpenAI"));
             builder.Services.AddHttpClient<IProvedorIA, OpenAIProvider>((serviceProvider, client) =>
             {
@@ -71,6 +72,8 @@ namespace minhas_financas_back_end
             {
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
+
+            builder.Services.AddHangfireMinhasFinancas(connectionString);
 
             // Add services to the container.
 
@@ -149,7 +152,6 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IMfScoreAuditoriaAppService, MfScoreAuditoriaAppService>();
             builder.Services.AddScoped<IMfScorePersonaAppService, MfScorePersonaAppService>();
             builder.Services.AddScoped<IMfScorePersonaRepository, MfScorePersonaRepository>();
-
             builder.Services.AddScoped<IDashboardAppService, DashboardAppService>();
             builder.Services.AddScoped<IRelatoriosAppService, RelatoriosAppService>();
 
@@ -270,6 +272,7 @@ namespace minhas_financas_back_end
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
+            app.UseHangfireMinhasFinancas();
 
             app.Run();
         }

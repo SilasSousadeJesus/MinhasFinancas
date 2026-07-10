@@ -351,6 +351,7 @@ Permitir testar cenários futuros antes da decisão, usando o Motor Financeiro j
 - cliente HTTP padronizado
 - loading global de requisiÃ§Ãµes
 - migraÃ§Ã£o do banco oficial para MySQL
+- consolidação do Hangfire dentro da API principal
 
 ### OperaÃ§Ã£o financeira
 
@@ -454,7 +455,7 @@ Permitir testar cenários futuros antes da decisão, usando o Motor Financeiro j
 - melhorias de seguranÃ§a
 - melhorias de observabilidade
 - melhorias de auditoria
-- melhor aproveitamento de Hangfire e SignalR
+- evolução dos jobs automáticos e melhor aproveitamento de SignalR
 
 ## Atualização da Fase 4.2
 

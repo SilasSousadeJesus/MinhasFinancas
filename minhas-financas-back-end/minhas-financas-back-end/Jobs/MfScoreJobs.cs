@@ -1,7 +1,6 @@
-using Minhas_Financas_Hangfire.Interfaces;
 using MinhasFinancas.Application.Interfaces;
 
-namespace Minhas_Financas_Hangfire.Services
+namespace MinhasFinancas.API.Jobs
 {
     public class MfScoreJobs : IMfScoreJobs
     {

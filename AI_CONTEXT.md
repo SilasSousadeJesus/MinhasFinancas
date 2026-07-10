@@ -60,10 +60,6 @@ ObservaÃ§Ã£o importante:
   - contexto EF Core, repositories e migrations
 - `MinhasFinancas.CrossCutting`
   - enums, utilitÃ¡rios e tipos compartilhados
-- `Minhas-Financas-Hangfire`
-  - projeto auxiliar de jobs
-- `Minhas-Financas-hangfire.Infra`
-  - infraestrutura auxiliar do Hangfire
 - `Minhas-Financas-SignalR`
   - projeto dedicado a tempo real
 
@@ -289,7 +285,7 @@ ObservaÃ§Ã£o importante:
 - o dashboard consome essa camada e nÃ£o deve recalcular indicadores diretamente
 - a inteligÃªncia financeira deve evoluir respeitando a cadeia `Dados -> Indicadores -> SaÃºde Financeira -> Insights -> ResumoFinanceiroIA`
 - o projeto passou a persistir histórico mensal do score na entidade `HistoricoMfScore`
-- um job Hangfire mensal calcula e salva a competência anterior do `MF Score` para todos os usuários ativos
+- um job Hangfire mensal, executado dentro da própria API, calcula e salva a competência anterior do `MF Score` para todos os usuários ativos
 
 ### SaÃºde Financeira
 
@@ -470,9 +466,13 @@ ObservaÃ§Ã£o importante:
 
 ### Projetos auxiliares
 
-- existe infraestrutura de Hangfire
+- o Hangfire agora roda embutido no projeto principal da API
+- a própria API sobe o `Hangfire Server`, registra os jobs recorrentes e prepara o schema do storage MySQL quando necessário
+- em `Development`, o dashboard fica disponível em `/hangfire`
+- os jobs recorrentes atuais são:
+  - `atualizacao-anual-bens-patrimoniais`
+  - `historico-mensal-mf-score`
 - existe projeto SignalR
-- o Hangfire já possui job mensal de histórico do `MF Score`, executado no dia 01 e calculando a competência anterior
 - SignalR ainda não está integrado ao fluxo principal do usuário
 
 ## DecisÃµes arquiteturais relevantes
@@ -534,7 +534,7 @@ ObservaÃ§Ã£o importante:
 
 ### Data da Ãºltima atualizaÃ§Ã£o
 
-- 07/07/2026
+- 09/07/2026
 
 ### MÃ³dulos concluÃ­dos
 
@@ -556,7 +556,7 @@ ObservaÃ§Ã£o importante:
 - metas no frontend
 - relatÃ³rios no frontend
 - orÃ§amento
-- integraÃ§Ãµes reais com Hangfire e SignalR
+- integraÃ§Ãµes reais com SignalR
 
 ### Próxima implementação prevista
 
