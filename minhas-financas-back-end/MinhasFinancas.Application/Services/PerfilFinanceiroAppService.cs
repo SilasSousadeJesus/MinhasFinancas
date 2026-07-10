@@ -47,7 +47,7 @@ namespace MinhasFinancas.Application.Services
                 var validacaoConfiguracao = ValidarConfiguracao(configuracaoDTO);
                 if (validacaoConfiguracao != null) return validacaoConfiguracao;
 
-                var perfil = await _perfilFinanceiroRepository.BuscarPorUsuarioAsync(usuarioId);
+                var perfil = await _perfilFinanceiroRepository.BuscarPorUsuarioLeituraAsync(usuarioId);
                 var agora = DateTime.UtcNow;
 
                 if (perfil == null)
@@ -79,10 +79,10 @@ namespace MinhasFinancas.Application.Services
 
                 if (configuracaoVigente != null)
                 {
-                    configuracaoVigente.DataFimVigencia = agora;
+                    await _perfilFinanceiroRepository.EncerrarConfiguracaoVigenteAsync(configuracaoVigente.Id, agora);
                 }
 
-                perfil.Configuracoes.Add(CriarConfiguracao(perfil.Id, configuracaoDTO, agora));
+                await _perfilFinanceiroRepository.AdicionarConfiguracaoAsync(CriarConfiguracao(perfil.Id, configuracaoDTO, agora));
                 await _perfilFinanceiroRepository.SalvarAlteracoesAsync();
 
                 var perfilAtualizado = await _perfilFinanceiroRepository.BuscarPorUsuarioLeituraAsync(usuarioId);

@@ -28,6 +28,29 @@ namespace MinhasFinancas.Infra.Data.Repositories
                 .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId && x.Ativo);
         }
 
+        public async Task<ConfiguracaoPerfilFinanceiro?> BuscarConfiguracaoVigenteAsync(Guid perfilFinanceiroId)
+        {
+            return await _context.Set<ConfiguracaoPerfilFinanceiro>()
+                .AsNoTracking()
+                .Where(x => x.PerfilFinanceiroId == perfilFinanceiroId && x.DataFimVigencia == null)
+                .OrderByDescending(x => x.DataInicioVigencia)
+                .ThenByDescending(x => x.DataCriacao)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task EncerrarConfiguracaoVigenteAsync(Guid configuracaoId, DateTime dataFimVigencia)
+        {
+            await _context.Set<ConfiguracaoPerfilFinanceiro>()
+                .Where(x => x.Id == configuracaoId)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(x => x.DataFimVigencia, dataFimVigencia));
+        }
+
+        public async Task AdicionarConfiguracaoAsync(ConfiguracaoPerfilFinanceiro configuracaoPerfilFinanceiro)
+        {
+            await _context.Set<ConfiguracaoPerfilFinanceiro>().AddAsync(configuracaoPerfilFinanceiro);
+        }
+
         public async Task CadastrarAsync(PerfilFinanceiro perfilFinanceiro)
         {
             await _context.Set<PerfilFinanceiro>().AddAsync(perfilFinanceiro);
