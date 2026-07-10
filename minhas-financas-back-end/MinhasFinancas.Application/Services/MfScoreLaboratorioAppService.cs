@@ -85,7 +85,7 @@ namespace MinhasFinancas.Application.Services
                 UsuarioId = usuario.Id,
                 Nome = string.IsNullOrWhiteSpace(usuario.Nome) ? "Usuário sem nome" : usuario.Nome,
                 Email = usuario.Email ?? string.Empty,
-                DataCadastro = usuario.DataCadastro
+                DataCadastro = null
             };
         }
 
