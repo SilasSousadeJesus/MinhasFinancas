@@ -297,6 +297,11 @@ namespace MinhasFinancas.Application.Services
                     return CriarErroNegocio("Personas inativas não podem virar caso canônico.");
                 }
 
+                if (persona.Status != EnumStatusPersonaMfScore.Auditada)
+                {
+                    return CriarErroNegocio("A persona precisa estar marcada como auditada antes de virar caso canônico.");
+                }
+
                 var validacaoAuditoria = ValidarAuditoriaHumana(persona);
                 if (validacaoAuditoria != null)
                 {
@@ -515,6 +520,12 @@ namespace MinhasFinancas.Application.Services
                 ConfiguracaoPerfilFinanceiro = persona.PossuiPerfilFinanceiroConfigurado
                     ? CriarConfiguracaoPadrao(persona)
                     : null,
+                PlanoEstrategicoFinanceiroVigente = persona.PossuiPlanoEstrategico
+                    ? CriarPlanoEstrategicoSimulado(persona)
+                    : null,
+                CompromissosFinanceiros = persona.PossuiCompromissos
+                    ? CriarCompromissosSimulados(persona)
+                    : [],
                 Metas = []
             };
         }
@@ -683,6 +694,115 @@ namespace MinhasFinancas.Application.Services
                 PercentualMinimoInvestimento = 10m,
                 PatrimonioLiquidoAlvo = patrimonioAlvo
             };
+        }
+
+        private static PlanoEstrategicoFinanceiro CriarPlanoEstrategicoSimulado(PersonaMfScore persona)
+        {
+            var planoId = Guid.NewGuid();
+            var objetivos = new List<ObjetivoPlanoEstrategico>
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    PlanoEstrategicoFinanceiroId = planoId,
+                    Titulo = "Fortalecer reserva de emergência",
+                    Descricao = "Construir proteção para imprevistos no curto prazo.",
+                    Prioridade = EnumPrioridadeObjetivoPlanoEstrategico.Critica,
+                    Status = persona.ReservaEmergencia > 0m
+                        ? EnumStatusObjetivoPlanoEstrategico.EmAndamento
+                        : EnumStatusObjetivoPlanoEstrategico.Planejado,
+                    Ordem = 1,
+                    DataAlvo = DataReferenciaCalibracao.AddMonths(6),
+                    ValorAlvo = Math.Max(persona.DespesasMensais * 6m, persona.RendaMensal * 3m),
+                    ValorAtual = persona.ReservaEmergencia,
+                    DataCriacao = DataReferenciaCalibracao.AddMonths(-2)
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    PlanoEstrategicoFinanceiroId = planoId,
+                    Titulo = "Melhorar patrimônio líquido",
+                    Descricao = "Aumentar o patrimônio líquido com consistência.",
+                    Prioridade = EnumPrioridadeObjetivoPlanoEstrategico.Alta,
+                    Status = persona.CompromissosCumpridos > 0
+                        ? EnumStatusObjetivoPlanoEstrategico.EmAndamento
+                        : EnumStatusObjetivoPlanoEstrategico.Planejado,
+                    Ordem = 2,
+                    DataAlvo = DataReferenciaCalibracao.AddMonths(12),
+                    ValorAlvo = Math.Max(persona.PatrimonioLiquido * 1.5m, persona.RendaMensal * 12m),
+                    ValorAtual = Math.Max(persona.PatrimonioLiquido, 0m),
+                    DataCriacao = DataReferenciaCalibracao.AddMonths(-2)
+                }
+            };
+
+            if (persona.PossuiMetas)
+            {
+                objetivos.Add(new ObjetivoPlanoEstrategico
+                {
+                    Id = Guid.NewGuid(),
+                    PlanoEstrategicoFinanceiroId = planoId,
+                    Titulo = "Concluir meta financeira prioritária",
+                    Descricao = "Transformar metas cadastradas em entregas concluídas.",
+                    Prioridade = EnumPrioridadeObjetivoPlanoEstrategico.Media,
+                    Status = persona.CompromissosCumpridos >= 2
+                        ? EnumStatusObjetivoPlanoEstrategico.Concluido
+                        : EnumStatusObjetivoPlanoEstrategico.EmAndamento,
+                    Ordem = 3,
+                    DataAlvo = DataReferenciaCalibracao.AddMonths(9),
+                    ValorAlvo = persona.RendaMensal,
+                    ValorAtual = persona.CompromissosCumpridos >= 2 ? persona.RendaMensal : persona.RendaMensal * 0.5m,
+                    DataCriacao = DataReferenciaCalibracao.AddMonths(-2)
+                });
+            }
+
+            return new PlanoEstrategicoFinanceiro
+            {
+                Id = planoId,
+                PlanoRaizId = planoId,
+                UsuarioId = "persona-mf-score",
+                Nome = $"Plano estratégico simulado - {persona.Nome}",
+                Descricao = persona.ObjetivoDaPersona,
+                Observacao = "Plano sintético usado para calibração do MF Score.",
+                NumeroVersao = 1,
+                DataInicioVigencia = DataReferenciaCalibracao.AddMonths(-2),
+                DataCadastro = DataReferenciaCalibracao.AddMonths(-2),
+                DataAtualizacao = DataReferenciaCalibracao.AddMonths(-1),
+                Ativo = true,
+                Objetivos = objetivos
+            };
+        }
+
+        private static IReadOnlyCollection<CompromissoFinanceiro> CriarCompromissosSimulados(PersonaMfScore persona)
+        {
+            var quantidadeConcluidos = Math.Max(0, persona.CompromissosCumpridos);
+            var quantidadeTotal = Math.Max(1, quantidadeConcluidos + 1);
+            var compromissos = new List<CompromissoFinanceiro>();
+
+            for (var indice = 0; indice < quantidadeTotal; indice++)
+            {
+                var concluido = indice < quantidadeConcluidos;
+
+                compromissos.Add(new CompromissoFinanceiro
+                {
+                    Id = Guid.NewGuid(),
+                    UsuarioId = "persona-mf-score",
+                    Descricao = concluido
+                        ? $"Compromisso concluído {indice + 1}"
+                        : $"Compromisso em andamento {indice + 1}",
+                    Origem = EnumOrigemCompromissoFinanceiro.Manual,
+                    Status = concluido
+                        ? EnumStatusCompromissoFinanceiro.Concluido
+                        : EnumStatusCompromissoFinanceiro.EmAndamento,
+                    DataCriacao = DataReferenciaCalibracao.AddMonths(-2).AddDays(indice * 5),
+                    DataConclusao = concluido
+                        ? DataReferenciaCalibracao.AddMonths(-1).AddDays(indice)
+                        : null,
+                    Observacoes = "Compromisso sintético usado para calibração do MF Score.",
+                    Ativo = true
+                });
+            }
+
+            return compromissos;
         }
 
         private static string? MontarObservacaoComparativa(PersonaMfScore persona, int scoreCalculado)

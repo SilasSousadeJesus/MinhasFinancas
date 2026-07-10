@@ -44,6 +44,16 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 10/07/2026
 
+- Evolução do Motor Financeiro para `mf-score-v2.2-1000`.
+- Incorporação determinística de `Plano Estratégico Financeiro` e `Compromissos Financeiros` no pilar `Planejamento e Disciplina`, sem penalizar usuários que ainda não possuem esses elementos.
+- Implementação de leitura de reincidência e cura recente da inadimplência como agravantes/resíduos distintos da inadimplência atual.
+- Atualização do contexto complementar do `MF Score` para unificar cálculo real, auditoria e personas com os mesmos sinais de planejamento e atraso recente.
+- Reforço da governança das personas: promoção para `Caso Canônico` agora exige persona previamente `Auditada`.
+- Ampliação das personas persistidas para gerar plano estratégico e compromissos sintéticos quando o cenário declarar esses elementos.
+- Regeneração da auditoria humana com descrição explícita de plano estratégico e compromissos no cenário avaliado.
+- Auditoria operacional rerrodada com sucesso na versão `mf-score-v2.2-1000`, mantendo `8 de 8` cenários oficiais dentro da faixa esperada.
+- Atualização sincronizada de `AI_CONTEXT.md`, `docs/MF_SCORE.md`, `docs/INDICADORES_FINANCEIROS.md`, `docs/MF_SCORE_VALIDATION.md` e `docs/MF_SCORE_AUDIT.md`.
+
 - Recalibração da rodada seguinte do `mf-score-v2.1-1000`, com auditoria operacional rerrodada e `8 de 8` cenários oficiais aprovados dentro da faixa esperada.
 - Revisão das personas sintéticas e dos casos canônicos `Boa renda, reserva zero e cartão alto`, `Excelente fluxo com pouco patrimônio` e `Planejamento excelente`, ajustando suas faixas esperadas para refletir melhor a severidade real do motor.
 - Recalibragem das penalizações temporais de fluxo negativo para um modelo mais proporcional entre alerta pontual e deterioração recorrente.

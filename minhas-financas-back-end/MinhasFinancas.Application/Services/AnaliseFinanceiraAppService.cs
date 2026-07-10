@@ -13,6 +13,8 @@ namespace MinhasFinancas.Application.Services
         private readonly IBemMaterialRepository _bemMaterialRepository;
         private readonly IPassivoRepository _passivoRepository;
         private readonly IPerfilFinanceiroRepository _perfilFinanceiroRepository;
+        private readonly IPlanoEstrategicoFinanceiroRepository _planoEstrategicoFinanceiroRepository;
+        private readonly ICompromissoFinanceiroRepository _compromissoFinanceiroRepository;
         private readonly IIndicadoresFinanceirosService _indicadoresFinanceirosService;
 
         public AnaliseFinanceiraAppService(
@@ -21,6 +23,8 @@ namespace MinhasFinancas.Application.Services
             IBemMaterialRepository bemMaterialRepository,
             IPassivoRepository passivoRepository,
             IPerfilFinanceiroRepository perfilFinanceiroRepository,
+            IPlanoEstrategicoFinanceiroRepository planoEstrategicoFinanceiroRepository,
+            ICompromissoFinanceiroRepository compromissoFinanceiroRepository,
             IIndicadoresFinanceirosService indicadoresFinanceirosService)
         {
             _usuarioRepository = usuarioRepository;
@@ -28,6 +32,8 @@ namespace MinhasFinancas.Application.Services
             _bemMaterialRepository = bemMaterialRepository;
             _passivoRepository = passivoRepository;
             _perfilFinanceiroRepository = perfilFinanceiroRepository;
+            _planoEstrategicoFinanceiroRepository = planoEstrategicoFinanceiroRepository;
+            _compromissoFinanceiroRepository = compromissoFinanceiroRepository;
             _indicadoresFinanceirosService = indicadoresFinanceirosService;
         }
 
@@ -91,6 +97,8 @@ namespace MinhasFinancas.Application.Services
             var ativos = await _bemMaterialRepository.BuscarTodosOsElementosAsync(usuarioId);
             var passivos = await _passivoRepository.BuscarTodosOsElementosAsync(usuarioId);
             var perfilFinanceiro = await _perfilFinanceiroRepository.BuscarPorUsuarioLeituraAsync(usuarioId);
+            var planoEstrategicoVigente = await _planoEstrategicoFinanceiroRepository.BuscarVigenteAsync(usuarioId);
+            var compromissosFinanceiros = await _compromissoFinanceiroRepository.BuscarTodosOsElementosAsync(usuarioId);
 
             var configuracaoVigente = perfilFinanceiro?.Configuracoes
                 .Where(x => x.DataFimVigencia == null)
@@ -104,6 +112,8 @@ namespace MinhasFinancas.Application.Services
                 Lancamentos = lancamentos,
                 Ativos = ativos,
                 Passivos = passivos,
+                PlanoEstrategicoFinanceiroVigente = planoEstrategicoVigente,
+                CompromissosFinanceiros = compromissosFinanceiros,
                 ConfiguracaoPerfilFinanceiro = configuracaoVigente,
             };
         }

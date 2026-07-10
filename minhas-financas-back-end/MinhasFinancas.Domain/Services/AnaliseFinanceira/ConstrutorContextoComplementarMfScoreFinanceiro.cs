@@ -20,8 +20,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             var mesesConsecutivos = CalcularMesesConsecutivosFluxoNegativo(lancamentos, mesAtual, 12);
             var receitaMensalAtual = CalcularReceitaMensal(lancamentos, mesAtual);
             var avaliacaoInadimplencia = AvaliarInadimplencia(lancamentos, dataReferencia, receitaMensalAtual);
+            var avaliacaoHistoricoAtrasos = AvaliarHistoricoAtrasos(lancamentos, dataReferencia);
             var totalParametrosPlanejamentoEsperados = 5;
             var quantidadeParametrosPlanejamentoConfigurados = CalcularQuantidadeParametrosPlanejamentoConfigurados(contexto.ConfiguracaoPerfilFinanceiro);
+            var avaliacaoPlanoEstrategico = AvaliarPlanoEstrategico(contexto.PlanoEstrategicoFinanceiroVigente);
+            var avaliacaoCompromissos = AvaliarCompromissosFinanceiros(contexto.CompromissosFinanceiros);
 
             return new ContextoComplementarMfScoreFinanceiro
             {
@@ -36,6 +39,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 TotalParametrosPlanejamentoEsperados = totalParametrosPlanejamentoEsperados,
                 PerfilFinanceiroBasicoCompleto = quantidadeParametrosPlanejamentoConfigurados >= totalParametrosPlanejamentoEsperados,
                 NotaConfiguracaoPlanejamento = CalcularNotaConfiguracaoPlanejamento(quantidadeParametrosPlanejamentoConfigurados),
+                PossuiPlanoEstrategicoVigente = avaliacaoPlanoEstrategico.PossuiPlano,
+                QuantidadeObjetivosPlanoAtivos = avaliacaoPlanoEstrategico.QuantidadeObjetivosAtivos,
+                QuantidadeObjetivosPlanoAltaPrioridade = avaliacaoPlanoEstrategico.QuantidadeObjetivosAltaPrioridade,
+                QuantidadeObjetivosPlanoConcluidos = avaliacaoPlanoEstrategico.QuantidadeObjetivosConcluidos,
+                NotaPlanoEstrategico = avaliacaoPlanoEstrategico.Nota,
+                PossuiCompromissosFinanceiros = avaliacaoCompromissos.PossuiCompromissos,
+                QuantidadeCompromissosEmAndamento = avaliacaoCompromissos.QuantidadeEmAndamento,
+                QuantidadeCompromissosConcluidos = avaliacaoCompromissos.QuantidadeConcluidos,
+                QuantidadeCompromissosCancelados = avaliacaoCompromissos.QuantidadeCancelados,
+                NotaCompromissosFinanceiros = avaliacaoCompromissos.Nota,
+                PossuiCuraRecenteInadimplencia = avaliacaoHistoricoAtrasos.PossuiCuraRecente,
+                QuantidadeOcorrenciasAtrasoRecente = avaliacaoHistoricoAtrasos.QuantidadeOcorrencias,
+                QuantidadeMesesComOcorrenciaAtrasoRecente = avaliacaoHistoricoAtrasos.QuantidadeMesesDistintos,
                 PossuiDadosEssenciaisInsuficientes =
                     !lancamentos.Any() ||
                     (!contexto.Ativos.Any() && !contexto.Passivos.Any()),
@@ -148,6 +164,113 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             };
         }
 
+        private static AvaliacaoPlanoEstrategicoMfScoreFinanceiro AvaliarPlanoEstrategico(PlanoEstrategicoFinanceiro? plano)
+        {
+            if (plano is null || !plano.Ativo)
+            {
+                return new AvaliacaoPlanoEstrategicoMfScoreFinanceiro();
+            }
+
+            var objetivosAtivos = plano.Objetivos
+                .Where(x => x.Status != EnumStatusObjetivoPlanoEstrategico.Cancelado)
+                .ToList();
+
+            var quantidadeObjetivosAtivos = objetivosAtivos.Count;
+            var quantidadeAltaPrioridade = objetivosAtivos.Count(x =>
+                x.Prioridade is EnumPrioridadeObjetivoPlanoEstrategico.Alta or EnumPrioridadeObjetivoPlanoEstrategico.Critica);
+            var quantidadeConcluidos = objetivosAtivos.Count(x => x.Status == EnumStatusObjetivoPlanoEstrategico.Concluido);
+            var quantidadeEmAndamento = objetivosAtivos.Count(x => x.Status == EnumStatusObjetivoPlanoEstrategico.EmAndamento);
+
+            var nota = quantidadeObjetivosAtivos == 0
+                ? 45m
+                : 55m
+                    + (quantidadeAltaPrioridade > 0 ? 15m : 0m)
+                    + (quantidadeEmAndamento > 0 ? 15m : 0m)
+                    + (quantidadeObjetivosAtivos > 0 ? Math.Min(15m, (quantidadeConcluidos / (decimal)quantidadeObjetivosAtivos) * 15m) : 0m);
+
+            return new AvaliacaoPlanoEstrategicoMfScoreFinanceiro
+            {
+                PossuiPlano = true,
+                QuantidadeObjetivosAtivos = quantidadeObjetivosAtivos,
+                QuantidadeObjetivosAltaPrioridade = quantidadeAltaPrioridade,
+                QuantidadeObjetivosConcluidos = quantidadeConcluidos,
+                Nota = Math.Clamp((int)Math.Round(nota), 0, 100)
+            };
+        }
+
+        private static AvaliacaoCompromissosFinanceirosMfScoreFinanceiro AvaliarCompromissosFinanceiros(
+            IReadOnlyCollection<CompromissoFinanceiro> compromissos)
+        {
+            var compromissosAtivos = compromissos
+                .Where(x => x.Ativo)
+                .ToList();
+
+            if (compromissosAtivos.Count == 0)
+            {
+                return new AvaliacaoCompromissosFinanceirosMfScoreFinanceiro();
+            }
+
+            var quantidadeConcluidos = compromissosAtivos.Count(x => x.Status == EnumStatusCompromissoFinanceiro.Concluido);
+            var quantidadeEmAndamento = compromissosAtivos.Count(x => x.Status == EnumStatusCompromissoFinanceiro.EmAndamento);
+            var quantidadeCancelados = compromissosAtivos.Count(x => x.Status == EnumStatusCompromissoFinanceiro.Cancelado);
+            var total = compromissosAtivos.Count;
+
+            var percentualConcluidos = total > 0 ? quantidadeConcluidos / (decimal)total : 0m;
+            var percentualCancelados = total > 0 ? quantidadeCancelados / (decimal)total : 0m;
+
+            var nota = 50m
+                + Math.Min(30m, percentualConcluidos * 30m)
+                + (quantidadeEmAndamento > 0 ? 10m : 0m)
+                - Math.Min(20m, percentualCancelados * 20m);
+
+            return new AvaliacaoCompromissosFinanceirosMfScoreFinanceiro
+            {
+                PossuiCompromissos = true,
+                QuantidadeConcluidos = quantidadeConcluidos,
+                QuantidadeEmAndamento = quantidadeEmAndamento,
+                QuantidadeCancelados = quantidadeCancelados,
+                Nota = Math.Clamp((int)Math.Round(nota), 0, 100)
+            };
+        }
+
+        private static AvaliacaoHistoricoAtrasosMfScoreFinanceiro AvaliarHistoricoAtrasos(
+            IReadOnlyCollection<Lancamento> lancamentos,
+            DateTime dataReferencia)
+        {
+            var janelaReincidencia = dataReferencia.AddDays(-180);
+            var janelaCura = dataReferencia.AddDays(-90);
+
+            var pendentesEmAtraso = lancamentos
+                .Where(x =>
+                    x.Tipo == EnumTipoLancamento.Despesa &&
+                    x.StatusLancamento == EnumStatusLancamento.Pendente &&
+                    x.DataVencimento.Date < dataReferencia &&
+                    x.DataVencimento.Date >= janelaReincidencia)
+                .ToList();
+
+            var pagosEmAtrasoRecentes = lancamentos
+                .Where(x =>
+                    x.Tipo == EnumTipoLancamento.Despesa &&
+                    x.StatusLancamento == EnumStatusLancamento.Pago &&
+                    x.DataEfetivacao.HasValue &&
+                    x.DataEfetivacao.Value.Date > x.DataVencimento.Date &&
+                    x.DataEfetivacao.Value.Date >= janelaCura)
+                .ToList();
+
+            var referenciasMensais = pendentesEmAtraso
+                .Select(x => new DateTime(x.DataVencimento.Year, x.DataVencimento.Month, 1))
+                .Concat(pagosEmAtrasoRecentes.Select(x => new DateTime(x.DataVencimento.Year, x.DataVencimento.Month, 1)))
+                .Distinct()
+                .Count();
+
+            return new AvaliacaoHistoricoAtrasosMfScoreFinanceiro
+            {
+                PossuiCuraRecente = !pendentesEmAtraso.Any() && pagosEmAtrasoRecentes.Count > 0,
+                QuantidadeOcorrencias = pendentesEmAtraso.Count + pagosEmAtrasoRecentes.Count,
+                QuantidadeMesesDistintos = referenciasMensais
+            };
+        }
+
         private static decimal CalcularReceitaMensal(IReadOnlyCollection<Lancamento> lancamentos, DateTime competencia)
         {
             return lancamentos
@@ -194,6 +317,31 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             }
 
             return consecutivos;
+        }
+
+        private sealed class AvaliacaoPlanoEstrategicoMfScoreFinanceiro
+        {
+            public bool PossuiPlano { get; set; }
+            public int QuantidadeObjetivosAtivos { get; set; }
+            public int QuantidadeObjetivosAltaPrioridade { get; set; }
+            public int QuantidadeObjetivosConcluidos { get; set; }
+            public int? Nota { get; set; }
+        }
+
+        private sealed class AvaliacaoCompromissosFinanceirosMfScoreFinanceiro
+        {
+            public bool PossuiCompromissos { get; set; }
+            public int QuantidadeEmAndamento { get; set; }
+            public int QuantidadeConcluidos { get; set; }
+            public int QuantidadeCancelados { get; set; }
+            public int? Nota { get; set; }
+        }
+
+        private sealed class AvaliacaoHistoricoAtrasosMfScoreFinanceiro
+        {
+            public bool PossuiCuraRecente { get; set; }
+            public int QuantidadeOcorrencias { get; set; }
+            public int QuantidadeMesesDistintos { get; set; }
         }
     }
 }

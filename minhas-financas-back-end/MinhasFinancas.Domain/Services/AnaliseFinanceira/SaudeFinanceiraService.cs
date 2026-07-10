@@ -204,13 +204,47 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             var notaConfiguracao = contextoComplementar?.NotaConfiguracaoPlanejamento ?? 10;
             var quantidadeParametrosConfigurados = contextoComplementar?.QuantidadeParametrosPlanejamentoConfigurados ?? 0;
             var totalParametrosEsperados = contextoComplementar?.TotalParametrosPlanejamentoEsperados ?? 5;
+            var notasOpcionais = new List<int>();
 
-            var notaCalculada = (notaConfiguracao * 0.55m) + (notaExecucao * 0.45m);
+            if ((contextoComplementar?.PossuiPlanoEstrategicoVigente ?? false) && contextoComplementar?.NotaPlanoEstrategico is int notaPlano)
+            {
+                notasOpcionais.Add(notaPlano);
+            }
+
+            if ((contextoComplementar?.PossuiCompromissosFinanceiros ?? false) && contextoComplementar?.NotaCompromissosFinanceiros is int notaCompromissos)
+            {
+                notasOpcionais.Add(notaCompromissos);
+            }
+
+            var notaBase = (notaConfiguracao * 0.55m) + (notaExecucao * 0.45m);
+            var mediaNotasOpcionais = notasOpcionais.Count > 0
+                ? notasOpcionais.Average(item => (decimal)item)
+                : 0m;
+            var notaCalculada = notasOpcionais.Count > 0
+                ? (notaBase * 0.85m) + (mediaNotasOpcionais * 0.15m)
+                : notaBase;
+
             var tetoPorConfiguracao = ObterTetoPlanejamentoPorConfiguracao(quantidadeParametrosConfigurados);
             var notaFinal = Math.Clamp(
                 (int)Math.Round(Math.Min(notaCalculada, tetoPorConfiguracao)),
                 0,
                 EscalaPilares);
+
+            var componentesOpcionais = new List<string>();
+
+            if (contextoComplementar?.PossuiPlanoEstrategicoVigente == true)
+            {
+                componentesOpcionais.Add($"plano vigente com {contextoComplementar.QuantidadeObjetivosPlanoAtivos} objetivo(s) ativo(s)");
+            }
+
+            if (contextoComplementar?.PossuiCompromissosFinanceiros == true)
+            {
+                componentesOpcionais.Add($"compromissos financeiros ({contextoComplementar.QuantidadeCompromissosConcluidos} concluído(s), {contextoComplementar.QuantidadeCompromissosEmAndamento} em andamento)");
+            }
+
+            var descricaoComponentesOpcionais = componentesOpcionais.Count > 0
+                ? $" Componentes adicionais considerados: {string.Join("; ", componentesOpcionais)}."
+                : " Sem plano estratégico vigente ou compromissos financeiros cadastrados, esses componentes opcionais são ignorados no cálculo.";
 
             return new PilarMfScoreFinanceiro
             {
@@ -218,10 +252,12 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 Nome = "Planejamento e Disciplina",
                 Peso = 10m,
                 Nota = notaFinal,
-                Descricao = $"Maturidade de planejamento baseada na configuração dos {totalParametrosEsperados} parâmetros essenciais do perfil financeiro e em sinais de aderência operacional ao plano. Parâmetros configurados: {quantidadeParametrosConfigurados}/{totalParametrosEsperados}.",
+                Descricao = $"Maturidade de planejamento baseada na configuração dos {totalParametrosEsperados} parâmetros essenciais do perfil financeiro e em sinais de aderência operacional ao plano. Parâmetros configurados: {quantidadeParametrosConfigurados}/{totalParametrosEsperados}.{descricaoComponentesOpcionais}",
                 Indicadores = relevantesDeExecucao
                     .Select(item => item.Nome)
                     .Append("Configuração básica do perfil financeiro")
+                    .Append("Plano estratégico financeiro")
+                    .Append("Compromissos financeiros")
                     .ToList()
             };
         }
@@ -330,7 +366,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             if (contextoComplementar?.PossuiInadimplencia == true)
             {
                 var nivelInadimplencia = contextoComplementar.NivelInadimplencia;
-                var penalidade = nivelInadimplencia switch
+                var penalidadeBase = nivelInadimplencia switch
                 {
                     1 => 3m,
                     2 => 9m,
@@ -338,6 +374,13 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     4 => 25m,
                     _ => 9m
                 };
+                var agravamentoReincidencia = contextoComplementar.QuantidadeMesesComOcorrenciaAtrasoRecente switch
+                {
+                    >= 3 => 4m,
+                    >= 2 => 2m,
+                    _ => 0m
+                };
+                var penalidade = penalidadeBase + agravamentoReincidencia;
 
                 var descricaoNivel = nivelInadimplencia switch
                 {
@@ -351,8 +394,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 Adicionar(
                     endividamento?.Codigo ?? CodigoIndicadorFinanceiro.Endividamento,
                     "Inadimplência",
-                    $"{descricaoNivel}: {contextoComplementar.DiasMaximosAtraso} dia(s) de atraso e {contextoComplementar.PercentualValorEmAtrasoSobreRenda:N2}% da renda mensal comprometida em valores vencidos.",
+                    $"{descricaoNivel}: {contextoComplementar.DiasMaximosAtraso} dia(s) de atraso e {contextoComplementar.PercentualValorEmAtrasoSobreRenda:N2}% da renda mensal comprometida em valores vencidos. Ocorrências recentes de atraso: {contextoComplementar.QuantidadeOcorrenciasAtrasoRecente} em {contextoComplementar.QuantidadeMesesComOcorrenciaAtrasoRecente} mês(es).",
                     penalidade,
+                    "Endividamento e Obrigações");
+            }
+            else if (contextoComplementar?.PossuiCuraRecenteInadimplencia == true)
+            {
+                var penalidadeCura = contextoComplementar.QuantidadeMesesComOcorrenciaAtrasoRecente >= 2 ? 2m : 1m;
+
+                Adicionar(
+                    endividamento?.Codigo ?? CodigoIndicadorFinanceiro.Endividamento,
+                    "Cura recente de inadimplência",
+                    $"Não existe atraso pendente no momento, mas houve regularização recente de atraso em {contextoComplementar.QuantidadeOcorrenciasAtrasoRecente} ocorrência(s), distribuída(s) por {contextoComplementar.QuantidadeMesesComOcorrenciaAtrasoRecente} mês(es).",
+                    penalidadeCura,
                     "Endividamento e Obrigações");
             }
 

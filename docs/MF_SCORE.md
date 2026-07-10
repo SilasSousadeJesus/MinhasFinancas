@@ -8,13 +8,15 @@ Ele responde à pergunta:
 
 O `MF Score` não mede apenas riqueza, nem apenas disciplina. Ele mede risco, proteção, pressão estrutural, maturidade e persistência de comportamento ao longo do tempo.
 
-Na versão atual do motor (`mf-score-v2.1-1000`), o modelo também passa a:
+Na versão atual do motor (`mf-score-v2.2-1000`), o modelo também passa a:
 
 - usar meta monetária coerente para `Economia Mensal`;
 - adotar faixas explícitas de status nos indicadores centrais;
 - tratar inadimplência de forma gradual, e não mais binária;
+- reconhecer reincidência e cura recente da inadimplência como sinais distintos de risco;
 - recalibrar penalizações temporais de fluxo negativo para refletir severidade progressiva;
 - tratar o pilar `Planejamento` com base mínima explícita no `Perfil Financeiro`;
+- incorporar `Plano Estratégico Financeiro` e `Compromissos Financeiros` no pilar `Planejamento` apenas quando esses dados existirem;
 - manter os horizontes `30/90/180/365`, mas com influência decrescente conforme o prazo aumenta.
 
 ## Filosofia oficial
@@ -308,6 +310,38 @@ Além disso:
 O conceito de `MF Score Potencial` permanece como evolução futura.
 
 Ele representa para onde o usuário poderia evoluir se corrigisse os principais pontos de pressão financeira sem alterar negativamente sua base atual.
+
+## Atualização oficial da versão v2.2
+
+### Planejamento com sinais opcionais
+
+O pilar `Planejamento` continua exigindo os cinco parâmetros básicos do `Perfil Financeiro` como base obrigatória de maturidade.
+
+Além disso, a partir da versão `mf-score-v2.2-1000`, ele também pode considerar:
+
+- `Plano Estratégico Financeiro` vigente
+- objetivos estratégicos ativos, prioritários e concluídos
+- `Compromissos Financeiros` em andamento
+- `Compromissos Financeiros` concluídos e cancelados
+
+Regra obrigatória desta versão:
+
+- se o usuário não possuir plano estratégico vigente e não possuir compromissos financeiros, esses componentes são ignorados no cálculo;
+- a ausência desses elementos não gera penalização automática;
+- eles só passam a influenciar o score quando realmente existirem.
+
+### Reincidência e cura da inadimplência
+
+Além do nível atual do atraso, o motor agora observa o histórico recente de ocorrências para distinguir:
+
+- `reincidência`: atraso atual somado a ocorrências recentes em meses diferentes
+- `cura recente`: atraso já regularizado, mas ainda recente o suficiente para sinalizar fragilidade
+
+Comportamento oficial desta rodada:
+
+- a inadimplência atual continua usando a matriz por dias de atraso e materialidade sobre a renda;
+- ocorrências recentes distribuídas em múltiplos meses agravam a penalidade da inadimplência atual;
+- quando não existe atraso pendente, mas houve regularização recente, o sistema aplica apenas uma penalidade residual leve.
 
 ## Regra de manutenção
 

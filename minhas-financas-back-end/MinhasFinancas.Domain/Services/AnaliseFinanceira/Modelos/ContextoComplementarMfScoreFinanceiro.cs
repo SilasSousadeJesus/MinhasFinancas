@@ -13,6 +13,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos
         public int TotalParametrosPlanejamentoEsperados { get; set; }
         public bool PerfilFinanceiroBasicoCompleto { get; set; }
         public int NotaConfiguracaoPlanejamento { get; set; }
+        public bool PossuiPlanoEstrategicoVigente { get; set; }
+        public int QuantidadeObjetivosPlanoAtivos { get; set; }
+        public int QuantidadeObjetivosPlanoAltaPrioridade { get; set; }
+        public int QuantidadeObjetivosPlanoConcluidos { get; set; }
+        public int? NotaPlanoEstrategico { get; set; }
+        public bool PossuiCompromissosFinanceiros { get; set; }
+        public int QuantidadeCompromissosEmAndamento { get; set; }
+        public int QuantidadeCompromissosConcluidos { get; set; }
+        public int QuantidadeCompromissosCancelados { get; set; }
+        public int? NotaCompromissosFinanceiros { get; set; }
+        public bool PossuiCuraRecenteInadimplencia { get; set; }
+        public int QuantidadeOcorrenciasAtrasoRecente { get; set; }
+        public int QuantidadeMesesComOcorrenciaAtrasoRecente { get; set; }
         public bool PossuiDadosEssenciaisInsuficientes { get; set; }
         public List<int> HistoricoPontuacoesFinais { get; set; } = [];
     }

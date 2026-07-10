@@ -165,9 +165,9 @@ O projeto agora possui job recorrente mensal para registrar o histórico do `MF 
 ## Limitações conhecidas
 
 - o pilar `Planejamento` ainda não mede todo o comportamento financeiro real do usuário
-- o plano estratégico vigente ainda não entra de forma madura no cálculo do score
-- compromissos financeiros ativos ainda não pesam diretamente no pilar de planejamento
-- a leitura de inadimplência já evoluiu para matriz gradual, mas ainda pode amadurecer em reincidência, cura e histórico de atraso
+- o plano estratégico vigente e os compromissos financeiros já podem influenciar o pilar `Planejamento`, mas ainda de forma inicial e determinística
+- a ausência de plano estratégico ou compromissos não deve gerar penalização automática; esses sinais só contam quando existem
+- a leitura de inadimplência já evoluiu para matriz gradual e passou a reconhecer reincidência/cura, mas ainda pode amadurecer em histórico mais rico de atraso
 - a qualidade patrimonial ainda não é diferenciada com profundidade
 - a tendência histórica ainda está em fase inicial de amadurecimento
 - os horizontes 90/180/365 já estão mais leves, mas ainda exigem validação contínua para confirmar se a influência residual ficou adequada
@@ -197,13 +197,13 @@ Evidência da mitigação:
 
 ## Dívida técnica do Motor Financeiro
 
-- amadurecer o pilar `Planejamento` com sinais estratégicos reais
-- incorporar compromissos financeiros de forma determinística no score
-- fortalecer semântica de inadimplência real
+- amadurecer o pilar `Planejamento` com sinais estratégicos mais profundos e históricos
+- consolidar a calibração de compromissos financeiros dentro do pilar `Planejamento`
+- fortalecer a semântica de cura e reincidência da inadimplência
 - revisar impacto da nova matriz gradual de inadimplência sobre personas e casos canônicos
 - evoluir leitura histórica de tendência e persistência
 - enriquecer o pilar `Patrimônio` com qualidade e liquidez patrimonial
-- avaliar, em rodada futura, se o plano estratégico financeiro e os compromissos assumidos devem entrar diretamente no pilar `Planejamento`
+- revisar se a nota opcional de plano e compromissos deve ganhar peso maior após validação humana suficiente
 
 ## Relação com validação e auditoria
 

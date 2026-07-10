@@ -232,6 +232,18 @@ namespace MinhasFinancas.Application.Services
                 .Sum(lancamento => lancamento.Valor);
 
             var patrimonioLiquido = cenario.DadosEntrada.Patrimonio - cenario.DadosEntrada.Passivos;
+            var plano = cenario.Contexto.PlanoEstrategicoFinanceiroVigente;
+            var compromissos = cenario.Contexto.CompromissosFinanceiros
+                .Where(compromisso => compromisso.Ativo)
+                .ToList();
+
+            var descricaoPlano = plano is null
+                ? "Não existe plano estratégico neste cenário."
+                : $"Plano vigente com {plano.Objetivos.Count(x => x.Status != EnumStatusObjetivoPlanoEstrategico.Cancelado)} objetivo(s) ativo(s).";
+
+            var descricaoCompromissos = compromissos.Count == 0
+                ? "Não existem compromissos financeiros neste cenário."
+                : $"{compromissos.Count} compromisso(s): {compromissos.Count(x => x.Status == EnumStatusCompromissoFinanceiro.Concluido)} concluído(s), {compromissos.Count(x => x.Status == EnumStatusCompromissoFinanceiro.EmAndamento)} em andamento e {compromissos.Count(x => x.Status == EnumStatusCompromissoFinanceiro.Cancelado)} cancelado(s).";
 
             return new MfScoreAuditoriaHumanaDadosEntradaExcelReportData
             {
@@ -247,8 +259,8 @@ namespace MinhasFinancas.Application.Services
                 Passivos = cenario.DadosEntrada.Passivos,
                 PatrimonioLiquido = patrimonioLiquido,
                 PerfilFinanceiroConfigurado = cenario.Contexto.ConfiguracaoPerfilFinanceiro is null ? "Nao" : "Sim",
-                PlanoEstrategico = "Nao considerado pelo contexto atual",
-                Compromissos = "Nao considerados pelo contexto atual",
+                PlanoEstrategico = descricaoPlano,
+                Compromissos = descricaoCompromissos,
                 Observacoes = cenario.Observacoes
             };
         }

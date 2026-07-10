@@ -246,6 +246,7 @@ Resultado da rodada mais recente de recalibração:
 
 - `8 de 8` cenários oficiais ficaram dentro da faixa esperada;
 - as faixas dos cenários `Boa renda, reserva zero e cartão alto`, `Excelente fluxo com pouco patrimônio` e `Planejamento financeiro excelente` foram revistas para refletir melhor a severidade real do motor `mf-score-v2.1-1000`.
+- na rodada `mf-score-v2.2-1000`, a auditoria operacional permaneceu em `8 de 8` cenários aprovados após a entrada de reincidência/cura da inadimplência e da incorporação opcional de plano estratégico e compromissos no pilar `Planejamento`.
 
 ## Auditoria humana
 
@@ -262,7 +263,8 @@ Ela serve para:
 Observação:
 
 - a auditoria humana continua sendo uma planilha de revisão cega preenchida manualmente;
-- nesta rodada, ela foi regenerada para acompanhar a nova calibração, mas sua conclusão final ainda depende de leitura humana.
+- nesta rodada, ela foi regenerada para acompanhar a nova calibração, agora exibindo também a presença ou ausência de plano estratégico e compromissos;
+- a conclusão final continua dependendo de leitura humana.
 
 ## Personas persistidas de calibração
 

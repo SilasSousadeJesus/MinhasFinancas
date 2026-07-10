@@ -16,7 +16,7 @@ O modelo oficial de risco financeiro do sistema é o `MF Score`, que organiza os
 
 O `MF Score` agora usa escala final de `0 a 1000`, enquanto os pilares permanecem em `0 a 100`. A versão vigente separa formalmente nota dos pilares, penalizações críticas, persistência temporal do risco e histórico mensal persistido.
 
-Na calibragem mais recente do `mf-score-v2.1-1000`, o pilar `Planejamento e Disciplina` passou a depender explicitamente da configuração mínima do `Perfil Financeiro`, o `Comprometimento da Renda` foi reafirmado como indicador conceitualmente ligado a `Fluxo de Caixa` e os horizontes futuros `30/90/180/365` permaneceram ativos com peso progressivamente menor nos prazos mais longos.
+Na calibragem mais recente do `mf-score-v2.2-1000`, o pilar `Planejamento e Disciplina` passou a depender explicitamente da configuração mínima do `Perfil Financeiro`, o `Comprometimento da Renda` foi reafirmado como indicador conceitualmente ligado a `Fluxo de Caixa`, os horizontes futuros `30/90/180/365` permaneceram ativos com peso progressivamente menor nos prazos mais longos e o motor passou a incorporar `Plano Estratégico Financeiro` e `Compromissos Financeiros` como sinais opcionais de planejamento quando eles existirem.
 
 O `MF Score` agora também possui uma etapa oficial de calibração contínua, com cenários de validação, explicação de variação, tendência e documentação dedicada em `docs/MF_SCORE.md`, `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE_CALIBRATION_CONTEXT.md`.
 
@@ -284,7 +284,7 @@ ObservaÃ§Ã£o importante:
 - `ResumoFinanceiroIAService` consolida saÃºde financeira, indicadores e insights em um payload Ãºnico pronto para consumo por interfaces e futuras integraÃ§Ãµes com IA
 - os indicadores temporais são serializados com os campos `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`, mantendo a leitura explícita na UI e no contexto enviado à IA
 - o `SaudeFinanceiraService` converte o resultado final do `MF Score` para escala `0 a 1000`, preservando os pilares em `0 a 100`
-- a versão atual das penalizações críticas concentra-se em inadimplência, fluxo mensal negativo, recorrência de meses negativos, patrimônio líquido negativo e ausência de dados essenciais
+- a versão atual das penalizações críticas concentra-se em inadimplência, cura recente/reincidência de inadimplência, fluxo mensal negativo, recorrência de meses negativos, patrimônio líquido negativo e ausência de dados essenciais
 - as fórmulas oficiais, pesos e regras de interpretação dos indicadores ficam documentadas em `docs/INDICADORES_FINANCEIROS.md`
 - o dashboard consome essa camada e nÃ£o deve recalcular indicadores diretamente
 - a inteligÃªncia financeira deve evoluir respeitando a cadeia `Dados -> Indicadores -> SaÃºde Financeira -> Insights -> ResumoFinanceiroIA`

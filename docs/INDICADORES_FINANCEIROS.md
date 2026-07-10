@@ -272,6 +272,19 @@ Objetivo:
 - evitar que um único mês ruim produza colapso artificial do score;
 - manter punição forte quando o desequilíbrio vira padrão.
 
+### Cura e reincidência da inadimplência
+
+Além da matriz principal de inadimplência, o motor passou a distinguir:
+
+- `reincidência`: atraso atual com ocorrências recentes em meses diferentes;
+- `cura recente`: atraso já regularizado, mas ainda recente.
+
+Regras atuais:
+
+- reincidência agrava a penalização da inadimplência atual;
+- cura recente sem atraso pendente gera apenas penalidade residual leve;
+- o objetivo é não tratar um usuário recém-regularizado como inadimplente ativo, mas também não apagar o risco imediatamente.
+
 ## Pilar Planejamento e Disciplina
 
 Na versão atual, o pilar `Planejamento e Disciplina` deixou de depender apenas de proxies genéricos e passou a considerar explicitamente a configuração mínima do `Perfil Financeiro`.
@@ -295,6 +308,19 @@ O cálculo combina:
   - `PercentualEconomia`
   - `ReservaEmergenciaAtual`
   - `PercentualPatrimonioAlvo`
+
+Quando existirem, o pilar também passa a considerar sinais opcionais de execução estratégica:
+
+- `Plano Estratégico Financeiro` vigente
+- objetivos estratégicos ativos, prioritários e concluídos
+- `Compromissos Financeiros` em andamento
+- `Compromissos Financeiros` concluídos e cancelados
+
+Regra obrigatória:
+
+- se o usuário não possuir plano estratégico vigente nem compromissos financeiros, esses elementos são ignorados;
+- a ausência deles não reduz a nota do pilar;
+- eles só influenciam o cálculo quando realmente existirem.
 
 ### Teto por quantidade de parâmetros configurados
 

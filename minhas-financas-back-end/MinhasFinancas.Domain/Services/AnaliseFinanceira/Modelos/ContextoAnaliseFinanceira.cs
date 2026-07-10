@@ -9,6 +9,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos
         public IReadOnlyCollection<BemPatrimonial> Ativos { get; set; } = [];
         public IReadOnlyCollection<Passivo> Passivos { get; set; } = [];
         public IReadOnlyCollection<Meta> Metas { get; set; } = [];
+        public PlanoEstrategicoFinanceiro? PlanoEstrategicoFinanceiroVigente { get; set; }
+        public IReadOnlyCollection<CompromissoFinanceiro> CompromissosFinanceiros { get; set; } = [];
         public ConfiguracaoPerfilFinanceiro? ConfiguracaoPerfilFinanceiro { get; set; }
     }
 }
