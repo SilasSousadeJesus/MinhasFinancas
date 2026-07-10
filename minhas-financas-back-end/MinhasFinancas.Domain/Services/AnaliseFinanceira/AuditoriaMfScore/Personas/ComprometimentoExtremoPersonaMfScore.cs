@@ -29,7 +29,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Pers
                 Nome = "Comprometimento extremo",
                 Descricao = "Renda fortemente comprometida, baixa folga mensal, reserva pequena e pressao recorrente alta.",
                 ScoreEsperadoMin = 0,
-                ScoreEsperadoMax = 59,
+                ScoreEsperadoMax = 590,
                 Justificativa = "Comprometimento acima de 80 por cento e pressao futura forte devem limitar severamente a nota final.",
                 Contexto = CriarContexto(lancamentos, ativos, passivos, configuracao),
                 DadosEntrada = CriarDadosEntrada(10000m, 9500m, 1000m, 19000m, 35000m, 9500m, 28500m, 57000m, 114000m)

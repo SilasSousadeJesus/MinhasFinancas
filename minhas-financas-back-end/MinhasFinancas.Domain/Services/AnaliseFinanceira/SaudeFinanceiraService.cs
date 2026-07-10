@@ -5,6 +5,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 {
     public class SaudeFinanceiraService : ISaudeFinanceiraService
     {
+        private const int EscalaPilares = 100;
+        private const int EscalaMfScore = 1000;
+
         private static readonly IReadOnlyDictionary<CodigoIndicadorFinanceiro, decimal> PesosIndicadores = new Dictionary<CodigoIndicadorFinanceiro, decimal>
         {
             { CodigoIndicadorFinanceiro.EconomiaMensal, 1.0m },
@@ -21,10 +24,12 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             { CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo, 0.75m },
         };
 
-        public PainelSaudeFinanceira GerarPainel(PainelIndicadoresFinanceiros indicadores)
+        public PainelSaudeFinanceira GerarPainel(
+            PainelIndicadoresFinanceiros indicadores,
+            ContextoComplementarMfScoreFinanceiro? contextoComplementar = null)
         {
             var lista = indicadores.Todos;
-            var mfScore = CalcularMfScore(lista);
+            var mfScore = CalcularMfScore(lista, contextoComplementar);
 
             return new PainelSaudeFinanceira
             {
@@ -50,7 +55,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             };
         }
 
-        private static MfScoreFinanceiro CalcularMfScore(IReadOnlyCollection<IndicadorFinanceiro> indicadores)
+        private static MfScoreFinanceiro CalcularMfScore(
+            IReadOnlyCollection<IndicadorFinanceiro> indicadores,
+            ContextoComplementarMfScoreFinanceiro? contextoComplementar)
         {
             var pilares = new List<PilarMfScoreFinanceiro>
             {
@@ -62,19 +69,38 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             };
 
             var somaPesos = pilares.Sum(item => item.Peso);
-            var pontuacaoBase = somaPesos > 0
+            var pontuacaoBaseNormalizada = somaPesos > 0
                 ? (int)Math.Round(pilares.Sum(item => item.Nota * item.Peso) / somaPesos)
                 : 0;
 
             var regrasCriticas = new List<string>();
-            var indicadoresCriticos = MontarIndicadoresCriticos(indicadores, regrasCriticas);
+            var indicadoresCriticosNormalizados = MontarIndicadoresCriticos(indicadores, contextoComplementar, regrasCriticas);
+            var penalidadeTotalNormalizada = indicadoresCriticosNormalizados.Sum(item => item.Penalidade);
+            var pontuacaoFinalNormalizada = Math.Clamp(
+                (int)Math.Round(pontuacaoBaseNormalizada - penalidadeTotalNormalizada),
+                0,
+                EscalaPilares);
+
+            var pontuacaoBase = ConverterEscalaMfScore(pontuacaoBaseNormalizada);
+            var pontuacaoFinal = ConverterEscalaMfScore(pontuacaoFinalNormalizada);
+            var indicadoresCriticos = indicadoresCriticosNormalizados
+                .Select(item => new IndicadorCriticoMfScoreFinanceiro
+                {
+                    CodigoIndicador = item.CodigoIndicador,
+                    Nome = item.Nome,
+                    Motivo = item.Motivo,
+                    Penalidade = ConverterEscalaMfScore(item.Penalidade),
+                    PilarRelacionado = item.PilarRelacionado
+                })
+                .ToList();
             var penalidadeTotal = indicadoresCriticos.Sum(item => item.Penalidade);
-            var pontuacaoFinal = Math.Clamp((int)Math.Round(pontuacaoBase - penalidadeTotal), 0, 100);
 
             var classificacao = ObterClassificacao(pontuacaoFinal);
             var risco = ObterRisco(classificacao);
-            var tendencia = ObterTendencia(indicadores, pontuacaoFinal);
-            var resumoExecutivoDosPilares = pilares.Select(item => $"{item.Nome}: {InterpretarNotaPilar(item.Nota)}").ToList();
+            var tendencia = ObterTendencia(indicadores, pontuacaoFinal, contextoComplementar);
+            var resumoExecutivoDosPilares = pilares
+                .Select(item => $"{item.Nome}: {InterpretarNotaPilar(item.Nota)}")
+                .ToList();
 
             return new MfScoreFinanceiro
             {
@@ -88,7 +114,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 ResumoExecutivoDosPilares = resumoExecutivoDosPilares,
                 RegrasCriticasAplicadas = regrasCriticas,
                 PenalidadeTotal = penalidadeTotal,
-                Descricao = $"MF Score base {pontuacaoBase}/100 com penalidade total de {penalidadeTotal:N0} ponto(s), resultando em {pontuacaoFinal}/100."
+                Descricao = $"MF Score base {pontuacaoBase}/1000 com penalidade total de {penalidadeTotal:N0} ponto(s), resultando em {pontuacaoFinal}/1000."
             };
         }
 
@@ -176,7 +202,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             var notaBase = CalcularNotaMedia(relevantes);
             var configurados = relevantes.Count(item => item.ValorIdeal > 0);
             var bonusConfiguracao = configurados >= 4 ? 10 : configurados >= 3 ? 5 : 0;
-            var notaFinal = Math.Clamp(notaBase + bonusConfiguracao, 0, 100);
+            var notaFinal = Math.Clamp(notaBase + bonusConfiguracao, 0, EscalaPilares);
 
             return new PilarMfScoreFinanceiro
             {
@@ -224,6 +250,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
         private static List<IndicadorCriticoMfScoreFinanceiro> MontarIndicadoresCriticos(
             IReadOnlyCollection<IndicadorFinanceiro> indicadores,
+            ContextoComplementarMfScoreFinanceiro? contextoComplementar,
             ICollection<string> regrasCriticasAplicadas)
         {
             var criticos = new List<IndicadorCriticoMfScoreFinanceiro>();
@@ -247,73 +274,67 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 regrasCriticasAplicadas.Add($"{nome}: {motivo}");
             }
 
-            var reservaAtual = Buscar(indicadores, CodigoIndicadorFinanceiro.ReservaEmergenciaAtual);
-            if (reservaAtual is not null && reservaAtual.ValorAtual <= 0)
-            {
-                Adicionar(reservaAtual.Codigo, reservaAtual.Nome, "Reserva inexistente.", 12m, "Liquidez e Reserva");
-            }
-
-            var comprometimento = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoRenda);
-            if (comprometimento is not null)
-            {
-                if (comprometimento.ValorAtual >= 70m)
-                {
-                    Adicionar(comprometimento.Codigo, comprometimento.Nome, "Comprometimento muito elevado da renda.", 12m, "Fluxo de Caixa");
-                }
-                else if (comprometimento.ValorAtual >= 50m)
-                {
-                    Adicionar(comprometimento.Codigo, comprometimento.Nome, "Comprometimento da renda em faixa de atenção.", 6m, "Fluxo de Caixa");
-                }
-            }
-
-            var comprometimento30 = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo);
-            if (comprometimento30 is not null)
-            {
-                if (comprometimento30.PercentualComprometimento >= 70m)
-                {
-                    Adicionar(comprometimento30.Codigo, comprometimento30.Nome, "Pressão financeira futura de curto prazo muito elevada.", 12m, "Endividamento e Obrigações");
-                }
-                else if (comprometimento30.PercentualComprometimento >= 50m)
-                {
-                    Adicionar(comprometimento30.Codigo, comprometimento30.Nome, "Pressão financeira futura de curto prazo em faixa moderada.", 6m, "Endividamento e Obrigações");
-                }
-            }
-
-            var comprometimento90 = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias);
-            if (comprometimento90 is not null && comprometimento90.PercentualComprometimento >= 80m)
-            {
-                Adicionar(comprometimento90.Codigo, comprometimento90.Nome, "Pressão acumulada de 90 dias em nível crítico.", 8m, "Endividamento e Obrigações");
-            }
-
-            var comprometimento180 = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias);
-            if (comprometimento180 is not null && comprometimento180.PercentualComprometimento >= 80m)
-            {
-                Adicionar(comprometimento180.Codigo, comprometimento180.Nome, "Pressão acumulada de 180 dias em nível crítico.", 7m, "Endividamento e Obrigações");
-            }
-
-            var comprometimento365 = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias);
-            if (comprometimento365 is not null && comprometimento365.PercentualComprometimento >= 80m)
-            {
-                Adicionar(comprometimento365.Codigo, comprometimento365.Nome, "Pressão acumulada de 12 meses em nível crítico.", 6m, "Endividamento e Obrigações");
-            }
-
-            var endividamento = Buscar(indicadores, CodigoIndicadorFinanceiro.Endividamento);
-            if (endividamento is not null)
-            {
-                if (endividamento.ValorAtual >= 80m)
-                {
-                    Adicionar(endividamento.Codigo, endividamento.Nome, "Endividamento patrimonial muito elevado.", 12m, "Endividamento e Obrigações");
-                }
-                else if (endividamento.ValorAtual >= 60m)
-                {
-                    Adicionar(endividamento.Codigo, endividamento.Nome, "Endividamento patrimonial em faixa de atenção.", 6m, "Endividamento e Obrigações");
-                }
-            }
-
             var patrimonioLiquido = Buscar(indicadores, CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual);
             if (patrimonioLiquido is not null && patrimonioLiquido.ValorAtual < 0m)
             {
-                Adicionar(patrimonioLiquido.Codigo, patrimonioLiquido.Nome, "Patrimônio líquido negativo.", 10m, "Patrimônio");
+                Adicionar(
+                    patrimonioLiquido.Codigo,
+                    patrimonioLiquido.Nome,
+                    "Patrimônio líquido negativo.",
+                    10m,
+                    "Patrimônio");
+            }
+
+            var economiaMensal = Buscar(indicadores, CodigoIndicadorFinanceiro.EconomiaMensal);
+            if (contextoComplementar?.PossuiFluxoMensalNegativoAtual == true)
+            {
+                Adicionar(
+                    economiaMensal?.Codigo ?? CodigoIndicadorFinanceiro.EconomiaMensal,
+                    economiaMensal?.Nome ?? "Fluxo mensal",
+                    "O mês de referência fechou com fluxo de caixa negativo.",
+                    8m,
+                    "Fluxo de Caixa");
+            }
+
+            if ((contextoComplementar?.MesesConsecutivosFluxoNegativo ?? 0) >= 3)
+            {
+                Adicionar(
+                    economiaMensal?.Codigo ?? CodigoIndicadorFinanceiro.EconomiaMensal,
+                    "Persistência de fluxo negativo",
+                    "O usuário acumula três ou mais meses consecutivos no vermelho.",
+                    12m,
+                    "Fluxo de Caixa");
+            }
+            else if ((contextoComplementar?.MesesConsecutivosFluxoNegativo ?? 0) >= 2)
+            {
+                Adicionar(
+                    economiaMensal?.Codigo ?? CodigoIndicadorFinanceiro.EconomiaMensal,
+                    "Persistência de fluxo negativo",
+                    "O usuário acumula dois meses consecutivos no vermelho.",
+                    6m,
+                    "Fluxo de Caixa");
+            }
+
+            var endividamento = Buscar(indicadores, CodigoIndicadorFinanceiro.Endividamento);
+            if (contextoComplementar?.PossuiInadimplencia == true)
+            {
+                Adicionar(
+                    endividamento?.Codigo ?? CodigoIndicadorFinanceiro.Endividamento,
+                    "Inadimplência",
+                    "Existem despesas vencidas ainda pendentes de pagamento.",
+                    15m,
+                    "Endividamento e Obrigações");
+            }
+
+            var reservaAtual = Buscar(indicadores, CodigoIndicadorFinanceiro.ReservaEmergenciaAtual);
+            if (contextoComplementar?.PossuiDadosEssenciaisInsuficientes == true)
+            {
+                Adicionar(
+                    reservaAtual?.Codigo ?? CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
+                    "Dados essenciais insuficientes",
+                    "Ainda faltam dados básicos para avaliar o risco financeiro com alta confiança.",
+                    3m,
+                    "Planejamento e Disciplina");
             }
 
             return criticos;
@@ -328,8 +349,39 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
         private static TendenciaMfScoreFinanceiro ObterTendencia(
             IReadOnlyCollection<IndicadorFinanceiro> indicadores,
-            int pontuacaoFinal)
+            int pontuacaoFinal,
+            ContextoComplementarMfScoreFinanceiro? contextoComplementar)
         {
+            var historico = (contextoComplementar?.HistoricoPontuacoesFinais ?? [])
+                .Where(nota => nota >= 0)
+                .ToList();
+
+            if (historico.Count > 0)
+            {
+                var ultimoHistorico = historico[^1];
+                var diferenca = pontuacaoFinal - ultimoHistorico;
+                var direcao = diferenca switch
+                {
+                    >= 40 => DirecaoTendenciaMfScoreFinanceiro.Positiva,
+                    <= -40 => DirecaoTendenciaMfScoreFinanceiro.Negativa,
+                    _ => DirecaoTendenciaMfScoreFinanceiro.Neutra
+                };
+
+                var descricao = direcao switch
+                {
+                    DirecaoTendenciaMfScoreFinanceiro.Positiva => "O MF Score melhorou em relação às competências anteriores.",
+                    DirecaoTendenciaMfScoreFinanceiro.Negativa => "O MF Score piorou em relação às competências anteriores.",
+                    _ => "O MF Score está estável em relação às competências anteriores."
+                };
+
+                return new TendenciaMfScoreFinanceiro
+                {
+                    Direcao = direcao,
+                    Descricao = descricao,
+                    HistoricoNotas = historico
+                };
+            }
+
             var positivos = indicadores.Count(indicador => indicador.Status is StatusIndicadorFinanceiro.Excelente or StatusIndicadorFinanceiro.Bom);
             var negativos = indicadores.Count(indicador => indicador.Status is StatusIndicadorFinanceiro.Atencao or StatusIndicadorFinanceiro.Critico);
 
@@ -340,12 +392,12 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     : negativos > positivos
                         ? DirecaoTendenciaMfScoreFinanceiro.Negativa
                         : DirecaoTendenciaMfScoreFinanceiro.Neutra,
-                Descricao = pontuacaoFinal >= 70
+                Descricao = pontuacaoFinal >= 700
                     ? "Tendência geral favorável com espaço para fortalecimento."
-                    : pontuacaoFinal >= 50
+                    : pontuacaoFinal >= 500
                         ? "Tendência estável, mas ainda sensível a ajustes estruturais."
                         : "Tendência de risco que pede reorganização imediata.",
-                HistoricoNotas = []
+                HistoricoNotas = historico
             };
         }
 
@@ -392,27 +444,27 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
         private static string ObterClassificacao(int pontuacao)
         {
-            if (pontuacao >= 90)
+            if (pontuacao >= 900)
             {
                 return "Excelente";
             }
 
-            if (pontuacao >= 80)
+            if (pontuacao >= 800)
             {
                 return "Muito Bom";
             }
 
-            if (pontuacao >= 70)
+            if (pontuacao >= 700)
             {
                 return "Bom";
             }
 
-            if (pontuacao >= 60)
+            if (pontuacao >= 600)
             {
                 return "Atenção";
             }
 
-            if (pontuacao >= 40)
+            if (pontuacao >= 400)
             {
                 return "Crítico";
             }
@@ -431,6 +483,12 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 "Crítico" => "Risco Alto",
                 _ => "Risco Muito Alto"
             };
+        }
+
+        private static int ConverterEscalaMfScore(decimal notaNormalizada)
+        {
+            var fator = EscalaMfScore / (decimal)EscalaPilares;
+            return (int)Math.Round(notaNormalizada * fator, MidpointRounding.AwayFromZero);
         }
     }
 }

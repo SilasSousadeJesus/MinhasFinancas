@@ -23,8 +23,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Pers
             {
                 Nome = "Excelente fluxo com pouco patrimonio",
                 Descricao = "Renda estavel, economia mensal forte, boa reserva, pouco patrimonio acumulado e sem dividas relevantes.",
-                ScoreEsperadoMin = 75,
-                ScoreEsperadoMax = 90,
+                ScoreEsperadoMin = 750,
+                ScoreEsperadoMax = 900,
                 Justificativa = "O fluxo forte e a boa liquidez sustentam score alto, mesmo sem grande base patrimonial.",
                 Contexto = CriarContexto(lancamentos, ativos, [], configuracao),
                 DadosEntrada = CriarDadosEntrada(8000m, 4200m, 25000m, 30000m, 0m, 4200m, 12600m, 25200m, 50400m)

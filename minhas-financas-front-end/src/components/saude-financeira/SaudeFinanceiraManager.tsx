@@ -80,6 +80,7 @@ function obterVariantClassificacao(classificacao: string): "default" | "secondar
     case "Muito Bom":
       return "secondary";
     case "Boa":
+    case "Bom":
       return "outline";
     case "Muito Crítico":
     case "Crítica":
@@ -212,10 +213,10 @@ export function SaudeFinanceiraManager() {
                   <p className="text-sm text-muted-foreground">Pontuação base e final</p>
                   <p className="mt-2 text-5xl font-bold tracking-tight">
                     {saudeFinanceira?.resumo.mfScore.pontuacaoFinal ?? saudeFinanceira?.resumo.pontuacaoGeral ?? 0}
-                    <span className="text-xl text-muted-foreground">/100</span>
+                    <span className="text-xl text-muted-foreground">/1000</span>
                   </p>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Base: {saudeFinanceira?.resumo.mfScore.pontuacaoBase ?? 0}/100
+                    Base: {saudeFinanceira?.resumo.mfScore.pontuacaoBase ?? 0}/1000
                   </p>
                 </div>
                 <div className="rounded-2xl border border-border/70 bg-background/70 p-6">

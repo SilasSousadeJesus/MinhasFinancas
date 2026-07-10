@@ -57,7 +57,7 @@ Este arquivo nÃ£o substitui:
 ### Finalidade
 Ã‰ a tela analÃ­tica da saÃºde financeira. Seu papel Ã© traduzir os indicadores da anÃ¡lise financeira em uma leitura detalhada da situaÃ§Ã£o atual do usuÃ¡rio.
 
-Nesta evoluÃ§Ã£o, a tela passa a exibir oficialmente o `MF Score`, com classificaÃ§Ã£o de risco, notas dos cinco pilares e indicadores crÃ­ticos.
+Nesta evolução, a tela passa a exibir oficialmente o `MF Score`, com classificação de risco, nota final em escala `0 a 1000`, notas dos cinco pilares em `0 a 100` e indicadores críticos.
 
 ### O que o usuÃ¡rio faz aqui
 - visualiza a pontuaÃ§Ã£o geral da saÃºde financeira
@@ -80,7 +80,7 @@ Nesta evoluÃ§Ã£o, a tela passa a exibir oficialmente o `MF Score`, com class
 
 ### O que jÃ¡ estÃ¡ funcional
 - tela dedicada de saÃºde financeira
-- pontuaÃ§Ã£o geral de 0 a 100
+- pontuação geral do `MF Score` em `0 a 1000`
 - classificaÃ§Ã£o textual
 - pontos de atenÃ§Ã£o
 - cards com todos os indicadores calculados
@@ -657,10 +657,12 @@ O `MF Score` já é a referência oficial de risco financeiro do sistema.
 - o **Assistente Financeiro** passou a usar o score como base executiva da análise
 - o **Dashboard** deve consumir apenas o resumo já consolidado, sem recalcular nada
 - futuras telas e integrações devem tratar o score como a régua central de avaliação
+- o sistema agora preserva histórico mensal do `MF Score` para evolução temporal e auditoria
 
 ### O que a nova etapa de calibração faz
 
 - revisa indicadores, pesos, pilares, penalizações e regras críticas
+- reforça a separação entre nota de pilar e penalização crítica
 - valida cenários oficiais de teste
 - consolida explicações sobre subida, queda e tendência do score
 - prepara o terreno para o `MF Score Potencial` como evolução futura

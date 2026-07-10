@@ -4,6 +4,17 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 09/07/2026
 
+- Reformulação oficial do `MF Score` para escala final de `0 a 1000`, mantendo os pilares em `0 a 100`.
+- Revisão da filosofia do Motor Financeiro para separar nota dos pilares, penalizações críticas, persistência temporal do risco e histórico mensal.
+- Aplicação formal da regra de não dupla penalização, removendo penalizações críticas automáticas redundantes para reserva zero, comprometimento elevado e pressão futura sem risco materializado.
+- Reclassificação das penalizações críticas para foco em inadimplência, fluxo mensal negativo, recorrência de meses negativos, patrimônio líquido negativo e ausência de dados essenciais.
+- Criação da entidade `HistoricoMfScore` para persistir a evolução mensal do score por competência e versão de modelo.
+- Criação da migration `20260709235851_historicoMfScore`.
+- Criação do job Hangfire mensal do `MF Score`, executado no dia 01 para registrar a competência anterior.
+- Atualização das telas de Saúde Financeira, Assistente Financeiro, conclusão executiva e Personas de Calibração para a nova escala de `0 a 1000`.
+- Atualização da auditoria do MF Score e das faixas esperadas das personas para a nova escala.
+- Sincronização da documentação oficial do Motor Financeiro, incluindo score, indicadores, validação, auditoria, módulos, glossário, AI context e regras permanentes.
+
 - Criação da tela interna `/mf-score-personas` para CRUD de Personas de Calibração do MF Score.
 - Criação da entidade persistida `PersonaMfScore`, com status de auditoria, faixa esperada, justificativa humana e promoção para caso canônico.
 - Criação dos endpoints `GET/POST/PUT/DELETE /api/MfScorePersonas` e das ações `RodarScore`, `MarcarAuditada` e `MarcarCasoCanonico`.

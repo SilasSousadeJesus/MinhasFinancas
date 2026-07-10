@@ -28,8 +28,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Pers
             {
                 Nome = "Patrimonio alto com fluxo ruim",
                 Descricao = "Patrimonio forte, mas com folga mensal pequena, liquidez baixa e comprometimento elevado.",
-                ScoreEsperadoMin = 55,
-                ScoreEsperadoMax = 75,
+                ScoreEsperadoMin = 550,
+                ScoreEsperadoMax = 750,
                 Justificativa = "O patrimonio reduz o risco estrutural, mas nao pode mascarar fluxo apertado e pressao recorrente.",
                 Contexto = CriarContexto(lancamentos, ativos, passivos, configuracao),
                 DadosEntrada = CriarDadosEntrada(12000m, 10500m, 3000m, 573000m, 220000m, 10500m, 31500m, 63000m, 126000m)

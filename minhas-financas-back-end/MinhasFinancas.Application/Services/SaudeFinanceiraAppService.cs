@@ -1,20 +1,15 @@
 using MinhasFinancas.Application.Interfaces;
-using MinhasFinancas.Domain.Services.AnaliseFinanceira;
 using System.Net;
 
 namespace MinhasFinancas.Application.Services
 {
     public class SaudeFinanceiraAppService : ISaudeFinanceiraAppService
     {
-        private readonly IAnaliseFinanceiraAppService _analiseFinanceiraAppService;
-        private readonly ISaudeFinanceiraService _saudeFinanceiraService;
+        private readonly IMfScoreCalculoAppService _mfScoreCalculoAppService;
 
-        public SaudeFinanceiraAppService(
-            IAnaliseFinanceiraAppService analiseFinanceiraAppService,
-            ISaudeFinanceiraService saudeFinanceiraService)
+        public SaudeFinanceiraAppService(IMfScoreCalculoAppService mfScoreCalculoAppService)
         {
-            _analiseFinanceiraAppService = analiseFinanceiraAppService;
-            _saudeFinanceiraService = saudeFinanceiraService;
+            _mfScoreCalculoAppService = mfScoreCalculoAppService;
         }
 
         public async Task<RetornoGenerico> BuscarSaudeFinanceira(string usuarioId)
@@ -23,9 +18,9 @@ namespace MinhasFinancas.Application.Services
 
             try
             {
-                var painelIndicadores = await _analiseFinanceiraAppService.BuscarPainelIndicadoresInternoAsync(usuarioId);
+                var calculo = await _mfScoreCalculoAppService.CalcularAsync(usuarioId);
 
-                if (painelIndicadores is null)
+                if (calculo is null)
                 {
                     retorno.Sucesso = false;
                     retorno.HttpStatusCode = HttpStatusCode.NotFound;
@@ -35,20 +30,18 @@ namespace MinhasFinancas.Application.Services
                     return retorno;
                 }
 
-                var painelSaude = _saudeFinanceiraService.GerarPainel(painelIndicadores);
-
                 retorno.Sucesso = true;
                 retorno.HttpStatusCode = HttpStatusCode.OK;
                 retorno.MensagemSistema = "Saúde financeira carregada com sucesso.";
                 retorno.MensagemUsuario = "Saúde financeira carregada com sucesso.";
-                retorno.Dados = painelSaude;
+                retorno.Dados = calculo.PainelSaude;
                 return retorno;
             }
             catch (Exception ex)
             {
                 retorno.Sucesso = false;
                 retorno.HttpStatusCode = HttpStatusCode.InternalServerError;
-                retorno.MensagemSistema = $"{ex}";
+                retorno.MensagemSistema = ex.ToString();
                 retorno.MensagemUsuario = "Não foi possível carregar a saúde financeira.";
                 retorno.Dados = null;
                 return retorno;

@@ -10,7 +10,7 @@ namespace Minhas_Financas_Hangfire.Services
 
         private readonly ApplicationDbContext _context;
 
-        BemPatrimonialJobs(ApplicationDbContext context)
+        public BemPatrimonialJobs(ApplicationDbContext context)
         {
             _context = context;
         }

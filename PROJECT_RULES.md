@@ -164,6 +164,8 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - O `MF Score` é o modelo oficial de avaliação de risco financeiro pessoal do sistema.
 - Toda alteração no Motor Financeiro deve responder obrigatoriamente: `Essa mudança melhora a capacidade do MF Score representar corretamente o risco financeiro do usuário?`
 - Toda alteração no Motor Financeiro deve responder também: `Essa mudança continua produzindo resultados coerentes para todos os cenários oficiais de validação?`
+- Indicadores ruins reduzem nota de pilar; penalizações críticas só devem ser usadas para eventos graves, materialização de risco ou persistência temporal.
+- Um mesmo fato econômico não deve ser penalizado duplamente.
 - Sempre que um indicador, peso, fórmula, pilar, penalidade, regra crítica, classificação ou tendência do `MF Score` mudar, devem ser atualizados obrigatoriamente `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE.md`.
 - Nenhuma alteração no `MF Score` deve ser considerada concluída sem a sincronização simultânea desses dois documentos.
 - Sempre que houver alteração relevante no Motor Financeiro, também é obrigatório:
@@ -172,6 +174,8 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
   3. executar a auditoria oficial do `MF Score`
   4. registrar o resultado da planilha de auditoria no relatório de entrega
   5. atualizar `docs/CHANGELOG.md`
+- Toda alteração na escala, fórmula, penalização ou histórico do `MF Score` também deve atualizar `docs/MF_SCORE_AUDIT.md`.
+- Alterações no Motor Financeiro devem considerar impacto sobre personas de calibração e auditoria antes de serem consideradas concluídas.
 - Sempre que qualquer desenvolvedor ou IA identificar limitação, comportamento inesperado, ausência conceitual, oportunidade de melhoria ou dívida técnica relacionada ao Motor Financeiro, essa informação deve ser registrada em `docs/MF_SCORE_AUDIT.md`, mesmo quando nenhuma implementação for realizada na mesma entrega.
 - Antes de transformar uma persona em caso canônico oficial, ela deve passar pela planilha de Auditoria Humana do `MF Score`.
 - A faixa esperada oficial de uma persona deve nascer da avaliação humana documentada, e não apenas de uma decisão automática.

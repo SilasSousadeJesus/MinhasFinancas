@@ -39,6 +39,7 @@ namespace MinhasFinancas.Infra
         public DbSet<SimulacaoFinanceira> SimulacaoFinanceira { get; set; }
         public DbSet<AcaoSimulacaoFinanceira> AcaoSimulacaoFinanceira { get; set; }
         public DbSet<AnaliseFinanceiraHistorica> AnaliseFinanceiraHistorica { get; set; }
+        public DbSet<HistoricoMfScore> HistoricoMfScore { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -130,6 +131,19 @@ namespace MinhasFinancas.Infra
                 .WithMany()
                 .HasForeignKey(x => x.UsuarioId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<HistoricoMfScore>()
+                .HasOne(x => x.Usuario)
+                .WithMany()
+                .HasForeignKey(x => x.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<HistoricoMfScore>()
+                .HasIndex(x => new { x.UsuarioId, x.CompetenciaAno, x.CompetenciaMes, x.VersaoModelo })
+                .IsUnique();
+
+            modelBuilder.Entity<HistoricoMfScore>()
+                .HasIndex(x => new { x.CompetenciaAno, x.CompetenciaMes });
 
             // Configuração das chaves primárias para as entidades do Identity
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(x => new { x.LoginProvider, x.ProviderKey });

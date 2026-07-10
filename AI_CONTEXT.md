@@ -14,6 +14,8 @@ A camada `AnaliseFinanceira` distingue o comprometimento financeiro futuro de cu
 
 O modelo oficial de risco financeiro do sistema é o `MF Score`, que organiza os indicadores em cinco pilares e passa a orientar a leitura da Saúde Financeira, do Assistente Financeiro e das integrações futuras.
 
+O `MF Score` agora usa escala final de `0 a 1000`, enquanto os pilares permanecem em `0 a 100`. A versão vigente separa formalmente nota dos pilares, penalizações críticas, persistência temporal do risco e histórico mensal persistido.
+
 O `MF Score` agora também possui uma etapa oficial de calibração contínua, com cenários de validação, explicação de variação, tendência e documentação dedicada em `docs/MF_SCORE.md` e `docs/INDICADORES_FINANCEIROS.md`.
 
 Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_VALIDATION.md`, usada para confirmar se alterações futuras continuam coerentes com os cenários canônicos do modelo.
@@ -25,6 +27,8 @@ O projeto passa a ter também uma segunda auditoria interna, `POST /api/MfScoreA
 O fluxo de calibração do `MF Score` agora também possui um CRUD persistido de `Personas de Calibração`, exposto por `api/MfScorePersonas` e pela tela autenticada `/mf-score-personas`. Essas personas não representam usuários reais; são cenários sintéticos internos usados para cadastrar, auditar, rodar o motor oficial e promover casos maduros a `casos canônicos`.
 
 `docs/MF_SCORE_AUDIT.md` deixou de ser apenas um resumo e passou a ser o documento oficial de governança técnica do Motor Financeiro, registrando cobertura, limitações conhecidas, achados de auditoria e dívida técnica.
+
+O Motor Financeiro adota oficialmente a regra de não dupla penalização: reserva baixa, comprometimento elevado e pressão futura devem reduzir prioritariamente os pilares correspondentes, deixando penalizações críticas para risco grave, materializado ou persistente.
 
 ## Arquitetura da soluÃ§Ã£o
 
@@ -279,9 +283,13 @@ ObservaÃ§Ã£o importante:
 - `InsightsFinanceirosService` transforma indicadores e saÃºde financeira em alertas, oportunidades, destaques positivos e orientaÃ§Ãµes acionÃ¡veis
 - `ResumoFinanceiroIAService` consolida saÃºde financeira, indicadores e insights em um payload Ãºnico pronto para consumo por interfaces e futuras integraÃ§Ãµes com IA
 - os indicadores temporais são serializados com os campos `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`, mantendo a leitura explícita na UI e no contexto enviado à IA
+- o `SaudeFinanceiraService` converte o resultado final do `MF Score` para escala `0 a 1000`, preservando os pilares em `0 a 100`
+- a versão atual das penalizações críticas concentra-se em inadimplência, fluxo mensal negativo, recorrência de meses negativos, patrimônio líquido negativo e ausência de dados essenciais
 - as fórmulas oficiais, pesos e regras de interpretação dos indicadores ficam documentadas em `docs/INDICADORES_FINANCEIROS.md`
 - o dashboard consome essa camada e nÃ£o deve recalcular indicadores diretamente
 - a inteligÃªncia financeira deve evoluir respeitando a cadeia `Dados -> Indicadores -> SaÃºde Financeira -> Insights -> ResumoFinanceiroIA`
+- o projeto passou a persistir histórico mensal do score na entidade `HistoricoMfScore`
+- um job Hangfire mensal calcula e salva a competência anterior do `MF Score` para todos os usuários ativos
 
 ### SaÃºde Financeira
 
@@ -464,7 +472,8 @@ ObservaÃ§Ã£o importante:
 
 - existe infraestrutura de Hangfire
 - existe projeto SignalR
-- hoje ambos ainda nÃ£o estÃ£o integrados ao fluxo principal do usuÃ¡rio
+- o Hangfire já possui job mensal de histórico do `MF Score`, executado no dia 01 e calculando a competência anterior
+- SignalR ainda não está integrado ao fluxo principal do usuário
 
 ## DecisÃµes arquiteturais relevantes
 

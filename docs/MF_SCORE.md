@@ -1,25 +1,40 @@
 # MF Score
 
-O MF Score, ou Minhas Finanças Score, é o modelo oficial de avaliação de risco financeiro pessoal do sistema.
+O `MF Score`, ou `Minhas Finanças Score`, é o modelo oficial de avaliação de risco financeiro pessoal do sistema.
 
-Ele substitui conceitualmente a antiga noção de simples pontuação de saúde financeira e passa a responder uma pergunta mais precisa:
+Ele responde à pergunta:
 
-> Qual a probabilidade de o usuário perder estabilidade financeira se continuar seguindo a trajetória atual?
+> Qual é o risco financeiro pessoal do usuário se ele continuar seguindo a trajetória atual?
 
-O MF Score não mede riqueza, felicidade financeira nem apenas disciplina de gastos.
-Ele mede risco, proteção, pressão estrutural e maturidade financeira ao longo do tempo.
+O `MF Score` não mede apenas riqueza, nem apenas disciplina. Ele mede risco, proteção, pressão estrutural, maturidade e persistência de comportamento ao longo do tempo.
 
-## Filosofia
+## Filosofia oficial
 
-- O score existe para interpretar risco financeiro pessoal.
-- O sistema analisa fatos, indicadores e tendência antes de emitir a nota final.
-- A IA apenas explica o que o sistema já calculou.
-- Nenhuma regra crítica deve ficar escondida em texto livre.
-- O score deve ser transparente, rastreável e evolutivo.
+- O `MF Score` deve funcionar como score de risco financeiro pessoal.
+- Indicadores ruins reduzem a nota dos pilares.
+- Penalizações críticas existem apenas para eventos graves, risco materializado ou persistência temporal.
+- Um mesmo fato econômico não deve ser punido duas vezes.
+- A IA apenas comunica e interpreta o que o sistema já calculou.
+- O modelo precisa ser transparente, rastreável, auditável e evolutivo.
 
-## Estrutura
+## Escalas oficiais
 
-O MF Score é construído em cinco pilares:
+### Pilares
+
+- Cada pilar permanece em escala `0 a 100`.
+
+### MF Score final
+
+- O `MF Score Base` e o `MF Score Final` usam escala `0 a 1000`.
+
+Exemplo:
+
+- score base `66/100` no cálculo interno dos pilares
+- score final exibido ao usuário: `660/1000`
+
+## Estrutura do modelo
+
+O `MF Score` é construído em cinco pilares:
 
 1. Fluxo de Caixa
 2. Liquidez
@@ -27,283 +42,198 @@ O MF Score é construído em cinco pilares:
 4. Patrimônio
 5. Planejamento
 
-Cada pilar gera sua própria nota.
-Depois disso o sistema calcula um `MF Score Base`.
+## Pesos oficiais
 
-Em seguida, regras críticas podem reduzir a nota para refletir riscos que não devem ser suavizados por média simples.
+- Fluxo de Caixa: `30%`
+- Liquidez: `25%`
+- Endividamento: `20%`
+- Patrimônio: `15%`
+- Planejamento: `10%`
 
-## Pesos iniciais
+## Como o score é calculado
 
-- Fluxo de Caixa: 30%
-- Liquidez: 25%
-- Endividamento: 20%
-- Patrimônio: 15%
-- Planejamento: 10%
+O cálculo oficial possui quatro camadas:
 
-## Indicadores por pilar
+1. nota dos pilares
+2. score base
+3. penalizações críticas
+4. persistência temporal do risco
 
-### Fluxo de Caixa
+### 1. Nota dos pilares
 
-- Economia mensal
-- Percentual de economia
-- Comprometimento da renda
-- Comprometimento financeiro futuro de 30 dias
+Cada pilar recebe nota de `0 a 100`, a partir dos indicadores associados.
 
-### Liquidez
+### 2. Score base
 
-- Reserva atual
-- Cobertura da reserva
-- Reserva ideal configurada
+O `MF Score Base` é a média ponderada dos cinco pilares e depois é convertido para a escala `0 a 1000`.
 
-### Endividamento
+Fluxo simplificado:
 
-- Endividamento patrimonial
-- Pressão financeira acumulada de 90 dias
-- Pressão financeira acumulada de 180 dias
-- Pressão financeira acumulada de 12 meses
-- Obrigações futuras
+1. cada pilar recebe sua nota de `0 a 100`
+2. cada pilar é multiplicado pelo seu peso
+3. o sistema calcula a média ponderada
+4. o resultado normalizado é convertido para `0 a 1000`
 
-### Patrimônio
+### 3. Penalizações críticas
 
-- Patrimônio líquido atual
-- Patrimônio-alvo
-- Percentual de avanço sobre o patrimônio-alvo
+Depois do score base, o sistema aplica apenas penalizações que representam risco grave, risco já materializado ou persistência temporal de deterioração.
 
-### Planejamento
+### 4. Persistência temporal do risco
 
-- Perfil financeiro configurado
-- Plano estratégico
-- Compromissos financeiros
-- Metas cadastradas
-- Consistência estratégica
+O modelo já considera recorrência histórica como agravante de risco.
 
-Na primeira versão, quando nem todos os dados estiverem disponíveis diretamente na mesma camada, o sistema usa os sinais estruturados já existentes como proxy para manter o score funcional e expansível.
+Na versão atual:
 
-## Score Base
+- `1 mês` negativo gera alerta e eventual penalização leve
+- `2 meses consecutivos` negativos elevam a penalização
+- `3 ou mais meses consecutivos` negativos elevam a penalização de forma forte
 
-O `MF Score Base` é a média ponderada das notas dos cinco pilares.
+## Regra oficial contra dupla penalização
 
-Fluxo de cálculo:
-
-1. cada pilar recebe uma nota de 0 a 100;
-2. cada pilar é multiplicado pelo seu peso;
-3. o total ponderado é dividido pela soma dos pesos;
-4. o resultado é arredondado para inteiro;
-5. o score base é então ajustado por regras críticas.
-
-## Regras críticas
-
-As regras críticas representam situações que exigem penalização explícita.
-
-Exemplos:
-
-- reserva inexistente;
-- comprometimento da renda muito elevado;
-- pressão financeira futura muito elevada;
-- endividamento patrimonial muito alto;
-- patrimônio líquido negativo.
-
-As penalizações são progressivas sempre que possível.
-
-## Classificação oficial
-
-- `90-100` - Excelente
-- `80-89` - Muito Bom
-- `70-79` - Bom
-- `60-69` - Atenção
-- `40-59` - Crítico
-- `0-39` - Muito Crítico
-
-## Tendência
-
-A tendência existe para mostrar se a trajetória está melhorando, estabilizada ou piorando.
-
-Na primeira versão:
-
-- a tendência pode ser calculada de forma determinística com base nos sinais atuais;
-- o histórico visual de evolução pode ser acrescentado depois;
-- o modelo já nasce preparado para receber séries históricas futuras.
-
-## Explicação da variação do score
-
-O backend deve conseguir explicar por que o score subiu ou caiu.
-
-A explicação deve ser produzida de forma determinística pelo sistema, com base em:
-
-- mudança de compromissos
-- mudança de reserva
-- mudança de pressão financeira
-- mudança de endividamento
-- mudança de patrimônio
-
-A IA apenas organiza e apresenta essa explicação em linguagem natural.
-
-## Calibração contínua
-
-O MF Score não é estático.
-
-Ele deve ser calibrado continuamente para refletir melhor o risco financeiro real do usuário.
-
-A etapa de calibração revisa:
-
-- indicadores
-- fórmulas
-- pesos
-- pilares
-- penalizações
-- indicadores críticos
-- classificação
-- tendência
-- textos oficiais
-- interpretação executiva
-
-## Suite oficial de validação
-
-Toda evolução do MF Score deve ser validada contra a suíte oficial de cenários do modelo.
-
-Essa suíte existe para garantir que mudanças futuras continuem produzindo resultados coerentes para casos financeiros representativos.
-
-O detalhamento operacional dos cenários, faixas esperadas e casos canônicos fica em `docs/MF_SCORE_VALIDATION.md`.
-
-## Casos oficiais de validação
-
-O modelo deve ser testado sempre com cenários recorrentes para evitar distorções.
+Um mesmo fato econômico não deve ser punido duas vezes.
 
 Exemplos oficiais:
 
-- pessoa com alta renda, reserva elevada e sem dívidas
-- pessoa com boa renda, mas cartão elevado e reserva zero
-- pessoa com patrimônio alto, porém comprometimento extremo
-- pessoa sem patrimônio, mas excelente fluxo de caixa
-- pessoa inadimplente
+- `reserva zero` deve reduzir o pilar `Liquidez`, mas não gerar penalização crítica automática só por existir
+- `comprometimento alto da renda` deve reduzir o pilar `Fluxo de Caixa`, mas não gerar penalização crítica automática se o usuário ainda mantém fluxo positivo e não está inadimplente
+- `pressão financeira futura` deve reduzir `Fluxo de Caixa` e `Endividamento`, mas não gerar penalização crítica automática sem evidência de incapacidade de pagamento, inadimplência ou persistência negativa
 
-Esses cenários servem como base para validar alterações futuras do Motor Financeiro.
+## Penalizações críticas oficiais
 
-## MF Score Potencial
+As penalizações críticas da versão atual devem se concentrar em eventos como:
 
-O `MF Score Potencial` representa o ponto para onde o usuário poderia evoluir caso mantenha a estratégia atual e elimine os principais pontos de pressão financeira.
+1. inadimplência
+2. fluxo de caixa mensal negativo
+3. recorrência de meses consecutivos no vermelho
+4. patrimônio líquido negativo
+5. ausência de dados essenciais que comprometa a confiabilidade mínima da análise
 
-Na versão atual, esse conceito ainda é apenas documentado como evolução futura.
+### O que não deve ser penalização crítica automática
+
+Os itens abaixo devem afetar prioritariamente os pilares e não a camada de penalização crítica automática:
+
+- reserva de emergência baixa ou inexistente
+- comprometimento alto da renda
+- pressão futura de 30 dias
+- pressão financeira acumulada
+- endividamento patrimonial alto, quando ainda não houver evidência de ruptura operacional
+
+## Classificação oficial do MF Score
+
+- `900-1000` - Excelente - Risco Muito Baixo
+- `800-899` - Muito Bom - Risco Baixo
+- `700-799` - Bom - Risco Moderado
+- `600-699` - Atenção - Risco Moderado-Alto
+- `400-599` - Crítico - Risco Alto
+- `0-399` - Muito Crítico - Risco Muito Alto
+
+## Tendência
+
+A tendência mostra se a trajetória está:
+
+- melhorando
+- estável
+- piorando
+
+Na versão atual, ela já pode usar histórico mensal real quando disponível. Quando o histórico ainda é insuficiente, o sistema usa fallback determinístico baseado no equilíbrio dos indicadores.
+
+## Histórico mensal do MF Score
+
+O projeto agora possui persistência mensal oficial do score por meio da entidade `HistoricoMfScore`.
+
+Objetivo:
+
+- preservar a evolução mensal do score
+- permitir leitura histórica real
+- dar base para tendência, auditoria e futuras análises comparativas
+
+Campos principais:
+
+- `UsuarioId`
+- `CompetenciaAno`
+- `CompetenciaMes`
+- `MfScoreBase`
+- `MfScoreFinal`
+- `Classificacao`
+- `Risco`
+- `PenalidadeTotal`
+- `DataCalculo`
+- `VersaoModelo`
+- `JsonPilares`
+- `JsonIndicadoresCriticos`
+- `JsonResumo`
+- `CriadoEm`
+
+Regra:
+
+- o histórico preserva o resultado da competência
+- não deve sobrescrever competências antigas sem regra explícita
+
+## Hangfire
+
+O projeto agora possui um job recorrente mensal para persistir o histórico do `MF Score`.
+
+Configuração atual:
+
+- execução: `dia 01 de cada mês`
+- cron: `0 2 1 * *`
+- comportamento adotado: calcula a `competência anterior`
 
 Exemplo:
 
-- MF Score atual: 64
-- MF Score potencial: 87
+- no dia `01/08/2026`, o job calcula e persiste a competência de `07/2026`
 
 Objetivo:
 
-- mostrar ao usuário onde ele pode chegar
-- apoiar planejamento e motivação
-- reforçar que o score é uma trajetória, não apenas uma fotografia
+- buscar usuários ativos
+- calcular o score oficial
+- salvar no histórico
+- registrar logs
+- tratar falhas por usuário sem interromper toda a execução
 
 ## Relação com outras camadas
 
-- `AnaliseFinanceira` calcula os pilares e o MF Score.
-- `Saúde Financeira` exibe o score, a classificação, o risco e a leitura dos pilares.
-- `ResumoFinanceiroIA` leva o score consolidado para a IA e para interfaces executivas.
-- `Assistente Financeiro` transforma esse score em narrativa consultiva.
-- `Simulações`, `Projeções`, `Patrimônio` e `Plano Estratégico` poderão usar o MF Score como referência para avaliar qualidade de cenários e decisões.
+- `AnaliseFinanceira` calcula pilares, score base, penalizações e tendência
+- `Saúde Financeira` exibe o `MF Score`, classificação, risco e leitura detalhada
+- `Assistente Financeiro` usa o score como base executiva
+- `ResumoFinanceiroIA` leva o score consolidado para IA e interfaces estratégicas
+- `Personas de Calibração` e auditorias usam o mesmo motor oficial
 
-## Exemplo resumido
+## Personas, validação e auditoria
 
-Se os pilares forem:
+Toda evolução do `MF Score` deve ser confrontada com:
 
-- Fluxo de Caixa: 72
-- Liquidez: 34
-- Endividamento: 59
-- Patrimônio: 81
-- Planejamento: 93
+- `docs/MF_SCORE_VALIDATION.md`
+- `docs/MF_SCORE_AUDIT.md`
 
-O sistema gera um MF Score Base e aplica as regras críticas antes de produzir a nota final.
+Além disso:
+
+- a auditoria operacional continua obrigatória em mudanças relevantes
+- a auditoria humana continua sendo a base para amadurecer faixas oficiais e casos canônicos
+- personas persistidas continuam sendo cenários sintéticos, nunca usuários reais
+
+## MF Score Potencial
+
+O conceito de `MF Score Potencial` permanece como evolução futura.
+
+Ele representa para onde o usuário poderia evoluir se corrigisse os principais pontos de pressão financeira sem alterar negativamente sua base atual.
 
 ## Regra de manutenção
 
-Sempre que mudar um indicador, peso, fórmula, regra crítica, classificação ou tendência, este documento e `docs/INDICADORES_FINANCEIROS.md` devem ser atualizados na mesma entrega.
+Sempre que houver alteração em:
 
-Além disso, qualquer mudança deve ser confrontada com a `Suite Oficial de Validação do MF Score` antes de ser considerada concluída.
+- escala
+- fórmula
+- pesos
+- pilares
+- penalizações
+- classificações
+- histórico
+- tendência
 
-## Auditoria operacional oficial
+devem ser atualizados, na mesma entrega:
 
-Além da validação conceitual, o projeto possui uma auditoria operacional interna do `MF Score`.
-
-Objetivo:
-
-- executar o motor oficial em cenários sintéticos controlados;
-- comparar o score obtido com a faixa esperada de cada persona;
-- registrar o resultado em planilha `.xlsx` para leitura rápida e auditoria humana.
-
-Características:
-
-- usa o fluxo real `ContextoAnaliseFinanceira -> IndicadoresFinanceirosService -> SaudeFinanceiraService`;
-- não duplica fórmulas do score;
-- não depende de interface;
-- existe apenas para uso interno em desenvolvimento;
-- reforça a etapa de calibração contínua do Motor Financeiro.
-
-O detalhamento operacional dessa auditoria fica em `docs/MF_SCORE_AUDIT.md`.
-
-## Auditoria humana das personas
-
-Além da auditoria automática, o projeto agora possui uma auditoria humana das personas.
-
-Objetivo:
-
-- permitir que o time avalie cada persona como um consultor financeiro avaliaria;
-- registrar nota humana, faixa humana e percepção qualitativa do caso;
-- decidir com mais cuidado quando uma persona deve virar caso canônico oficial.
-
-Diferença de papéis:
-
-- `GerarPlanilha`: validação automática contra a faixa esperada atual;
-- `GerarPlanilhaAuditoriaHumana`: auditoria manual cega para calibração futura.
-
-A faixa esperada oficial não deve nascer apenas da automação. Ela deve ser apoiada pela avaliação humana documentada.
-
-## Personas de calibração persistidas
-
-Além das personas fixas usadas pela auditoria operacional, o projeto agora possui uma ferramenta interna com persistência própria para cadastrar `Personas de Calibração do MF Score`.
-
-Fluxo principal:
-
-- cadastrar a persona sintética;
-- preencher dados financeiros simulados;
-- registrar score humano, faixa esperada e justificativa;
-- rodar o motor oficial do `MF Score`;
-- marcar a persona como auditada;
-- promover a persona madura a `caso canônico`, quando fizer sentido.
-
-Essa ferramenta fica disponível pela tela `/mf-score-personas` e pelos endpoints `api/MfScorePersonas`.
-
-Importante:
-
-- a persona não é um usuário real;
-- a ferramenta existe para calibrar o motor, não para substituir módulos finais do produto;
-- o endpoint `RodarScore` reutiliza o fluxo oficial do motor e não cria fórmula paralela.
-
-## Governança técnica do Motor Financeiro
-
-Além de explicar o modelo e sua validação, o projeto agora mantém uma auditoria arquitetural permanente do Motor Financeiro em `docs/MF_SCORE_AUDIT.md`.
-
-Esse documento passa a registrar:
-
-- cobertura atual dos pilares;
-- cobertura conceitual do domínio;
-- limitações conhecidas;
-- achados formais de auditoria;
-- dívida técnica do Motor Financeiro.
-
-Essa separação existe para que a evolução do `MF Score` não dependa apenas de memória informal durante as implementações.
-
-## Observação importante sobre o pilar Planejamento
-
-Na versão atual do Motor Financeiro, o pilar `Planejamento` ainda é avaliado principalmente por proxies de organização financeira.
-
-Isso significa que o score ainda não considera diretamente, de forma madura e completa:
-
-- o plano estratégico vigente;
-- os compromissos financeiros ativos;
-- o histórico de cumprimento dos compromissos;
-- a consistência de execução do plano;
-- a evolução do comportamento estratégico ao longo do tempo.
-
-Essa limitação está registrada oficialmente no achado `MF-001` em `docs/MF_SCORE_AUDIT.md`.
+- `docs/MF_SCORE.md`
+- `docs/INDICADORES_FINANCEIROS.md`
+- `docs/MF_SCORE_AUDIT.md`
+- `docs/CHANGELOG.md`

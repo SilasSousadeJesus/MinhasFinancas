@@ -56,6 +56,8 @@ Agora ele já consegue ir além do diagnóstico pontual e começar a enxergar a 
 
 O Assistente também passou a ser guiado pelo MF Score, que organiza o risco financeiro pessoal em pilares, tendência e regras críticas.
 
+Essa base agora utiliza score final em escala `0 a 1000`, mantendo os pilares em `0 a 100`, para comunicar risco com mais granularidade sem perder legibilidade estrutural.
+
 Isso reforça a filosofia do projeto:
 
 **o Motor Financeiro produz conhecimento. A IA apenas comunica esse conhecimento.**

@@ -90,7 +90,7 @@ function obterTextoStatus(status: number) {
     case STATUS_EXCELENTE:
       return "Excelente";
     case STATUS_BOM:
-      return "Boa";
+      return "Bom";
     case STATUS_CRITICO:
       return "Crítica";
     default:
@@ -117,6 +117,7 @@ function obterVariantClassificacao(classificacao: string): "default" | "secondar
     case "Muito Bom":
       return "secondary";
     case "Boa":
+    case "Bom":
       return "outline";
     case "Muito Crítico":
     case "Crítica":
@@ -683,7 +684,7 @@ export function AssistenteFinanceiroManager() {
                 <div className="flex items-end gap-3">
                   <p className="text-5xl font-bold tracking-tight">
                     {resumo?.saudeFinanceira.mfScore.pontuacaoFinal ?? resumo?.saudeFinanceira.pontuacaoGeral ?? 0}
-                    <span className="text-xl text-muted-foreground">/100</span>
+                    <span className="text-xl text-muted-foreground">/1000</span>
                   </p>
                   <Badge
                     variant={obterVariantClassificacao(resumo?.saudeFinanceira.mfScore.classificacao ?? resumo?.saudeFinanceira.classificacao ?? "Atenção")}
@@ -882,7 +883,7 @@ export function AssistenteFinanceiroManager() {
                   {analiseExibida
                     ? `Análise aberta: ${truncarTexto(analiseExibida.perguntaUsuario, 90)}. Pontuação ${
                         resumo?.saudeFinanceira.mfScore.pontuacaoFinal ?? resumo?.saudeFinanceira.pontuacaoGeral ?? 0
-                      }/100.`
+                      }/1000.`
                     : "Nenhuma análise carregada no momento. Gere uma análise aprofundada para começar a construir sua Memória Financeira."}
                 </div>
               ) : null}
@@ -1198,13 +1199,14 @@ export function AssistenteFinanceiroManager() {
                                   ) : null}
                                 </div>
                               </TableCell>
-                              <TableCell className="font-semibold">{analise.pontuacaoSaudeFinanceira}/100</TableCell>
+                              <TableCell className="font-semibold">{analise.pontuacaoSaudeFinanceira}/1000</TableCell>
                               <TableCell>
                                 <Badge variant={obterVariantClassificacao(analise.classificacaoSaudeFinanceira)}>
                                   {obterTextoStatus(
                                     analise.classificacaoSaudeFinanceira === "Excelente"
                                       ? STATUS_EXCELENTE
-                                      : analise.classificacaoSaudeFinanceira === "Boa"
+                                      : analise.classificacaoSaudeFinanceira === "Boa" ||
+                                          analise.classificacaoSaudeFinanceira === "Bom"
                                         ? STATUS_BOM
                                         : analise.classificacaoSaudeFinanceira === "Crítica" ||
                                             analise.classificacaoSaudeFinanceira === "Critica"

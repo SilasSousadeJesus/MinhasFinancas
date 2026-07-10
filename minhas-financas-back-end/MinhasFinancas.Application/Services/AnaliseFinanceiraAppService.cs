@@ -8,7 +8,7 @@ namespace MinhasFinancas.Application.Services
 {
     public class AnaliseFinanceiraAppService : IAnaliseFinanceiraAppService
     {
-        private readonly IUsuarioAppService _usuarioAppService;
+        private readonly IUsuarioRepository _usuarioRepository;
         private readonly ILancamentoRepository _lancamentoRepository;
         private readonly IBemMaterialRepository _bemMaterialRepository;
         private readonly IPassivoRepository _passivoRepository;
@@ -16,14 +16,14 @@ namespace MinhasFinancas.Application.Services
         private readonly IIndicadoresFinanceirosService _indicadoresFinanceirosService;
 
         public AnaliseFinanceiraAppService(
-            IUsuarioAppService usuarioAppService,
+            IUsuarioRepository usuarioRepository,
             ILancamentoRepository lancamentoRepository,
             IBemMaterialRepository bemMaterialRepository,
             IPassivoRepository passivoRepository,
             IPerfilFinanceiroRepository perfilFinanceiroRepository,
             IIndicadoresFinanceirosService indicadoresFinanceirosService)
         {
-            _usuarioAppService = usuarioAppService;
+            _usuarioRepository = usuarioRepository;
             _lancamentoRepository = lancamentoRepository;
             _bemMaterialRepository = bemMaterialRepository;
             _passivoRepository = passivoRepository;
@@ -67,11 +67,22 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
-        public async Task<PainelIndicadoresFinanceiros?> BuscarPainelIndicadoresInternoAsync(string usuarioId)
+        public async Task<PainelIndicadoresFinanceiros?> BuscarPainelIndicadoresInternoAsync(string usuarioId, DateTime? dataReferencia = null)
         {
-            var buscaUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+            var contexto = await BuscarContextoAnaliseInternoAsync(usuarioId, dataReferencia);
+            if (contexto is null)
+            {
+                return null;
+            }
 
-            if (!buscaUsuario.Sucesso)
+            return _indicadoresFinanceirosService.Calcular(contexto);
+        }
+
+        public async Task<ContextoAnaliseFinanceira?> BuscarContextoAnaliseInternoAsync(string usuarioId, DateTime? dataReferencia = null)
+        {
+            var usuarioExiste = await _usuarioRepository.ExisteUsuarioAsync(usuarioId);
+
+            if (!usuarioExiste)
             {
                 return null;
             }
@@ -87,14 +98,14 @@ namespace MinhasFinancas.Application.Services
                 .ThenByDescending(x => x.DataCriacao)
                 .FirstOrDefault();
 
-            return _indicadoresFinanceirosService.Calcular(new ContextoAnaliseFinanceira
+            return new ContextoAnaliseFinanceira
             {
-                DataReferencia = DateTime.Today,
+                DataReferencia = (dataReferencia ?? DateTime.Today).Date,
                 Lancamentos = lancamentos,
                 Ativos = ativos,
                 Passivos = passivos,
                 ConfiguracaoPerfilFinanceiro = configuracaoVigente,
-            });
+            };
         }
     }
 }

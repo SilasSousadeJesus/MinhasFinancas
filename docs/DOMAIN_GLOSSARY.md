@@ -163,7 +163,7 @@ Leitura interpretativa construída a partir dos indicadores financeiros e dos pa
 
 ## Pontuação de Saúde Financeira
 
-Medida sintética de 0 a 100 calculada a partir do conjunto de indicadores financeiros.
+Medida sintética de 0 a 1000 calculada a partir do conjunto de indicadores financeiros, enquanto os pilares permanecem em 0 a 100.
 
 Ela resume, de forma simples, o equilíbrio financeiro atual do usuário.
 
@@ -403,7 +403,7 @@ Ele não representa obrigações futuras de cartão, parcelas ou lançamentos pe
 
 ## Pontuação de Saúde Financeira
 
-Medida sintética de 0 a 100 calculada a partir de uma média ponderada dos indicadores financeiros, incluindo leituras de curto prazo e pressão financeira acumulada em horizontes maiores.
+Medida sintética de 0 a 1000 calculada a partir de uma média ponderada dos indicadores financeiros, incluindo leituras de curto prazo, pressão financeira acumulada e penalizações críticas oficiais.
 
 Indicadores de contexto ou configuração têm peso reduzido quando servem mais como régua pessoal do que como medida direta de desempenho.
 
@@ -427,6 +427,18 @@ O MF Score produz:
 - risco textual;
 - tendência;
 - indicadores críticos que aplicam penalizações.
+- histórico mensal persistido por competência.
+
+## HistoricoMfScore
+
+Entidade persistida que registra a evolução mensal do `MF Score` por usuário e competência.
+
+Serve para:
+
+- preservar a fotografia histórica do score
+- sustentar tendência com base real
+- permitir auditoria e análise comparativa
+- apoiar futuras leituras evolutivas
 
 ## Calibração do MF Score
 

@@ -757,26 +757,26 @@ export function MfScorePersonasManager() {
                   <div className="space-y-2">
                     <h3 className="text-base font-semibold">4. Avaliação humana</h3>
                     <p className="text-sm text-muted-foreground">
-                      Use este bloco para registrar a leitura humana esperada antes de promover a persona a caso canônico.
+                      Use este bloco para registrar a leitura humana esperada antes de promover a persona a caso canônico. O MF Score final usa escala de 0 a 1000 e os pilares continuam em 0 a 100.
                     </p>
                   </div>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
                   <CampoNumero
-                    label="Score humano sugerido"
+                    label="Score humano sugerido (0 a 1000)"
                     value={formulario.scoreHumanoSugerido}
                     onChange={(v) => atualizarCampo("scoreHumanoSugerido", v)}
                     inteiro
                   />
                   <CampoNumero
-                    label="Faixa esperada mínima"
+                    label="Faixa esperada mínima (0 a 1000)"
                     value={formulario.faixaEsperadaMin}
                     onChange={(v) => atualizarCampo("faixaEsperadaMin", v)}
                     inteiro
                   />
                   <CampoNumero
-                    label="Faixa esperada máxima"
+                    label="Faixa esperada máxima (0 a 1000)"
                     value={formulario.faixaEsperadaMax}
                     onChange={(v) => atualizarCampo("faixaEsperadaMax", v)}
                     inteiro
@@ -822,7 +822,7 @@ export function MfScorePersonasManager() {
             <CardHeader>
               <CardTitle>5. Resultado do motor</CardTitle>
               <CardDescription>
-                Após rodar o score, esta área mostra o resultado calculado pelo motor oficial, sem duplicar fórmulas.
+                Após rodar o score, esta área mostra o resultado calculado pelo motor oficial. O MF Score aparece em escala 0 a 1000 e os pilares continuam em escala 0 a 100.
               </CardDescription>
             </CardHeader>
             <CardContent>

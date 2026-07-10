@@ -593,6 +593,71 @@ namespace MinhasFinancas.Infra.Migrations
                     b.ToTable("DividaManualProjecaoMensal");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.HistoricoMfScore", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Classificacao")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("CompetenciaAno")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompetenciaMes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataCalculo")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("JsonIndicadoresCriticos")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("JsonPilares")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("JsonResumo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("MfScoreBase")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MfScoreFinal")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PenalidadeTotal")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Risco")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("VersaoModelo")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetenciaAno", "CompetenciaMes");
+
+                    b.HasIndex("UsuarioId", "CompetenciaAno", "CompetenciaMes", "VersaoModelo")
+                        .IsUnique();
+
+                    b.ToTable("HistoricoMfScore");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Lancamento", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1427,6 +1492,17 @@ namespace MinhasFinancas.Infra.Migrations
                         .IsRequired();
 
                     b.Navigation("Projecao");
+                });
+
+            modelBuilder.Entity("MinhasFinancas.Domain.Entities.HistoricoMfScore", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.Entities.Lancamento", b =>

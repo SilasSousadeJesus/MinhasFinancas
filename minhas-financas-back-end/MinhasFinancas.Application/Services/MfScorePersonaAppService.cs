@@ -184,7 +184,8 @@ namespace MinhasFinancas.Application.Services
 
                 var contexto = CriarContexto(persona);
                 var indicadores = _indicadoresFinanceirosService.Calcular(contexto);
-                var painel = _saudeFinanceiraService.GerarPainel(indicadores);
+                var contextoComplementar = ConstruirContextoComplementar(persona, contexto);
+                var painel = _saudeFinanceiraService.GerarPainel(indicadores, contextoComplementar);
                 var mfScore = painel.Resumo.MfScore;
 
                 var dto = new ResultadoRodarMfScorePersonaDTO
@@ -695,6 +696,78 @@ namespace MinhasFinancas.Application.Services
             }
 
             return null;
+        }
+
+        private static ContextoComplementarMfScoreFinanceiro ConstruirContextoComplementar(
+            PersonaMfScore persona,
+            ContextoAnaliseFinanceira contexto)
+        {
+            var dataReferencia = contexto.DataReferencia.Date;
+            var mesAtual = new DateTime(dataReferencia.Year, dataReferencia.Month, 1);
+            var lancamentos = contexto.Lancamentos
+                .Where(x => x.StatusLancamento != EnumStatusLancamento.Cancelado)
+                .ToList();
+
+            var fluxoMensalAtual = CalcularFluxoMensal(lancamentos, mesAtual);
+            var mesesConsecutivos = CalcularMesesConsecutivosFluxoNegativo(lancamentos, mesAtual, 12);
+            var possuiInadimplenciaDetectada = lancamentos.Any(x =>
+                x.Tipo == EnumTipoLancamento.Despesa &&
+                x.StatusLancamento == EnumStatusLancamento.Pendente &&
+                x.DataVencimento.Date < dataReferencia);
+
+            return new ContextoComplementarMfScoreFinanceiro
+            {
+                PossuiFluxoMensalNegativoAtual = fluxoMensalAtual < 0m,
+                MesesConsecutivosFluxoNegativo = mesesConsecutivos,
+                PossuiInadimplencia = persona.PossuiInadimplencia || possuiInadimplenciaDetectada,
+                PossuiDadosEssenciaisInsuficientes =
+                    !lancamentos.Any() ||
+                    (!contexto.Ativos.Any() && !contexto.Passivos.Any()),
+                HistoricoPontuacoesFinais = []
+            };
+        }
+
+        private static decimal CalcularFluxoMensal(IReadOnlyCollection<Lancamento> lancamentos, DateTime competencia)
+        {
+            var receitas = lancamentos
+                .Where(x =>
+                    x.Tipo == EnumTipoLancamento.Receita &&
+                    x.DataVencimento.Year == competencia.Year &&
+                    x.DataVencimento.Month == competencia.Month)
+                .Sum(x => x.Valor);
+
+            var despesas = lancamentos
+                .Where(x =>
+                    x.Tipo == EnumTipoLancamento.Despesa &&
+                    x.DataVencimento.Year == competencia.Year &&
+                    x.DataVencimento.Month == competencia.Month)
+                .Sum(x => x.Valor);
+
+            return receitas - despesas;
+        }
+
+        private static int CalcularMesesConsecutivosFluxoNegativo(
+            IReadOnlyCollection<Lancamento> lancamentos,
+            DateTime competenciaAtual,
+            int limiteMeses)
+        {
+            var consecutivos = 0;
+
+            for (var indice = 0; indice < limiteMeses; indice++)
+            {
+                var competencia = competenciaAtual.AddMonths(-indice);
+                var fluxo = CalcularFluxoMensal(lancamentos, competencia);
+
+                if (fluxo < 0m)
+                {
+                    consecutivos++;
+                    continue;
+                }
+
+                break;
+            }
+
+            return consecutivos;
         }
 
         private static RetornoGenerico CriarErro(Exception ex, string mensagemUsuario)

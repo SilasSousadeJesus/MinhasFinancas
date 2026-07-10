@@ -42,7 +42,7 @@ namespace MinhasFinancas.Infra.IA.Interpretadores
             {
                 var unica = lista[0];
                 interpretacao.ResumoEvolucao =
-                    $"Existe apenas uma analise anterior registrada, referente a {unica.PeriodoReferencia.ToString("MMMM 'de' yyyy", Cultura)}, com pontuacao {unica.PontuacaoSaudeFinanceira}/100 e classificacao {unica.ClassificacaoSaudeFinanceira}.";
+                    $"Existe apenas uma analise anterior registrada, referente a {unica.PeriodoReferencia.ToString("MMMM 'de' yyyy", Cultura)}, com pontuacao {unica.PontuacaoSaudeFinanceira}/1000 e classificacao {unica.ClassificacaoSaudeFinanceira}.";
 
                 interpretacao.SinaisContinuidade =
                 [
@@ -292,7 +292,7 @@ namespace MinhasFinancas.Infra.IA.Interpretadores
                 .Take(2)
                 .ToList();
 
-            return $"- {memoria.PeriodoReferencia:MM/yyyy} | {memoria.PontuacaoSaudeFinanceira}/100 | {memoria.ClassificacaoSaudeFinanceira} | Prioridades: {FormatarLista(prioridades, "nenhuma prioridade")} | Riscos: {FormatarLista(riscos, "nenhum risco destacado")}";
+            return $"- {memoria.PeriodoReferencia:MM/yyyy} | {memoria.PontuacaoSaudeFinanceira}/1000 | {memoria.ClassificacaoSaudeFinanceira} | Prioridades: {FormatarLista(prioridades, "nenhuma prioridade")} | Riscos: {FormatarLista(riscos, "nenhum risco destacado")}";
         }
 
         private static string FormatarLista(IReadOnlyCollection<string> itens, string fallback = "nenhum registro")

@@ -73,6 +73,7 @@ function obterAbertura(classificacao?: string) {
     case "Muito Bom":
       return "Sua situação financeira mostra uma base muito consistente e com boa margem de proteção.";
     case "Boa":
+    case "Bom":
       return "Sua situação financeira mostra sinais consistentes de equilíbrio.";
     case "Crítica":
       return "O momento financeiro exige cautela e reorganização das prioridades.";
@@ -212,6 +213,6 @@ export class ConclusaoFinanceiraBuilder {
     const pontoAtencao = interpretarPontoAtencao(principalPontoAtencao);
     const direcao = interpretarDirecao(principalPontoAtencao, classificacao);
 
-    return `${abertura} Com MF Score de ${pontuacao}/100, classificação ${classificacao} e ${risco.toLowerCase()}, o quadro atual combina ${pontoForte}. O principal fator de pressão hoje é ${pontoAtencao}. Para o próximo ciclo, a direção mais prudente é ${direcao}.`;
+    return `${abertura} Com MF Score de ${pontuacao}/1000, classificação ${classificacao} e ${risco.toLowerCase()}, o quadro atual combina ${pontoForte}. O principal fator de pressão hoje é ${pontoAtencao}. Para o próximo ciclo, a direção mais prudente é ${direcao}.`;
   }
 }

@@ -32,8 +32,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Pers
             {
                 Nome = "Planejamento excelente",
                 Descricao = "Perfil bem configurado, meta registrada e bons sinais de organizacao financeira, sem deixar o planejamento dominar o score.",
-                ScoreEsperadoMin = 78,
-                ScoreEsperadoMax = 92,
+                ScoreEsperadoMin = 780,
+                ScoreEsperadoMax = 920,
                 Justificativa = "O planejamento deve ajudar a nota, mas continua subordinado a fluxo, liquidez, endividamento e patrimonio reais.",
                 Observacoes = "Limitacao conhecida: o pilar de planejamento ainda usa proxies do motor atual; metas entram no contexto, mas nao mudam diretamente a formula do score nesta versao.",
                 Contexto = CriarContexto(lancamentos, ativos, passivos, configuracao, metas),

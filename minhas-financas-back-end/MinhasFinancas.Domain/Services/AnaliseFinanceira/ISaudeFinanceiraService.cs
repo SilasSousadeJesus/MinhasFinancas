@@ -4,6 +4,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 {
     public interface ISaudeFinanceiraService
     {
-        PainelSaudeFinanceira GerarPainel(PainelIndicadoresFinanceiros indicadores);
+        PainelSaudeFinanceira GerarPainel(
+            PainelIndicadoresFinanceiros indicadores,
+            ContextoComplementarMfScoreFinanceiro? contextoComplementar = null);
     }
 }

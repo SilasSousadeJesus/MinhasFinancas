@@ -16,6 +16,19 @@ namespace MinhasFinancas.Infra.Data.Repositories
             _context = context;
         }
 
+        public async Task<bool> ExisteUsuarioAsync(string usuarioId)
+        {
+            return await _context.Users.AsNoTracking().AnyAsync(x => x.Id == usuarioId);
+        }
+
+        public async Task<List<string>> BuscarIdsUsuariosAtivosAsync()
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .Select(x => x.Id)
+                .ToListAsync();
+        }
+
 
         public async Task DeletarUsuarioESeusDados(Usuario usuario)
         {

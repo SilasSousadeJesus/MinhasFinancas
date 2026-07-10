@@ -34,7 +34,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Pers
                 Nome = "Inadimplencia",
                 Descricao = "Atrasos relevantes, pressao de caixa imediata, reserva inexistente e passivos elevados.",
                 ScoreEsperadoMin = 0,
-                ScoreEsperadoMax = 49,
+                ScoreEsperadoMax = 490,
                 Justificativa = "Mesmo sem um campo explicito de inadimplencia no modelo, a melhor aproximacao deve produzir penalizacao forte.",
                 Observacoes = "Limitacao conhecida: o dominio ainda nao possui um marcador explicito de inadimplencia; o cenario usa atrasos pendentes e passivos altos como aproximacao.",
                 Contexto = CriarContexto(lancamentos, ativos, passivos, configuracao, dataReferencia: dataReferencia),

@@ -136,7 +136,7 @@ namespace MinhasFinancas.Infra.IA.Construtores
                 MontarSecao(
                     "Saude Financeira",
                     [
-                        $"Pontuacao geral: {resumoFinanceiroIA.SaudeFinanceira.PontuacaoGeral}/100",
+                        $"Pontuacao geral: {resumoFinanceiroIA.SaudeFinanceira.PontuacaoGeral}/1000",
                         $"Classificacao atual: {resumoFinanceiroIA.SaudeFinanceira.Classificacao}"
                     ]),
                 MontarSecao(

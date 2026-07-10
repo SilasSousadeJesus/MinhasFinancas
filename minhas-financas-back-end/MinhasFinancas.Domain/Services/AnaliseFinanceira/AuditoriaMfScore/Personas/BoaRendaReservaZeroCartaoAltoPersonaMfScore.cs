@@ -27,8 +27,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Pers
             {
                 Nome = "Boa renda, reserva zero e cartao alto",
                 Descricao = "Renda boa, mas sem reserva e com forte pressao de cartao e obrigacoes recorrentes.",
-                ScoreEsperadoMin = 60,
-                ScoreEsperadoMax = 74,
+                ScoreEsperadoMin = 600,
+                ScoreEsperadoMax = 740,
                 Justificativa = "A renda sustenta algum equilibrio, mas a ausencia de reserva e a pressao recorrente impedem um score alto.",
                 Contexto = CriarContexto(lancamentos, ativos, passivos, configuracao),
                 DadosEntrada = CriarDadosEntrada(8000m, 5500m, 0m, 12000m, 18000m, 5500m, 16500m, 33000m, 66000m)
