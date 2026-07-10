@@ -44,6 +44,13 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 10/07/2026
 
+- Refatoração da antiga tela de Personas de Calibração para o novo `Laboratório do MF Score`.
+- Criação da rota `/mf-score-laboratorio` e manutenção de compatibilidade em `/mf-score-personas`.
+- Criação dos endpoints `GET /api/MfScoreLaboratorio/Usuarios` e `GET /api/MfScoreLaboratorio/Usuarios/{usuarioId}/Score`.
+- Remoção visual das ações de CRUD, auditoria e promoção de personas da tela autenticada.
+- Substituição do foco em cenários sintéticos por inspeção somente leitura de usuários reais, com score, pilares, indicadores, penalizações, regras críticas, dados de entrada e limitações do cálculo.
+- Sincronização da documentação para registrar o laboratório como ferramenta interna de leitura do Motor Financeiro, sem alteração de fórmulas do `MF Score`.
+
 - Evolução do Motor Financeiro para `mf-score-v2.2-1000`.
 - Incorporação determinística de `Plano Estratégico Financeiro` e `Compromissos Financeiros` no pilar `Planejamento e Disciplina`, sem penalizar usuários que ainda não possuem esses elementos.
 - Implementação de leitura de reincidência e cura recente da inadimplência como agravantes/resíduos distintos da inadimplência atual.

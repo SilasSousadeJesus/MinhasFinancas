@@ -215,6 +215,42 @@ Ele trabalha em conjunto com:
 - `docs/MF_SCORE_VALIDATION.md` - cenários, faixas esperadas e validação
 - auditoria operacional - conferência prática do motor
 - auditoria humana - calibração cega das personas
+- laboratório do MF Score - inspeção visual e somente leitura do score em usuários reais
+
+## Laboratório do MF Score
+
+O projeto agora possui uma tela interna chamada `Laboratório do MF Score`.
+
+### Objetivo
+
+- inspecionar usuários reais do sistema
+- entender como o motor oficial construiu o score daquele usuário
+- facilitar auditoria visual sem criar dados artificiais
+
+### Escopo
+
+O laboratório exibe:
+
+- score base
+- score final
+- classificação
+- risco
+- penalidade total
+- pilares
+- indicadores
+- indicadores críticos
+- penalizações
+- regras críticas aplicadas
+- dados resumidos de entrada
+- observações de limitação e cobertura
+
+### Regras
+
+- a tela é somente leitura
+- não cria, edita, exclui nem promove personas
+- não altera fórmulas do `MF Score`
+- não grava snapshots específicos do laboratório
+- reutiliza o mesmo motor oficial já consumido por Saúde Financeira e Assistente Financeiro
 
 ## Situação atual
 

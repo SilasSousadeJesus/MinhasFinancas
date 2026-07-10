@@ -29,6 +29,22 @@ namespace MinhasFinancas.Infra.Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Usuario>> BuscarUsuariosParaLaboratorioAsync()
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .OrderBy(x => x.Nome ?? x.Email)
+                .ThenBy(x => x.Email)
+                .ToListAsync();
+        }
+
+        public async Task<Usuario?> BuscarResumoUsuarioAsync(string usuarioId)
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == usuarioId);
+        }
+
 
         public async Task DeletarUsuarioESeusDados(Usuario usuario)
         {

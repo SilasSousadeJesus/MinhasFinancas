@@ -26,7 +26,9 @@ Além da suíte conceitual, o projeto agora possui uma auditoria operacional int
 
 O projeto passa a ter também uma segunda auditoria interna, `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`, voltada para avaliação humana cega das personas. Ela não aprova nem reprova automaticamente o motor; serve para documentar a nota que um consultor daria e transformar essa leitura em futuros padrões oficiais.
 
-O fluxo de calibração do `MF Score` agora também possui um CRUD persistido de `Personas de Calibração`, exposto por `api/MfScorePersonas` e pela tela autenticada `/mf-score-personas`. Essas personas não representam usuários reais; são cenários sintéticos internos usados para cadastrar, auditar, rodar o motor oficial e promover casos maduros a `casos canônicos`.
+O fluxo de calibração do `MF Score` continua possuindo um CRUD persistido de `Personas de Calibração`, exposto por `api/MfScorePersonas`. Essas personas não representam usuários reais; são cenários sintéticos internos usados para cadastrar, auditar, rodar o motor oficial e promover casos maduros a `casos canônicos`.
+
+A antiga tela de personas foi refatorada para o `Laboratório do MF Score`, disponível em `/mf-score-laboratorio`. Essa tela passou a ser somente leitura e serve para inspecionar usuários reais, consumindo o motor oficial sem criar snapshots, sem editar personas e sem alterar dados financeiros.
 
 `docs/MF_SCORE_AUDIT.md` deixou de ser apenas um resumo e passou a ser o documento oficial de governança técnica do Motor Financeiro, registrando cobertura, limitações conhecidas, achados de auditoria e dívida técnica.
 
@@ -425,14 +427,33 @@ ObservaÃ§Ã£o importante:
 - a IA passou a receber a seção `Evolução Financeira` como interpretação oficial da continuidade histórica, e não apenas uma lista cronológica
 - a IA também recebe a seção `Consistência Estratégica` como avaliação oficial e determinística do alinhamento com o plano vigente
 
+### Laboratório do MF Score
+
+- tela interna autenticada em `/mf-score-laboratorio`
+- também responde por compatibilidade em `/mf-score-personas`, mas com o novo conceito visual de laboratório
+- lista usuários reais do sistema para inspeção interna do `MF Score`
+- consome os endpoints `GET /api/MfScoreLaboratorio/Usuarios` e `GET /api/MfScoreLaboratorio/Usuarios/{usuarioId}/Score`
+- exibe leitura completa do motor oficial:
+  - score base
+  - score final
+  - classificação
+  - risco
+  - penalidade total
+  - pilares
+  - indicadores
+  - indicadores críticos
+  - penalizações
+  - regras críticas
+  - dados resumidos de entrada
+  - observações de limitação e cobertura
+- é estritamente somente leitura e não cria, edita, exclui, audita nem promove personas
+
 ### Personas de Calibração do MF Score
 
-- tela interna autenticada em `/mf-score-personas`
-- CRUD persistido de cenários sintéticos para calibrar o Motor Financeiro
-- permite registrar dados simulados, avaliação humana, faixa esperada e justificativa
-- permite rodar o motor oficial do `MF Score` sem duplicar fórmulas
-- permite marcar a persona como `Auditada` ou `Caso Canônico`
-- nesta V1, a persona persiste sinais de planejamento adicionais, mas o cálculo continua refletindo apenas a cobertura atual do motor oficial
+- permanecem como infraestrutura interna persistida no backend
+- continuam expostas por `api/MfScorePersonas`
+- representam cenários sintéticos usados na calibração humana e operacional do Motor Financeiro
+- não são mais o foco da tela autenticada principal de auditoria visual
 
 ## Infraestrutura e integraÃ§Ãµes existentes
 

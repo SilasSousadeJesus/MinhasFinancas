@@ -120,7 +120,7 @@ export function MenuNavegacao({
         </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full">
-          <Link href="/mf-score-personas" legacyBehavior passHref>
+          <Link href="/mf-score-laboratorio" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
                 "justify-center space-x-2 text-lg",
@@ -133,7 +133,7 @@ export function MenuNavegacao({
                   !isSidebarExpanded && "hidden"
                 }`}
               >
-                Personas do MF Score
+                Laboratório do MF Score
               </span>
             </NavigationMenuLink>
           </Link>

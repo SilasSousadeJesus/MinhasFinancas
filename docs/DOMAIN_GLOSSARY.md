@@ -478,6 +478,19 @@ Ferramenta interna de desenvolvimento que executa personas sintéticas no motor 
 
 Ela existe para apoiar calibração, validação de regressão e leitura objetiva do comportamento do modelo.
 
+## Laboratório do MF Score
+
+Tela interna de auditoria visual e somente leitura do Motor Financeiro.
+
+Ela permite selecionar usuários reais e inspecionar como o `MF Score` oficial foi construído, exibindo score, pilares, indicadores, penalizações, regras críticas e dados resumidos de entrada.
+
+O laboratório:
+
+- não cria personas
+- não altera dados reais
+- não duplica fórmulas
+- não substitui a auditoria operacional nem a auditoria humana
+
 ## Persona de calibração do MF Score
 
 Cenário financeiro sintético usado para calibrar, validar e auditar o comportamento do Motor Financeiro.

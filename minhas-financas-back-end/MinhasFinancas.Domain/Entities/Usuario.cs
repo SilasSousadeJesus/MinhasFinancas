@@ -7,6 +7,7 @@ namespace MinhasFinancas.Domain.Entities
     public class Usuario : IdentityUser
     {
         public string? Nome  { get; set; }
+        public DateTime DataCadastro { get; set; }
         public virtual List<Conta>? Bancos { get; set; }
         public virtual List<Cartao>? Cartoes { get; set; }
         public virtual List<Lancamento>? Lancamentos { get; set; }

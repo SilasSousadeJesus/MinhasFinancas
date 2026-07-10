@@ -741,40 +741,40 @@ Fornecer uma ferramenta técnica de calibração do Motor Financeiro sem criar t
 - `docs/MF_SCORE_AUDIT.md` passou a funcionar como documento oficial de governança técnica do Motor Financeiro
 - nele ficam registradas coberturas, lacunas, achados e dívida técnica que afetam Saúde Financeira, Assistente Financeiro e futuras camadas analíticas
 
-## Personas de calibração do MF Score
+## Laboratório do MF Score
 
 ### Finalidade
-É uma ferramenta interna de desenvolvimento para cadastrar cenários sintéticos usados na calibração do Motor Financeiro.
+É a tela interna de leitura do Motor Financeiro. Seu papel é permitir que produto e desenvolvimento selecionem usuários reais e entendam, de forma auditável, como o `MF Score` foi construído pelo motor oficial.
 
 ### O que o usuário faz aqui
-- cria personas de calibração
-- edita cenários sintéticos
-- preenche score humano e faixa esperada
-- roda o MF Score da persona
-- marca a persona como auditada
-- promove a persona a caso canônico quando estiver madura
+- pesquisa usuários reais do sistema
+- seleciona um usuário para análise
+- abre a leitura completa do `MF Score`
+- inspeciona score base, score final, classificação, risco e penalidade total
+- consulta pilares, indicadores, indicadores críticos, penalizações e regras críticas
+- verifica os dados resumidos usados no cálculo e as observações de limitação/cobertura
 
 ### Dados gerados ou mantidos
-- dados financeiros simulados
-- sinais sintéticos de planejamento
-- score humano sugerido
-- faixa esperada
-- justificativa humana
-- status de auditoria da persona
+- não cria dados novos
+- não altera usuários
+- não persiste snapshots próprios
+- consome apenas o resultado oficial do `MF Score` calculado sob demanda para o usuário selecionado
 
 ### Impacto no restante do sistema
-- fortalece a calibração do `MF Score`
-- melhora a governança do Motor Financeiro
-- prepara a evolução de novos casos canônicos sem depender apenas de código fixo
+- melhora a auditabilidade do Motor Financeiro em usuários reais
+- ajuda a explicar variações do `MF Score` sem duplicar fórmulas
+- complementa a auditoria operacional em planilha e a auditoria humana das personas
+- reforça a separação entre cenários sintéticos de calibração e dados reais do sistema
 
 ### O que já está funcional
-- CRUD persistido
-- tela autenticada no sistema
-- execução do motor oficial na persona cadastrada
-- marcação como auditada
-- marcação como caso canônico
+- rota dedicada `/mf-score-laboratorio`
+- compatibilidade mantida para `/mf-score-personas`, agora apontando para o laboratório
+- listagem de usuários reais
+- análise completa do `MF Score` usando o motor oficial
+- exibição de pilares, indicadores, indicadores críticos, penalizações, regras críticas, dados de entrada e limitações
+- interface estritamente somente leitura
 
 ### Evoluções futuras
-- consumo dessas personas pela auditoria oficial em planilha
-- histórico comparativo entre versões do motor
-- ampliação da base de personas canônicas
+- filtros adicionais de busca e recorte de usuários
+- comparação lado a lado entre usuários ou competências
+- acesso rápido ao histórico mensal do `MF Score` dentro do próprio laboratório

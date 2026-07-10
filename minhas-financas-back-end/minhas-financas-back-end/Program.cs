@@ -151,6 +151,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IPersonaMfScore, PlanejamentoExcelentePersonaMfScore>();
             builder.Services.AddScoped<IMfScoreAuditoriaAppService, MfScoreAuditoriaAppService>();
             builder.Services.AddScoped<IMfScorePersonaAppService, MfScorePersonaAppService>();
+            builder.Services.AddScoped<IMfScoreLaboratorioAppService, MfScoreLaboratorioAppService>();
             builder.Services.AddScoped<IMfScorePersonaRepository, MfScorePersonaRepository>();
             builder.Services.AddScoped<IDashboardAppService, DashboardAppService>();
             builder.Services.AddScoped<IRelatoriosAppService, RelatoriosAppService>();
