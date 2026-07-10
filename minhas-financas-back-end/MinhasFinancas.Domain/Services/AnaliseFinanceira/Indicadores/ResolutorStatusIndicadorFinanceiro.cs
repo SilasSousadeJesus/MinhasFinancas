@@ -58,5 +58,53 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
 
             return StatusIndicadorFinanceiro.Critico;
         }
+
+        public static StatusIndicadorFinanceiro ResolverFaixaCrescente(
+            decimal valorAtual,
+            decimal limiteExcelente,
+            decimal limiteBom,
+            decimal limiteAtencao)
+        {
+            if (valorAtual >= limiteExcelente)
+            {
+                return StatusIndicadorFinanceiro.Excelente;
+            }
+
+            if (valorAtual >= limiteBom)
+            {
+                return StatusIndicadorFinanceiro.Bom;
+            }
+
+            if (valorAtual >= limiteAtencao)
+            {
+                return StatusIndicadorFinanceiro.Atencao;
+            }
+
+            return StatusIndicadorFinanceiro.Critico;
+        }
+
+        public static StatusIndicadorFinanceiro ResolverFaixaDecrescente(
+            decimal valorAtual,
+            decimal limiteExcelente,
+            decimal limiteBom,
+            decimal limiteAtencao)
+        {
+            if (valorAtual <= limiteExcelente)
+            {
+                return StatusIndicadorFinanceiro.Excelente;
+            }
+
+            if (valorAtual <= limiteBom)
+            {
+                return StatusIndicadorFinanceiro.Bom;
+            }
+
+            if (valorAtual <= limiteAtencao)
+            {
+                return StatusIndicadorFinanceiro.Atencao;
+            }
+
+            return StatusIndicadorFinanceiro.Critico;
+        }
     }
 }

@@ -22,6 +22,12 @@ Na versão atual, o modelo foi reformulado para:
 
 O motor está funcional, auditável e já integrado às principais telas, mas continua em fase de calibração contínua.
 
+Na revisão mais recente, o motor recebeu três avanços estruturais importantes:
+
+- regularização semântica da meta de `Economia Mensal`
+- maior granularidade de status em indicadores centrais
+- amadurecimento da inadimplência de modelo binário para matriz gradual
+
 ## Arquitetura atual do score
 
 O cálculo oficial possui quatro camadas:
@@ -158,7 +164,7 @@ O projeto agora possui job recorrente mensal para registrar o histórico do `MF 
 - o pilar `Planejamento` ainda usa proxies de organização financeira
 - o plano estratégico vigente ainda não entra de forma madura no cálculo do score
 - compromissos financeiros ativos ainda não pesam diretamente no pilar de planejamento
-- a leitura de inadimplência ainda pode amadurecer em cenários mais complexos
+- a leitura de inadimplência já evoluiu para matriz gradual, mas ainda pode amadurecer em reincidência, cura e histórico de atraso
 - a qualidade patrimonial ainda não é diferenciada com profundidade
 - a tendência histórica ainda está em fase inicial de amadurecimento
 
@@ -176,6 +182,7 @@ O projeto agora possui job recorrente mensal para registrar o histórico do `MF 
 - amadurecer o pilar `Planejamento` com sinais estratégicos reais
 - incorporar compromissos financeiros de forma determinística no score
 - fortalecer semântica de inadimplência real
+- revisar impacto da nova matriz gradual de inadimplência sobre personas e casos canônicos
 - evoluir leitura histórica de tendência e persistência
 - enriquecer o pilar `Patrimônio` com qualidade e liquidez patrimonial
 

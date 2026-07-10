@@ -18,9 +18,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 Percentual = dadosReferencia.ReservaEmergenciaIdealConfigurada > 0
                     ? (dadosReferencia.ReservaEmergenciaAtual / dadosReferencia.ReservaEmergenciaIdealConfigurada) * 100m
                     : 0m,
-                Status = ResolutorStatusIndicadorFinanceiro.ResolverMetaMinima(
-                    dadosReferencia.ReservaEmergenciaAtual,
-                    dadosReferencia.ReservaEmergenciaIdealConfigurada),
+                Status = ResolutorStatusIndicadorFinanceiro.ResolverFaixaCrescente(
+                    dadosReferencia.CoberturaReservaEmMeses,
+                    6m,
+                    4m,
+                    2m),
                 Descricao = "Valor atual reservado em ativos líquidos, considerando dinheiro em conta e investimentos.",
                 Observacao = $"Cobertura atual estimada: {dadosReferencia.CoberturaReservaEmMeses:N2} mês(es) de despesas.",
                 Formato = FormatoValorIndicadorFinanceiro.Moeda

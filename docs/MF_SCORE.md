@@ -8,6 +8,12 @@ Ele responde à pergunta:
 
 O `MF Score` não mede apenas riqueza, nem apenas disciplina. Ele mede risco, proteção, pressão estrutural, maturidade e persistência de comportamento ao longo do tempo.
 
+Na versão atual do motor (`mf-score-v2.1-1000`), o modelo também passa a:
+
+- usar meta monetária coerente para `Economia Mensal`;
+- adotar faixas explícitas de status nos indicadores centrais;
+- tratar inadimplência de forma gradual, e não mais binária.
+
 ## Filosofia oficial
 
 - O `MF Score` deve funcionar como score de risco financeiro pessoal.
@@ -107,6 +113,27 @@ As penalizações críticas da versão atual devem se concentrar em eventos como
 3. recorrência de meses consecutivos no vermelho
 4. patrimônio líquido negativo
 5. ausência de dados essenciais que comprometa a confiabilidade mínima da análise
+
+### Regra oficial atual de inadimplência
+
+A inadimplência agora é graduada por severidade.
+
+Fatores considerados:
+
+- dias máximos de atraso;
+- percentual do valor em atraso sobre a renda mensal atual.
+
+Níveis atuais:
+
+- `Nível 1`: `30 pontos` de penalidade final
+- `Nível 2`: `90 pontos`
+- `Nível 3`: `170 pontos`
+- `Nível 4`: `250 pontos`
+
+O nível aplicado é sempre o mais grave entre:
+
+- faixa de tempo;
+- faixa de materialidade do valor vencido.
 
 ### O que não deve ser penalização crítica automática
 

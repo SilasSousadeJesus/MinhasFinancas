@@ -42,6 +42,20 @@ Registrar aqui apenas mudancas relevantes do sistema.
 - Separação explícita entre validação automática do `MF Score` e auditoria humana cega para calibragem futura.
 - Preparação do processo para que personas auditadas manualmente possam evoluir para padrões oficiais do sistema.
 
+## 10/07/2026
+
+- Implementação do pacote oficial aprovado para a próxima rodada do `MF Score`, preservando a arquitetura atual do motor.
+- Consolidação da versão `mf-score-v2.1-1000`.
+- Regularização semântica do indicador `Economia Mensal`, com meta monetária derivada da renda do próprio mês.
+- Introdução de faixas explícitas de status para `Percentual de Economia`, `Reserva de Emergência Atual`, `Comprometimento da Renda`, `Comprometimento Financeiro Futuro - 30 dias` e `Endividamento Patrimonial`.
+- Substituição da inadimplência binária por matriz gradual baseada em dias de atraso e materialidade do valor vencido sobre a renda.
+- Centralização do cálculo de `ContextoComplementarMfScoreFinanceiro` para eliminar divergência entre cálculo real, auditoria e personas.
+- Atualização da documentação oficial do Motor Financeiro em `docs/MF_SCORE.md`, `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE_AUDIT.md`.
+
+- Realização de auditoria arquitetural completa sobre o framework proposto em `docs/MF_Score_Framework_Definitivo.md`.
+- Criação do documento oficial `docs/MF_SCORE_REVIEW.md`, consolidando a posição do projeto sobre cada proposta, seu alinhamento com a implementação atual e sua prioridade futura.
+- Registro formal das propostas aceitas, aceitas com adaptações, adiadas e rejeitadas, sem alterar código, fórmulas, pesos ou penalizações do Motor Financeiro.
+
 ## 08/07/2026
 
 - Revisão do motor financeiro para adicionar compromissos futuros em múltiplos horizontes, tornar o endividamento mais claro como endividamento patrimonial e integrar os pontos de atenção ao resumo geral da Saúde Financeira.

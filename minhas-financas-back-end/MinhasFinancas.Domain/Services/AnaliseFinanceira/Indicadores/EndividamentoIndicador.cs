@@ -18,9 +18,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 ValorAtual = dadosReferencia.EndividamentoAtual,
                 ValorIdeal = percentualMaximo,
                 Percentual = percentualMaximo > 0 ? (dadosReferencia.EndividamentoAtual / percentualMaximo) * 100m : 0m,
-                Status = ResolutorStatusIndicadorFinanceiro.ResolverMetaMaxima(
+                Status = ResolutorStatusIndicadorFinanceiro.ResolverFaixaDecrescente(
                     dadosReferencia.EndividamentoAtual,
-                    percentualMaximo),
+                    15m,
+                    30m,
+                    50m),
                 Descricao = "Relação entre passivos patrimoniais e a base patrimonial ativa disponível.",
                 Observacao = percentualMaximo > 0
                     ? $"Limite configurado no perfil financeiro: {percentualMaximo:N2}% dos ativos."

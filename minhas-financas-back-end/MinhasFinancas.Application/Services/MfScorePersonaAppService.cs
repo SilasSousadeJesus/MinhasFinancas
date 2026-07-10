@@ -184,7 +184,7 @@ namespace MinhasFinancas.Application.Services
 
                 var contexto = CriarContexto(persona);
                 var indicadores = _indicadoresFinanceirosService.Calcular(contexto);
-                var contextoComplementar = ConstruirContextoComplementar(persona, contexto);
+                var contextoComplementar = ConstrutorContextoComplementarMfScoreFinanceiro.Construir(contexto);
                 var painel = _saudeFinanceiraService.GerarPainel(indicadores, contextoComplementar);
                 var mfScore = painel.Resumo.MfScore;
 
@@ -490,6 +490,19 @@ namespace MinhasFinancas.Application.Services
                 persona.Obrigacoes12Meses,
                 "Obrigação prevista"));
 
+            if (persona.PossuiInadimplencia)
+            {
+                var valorInadimplente = persona.RendaMensal > 0m
+                    ? Math.Round(persona.RendaMensal * 0.30m, 2)
+                    : 1000m;
+
+                lancamentos.Add(CriarLancamento(
+                    EnumTipoLancamento.Despesa,
+                    valorInadimplente,
+                    DataReferenciaCalibracao.AddDays(-35),
+                    "Despesa vencida simulada"));
+            }
+
             var ativos = CriarAtivos(persona);
             var passivos = CriarPassivos(persona);
 
@@ -696,78 +709,6 @@ namespace MinhasFinancas.Application.Services
             }
 
             return null;
-        }
-
-        private static ContextoComplementarMfScoreFinanceiro ConstruirContextoComplementar(
-            PersonaMfScore persona,
-            ContextoAnaliseFinanceira contexto)
-        {
-            var dataReferencia = contexto.DataReferencia.Date;
-            var mesAtual = new DateTime(dataReferencia.Year, dataReferencia.Month, 1);
-            var lancamentos = contexto.Lancamentos
-                .Where(x => x.StatusLancamento != EnumStatusLancamento.Cancelado)
-                .ToList();
-
-            var fluxoMensalAtual = CalcularFluxoMensal(lancamentos, mesAtual);
-            var mesesConsecutivos = CalcularMesesConsecutivosFluxoNegativo(lancamentos, mesAtual, 12);
-            var possuiInadimplenciaDetectada = lancamentos.Any(x =>
-                x.Tipo == EnumTipoLancamento.Despesa &&
-                x.StatusLancamento == EnumStatusLancamento.Pendente &&
-                x.DataVencimento.Date < dataReferencia);
-
-            return new ContextoComplementarMfScoreFinanceiro
-            {
-                PossuiFluxoMensalNegativoAtual = fluxoMensalAtual < 0m,
-                MesesConsecutivosFluxoNegativo = mesesConsecutivos,
-                PossuiInadimplencia = persona.PossuiInadimplencia || possuiInadimplenciaDetectada,
-                PossuiDadosEssenciaisInsuficientes =
-                    !lancamentos.Any() ||
-                    (!contexto.Ativos.Any() && !contexto.Passivos.Any()),
-                HistoricoPontuacoesFinais = []
-            };
-        }
-
-        private static decimal CalcularFluxoMensal(IReadOnlyCollection<Lancamento> lancamentos, DateTime competencia)
-        {
-            var receitas = lancamentos
-                .Where(x =>
-                    x.Tipo == EnumTipoLancamento.Receita &&
-                    x.DataVencimento.Year == competencia.Year &&
-                    x.DataVencimento.Month == competencia.Month)
-                .Sum(x => x.Valor);
-
-            var despesas = lancamentos
-                .Where(x =>
-                    x.Tipo == EnumTipoLancamento.Despesa &&
-                    x.DataVencimento.Year == competencia.Year &&
-                    x.DataVencimento.Month == competencia.Month)
-                .Sum(x => x.Valor);
-
-            return receitas - despesas;
-        }
-
-        private static int CalcularMesesConsecutivosFluxoNegativo(
-            IReadOnlyCollection<Lancamento> lancamentos,
-            DateTime competenciaAtual,
-            int limiteMeses)
-        {
-            var consecutivos = 0;
-
-            for (var indice = 0; indice < limiteMeses; indice++)
-            {
-                var competencia = competenciaAtual.AddMonths(-indice);
-                var fluxo = CalcularFluxoMensal(lancamentos, competencia);
-
-                if (fluxo < 0m)
-                {
-                    consecutivos++;
-                    continue;
-                }
-
-                break;
-            }
-
-            return consecutivos;
         }
 
         private static RetornoGenerico CriarErro(Exception ex, string mensagemUsuario)

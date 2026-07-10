@@ -318,11 +318,30 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             var endividamento = Buscar(indicadores, CodigoIndicadorFinanceiro.Endividamento);
             if (contextoComplementar?.PossuiInadimplencia == true)
             {
+                var nivelInadimplencia = contextoComplementar.NivelInadimplencia;
+                var penalidade = nivelInadimplencia switch
+                {
+                    1 => 3m,
+                    2 => 9m,
+                    3 => 17m,
+                    4 => 25m,
+                    _ => 9m
+                };
+
+                var descricaoNivel = nivelInadimplencia switch
+                {
+                    1 => "Atraso técnico identificado",
+                    2 => "Estresse moderado por atraso identificado",
+                    3 => "Inadimplência relevante identificada",
+                    4 => "Inadimplência grave identificada",
+                    _ => "Inadimplência identificada"
+                };
+
                 Adicionar(
                     endividamento?.Codigo ?? CodigoIndicadorFinanceiro.Endividamento,
                     "Inadimplência",
-                    "Existem despesas vencidas ainda pendentes de pagamento.",
-                    15m,
+                    $"{descricaoNivel}: {contextoComplementar.DiasMaximosAtraso} dia(s) de atraso e {contextoComplementar.PercentualValorEmAtrasoSobreRenda:N2}% da renda mensal comprometida em valores vencidos.",
+                    penalidade,
                     "Endividamento e Obrigações");
             }
 

@@ -73,9 +73,11 @@ Todos os indicadores usam a mesma escala de status:
 
 - **Finalidade:** mostrar a sobra mensal entre receitas e despesas do mês de referência.
 - **Fórmula:** `receitaMensalAtual - despesaMensalAtual`
+- **Meta monetária oficial:** `receitaMensalAtual * (percentualEconomiaMensalDesejado / 100)`
 - **Fonte:** lançamentos do mês de referência.
 - **Formato:** moeda.
 - **Leitura:** quanto maior a sobra, melhor a capacidade de planejamento e proteção operacional.
+- **Observação importante:** o indicador não compara mais moeda com meta percentual; a meta é convertida para valor monetário do próprio mês.
 
 ### Percentual de economia
 
@@ -84,6 +86,11 @@ Todos os indicadores usam a mesma escala de status:
 - **Fonte:** lançamentos do mês de referência.
 - **Formato:** percentual.
 - **Leitura:** mede eficiência da renda, não apenas seu tamanho absoluto.
+- **Faixas oficiais atuais:**
+  - `Excelente`: `>= 20%`
+  - `Bom`: `>= 10% e < 20%`
+  - `Atenção`: `>= 0% e < 10%`
+  - `Crítica`: `< 0%`
 
 ### Reserva de emergência atual
 
@@ -92,6 +99,11 @@ Todos os indicadores usam a mesma escala de status:
 - **Fonte:** bens patrimoniais do usuário.
 - **Formato:** moeda.
 - **Leitura:** reduz o pilar de liquidez quando é baixa, mas não deve gerar penalização crítica automática apenas por estar zerada.
+- **Faixas oficiais atuais** com base em `CoberturaReservaEmMeses`:
+  - `Excelente`: `>= 6 meses`
+  - `Bom`: `>= 4 e < 6 meses`
+  - `Atenção`: `>= 2 e < 4 meses`
+  - `Crítica`: `< 2 meses`
 
 ### Reserva de emergência ideal
 
@@ -109,6 +121,11 @@ Todos os indicadores usam a mesma escala de status:
 - **Fonte:** lançamentos do mês de referência.
 - **Formato:** percentual.
 - **Leitura:** afeta principalmente o pilar de fluxo de caixa, sem gerar penalização crítica automática só por estar alto.
+- **Faixas oficiais atuais:**
+  - `Excelente`: `<= 20%`
+  - `Bom`: `> 20% e <= 35%`
+  - `Atenção`: `> 35% e <= 50%`
+  - `Crítica`: `> 50%`
 
 ### Comprometimento financeiro futuro
 
@@ -119,6 +136,11 @@ Todos os indicadores usam a mesma escala de status:
 - **Formato:** percentual.
 - **Leitura:** mostra a folga do curto prazo.
 - **Campos de transparência:** `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`.
+- **Faixas oficiais atuais:**
+  - `Excelente`: `<= 25%`
+  - `Bom`: `> 25% e <= 40%`
+  - `Atenção`: `> 40% e <= 55%`
+  - `Crítica`: `> 55%`
 
 ### Pressão financeira acumulada - 90 dias
 
@@ -155,6 +177,11 @@ Todos os indicadores usam a mesma escala de status:
 - **Fonte:** bens patrimoniais e passivos patrimoniais.
 - **Formato:** percentual.
 - **Leitura:** afeta o pilar de endividamento; não deve ser automaticamente uma penalização crítica sem evidência de risco materializado.
+- **Faixas oficiais atuais:**
+  - `Excelente`: `<= 15%`
+  - `Bom`: `> 15% e <= 30%`
+  - `Atenção`: `> 30% e <= 50%`
+  - `Crítica`: `> 50%`
 
 ### Patrimônio líquido atual
 
@@ -191,6 +218,34 @@ Na versão atual, elas devem focar em:
 - meses consecutivos no vermelho
 - patrimônio líquido negativo
 - ausência de dados essenciais
+
+### Matriz oficial de inadimplência
+
+A inadimplência deixou de ser binária e passa a usar níveis graduais com base em:
+
+- `DiasAtraso`
+- `PercentualValorEmAtrasoSobreRenda`
+
+Regras atuais:
+
+- `Nível 1 - Atraso técnico`
+  - até `7 dias` de atraso
+  - e valor em atraso `< 10%` da renda
+  - penalidade: `30 pontos` no score final
+- `Nível 2 - Estresse moderado`
+  - `8 a 30 dias`
+  - ou valor em atraso entre `10% e 25%` da renda
+  - penalidade: `90 pontos` no score final
+- `Nível 3 - Inadimplência relevante`
+  - `31 a 60 dias`
+  - ou valor em atraso entre `25% e 50%` da renda
+  - penalidade: `170 pontos` no score final
+- `Nível 4 - Inadimplência grave`
+  - acima de `60 dias`
+  - ou valor em atraso `> 50%` da renda
+  - penalidade: `250 pontos` no score final
+
+Quando tempo e materialidade caem em níveis diferentes, prevalece o nível mais grave.
 
 Os seguintes fatores devem permanecer prioritariamente na camada dos pilares:
 

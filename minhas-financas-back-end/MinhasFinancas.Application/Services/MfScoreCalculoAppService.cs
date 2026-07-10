@@ -10,7 +10,7 @@ namespace MinhasFinancas.Application.Services
 {
     public class MfScoreCalculoAppService : IMfScoreCalculoAppService
     {
-        public const string VersaoModeloAtual = "mf-score-v2-1000";
+        public const string VersaoModeloAtual = "mf-score-v2.1-1000";
 
         private readonly IAnaliseFinanceiraAppService _analiseFinanceiraAppService;
         private readonly ISaudeFinanceiraService _saudeFinanceiraService;
@@ -44,7 +44,13 @@ namespace MinhasFinancas.Application.Services
             }
 
             var historicoPontuacoes = await _historicoMfScoreRepository.BuscarRecentesPorUsuarioAsync(usuarioId, 6);
-            var contextoComplementar = ConstruirContextoComplementar(contexto, historicoPontuacoes);
+            var contextoComplementar = ConstrutorContextoComplementarMfScoreFinanceiro.Construir(
+                contexto,
+                historicoPontuacoes
+                    .OrderBy(x => x.CompetenciaAno)
+                    .ThenBy(x => x.CompetenciaMes)
+                    .Select(x => x.MfScoreFinal)
+                    .ToList());
             var painelSaude = _saudeFinanceiraService.GerarPainel(painelIndicadores, contextoComplementar);
 
             return new ResultadoCalculoMfScoreInternoDTO
@@ -143,82 +149,6 @@ namespace MinhasFinancas.Application.Services
                 JsonResumo = JsonSerializer.Serialize(resumo),
                 CriadoEm = DateTime.UtcNow
             };
-        }
-
-        private static ContextoComplementarMfScoreFinanceiro ConstruirContextoComplementar(
-            ContextoAnaliseFinanceira contexto,
-            IReadOnlyCollection<HistoricoMfScore> historicoPontuacoes)
-        {
-            var dataReferencia = contexto.DataReferencia.Date;
-            var mesAtual = new DateTime(dataReferencia.Year, dataReferencia.Month, 1);
-            var lancamentos = contexto.Lancamentos.Where(x => x.StatusLancamento != CrossCutting.Util.Enum.EnumStatusLancamento.Cancelado).ToList();
-
-            var fluxoMensalAtual = CalcularFluxoMensal(lancamentos, mesAtual);
-            var mesesConsecutivos = CalcularMesesConsecutivosFluxoNegativo(lancamentos, mesAtual, 12);
-            var possuiInadimplencia = lancamentos.Any(x =>
-                x.Tipo == CrossCutting.Util.Enum.EnumTipoLancamento.Despesa &&
-                x.StatusLancamento == CrossCutting.Util.Enum.EnumStatusLancamento.Pendente &&
-                x.DataVencimento.Date < dataReferencia);
-
-            var possuiDadosEssenciaisInsuficientes =
-                !lancamentos.Any() ||
-                (!contexto.Ativos.Any() && !contexto.Passivos.Any());
-
-            return new ContextoComplementarMfScoreFinanceiro
-            {
-                PossuiFluxoMensalNegativoAtual = fluxoMensalAtual < 0m,
-                MesesConsecutivosFluxoNegativo = mesesConsecutivos,
-                PossuiInadimplencia = possuiInadimplencia,
-                PossuiDadosEssenciaisInsuficientes = possuiDadosEssenciaisInsuficientes,
-                HistoricoPontuacoesFinais = historicoPontuacoes
-                    .OrderBy(x => x.CompetenciaAno)
-                    .ThenBy(x => x.CompetenciaMes)
-                    .Select(x => x.MfScoreFinal)
-                    .ToList()
-            };
-        }
-
-        private static decimal CalcularFluxoMensal(IReadOnlyCollection<Lancamento> lancamentos, DateTime competencia)
-        {
-            var receitas = lancamentos
-                .Where(x =>
-                    x.Tipo == CrossCutting.Util.Enum.EnumTipoLancamento.Receita &&
-                    x.DataVencimento.Year == competencia.Year &&
-                    x.DataVencimento.Month == competencia.Month)
-                .Sum(x => x.Valor);
-
-            var despesas = lancamentos
-                .Where(x =>
-                    x.Tipo == CrossCutting.Util.Enum.EnumTipoLancamento.Despesa &&
-                    x.DataVencimento.Year == competencia.Year &&
-                    x.DataVencimento.Month == competencia.Month)
-                .Sum(x => x.Valor);
-
-            return receitas - despesas;
-        }
-
-        private static int CalcularMesesConsecutivosFluxoNegativo(
-            IReadOnlyCollection<Lancamento> lancamentos,
-            DateTime competenciaAtual,
-            int limiteMeses)
-        {
-            var consecutivos = 0;
-
-            for (var indice = 0; indice < limiteMeses; indice++)
-            {
-                var competencia = competenciaAtual.AddMonths(-indice);
-                var fluxo = CalcularFluxoMensal(lancamentos, competencia);
-
-                if (fluxo < 0m)
-                {
-                    consecutivos++;
-                    continue;
-                }
-
-                break;
-            }
-
-            return consecutivos;
         }
 
         private static DateTime NormalizarCompetencia(DateTime data)

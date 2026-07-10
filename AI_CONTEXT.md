@@ -16,7 +16,7 @@ O modelo oficial de risco financeiro do sistema é o `MF Score`, que organiza os
 
 O `MF Score` agora usa escala final de `0 a 1000`, enquanto os pilares permanecem em `0 a 100`. A versão vigente separa formalmente nota dos pilares, penalizações críticas, persistência temporal do risco e histórico mensal persistido.
 
-O `MF Score` agora também possui uma etapa oficial de calibração contínua, com cenários de validação, explicação de variação, tendência e documentação dedicada em `docs/MF_SCORE.md` e `docs/INDICADORES_FINANCEIROS.md`.
+O `MF Score` agora também possui uma etapa oficial de calibração contínua, com cenários de validação, explicação de variação, tendência e documentação dedicada em `docs/MF_SCORE.md`, `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE_CALIBRATION_CONTEXT.md`.
 
 Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_VALIDATION.md`, usada para confirmar se alterações futuras continuam coerentes com os cenários canônicos do modelo.
 
@@ -27,6 +27,8 @@ O projeto passa a ter também uma segunda auditoria interna, `POST /api/MfScoreA
 O fluxo de calibração do `MF Score` agora também possui um CRUD persistido de `Personas de Calibração`, exposto por `api/MfScorePersonas` e pela tela autenticada `/mf-score-personas`. Essas personas não representam usuários reais; são cenários sintéticos internos usados para cadastrar, auditar, rodar o motor oficial e promover casos maduros a `casos canônicos`.
 
 `docs/MF_SCORE_AUDIT.md` deixou de ser apenas um resumo e passou a ser o documento oficial de governança técnica do Motor Financeiro, registrando cobertura, limitações conhecidas, achados de auditoria e dívida técnica.
+
+`docs/MF_SCORE_CONSOLIDACAO_OFICIAL.md` registra a decisão oficial mais recente sobre a direção do `MF Score`, separando framework conceitual, propostas matemáticas e escopo aprovado para a próxima implementação.
 
 O Motor Financeiro adota oficialmente a regra de não dupla penalização: reserva baixa, comprometimento elevado e pressão futura devem reduzir prioritariamente os pilares correspondentes, deixando penalizações críticas para risco grave, materializado ou persistente.
 
