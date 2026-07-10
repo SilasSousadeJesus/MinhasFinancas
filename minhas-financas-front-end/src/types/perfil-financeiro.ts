@@ -10,11 +10,13 @@ export interface ConfiguracaoPerfilFinanceiro {
   percentualMinimoInvestimento: number;
   patrimonioLiquidoAlvo: number | null;
   observacao: string | null;
+  origemPerfilFinanceiro: "PerfilInicialSistema" | "PersonalizadoPeloUsuario";
   vigente: boolean;
 }
 
 export interface VisaoGeralPerfilFinanceiro {
   perfilId: string | null;
+  usaPerfilFinanceiroInicial: boolean;
   configuracaoVigente: ConfiguracaoPerfilFinanceiro | null;
   historico: ConfiguracaoPerfilFinanceiro[];
 }

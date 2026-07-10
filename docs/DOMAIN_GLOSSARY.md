@@ -141,6 +141,23 @@ Cenário hipotético persistido por usuário para testar decisões futuras sem a
 
 Conjunto de parâmetros pessoais usados para definir como o usuário deseja medir e avaliar sua própria saúde financeira.
 
+## Perfil Financeiro Inicial
+
+Configuração padrão criada automaticamente pelo sistema para garantir que o Motor Financeiro tenha parâmetros mínimos válidos desde o primeiro uso.
+
+Ele não representa os objetivos reais do usuário.
+
+Ele existe apenas como régua inicial até que o usuário personalize seu perfil.
+
+## Origem do Perfil Financeiro
+
+Classificação que identifica se a configuração vigente do perfil foi criada automaticamente pelo sistema ou personalizada pelo usuário.
+
+Valores oficiais:
+
+- `PerfilInicialSistema`
+- `PersonalizadoPeloUsuario`
+
 ## Indicador Financeiro
 
 Informação derivada dos dados financeiros do sistema para mostrar desempenho, risco, equilíbrio ou progresso do usuário.
@@ -520,3 +537,17 @@ Comportamento, ausência de cobertura ou simplificação relevante já reconheci
 ## Dívida técnica do Motor Financeiro
 
 Conjunto estruturado de limitações, lacunas e pontos de evolução que precisam acompanhar o amadurecimento do `MF Score` ao longo do tempo.
+
+## Ponto de partida patrimonial neutro
+
+Situação em que o usuário ainda não possui ativos nem passivos registrados e, por isso, tem patrimônio líquido igual a zero sem configurar insolvência.
+
+No `MF Score`, esse cenário representa início de construção patrimonial, e não colapso financeiro.
+
+## Capacidade de formação de reserva
+
+Indicador auxiliar do `MF Score` que estima em quantos meses a sobra mensal atual conseguiria completar a reserva de emergência ideal restante.
+
+Ele não substitui a reserva já acumulada.
+
+Ele existe para mostrar a velocidade de recomposição da proteção financeira.

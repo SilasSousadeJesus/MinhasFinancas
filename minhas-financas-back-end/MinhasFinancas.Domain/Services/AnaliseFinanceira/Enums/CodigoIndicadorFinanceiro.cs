@@ -13,6 +13,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Enums
         ComprometimentoFinanceiroFuturo = 8,
         ComprometimentoFinanceiroFuturo90Dias = 9,
         ComprometimentoFinanceiroFuturo180Dias = 10,
-        ComprometimentoFinanceiroFuturo365Dias = 11
+        ComprometimentoFinanceiroFuturo365Dias = 11,
+        CapacidadeFormacaoReserva = 12
     }
 }

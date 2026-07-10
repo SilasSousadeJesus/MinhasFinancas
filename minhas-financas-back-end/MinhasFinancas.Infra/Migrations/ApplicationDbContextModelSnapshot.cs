@@ -506,6 +506,9 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Property<string>("Observacao")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("OrigemPerfilFinanceiro")
+                        .HasColumnType("int");
+
                     b.Property<decimal?>("PatrimonioLiquidoAlvo")
                         .HasColumnType("decimal(65,30)");
 

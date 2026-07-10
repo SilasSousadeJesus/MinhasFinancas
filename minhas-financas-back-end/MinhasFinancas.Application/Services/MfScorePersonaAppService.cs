@@ -692,7 +692,8 @@ namespace MinhasFinancas.Application.Services
                 PercentualMaximoComprometimentoRenda = 50m,
                 PercentualMaximoEndividamento = 50m,
                 PercentualMinimoInvestimento = 10m,
-                PatrimonioLiquidoAlvo = patrimonioAlvo
+                PatrimonioLiquidoAlvo = patrimonioAlvo,
+                OrigemPerfilFinanceiro = EnumOrigemPerfilFinanceiro.PersonalizadoPeloUsuario
             };
         }
 

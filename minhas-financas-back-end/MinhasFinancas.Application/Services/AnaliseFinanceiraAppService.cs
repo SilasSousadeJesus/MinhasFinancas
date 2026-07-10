@@ -12,7 +12,7 @@ namespace MinhasFinancas.Application.Services
         private readonly ILancamentoRepository _lancamentoRepository;
         private readonly IBemMaterialRepository _bemMaterialRepository;
         private readonly IPassivoRepository _passivoRepository;
-        private readonly IPerfilFinanceiroRepository _perfilFinanceiroRepository;
+        private readonly IPerfilFinanceiroInicialService _perfilFinanceiroInicialService;
         private readonly IPlanoEstrategicoFinanceiroRepository _planoEstrategicoFinanceiroRepository;
         private readonly ICompromissoFinanceiroRepository _compromissoFinanceiroRepository;
         private readonly IIndicadoresFinanceirosService _indicadoresFinanceirosService;
@@ -22,7 +22,7 @@ namespace MinhasFinancas.Application.Services
             ILancamentoRepository lancamentoRepository,
             IBemMaterialRepository bemMaterialRepository,
             IPassivoRepository passivoRepository,
-            IPerfilFinanceiroRepository perfilFinanceiroRepository,
+            IPerfilFinanceiroInicialService perfilFinanceiroInicialService,
             IPlanoEstrategicoFinanceiroRepository planoEstrategicoFinanceiroRepository,
             ICompromissoFinanceiroRepository compromissoFinanceiroRepository,
             IIndicadoresFinanceirosService indicadoresFinanceirosService)
@@ -31,7 +31,7 @@ namespace MinhasFinancas.Application.Services
             _lancamentoRepository = lancamentoRepository;
             _bemMaterialRepository = bemMaterialRepository;
             _passivoRepository = passivoRepository;
-            _perfilFinanceiroRepository = perfilFinanceiroRepository;
+            _perfilFinanceiroInicialService = perfilFinanceiroInicialService;
             _planoEstrategicoFinanceiroRepository = planoEstrategicoFinanceiroRepository;
             _compromissoFinanceiroRepository = compromissoFinanceiroRepository;
             _indicadoresFinanceirosService = indicadoresFinanceirosService;
@@ -96,7 +96,7 @@ namespace MinhasFinancas.Application.Services
             var lancamentos = await _lancamentoRepository.BuscarTodosOsElementosAsync(usuarioId);
             var ativos = await _bemMaterialRepository.BuscarTodosOsElementosAsync(usuarioId);
             var passivos = await _passivoRepository.BuscarTodosOsElementosAsync(usuarioId);
-            var perfilFinanceiro = await _perfilFinanceiroRepository.BuscarPorUsuarioLeituraAsync(usuarioId);
+            var perfilFinanceiro = await _perfilFinanceiroInicialService.GarantirPerfilFinanceiroValidoAsync(usuarioId);
             var planoEstrategicoVigente = await _planoEstrategicoFinanceiroRepository.BuscarVigenteAsync(usuarioId);
             var compromissosFinanceiros = await _compromissoFinanceiroRepository.BuscarTodosOsElementosAsync(usuarioId);
 

@@ -272,3 +272,13 @@ O `MF Score` hoje está:
 - a penalização temporal de fluxo negativo foi suavizada no primeiro mês e mantida forte quando a deterioração vira recorrência
 
 O próximo passo não é reinventar o score. É continuar calibrando-o com rigor, usando histórico real, personas e auditoria contínua.
+
+## Atualizacao oficial v2.3
+
+- `Reserva zero` continua sendo fragilidade estrutural, mas agora a auditoria tambem observa a `Capacidade de Formacao de Reserva` para evitar falso positivo de risco em perfis iniciantes com alta sobra mensal.
+- `Patrimonio zerado sem passivos` passa a ser interpretado como `ponto de partida patrimonial neutro`.
+- O Laboratorio do MF Score deve exibir com clareza:
+  - a observacao de neutralidade patrimonial quando aplicavel
+  - o indicador `Capacidade de Formacao de Reserva`
+  - os meses estimados para completar a reserva ideal
+  - o efeito desse indicador dentro do pilar `Liquidez e Reserva`

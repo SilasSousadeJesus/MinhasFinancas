@@ -18,13 +18,17 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 ValorAtual = dadosReferencia.PercentualPatrimonioAlvoAtual,
                 ValorIdeal = 100m,
                 Percentual = dadosReferencia.PercentualPatrimonioAlvoAtual,
-                Status = patrimonioAlvo > 0
-                    ? ResolutorStatusIndicadorFinanceiro.ResolverProgresso(dadosReferencia.PercentualPatrimonioAlvoAtual)
-                    : StatusIndicadorFinanceiro.Atencao,
+                Status = dadosReferencia.PontoPartidaPatrimonialNeutro
+                    ? StatusIndicadorFinanceiro.Atencao
+                    : patrimonioAlvo > 0
+                        ? ResolutorStatusIndicadorFinanceiro.ResolverProgresso(dadosReferencia.PercentualPatrimonioAlvoAtual)
+                        : StatusIndicadorFinanceiro.Atencao,
                 Descricao = "Percentual do patrimônio alvo já alcançado com base no patrimônio líquido atual.",
-                Observacao = patrimonioAlvo > 0
-                    ? $"Patrimônio alvo configurado: {patrimonioAlvo:N2}."
-                    : "Sem patrimônio líquido alvo configurado no perfil financeiro.",
+                Observacao = dadosReferencia.PontoPartidaPatrimonialNeutro
+                    ? "Ainda não existe patrimônio acumulado nem passivos registrados. O avanço patrimonial começa a ser medido a partir desse ponto neutro."
+                    : patrimonioAlvo > 0
+                        ? $"Patrimônio alvo configurado: {patrimonioAlvo:N2}."
+                        : "Sem patrimônio líquido alvo configurado no perfil financeiro.",
                 Formato = FormatoValorIndicadorFinanceiro.Percentual
             };
         }

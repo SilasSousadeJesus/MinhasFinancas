@@ -2,6 +2,19 @@
 
 Registrar aqui apenas mudancas relevantes do sistema.
 
+## 10/07/2026
+
+- Calibragem do `MF Score` para reduzir falso positivo de risco em usuarios iniciantes com fluxo de caixa muito forte.
+- Evolucao oficial do motor para `mf-score-v2.3-1000`.
+- Criacao do indicador auxiliar `Capacidade de Formacao de Reserva`, com exposicao no painel analitico e no Laboratorio do MF Score.
+- Recalibragem do pilar `Liquidez e Reserva`, que agora considera a velocidade estimada para completar a reserva ideal sem transformar reserva zero automaticamente em risco critico extremo.
+- Formalizacao da regra de `ponto de partida patrimonial neutro`, evitando tratar patrimonio zerado sem passivos como insolvencia.
+- Implementação oficial do conceito de Perfil Financeiro Inicial, com criação automática para novos usuários e migração automática de usuários antigos sem perfil.
+- Inclusão da origem da configuração do perfil (`PerfilInicialSistema` ou `PersonalizadoPeloUsuario`) para dar transparência ao Motor Financeiro e ao frontend.
+- Atualização da tela Perfil Financeiro para informar quando o usuário ainda utiliza os parâmetros padrão do sistema.
+- Garantia de que a camada analítica e o MF Score sempre encontrem uma configuração vigente de Perfil Financeiro sem alterar fórmulas, pesos, pilares ou penalizações.
+- Criação da migration `20260710141450_perfilFinanceiroInicial`.
+
 ## 09/07/2026
 
 - Consolidação do Hangfire dentro do projeto principal da API, removendo o projeto separado de agendamentos.

@@ -554,3 +554,14 @@ Em resumo:
 
 > O projeto não vai reescrever o `MF Score` inteiro agora.  
 > O projeto vai fortalecer o motor atual, removendo incoerências, reduzindo binarismos e tornando a penalização mais proporcional ao risco real.
+
+---
+
+## Complemento oficial - calibragem de falso positivo em perfis iniciantes
+
+Fica oficialmente consolidado que:
+
+- ausencia de patrimonio e passivos, por si so, nao caracteriza insolvencia;
+- `patrimonio zerado sem passivos` deve ser lido como `ponto de partida patrimonial neutro`;
+- `reserva zerada` continua sendo fragilidade estrutural, mas pode ser parcialmente atenuada quando a economia mensal atual permite formar a reserva ideal em prazo curto;
+- essa atenuacao deve ocorrer na camada dos pilares, sem criar nova penalizacao critica.

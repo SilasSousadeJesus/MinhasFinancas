@@ -23,15 +23,17 @@ namespace MinhasFinancas.Application.Services
         private readonly ICategoriaRepository _categoriaRepository;
         private readonly IBemMaterialRepository _bemMaterialRepository;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IPerfilFinanceiroInicialService _perfilFinanceiroInicialService;
 
 
-        public UsuarioAppService(UserManager<Usuario> userManager, ICategoriaRepository categoriaRepository, IMapper mapper, IUsuarioRepository usuarioRepository, IBemMaterialRepository bemMaterialRepository)
+        public UsuarioAppService(UserManager<Usuario> userManager, ICategoriaRepository categoriaRepository, IMapper mapper, IUsuarioRepository usuarioRepository, IBemMaterialRepository bemMaterialRepository, IPerfilFinanceiroInicialService perfilFinanceiroInicialService)
         {
             _userManager = userManager;
             _categoriaRepository = categoriaRepository;
             _mapper = mapper;
             _usuarioRepository = usuarioRepository;
             _bemMaterialRepository = bemMaterialRepository;
+            _perfilFinanceiroInicialService = perfilFinanceiroInicialService;
         }
 
 
@@ -50,6 +52,7 @@ namespace MinhasFinancas.Application.Services
             if (result.Succeeded) {
                 await _userManager.SetLockoutEnabledAsync(identityUser, false);
                 await InformacoesComplementares(identityUser.Id);
+                await _perfilFinanceiroInicialService.GarantirPerfilFinanceiroValidoAsync(identityUser.Id);
             }
 
             string mensagem = result.Succeeded ? "Usuario criado com sucesso" : "Usuario não pode ser criado";

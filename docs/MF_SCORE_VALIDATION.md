@@ -287,3 +287,10 @@ Nenhuma alteração no Motor Financeiro deve ser considerada concluída sem:
 3. avaliar impacto nas personas persistidas
 4. registrar mudanças no changelog
 5. sincronizar `docs/MF_SCORE.md`, `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE_AUDIT.md`
+
+## Atualizacao oficial v2.3
+
+Esta suite passa a proteger explicitamente duas regras adicionais:
+
+- `patrimonio zero sem passivos` representa fragilidade inicial, e nao insolvencia
+- `fluxo muito forte` deve atenuar a leitura de liquidez quando a reserva ideal pode ser formada rapidamente

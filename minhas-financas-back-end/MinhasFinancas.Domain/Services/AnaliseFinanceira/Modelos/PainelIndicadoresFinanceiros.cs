@@ -6,6 +6,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos
         public IndicadorFinanceiro PercentualEconomia { get; set; } = new();
         public IndicadorFinanceiro ReservaEmergenciaAtual { get; set; } = new();
         public IndicadorFinanceiro ReservaEmergenciaIdeal { get; set; } = new();
+        public IndicadorFinanceiro CapacidadeFormacaoReserva { get; set; } = new();
         public IndicadorFinanceiro ComprometimentoRenda { get; set; } = new();
         public IndicadorFinanceiro ComprometimentoFinanceiroFuturo { get; set; } = new();
         public IndicadorFinanceiro ComprometimentoFinanceiroFuturo90Dias { get; set; } = new();

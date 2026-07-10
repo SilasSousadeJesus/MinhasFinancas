@@ -1,3 +1,5 @@
+using MinhasFinancas.CrossCutting.Util.Enum;
+
 namespace MinhasFinancas.Domain.Entities
 {
     public class ConfiguracaoPerfilFinanceiro
@@ -15,6 +17,7 @@ namespace MinhasFinancas.Domain.Entities
         public decimal? PatrimonioLiquidoAlvo { get; set; }
         public string? Observacao { get; set; }
         public DateTime DataCriacao { get; set; }
+        public EnumOrigemPerfilFinanceiro OrigemPerfilFinanceiro { get; set; }
 
         public virtual PerfilFinanceiro? PerfilFinanceiro { get; set; }
     }

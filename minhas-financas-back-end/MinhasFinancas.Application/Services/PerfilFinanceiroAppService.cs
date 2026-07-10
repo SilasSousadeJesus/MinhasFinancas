@@ -1,5 +1,6 @@
 using MinhasFinancas.Application.DTOs.PerfilFinanceiro;
 using MinhasFinancas.Application.Interfaces;
+using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
 using MinhasFinancas.Infra.Data.Interfaces;
 using System.Net;
@@ -10,13 +11,16 @@ namespace MinhasFinancas.Application.Services
     {
         private readonly IUsuarioAppService _usuarioAppService;
         private readonly IPerfilFinanceiroRepository _perfilFinanceiroRepository;
+        private readonly IPerfilFinanceiroInicialService _perfilFinanceiroInicialService;
 
         public PerfilFinanceiroAppService(
             IUsuarioAppService usuarioAppService,
-            IPerfilFinanceiroRepository perfilFinanceiroRepository)
+            IPerfilFinanceiroRepository perfilFinanceiroRepository,
+            IPerfilFinanceiroInicialService perfilFinanceiroInicialService)
         {
             _usuarioAppService = usuarioAppService;
             _perfilFinanceiroRepository = perfilFinanceiroRepository;
+            _perfilFinanceiroInicialService = perfilFinanceiroInicialService;
         }
 
         public async Task<RetornoGenerico> BuscarVisaoGeralAsync(string usuarioId)
@@ -24,9 +28,12 @@ namespace MinhasFinancas.Application.Services
             try
             {
                 var validacaoUsuario = await ValidarUsuarioAsync(usuarioId);
-                if (validacaoUsuario != null) return validacaoUsuario;
+                if (validacaoUsuario != null)
+                {
+                    return validacaoUsuario;
+                }
 
-                var perfil = await _perfilFinanceiroRepository.BuscarPorUsuarioLeituraAsync(usuarioId);
+                var perfil = await _perfilFinanceiroInicialService.GarantirPerfilFinanceiroValidoAsync(usuarioId);
                 var dados = MapearVisaoGeral(perfil);
 
                 return new RetornoGenerico(true, "Perfil financeiro carregado com sucesso.", "Perfil financeiro carregado com sucesso.", HttpStatusCode.OK, dados);
@@ -42,29 +49,19 @@ namespace MinhasFinancas.Application.Services
             try
             {
                 var validacaoUsuario = await ValidarUsuarioAsync(usuarioId);
-                if (validacaoUsuario != null) return validacaoUsuario;
+                if (validacaoUsuario != null)
+                {
+                    return validacaoUsuario;
+                }
 
                 var validacaoConfiguracao = ValidarConfiguracao(configuracaoDTO);
-                if (validacaoConfiguracao != null) return validacaoConfiguracao;
-
-                var perfil = await _perfilFinanceiroRepository.BuscarPorUsuarioLeituraAsync(usuarioId);
-                var agora = DateTime.UtcNow;
-
-                if (perfil == null)
+                if (validacaoConfiguracao != null)
                 {
-                    perfil = new PerfilFinanceiro
-                    {
-                        Id = Guid.NewGuid(),
-                        UsuarioId = usuarioId,
-                        DataCriacao = agora,
-                        Ativo = true,
-                    };
-
-                    perfil.Configuracoes.Add(CriarConfiguracao(perfil.Id, configuracaoDTO, agora));
-                    await _perfilFinanceiroRepository.CadastrarAsync(perfil);
-
-                    return new RetornoGenerico(true, "Perfil financeiro criado com sucesso.", "Perfil financeiro criado com sucesso.", HttpStatusCode.OK, MapearVisaoGeral(perfil));
+                    return validacaoConfiguracao;
                 }
+
+                var perfil = await _perfilFinanceiroInicialService.GarantirPerfilFinanceiroValidoAsync(usuarioId);
+                var agora = DateTime.UtcNow;
 
                 var configuracaoVigente = perfil.Configuracoes
                     .Where(x => x.DataFimVigencia == null)
@@ -74,7 +71,31 @@ namespace MinhasFinancas.Application.Services
 
                 if (configuracaoVigente != null && ConfiguracaoEhIgual(configuracaoVigente, configuracaoDTO))
                 {
-                    return new RetornoGenerico(true, "Nenhuma alteração relevante foi identificada.", "Nenhuma alteração relevante foi identificada.", HttpStatusCode.OK, MapearVisaoGeral(perfil));
+                    if (configuracaoVigente.OrigemPerfilFinanceiro == EnumOrigemPerfilFinanceiro.PerfilInicialSistema)
+                    {
+                        await _perfilFinanceiroRepository.EncerrarConfiguracaoVigenteAsync(configuracaoVigente.Id, agora);
+                        await _perfilFinanceiroRepository.AdicionarConfiguracaoAsync(
+                            PerfilFinanceiroInicialService.CriarConfiguracaoComMesmosParametros(
+                                configuracaoVigente,
+                                agora,
+                                EnumOrigemPerfilFinanceiro.PersonalizadoPeloUsuario));
+                        await _perfilFinanceiroRepository.SalvarAlteracoesAsync();
+
+                        var perfilPersonalizadoSemMudanca = await _perfilFinanceiroRepository.BuscarPorUsuarioLeituraAsync(usuarioId);
+                        return new RetornoGenerico(
+                            true,
+                            "Perfil financeiro personalizado com sucesso.",
+                            "Perfil financeiro personalizado com sucesso.",
+                            HttpStatusCode.OK,
+                            MapearVisaoGeral(perfilPersonalizadoSemMudanca));
+                    }
+
+                    return new RetornoGenerico(
+                        true,
+                        "Nenhuma alteração relevante foi identificada.",
+                        "Nenhuma alteração relevante foi identificada.",
+                        HttpStatusCode.OK,
+                        MapearVisaoGeral(perfil));
                 }
 
                 if (configuracaoVigente != null)
@@ -86,7 +107,12 @@ namespace MinhasFinancas.Application.Services
                 await _perfilFinanceiroRepository.SalvarAlteracoesAsync();
 
                 var perfilAtualizado = await _perfilFinanceiroRepository.BuscarPorUsuarioLeituraAsync(usuarioId);
-                return new RetornoGenerico(true, "Perfil financeiro atualizado com sucesso.", "Perfil financeiro atualizado com sucesso.", HttpStatusCode.OK, MapearVisaoGeral(perfilAtualizado));
+                return new RetornoGenerico(
+                    true,
+                    "Perfil financeiro atualizado com sucesso.",
+                    "Perfil financeiro atualizado com sucesso.",
+                    HttpStatusCode.OK,
+                    MapearVisaoGeral(perfilAtualizado));
             }
             catch (Exception ex)
             {
@@ -97,7 +123,10 @@ namespace MinhasFinancas.Application.Services
         private async Task<RetornoGenerico?> ValidarUsuarioAsync(string usuarioId)
         {
             var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
-            if (buscaPorUsuario.Sucesso) return null;
+            if (buscaPorUsuario.Sucesso)
+            {
+                return null;
+            }
 
             return new RetornoGenerico
             {
@@ -149,6 +178,7 @@ namespace MinhasFinancas.Application.Services
                 PatrimonioLiquidoAlvo = dto.PatrimonioLiquidoAlvo,
                 Observacao = dto.Observacao?.Trim(),
                 DataCriacao = dataReferencia,
+                OrigemPerfilFinanceiro = EnumOrigemPerfilFinanceiro.PersonalizadoPeloUsuario
             };
         }
 
@@ -175,6 +205,7 @@ namespace MinhasFinancas.Application.Services
             return new VisaoGeralPerfilFinanceiroDTO
             {
                 PerfilId = perfil?.Id,
+                UsaPerfilFinanceiroInicial = historico.FirstOrDefault(x => x.Vigente)?.OrigemPerfilFinanceiro == EnumOrigemPerfilFinanceiro.PerfilInicialSistema.ToString(),
                 ConfiguracaoVigente = historico.FirstOrDefault(x => x.Vigente),
                 Historico = historico
             };
@@ -195,7 +226,8 @@ namespace MinhasFinancas.Application.Services
                 PercentualMinimoInvestimento = configuracao.PercentualMinimoInvestimento,
                 PatrimonioLiquidoAlvo = configuracao.PatrimonioLiquidoAlvo,
                 Observacao = configuracao.Observacao,
-                Vigente = configuracao.DataFimVigencia == null,
+                OrigemPerfilFinanceiro = configuracao.OrigemPerfilFinanceiro.ToString(),
+                Vigente = configuracao.DataFimVigencia == null
             };
         }
 

@@ -9,6 +9,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
         private static readonly CodigoIndicadorFinanceiro[] OrdemPrioridadeAtencao =
         [
             CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
+            CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva,
             CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo,
             CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias,
             CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias,
@@ -27,6 +28,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             CodigoIndicadorFinanceiro.PercentualEconomia,
             CodigoIndicadorFinanceiro.EconomiaMensal,
             CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
+            CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva,
             CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo,
             CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias,
             CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias,
@@ -265,6 +267,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     => "a geração de sobra mensal contribui para sustentar o planejamento com mais previsibilidade.",
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal
                     => "a proteção de liquidez já oferece um colchão mais seguro para lidar com imprevistos.",
+                CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva
+                    => "a velocidade atual de formação da reserva indica boa capacidade de recompor proteção mesmo em fase inicial de patrimônio.",
                 CodigoIndicadorFinanceiro.Endividamento
                     => "o endividamento patrimonial permanece controlado e preserva margem para decisões futuras.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
@@ -294,6 +298,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             {
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal
                     => "a reserva de emergência ainda não oferece cobertura suficiente para atravessar imprevistos com tranquilidade.",
+                CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva
+                    => "a reserva ainda demoraria além do ideal para ser concluída no ritmo atual, o que prolonga a vulnerabilidade a imprevistos.",
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "o patrimônio permanece distante do objetivo definido e ainda exige constância nos aportes.",
                 CodigoIndicadorFinanceiro.Endividamento
@@ -324,6 +330,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             {
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal
                     => "Fortalecer a reserva de emergência.",
+                CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva
+                    => "Acelerar a formação da reserva de emergência.",
                 CodigoIndicadorFinanceiro.Endividamento
                     => "Reduzir o endividamento patrimonial.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
@@ -360,6 +368,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     => "Sobra mensal saudável.",
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal
                     => "Proteção financeira de curto prazo mais robusta.",
+                CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva
+                    => "Boa velocidade de formação da reserva.",
                 CodigoIndicadorFinanceiro.Endividamento
                     => "Endividamento patrimonial sob controle.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda

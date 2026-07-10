@@ -362,3 +362,26 @@ devem ser atualizados, na mesma entrega:
 - `docs/INDICADORES_FINANCEIROS.md`
 - `docs/MF_SCORE_AUDIT.md`
 - `docs/CHANGELOG.md`
+
+## Perfil Financeiro Inicial
+
+O `MF Score` passa a assumir oficialmente que todo usuÃ¡rio possui uma configuraÃ§Ã£o vigente do `Perfil Financeiro`.
+
+Quando o usuÃ¡rio ainda nÃ£o personalizou seus parÃ¢metros, o motor utiliza automaticamente o `Perfil Financeiro Inicial` criado pelo sistema.
+
+Essa mudanÃ§a nÃ£o altera:
+
+- fÃ³rmulas
+- pesos
+- pilares
+- penalizaÃ§Ãµes
+
+Ela apenas elimina a dependÃªncia de ausÃªncia de configuraÃ§Ã£o para que o Motor Financeiro funcione desde o primeiro uso.
+
+## Atualizacao oficial da versao v2.3
+
+- `Patrimonio zerado sem passivos` passa a ser tratado como `ponto de partida patrimonial neutro`, e nao como insolvencia automatica.
+- Foi criado o indicador auxiliar `Capacidade de Formacao de Reserva`.
+- Esse indicador estima em quantos meses a sobra mensal atual consegue completar a reserva ideal restante.
+- O pilar `Liquidez e Reserva` continua priorizando a reserva atual, mas agora atenua falso positivo de risco quando a reserva esta zerada e a formacao projetada e rapida.
+- O Laboratorio do MF Score passa a expor explicitamente esse indicador e a observacao de neutralidade patrimonial.

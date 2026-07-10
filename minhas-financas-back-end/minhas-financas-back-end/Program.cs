@@ -101,6 +101,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, PercentualEconomiaIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, ReservaEmergenciaAtualIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, ReservaEmergenciaIdealIndicador>();
+            builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, CapacidadeFormacaoReservaIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, ComprometimentoRendaIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, ComprometimentoFinanceiroFuturoIndicador>();
             builder.Services.AddScoped<ICalculadorIndicadorFinanceiro, ComprometimentoFinanceiroFuturo90DiasIndicador>();
@@ -166,6 +167,7 @@ namespace minhas_financas_back_end
 
             builder.Services.AddScoped<IMetaAppService, MetaAppService>();
             builder.Services.AddScoped<IMetaRepository, MetaRepository>();
+            builder.Services.AddScoped<IPerfilFinanceiroInicialService, PerfilFinanceiroInicialService>();
             builder.Services.AddScoped<IPerfilFinanceiroAppService, PerfilFinanceiroAppService>();
             builder.Services.AddScoped<IPerfilFinanceiroRepository, PerfilFinanceiroRepository>();
             builder.Services.AddScoped<IPlanoEstrategicoFinanceiroAppService, PlanoEstrategicoFinanceiroAppService>();

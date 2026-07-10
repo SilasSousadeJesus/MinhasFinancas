@@ -18,13 +18,17 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 ValorAtual = dadosReferencia.PatrimonioLiquidoAtual,
                 ValorIdeal = patrimonioAlvo,
                 Percentual = dadosReferencia.PercentualPatrimonioAlvoAtual,
-                Status = patrimonioAlvo > 0
-                    ? ResolutorStatusIndicadorFinanceiro.ResolverMetaMinima(dadosReferencia.PatrimonioLiquidoAtual, patrimonioAlvo)
-                    : (dadosReferencia.PatrimonioLiquidoAtual >= 0 ? StatusIndicadorFinanceiro.Bom : StatusIndicadorFinanceiro.Critico),
+                Status = dadosReferencia.PontoPartidaPatrimonialNeutro
+                    ? StatusIndicadorFinanceiro.Atencao
+                    : patrimonioAlvo > 0
+                        ? ResolutorStatusIndicadorFinanceiro.ResolverMetaMinima(dadosReferencia.PatrimonioLiquidoAtual, patrimonioAlvo)
+                        : (dadosReferencia.PatrimonioLiquidoAtual >= 0 ? StatusIndicadorFinanceiro.Bom : StatusIndicadorFinanceiro.Critico),
                 Descricao = "Diferença entre o total de ativos e o total de passivos atualmente registrados.",
-                Observacao = patrimonioAlvo > 0
-                    ? "Comparado ao patrimônio líquido alvo definido no perfil financeiro."
-                    : "Sem patrimônio líquido alvo configurado no perfil financeiro.",
+                Observacao = dadosReferencia.PontoPartidaPatrimonialNeutro
+                    ? "Ativos e passivos ainda estão zerados. O sistema trata esse cenário como ponto de partida patrimonial neutro, e não como insolvência."
+                    : patrimonioAlvo > 0
+                        ? "Comparado ao patrimônio líquido alvo definido no perfil financeiro."
+                        : "Sem patrimônio líquido alvo configurado no perfil financeiro.",
                 Formato = FormatoValorIndicadorFinanceiro.Moeda
             };
         }

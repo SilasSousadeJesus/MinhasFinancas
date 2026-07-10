@@ -62,6 +62,12 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                         "A reserva disponível ainda não oferece a segurança ideal para atravessar oscilações ou despesas inesperadas com tranquilidade.",
                         "Priorize liquidez e proteção antes de assumir compromissos mais longos ou aumentar o padrão de gasto."),
 
+                CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva when indicador.Status == StatusIndicadorFinanceiro.Atencao || indicador.Status == StatusIndicadorFinanceiro.Critico
+                    => CriarInsight(indicador, TipoInsightFinanceiro.Oportunidade, PrioridadeInsightFinanceiro.Media,
+                        "A formação da reserva ainda pode ganhar velocidade.",
+                        "Mesmo com alguma sobra mensal, a velocidade atual de recomposição da proteção ainda pode estar abaixo do ideal para reduzir vulnerabilidades com rapidez.",
+                        "Direcione uma parcela maior da sobra mensal para liquidez até encurtar o tempo necessário para concluir a reserva."),
+
                 CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal when indicador.ValorIdeal <= 0
                     => CriarInsight(indicador, TipoInsightFinanceiro.Configuracao, PrioridadeInsightFinanceiro.Media,
                         "Ainda falta definir a régua da sua reserva.",
@@ -169,6 +175,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.EconomiaMensal or
                 CodigoIndicadorFinanceiro.PercentualEconomia or
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual or
+                CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva or
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo or
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias or
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias or

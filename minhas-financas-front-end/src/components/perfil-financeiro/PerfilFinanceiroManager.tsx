@@ -86,13 +86,13 @@ function formatDate(value?: string | null) {
 
 function mapToFormValues(configuracao?: ConfiguracaoPerfilFinanceiro | null): FormValues {
   return {
-    percentualEconomiaMensalDesejado: configuracao?.percentualEconomiaMensalDesejado ?? 0,
-    percentualReservaEmergenciaDesejado: configuracao?.percentualReservaEmergenciaDesejado ?? 0,
+    percentualEconomiaMensalDesejado: configuracao?.percentualEconomiaMensalDesejado ?? 20,
+    percentualReservaEmergenciaDesejado: configuracao?.percentualReservaEmergenciaDesejado ?? 100,
     mesesReservaEmergenciaDesejados: configuracao?.mesesReservaEmergenciaDesejados ?? 6,
-    percentualMaximoComprometimentoRenda: configuracao?.percentualMaximoComprometimentoRenda ?? 0,
-    percentualMaximoEndividamento: configuracao?.percentualMaximoEndividamento ?? 0,
-    percentualMinimoInvestimento: configuracao?.percentualMinimoInvestimento ?? 0,
-    patrimonioLiquidoAlvo: configuracao?.patrimonioLiquidoAlvo ?? undefined,
+    percentualMaximoComprometimentoRenda: configuracao?.percentualMaximoComprometimentoRenda ?? 50,
+    percentualMaximoEndividamento: configuracao?.percentualMaximoEndividamento ?? 50,
+    percentualMinimoInvestimento: configuracao?.percentualMinimoInvestimento ?? 10,
+    patrimonioLiquidoAlvo: configuracao?.patrimonioLiquidoAlvo ?? 0,
     observacao: configuracao?.observacao ?? "",
   };
 }
@@ -147,19 +147,19 @@ export function PerfilFinanceiroManager() {
     return [
       {
         titulo: "Economia desejada",
-        valor: formatPercentual(configuracaoVigente?.percentualEconomiaMensalDesejado ?? 0),
+        valor: formatPercentual(configuracaoVigente?.percentualEconomiaMensalDesejado ?? 20),
       },
       {
         titulo: "Meses de reserva",
-        valor: `${configuracaoVigente?.mesesReservaEmergenciaDesejados ?? 0} meses`,
+        valor: `${configuracaoVigente?.mesesReservaEmergenciaDesejados ?? 6} meses`,
       },
       {
         titulo: "Endividamento máximo",
-        valor: formatPercentual(configuracaoVigente?.percentualMaximoEndividamento ?? 0),
+        valor: formatPercentual(configuracaoVigente?.percentualMaximoEndividamento ?? 50),
       },
       {
         titulo: "Investimento mínimo",
-        valor: formatPercentual(configuracaoVigente?.percentualMinimoInvestimento ?? 0),
+        valor: formatPercentual(configuracaoVigente?.percentualMinimoInvestimento ?? 10),
       },
     ];
   }, [configuracaoVigente]);
@@ -248,6 +248,15 @@ export function PerfilFinanceiroManager() {
               ) : (
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    {visaoGeral?.usaPerfilFinanceiroInicial ? (
+                      <div className="rounded-md border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+                        Seu perfil foi criado com os parâmetros padrão do sistema para
+                        permitir que o Motor Financeiro realize análises desde o primeiro
+                        uso. Você pode alterar qualquer configuração quando quiser para que
+                        as análises reflitam melhor a sua realidade.
+                      </div>
+                    ) : null}
+
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                       <FormField
                         control={form.control}
@@ -424,6 +433,7 @@ export function PerfilFinanceiroManager() {
                         <TableHead>Endividamento máximo</TableHead>
                         <TableHead>Investimento mínimo</TableHead>
                         <TableHead>Patrimônio alvo</TableHead>
+                        <TableHead>Origem</TableHead>
                         <TableHead>Status</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -443,6 +453,11 @@ export function PerfilFinanceiroManager() {
                           <TableCell>{formatPercentual(item.percentualMaximoEndividamento)}</TableCell>
                           <TableCell>{formatPercentual(item.percentualMinimoInvestimento)}</TableCell>
                           <TableCell>{formatCurrency(item.patrimonioLiquidoAlvo)}</TableCell>
+                          <TableCell>
+                            {item.origemPerfilFinanceiro === "PerfilInicialSistema"
+                              ? "Perfil inicial do sistema"
+                              : "Personalizado pelo usuário"}
+                          </TableCell>
                           <TableCell>
                             <Badge variant={item.vigente ? "default" : "secondary"}>
                               {item.vigente ? "Vigente" : "Histórico"}

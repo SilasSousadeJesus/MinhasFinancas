@@ -29,6 +29,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 PercentualEconomia = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.PercentualEconomia),
                 ReservaEmergenciaAtual = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ReservaEmergenciaAtual),
                 ReservaEmergenciaIdeal = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal),
+                CapacidadeFormacaoReserva = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva),
                 ComprometimentoRenda = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoRenda),
                 ComprometimentoFinanceiroFuturo = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo),
                 ComprometimentoFinanceiroFuturo90Dias = BuscarIndicador(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias),
@@ -90,9 +91,16 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
             var baseReservaEmergenciaIntegral = despesaMensalAtual * mesesReservaDesejados;
             var reservaEmergenciaIdealConfigurada = baseReservaEmergenciaIntegral * (percentualReservaDesejado / 100m);
+            var reservaIdealRestante = Math.Max(reservaEmergenciaIdealConfigurada - reservaEmergenciaAtual, 0m);
             var coberturaReservaEmMeses = despesaMensalAtual > 0
                 ? reservaEmergenciaAtual / despesaMensalAtual
                 : 0m;
+            var possuiCapacidadeFormacaoReserva = economiaMensalAtual > 0m;
+            var mesesParaFormarReservaIdeal = reservaIdealRestante <= 0m
+                ? 0m
+                : possuiCapacidadeFormacaoReserva
+                    ? reservaIdealRestante / economiaMensalAtual
+                    : 999m;
 
             var comprometimentoRendaAtual = receitaMensalAtual > 0
                 ? (despesaMensalAtual / receitaMensalAtual) * 100m
@@ -121,6 +129,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             var percentualPatrimonioAlvoAtual = patrimonioAlvo > 0
                 ? (patrimonioLiquidoAtual / patrimonioAlvo) * 100m
                 : 0m;
+            var pontoPartidaPatrimonialNeutro = totalAtivos == 0m
+                && totalPassivos == 0m
+                && patrimonioLiquidoAtual == 0m;
 
             return new DadosReferenciaAnaliseFinanceira
             {
@@ -134,7 +145,10 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 ReservaEmergenciaAtual = reservaEmergenciaAtual,
                 BaseReservaEmergenciaIntegral = baseReservaEmergenciaIntegral,
                 ReservaEmergenciaIdealConfigurada = reservaEmergenciaIdealConfigurada,
+                ReservaIdealRestante = reservaIdealRestante,
                 CoberturaReservaEmMeses = coberturaReservaEmMeses,
+                MesesParaFormarReservaIdeal = mesesParaFormarReservaIdeal,
+                PossuiCapacidadeFormacaoReserva = possuiCapacidadeFormacaoReserva,
                 ComprometimentoRendaAtual = comprometimentoRendaAtual,
                 ObrigacoesFinanceirasFuturas30Dias = obrigacoesFinanceirasFuturas30Dias,
                 ObrigacoesFinanceirasFuturas90Dias = obrigacoesFinanceirasFuturas90Dias,
@@ -150,7 +164,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 ReceitaPrevista365Dias = receitaPrevista365Dias,
                 EndividamentoAtual = endividamentoAtual,
                 PatrimonioAlvo = patrimonioAlvo,
-                PercentualPatrimonioAlvoAtual = percentualPatrimonioAlvoAtual
+                PercentualPatrimonioAlvoAtual = percentualPatrimonioAlvoAtual,
+                PontoPartidaPatrimonialNeutro = pontoPartidaPatrimonialNeutro
             };
         }
 

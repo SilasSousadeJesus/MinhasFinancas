@@ -13,6 +13,7 @@ namespace MinhasFinancas.Application.DTOs.PerfilFinanceiro
         public decimal PercentualMinimoInvestimento { get; set; }
         public decimal? PatrimonioLiquidoAlvo { get; set; }
         public string? Observacao { get; set; }
+        public string OrigemPerfilFinanceiro { get; set; } = string.Empty;
         public bool Vigente { get; set; }
     }
 }

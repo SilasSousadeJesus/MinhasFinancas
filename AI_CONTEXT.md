@@ -18,6 +18,8 @@ O `MF Score` agora usa escala final de `0 a 1000`, enquanto os pilares permanece
 
 Na calibragem mais recente do `mf-score-v2.2-1000`, o pilar `Planejamento e Disciplina` passou a depender explicitamente da configuração mínima do `Perfil Financeiro`, o `Comprometimento da Renda` foi reafirmado como indicador conceitualmente ligado a `Fluxo de Caixa`, os horizontes futuros `30/90/180/365` permaneceram ativos com peso progressivamente menor nos prazos mais longos e o motor passou a incorporar `Plano Estratégico Financeiro` e `Compromissos Financeiros` como sinais opcionais de planejamento quando eles existirem.
 
+O Motor Financeiro agora assume oficialmente que sempre existe uma configuração vigente do Perfil Financeiro, usando automaticamente o Perfil Financeiro Inicial do sistema enquanto o usuário ainda não personaliza sua própria régua.
+
 O `MF Score` agora também possui uma etapa oficial de calibração contínua, com cenários de validação, explicação de variação, tendência e documentação dedicada em `docs/MF_SCORE.md`, `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE_CALIBRATION_CONTEXT.md`.
 
 Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_VALIDATION.md`, usada para confirmar se alterações futuras continuam coerentes com os cenários canônicos do modelo.
@@ -35,6 +37,8 @@ A antiga tela de personas foi refatorada para o `Laboratório do MF Score`, disp
 `docs/MF_SCORE_CONSOLIDACAO_OFICIAL.md` registra a decisão oficial mais recente sobre a direção do `MF Score`, separando framework conceitual, propostas matemáticas e escopo aprovado para a próxima implementação.
 
 O Motor Financeiro adota oficialmente a regra de não dupla penalização: reserva baixa, comprometimento elevado e pressão futura devem reduzir prioritariamente os pilares correspondentes, deixando penalizações críticas para risco grave, materializado ou persistente.
+
+Na calibragem mais recente do `mf-score-v2.3-1000`, o motor passou a tratar `patrimonio zerado sem passivos` como `ponto de partida patrimonial neutro`, adicionou o indicador auxiliar `Capacidade de Formacao de Reserva` e recalibrou o pilar `Liquidez e Reserva` para considerar a velocidade estimada de formacao da reserva ideal quando existe sobra mensal forte.
 
 ## Arquitetura da soluÃ§Ã£o
 
@@ -340,6 +344,8 @@ ObservaÃ§Ã£o importante:
 
 ### Perfil Financeiro
 
+- todo usuário agora recebe automaticamente um Perfil Financeiro Inicial quando ainda não possui perfil válido
+- a configuração vigente registra a origem `PerfilInicialSistema` ou `PersonalizadoPeloUsuario`
 - parÃ¢metros financeiros pessoais por usuÃ¡rio
 - histÃ³rico de configuraÃ§Ãµes vigentes e anteriores
 - base futura para indicadores, dashboard, alertas e insights
@@ -652,6 +658,7 @@ As subfases 4.2.1, 4.2.2.1, 4.2.3.2 e 4.2.3.3 adicionaram a primeira versão da 
 - a continuidade histórica passa a ser enviada principalmente como narrativa interpretada em `## Evolução Financeira`
 - as seções `## Memória Financeira` e `## Compromissos Financeiros` permanecem como apoio resumido, e não como blocos principais de interpretação
 - quando não existe histórico, o contexto informa explicitamente que ainda não existem análises suficientes para avaliar evolução
+
 
 
 

@@ -42,6 +42,8 @@ Assim, o usuário não depende de uma resposta “inteligente” no sentido vago
 
 A Memória Financeira ajuda o assistente a perceber continuidade entre temas relacionados, reconhecer evolução e evitar que cada nova resposta comece do zero.
 
+Para que essa leitura seja possível desde o primeiro uso, o assistente agora parte do princípio de que todo usuário possui ao menos um `Perfil Financeiro` vigente, mesmo quando ainda está usando apenas o `Perfil Financeiro Inicial` criado pelo sistema.
+
 ## A jornada de evolução
 
 O Assistente Financeiro cresce como uma jornada.

@@ -426,6 +426,7 @@ Serve para testar cenÃ¡rios hipotÃ©ticos sem alterar os dados reais do usuÃ
 
 ### Dados gerados ou mantidos
 - perfil financeiro do usuÃ¡rio
+- origem da configuraÃ§Ã£o vigente
 - histÃ³rico de configuraÃ§Ãµes
 - configuraÃ§Ã£o vigente
 - parÃ¢metros pessoais de leitura financeira
@@ -442,10 +443,13 @@ Serve para testar cenÃ¡rios hipotÃ©ticos sem alterar os dados reais do usuÃ
 - poderÃ¡ ser consumido por relatÃ³rios e indicadores futuros
 
 ### O que jÃ¡ estÃ¡ funcional
+- criaÃ§Ã£o automÃ¡tica do Perfil Financeiro Inicial para novos usuÃ¡rios
+- criaÃ§Ã£o automÃ¡tica do Perfil Financeiro Inicial para usuÃ¡rios antigos sem perfil
 - cadastro dos parÃ¢metros financeiros principais
 - atualizaÃ§Ã£o do perfil
 - histÃ³rico de vigÃªncia
 - leitura da configuraÃ§Ã£o vigente
+- identificaÃ§Ã£o visual de quando o usuÃ¡rio ainda usa a rÃ©gua padrÃ£o do sistema
 - consumo inicial pelos indicadores financeiros do dashboard
 - consumo real pela tela de SaÃºde Financeira
 - consumo pelos insights financeiros e pelo resumo consolidado da inteligÃªncia do sistema
@@ -778,3 +782,8 @@ Fornecer uma ferramenta técnica de calibração do Motor Financeiro sem criar t
 - filtros adicionais de busca e recorte de usuários
 - comparação lado a lado entre usuários ou competências
 - acesso rápido ao histórico mensal do `MF Score` dentro do próprio laboratório
+
+## Atualizacao funcional - MF Score v2.3
+
+- A tela `Saude Financeira` agora evidencia tambem a `Capacidade de Formacao de Reserva`, mostrando quando a reserva ainda esta zerada, mas pode ser formada rapidamente pela sobra mensal atual.
+- A leitura patrimonial tambem deixa claro quando o usuario ainda esta em `ponto de partida patrimonial neutro`, evitando confundir inicio de construcao patrimonial com insolvencia.

@@ -50,7 +50,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore
                 PercentualMaximoComprometimentoRenda = percentualMaximoComprometimentoRenda,
                 PercentualMaximoEndividamento = percentualMaximoEndividamento,
                 PercentualMinimoInvestimento = percentualMinimoInvestimento,
-                PatrimonioLiquidoAlvo = patrimonioLiquidoAlvo
+                PatrimonioLiquidoAlvo = patrimonioLiquidoAlvo,
+                OrigemPerfilFinanceiro = EnumOrigemPerfilFinanceiro.PersonalizadoPeloUsuario
             };
         }
 

@@ -130,6 +130,12 @@ Os dois módulos são complementares:
 - o perfil diz o que é desejável, aceitável ou saudável
 - o plano diz para onde o usuário decidiu caminhar
 
+Para garantir que essa régua exista desde o primeiro acesso, todo usuário deve receber automaticamente um `Perfil Financeiro Inicial` com parâmetros mínimos válidos.
+
+Esse perfil inicial não tenta adivinhar os objetivos reais do usuário.
+
+Ele apenas impede que o Motor Financeiro opere sem referência.
+
 Essa separação evita confundir parâmetros numéricos com intenção estratégica de longo prazo.
 
 ## Natureza do plano estratégico

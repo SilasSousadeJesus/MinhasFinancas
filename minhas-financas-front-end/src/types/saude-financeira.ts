@@ -55,6 +55,7 @@ export interface PainelIndicadoresFinanceirosSaude {
   percentualEconomia: IndicadorFinanceiroSaude;
   reservaEmergenciaAtual: IndicadorFinanceiroSaude;
   reservaEmergenciaIdeal: IndicadorFinanceiroSaude;
+  capacidadeFormacaoReserva: IndicadorFinanceiroSaude;
   comprometimentoRenda: IndicadorFinanceiroSaude;
   comprometimentoFinanceiroFuturo: IndicadorFinanceiroSaude;
   comprometimentoFinanceiroFuturo90Dias: IndicadorFinanceiroSaude;

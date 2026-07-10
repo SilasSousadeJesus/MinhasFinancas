@@ -102,6 +102,12 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Alterações em lançamentos financeiros devem preservar o máximo possível de contexto histórico.
 - Campos importantes para relatórios futuros devem ser estruturados, não derivados apenas de descrição.
 
+## Perfil Financeiro
+
+- Todo usuário deve possuir um Perfil Financeiro válido.
+- O Motor Financeiro nunca deve depender da ausência de configuração para produzir análises.
+- Quando o usuário ainda não personalizou seu Perfil Financeiro, o sistema deve utilizar automaticamente o Perfil Financeiro Inicial.
+
 ## Infraestrutura de relatórios
 
 - Toda exportação do sistema deve utilizar uma infraestrutura reutilizável.

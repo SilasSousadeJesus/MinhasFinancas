@@ -24,7 +24,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                     4m,
                     2m),
                 Descricao = "Valor atual reservado em ativos líquidos, considerando dinheiro em conta e investimentos.",
-                Observacao = $"Cobertura atual estimada: {dadosReferencia.CoberturaReservaEmMeses:N2} mês(es) de despesas.",
+                Observacao = dadosReferencia.ReservaEmergenciaAtual <= 0 && dadosReferencia.PossuiCapacidadeFormacaoReserva
+                    ? $"Cobertura atual estimada: {dadosReferencia.CoberturaReservaEmMeses:N2} mês(es) de despesas. Apesar da reserva zerada, a formação projetada pode acontecer em cerca de {dadosReferencia.MesesParaFormarReservaIdeal:N2} mês(es) com a sobra mensal atual."
+                    : $"Cobertura atual estimada: {dadosReferencia.CoberturaReservaEmMeses:N2} mês(es) de despesas.",
                 Formato = FormatoValorIndicadorFinanceiro.Moeda
             };
         }

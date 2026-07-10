@@ -17,16 +17,16 @@ namespace MinhasFinancas.Application.Services
 
         private readonly IUsuarioAppService _usuarioAppService;
         private readonly IAnaliseFinanceiraHistoricaRepository _repository;
-        private readonly IPerfilFinanceiroRepository _perfilFinanceiroRepository;
+        private readonly IPerfilFinanceiroInicialService _perfilFinanceiroInicialService;
 
         public AnaliseFinanceiraHistoricaAppService(
             IUsuarioAppService usuarioAppService,
             IAnaliseFinanceiraHistoricaRepository repository,
-            IPerfilFinanceiroRepository perfilFinanceiroRepository)
+            IPerfilFinanceiroInicialService perfilFinanceiroInicialService)
         {
             _usuarioAppService = usuarioAppService;
             _repository = repository;
-            _perfilFinanceiroRepository = perfilFinanceiroRepository;
+            _perfilFinanceiroInicialService = perfilFinanceiroInicialService;
         }
 
         public async Task<RetornoGenerico> BuscarTodasAsync(string usuarioId, int pagina = 1, int tamanhoPagina = 5)
@@ -238,7 +238,7 @@ namespace MinhasFinancas.Application.Services
 
         private async Task<PerfilFinanceiroVigenteResumidoDTO?> BuscarPerfilFinanceiroVigenteAsync(string usuarioId)
         {
-            var perfil = await _perfilFinanceiroRepository.BuscarPorUsuarioLeituraAsync(usuarioId);
+            var perfil = await _perfilFinanceiroInicialService.GarantirPerfilFinanceiroValidoAsync(usuarioId);
             var vigente = perfil?.Configuracoes
                 .Where(x => x.DataFimVigencia == null)
                 .OrderByDescending(x => x.DataInicioVigencia)

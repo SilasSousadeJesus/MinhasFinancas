@@ -14,6 +14,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             { CodigoIndicadorFinanceiro.PercentualEconomia, 1.0m },
             { CodigoIndicadorFinanceiro.ReservaEmergenciaAtual, 1.5m },
             { CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal, 0.5m },
+            { CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva, 1.0m },
             { CodigoIndicadorFinanceiro.ComprometimentoRenda, 1.5m },
             { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo, 1.5m },
             { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias, 0.75m },
@@ -141,15 +142,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
         {
             var relevantes = SelecionarIndicadores(indicadores,
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
-                CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal);
+                CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal,
+                CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva);
+            var reservaAtual = Buscar(indicadores, CodigoIndicadorFinanceiro.ReservaEmergenciaAtual);
+            var capacidadeFormacaoReserva = Buscar(indicadores, CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva);
+            var notaLiquidez = CalcularNotaMediaLiquidez(reservaAtual, capacidadeFormacaoReserva);
 
             return new PilarMfScoreFinanceiro
             {
                 Codigo = CodigoPilarMfScoreFinanceiro.LiquidezEReserva,
                 Nome = "Liquidez e Reserva",
                 Peso = 25m,
-                Nota = CalcularNotaMedia(relevantes),
-                Descricao = "Capacidade de suportar imprevistos e manter proteção financeira.",
+                Nota = notaLiquidez,
+                Descricao = "Capacidade de suportar imprevistos e manter proteção financeira. A reserva atual continua sendo a base principal da nota, mas a velocidade estimada para formar a reserva ideal atenua falsos positivos de risco em perfis iniciantes com fluxo forte.",
                 Indicadores = relevantes.Select(item => item.Nome).ToList()
             };
         }
@@ -176,17 +181,26 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
         private static PilarMfScoreFinanceiro CalcularPilarPatrimonio(IReadOnlyCollection<IndicadorFinanceiro> indicadores)
         {
-            var relevantes = SelecionarIndicadores(indicadores,
+            var patrimonioLiquido = Buscar(indicadores, CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual);
+            var percentualPatrimonioAlvo = Buscar(indicadores, CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo);
+            var relevantes = SelecionarIndicadores(
+                indicadores,
                 CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual,
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo);
+            var notaPatrimonio = CalcularNotaMedia(relevantes);
+
+            if (patrimonioLiquido?.ValorAtual == 0m && percentualPatrimonioAlvo?.ValorAtual == 0m)
+            {
+                notaPatrimonio = Math.Max(notaPatrimonio, 60);
+            }
 
             return new PilarMfScoreFinanceiro
             {
                 Codigo = CodigoPilarMfScoreFinanceiro.Patrimonio,
                 Nome = "Patrimônio",
                 Peso = 15m,
-                Nota = CalcularNotaMedia(relevantes),
-                Descricao = "Evolução patrimonial e avanço em relação ao objetivo de longo prazo.",
+                Nota = notaPatrimonio,
+                Descricao = "Evolução patrimonial e avanço em relação ao objetivo de longo prazo. Patrimônio zerado sem passivos é tratado como ponto de partida neutro, não como insolvência automática.",
                 Indicadores = relevantes.Select(item => item.Nome).ToList()
             };
         }
@@ -197,7 +211,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
         {
             var relevantesDeExecucao = SelecionarIndicadores(indicadores,
                 CodigoIndicadorFinanceiro.PercentualEconomia,
-                CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
+                CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva,
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo);
 
             var notaExecucao = CalcularNotaMedia(relevantesDeExecucao);
@@ -293,6 +307,32 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             });
 
             return (int)Math.Round(somaPonderada / somaPesos);
+        }
+
+        private static int CalcularNotaMediaLiquidez(
+            IndicadorFinanceiro? reservaAtual,
+            IndicadorFinanceiro? capacidadeFormacaoReserva)
+        {
+            if (reservaAtual is null && capacidadeFormacaoReserva is null)
+            {
+                return 0;
+            }
+
+            var pontuacaoReserva = reservaAtual is null ? 0m : ObterPontuacao(reservaAtual.Status);
+            var pontuacaoCapacidade = capacidadeFormacaoReserva is null ? 0m : ObterPontuacao(capacidadeFormacaoReserva.Status);
+            var notaBase = (pontuacaoReserva * 0.7m) + (pontuacaoCapacidade * 0.3m);
+
+            if (pontuacaoReserva <= 25m && capacidadeFormacaoReserva is not null)
+            {
+                notaBase = capacidadeFormacaoReserva.Status switch
+                {
+                    StatusIndicadorFinanceiro.Excelente => Math.Max(notaBase, 60m),
+                    StatusIndicadorFinanceiro.Bom => Math.Max(notaBase, 55m),
+                    _ => notaBase
+                };
+            }
+
+            return (int)Math.Round(Math.Clamp(notaBase, 0m, EscalaPilares));
         }
 
         private static List<IndicadorCriticoMfScoreFinanceiro> MontarIndicadoresCriticos(
