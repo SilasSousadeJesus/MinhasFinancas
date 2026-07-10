@@ -9,6 +9,10 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos
         public int DiasMaximosAtraso { get; set; }
         public decimal ValorTotalEmAtraso { get; set; }
         public decimal PercentualValorEmAtrasoSobreRenda { get; set; }
+        public int QuantidadeParametrosPlanejamentoConfigurados { get; set; }
+        public int TotalParametrosPlanejamentoEsperados { get; set; }
+        public bool PerfilFinanceiroBasicoCompleto { get; set; }
+        public int NotaConfiguracaoPlanejamento { get; set; }
         public bool PossuiDadosEssenciaisInsuficientes { get; set; }
         public List<int> HistoricoPontuacoesFinais { get; set; } = [];
     }

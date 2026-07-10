@@ -35,8 +35,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Pers
                 Descricao = "Atrasos relevantes, pressao de caixa imediata, reserva inexistente e passivos elevados.",
                 ScoreEsperadoMin = 0,
                 ScoreEsperadoMax = 490,
-                Justificativa = "Mesmo sem um campo explicito de inadimplencia no modelo, a melhor aproximacao deve produzir penalizacao forte.",
-                Observacoes = "Limitacao conhecida: o dominio ainda nao possui um marcador explicito de inadimplencia; o cenario usa atrasos pendentes e passivos altos como aproximacao.",
+                Justificativa = "A matriz gradual de inadimplencia deve produzir penalizacao forte quando houver atraso relevante combinado com alta materialidade sobre a renda.",
+                Observacoes = "Caso canonico revisto na calibracao v2.1: o motor agora trata inadimplencia com severidade gradual por tempo de atraso e peso do valor vencido.",
                 Contexto = CriarContexto(lancamentos, ativos, passivos, configuracao, dataReferencia: dataReferencia),
                 DadosEntrada = CriarDadosEntrada(4500m, 6600m, 0m, 0m, 25000m, 5800m, 10000m, 10000m, 10000m)
             };

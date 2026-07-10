@@ -20,6 +20,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             var mesesConsecutivos = CalcularMesesConsecutivosFluxoNegativo(lancamentos, mesAtual, 12);
             var receitaMensalAtual = CalcularReceitaMensal(lancamentos, mesAtual);
             var avaliacaoInadimplencia = AvaliarInadimplencia(lancamentos, dataReferencia, receitaMensalAtual);
+            var totalParametrosPlanejamentoEsperados = 5;
+            var quantidadeParametrosPlanejamentoConfigurados = CalcularQuantidadeParametrosPlanejamentoConfigurados(contexto.ConfiguracaoPerfilFinanceiro);
 
             return new ContextoComplementarMfScoreFinanceiro
             {
@@ -30,6 +32,10 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 DiasMaximosAtraso = avaliacaoInadimplencia.DiasMaximosAtraso,
                 ValorTotalEmAtraso = avaliacaoInadimplencia.ValorTotalEmAtraso,
                 PercentualValorEmAtrasoSobreRenda = avaliacaoInadimplencia.PercentualValorEmAtrasoSobreRenda,
+                QuantidadeParametrosPlanejamentoConfigurados = quantidadeParametrosPlanejamentoConfigurados,
+                TotalParametrosPlanejamentoEsperados = totalParametrosPlanejamentoEsperados,
+                PerfilFinanceiroBasicoCompleto = quantidadeParametrosPlanejamentoConfigurados >= totalParametrosPlanejamentoEsperados,
+                NotaConfiguracaoPlanejamento = CalcularNotaConfiguracaoPlanejamento(quantidadeParametrosPlanejamentoConfigurados),
                 PossuiDadosEssenciaisInsuficientes =
                     !lancamentos.Any() ||
                     (!contexto.Ativos.Any() && !contexto.Passivos.Any()),
@@ -90,6 +96,56 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             }
 
             return 1;
+        }
+
+        private static int CalcularQuantidadeParametrosPlanejamentoConfigurados(ConfiguracaoPerfilFinanceiro? configuracao)
+        {
+            if (configuracao is null)
+            {
+                return 0;
+            }
+
+            var quantidade = 0;
+
+            if (configuracao.PercentualEconomiaMensalDesejado > 0m)
+            {
+                quantidade++;
+            }
+
+            if (configuracao.PercentualReservaEmergenciaDesejado > 0m)
+            {
+                quantidade++;
+            }
+
+            if (configuracao.MesesReservaEmergenciaDesejados > 0)
+            {
+                quantidade++;
+            }
+
+            if (configuracao.PercentualMaximoComprometimentoRenda > 0m)
+            {
+                quantidade++;
+            }
+
+            if (configuracao.PercentualMaximoEndividamento > 0m)
+            {
+                quantidade++;
+            }
+
+            return quantidade;
+        }
+
+        private static int CalcularNotaConfiguracaoPlanejamento(int quantidadeParametrosPlanejamentoConfigurados)
+        {
+            return quantidadeParametrosPlanejamentoConfigurados switch
+            {
+                >= 5 => 100,
+                4 => 75,
+                3 => 55,
+                2 => 40,
+                1 => 25,
+                _ => 10
+            };
         }
 
         private static decimal CalcularReceitaMensal(IReadOnlyCollection<Lancamento> lancamentos, DateTime competencia)

@@ -12,7 +12,10 @@ Na versão atual do motor (`mf-score-v2.1-1000`), o modelo também passa a:
 
 - usar meta monetária coerente para `Economia Mensal`;
 - adotar faixas explícitas de status nos indicadores centrais;
-- tratar inadimplência de forma gradual, e não mais binária.
+- tratar inadimplência de forma gradual, e não mais binária;
+- recalibrar penalizações temporais de fluxo negativo para refletir severidade progressiva;
+- tratar o pilar `Planejamento` com base mínima explícita no `Perfil Financeiro`;
+- manter os horizontes `30/90/180/365`, mas com influência decrescente conforme o prazo aumenta.
 
 ## Filosofia oficial
 
@@ -48,6 +51,21 @@ O `MF Score` é construído em cinco pilares:
 4. Patrimônio
 5. Planejamento
 
+### Regra vigente do pilar Planejamento
+
+O pilar `Planejamento` continua com peso de `10%`, mas agora usa uma régua mínima explícita:
+
+- o usuário precisa configurar os cinco parâmetros básicos do `Perfil Financeiro` para alcançar nota realmente alta;
+- sem essa base, o pilar permanece limitado mesmo quando existem sinais operacionais positivos.
+
+Parâmetros básicos exigidos:
+
+- percentual de economia mensal desejado
+- percentual de reserva de emergência desejado
+- meses de reserva desejados
+- comprometimento máximo da renda
+- endividamento máximo
+
 ## Pesos oficiais
 
 - Fluxo de Caixa: `30%`
@@ -55,6 +73,22 @@ O `MF Score` é construído em cinco pilares:
 - Endividamento: `20%`
 - Patrimônio: `15%`
 - Planejamento: `10%`
+
+## Horizontes futuros
+
+O motor continua trabalhando com quatro horizontes futuros:
+
+- `30 dias`
+- `90 dias`
+- `180 dias`
+- `365 dias`
+
+Decisão oficial desta rodada:
+
+- manter os quatro horizontes;
+- não colapsar tudo em um único índice ainda;
+- priorizar o curto prazo como pressão operacional principal;
+- reduzir progressivamente o peso dos horizontes mais longos para evitar superinfluência estrutural no score corrente.
 
 ## Como o score é calculado
 
@@ -94,6 +128,12 @@ Na versão atual:
 - `2 meses consecutivos` negativos elevam a penalização
 - `3 ou mais meses consecutivos` negativos elevam a penalização de forma forte
 
+Penalizações oficiais atuais no score final:
+
+- `1 mês negativo`: `40 pontos`
+- `2 meses consecutivos negativos`: `90 pontos`
+- `3 ou mais meses consecutivos negativos`: `140 pontos`
+
 ## Regra oficial contra dupla penalização
 
 Um mesmo fato econômico não deve ser punido duas vezes.
@@ -103,6 +143,16 @@ Exemplos oficiais:
 - `reserva zero` deve reduzir o pilar `Liquidez`, mas não gerar penalização crítica automática só por existir
 - `comprometimento alto da renda` deve reduzir o pilar `Fluxo de Caixa`, mas não gerar penalização crítica automática se o usuário ainda mantém fluxo positivo e não está inadimplente
 - `pressão financeira futura` deve reduzir `Fluxo de Caixa` e `Endividamento`, mas não gerar penalização crítica automática sem evidência de incapacidade de pagamento, inadimplência ou persistência negativa
+
+### Posição conceitual oficial do comprometimento da renda
+
+O indicador `Comprometimento da Renda` permanece oficialmente posicionado como leitura principal de `Fluxo de Caixa`.
+
+Isso significa:
+
+- ele mede pressão operacional da renda no mês corrente;
+- ele não representa, por si só, qualidade de planejamento;
+- ele pode influenciar a percepção global de risco, mas não deve ser usado como base principal do pilar `Planejamento`.
 
 ## Penalizações críticas oficiais
 
@@ -134,6 +184,20 @@ O nível aplicado é sempre o mais grave entre:
 
 - faixa de tempo;
 - faixa de materialidade do valor vencido.
+
+### Regra oficial atual de fluxo negativo recorrente
+
+O fluxo negativo passou a ser penalizado de forma mais proporcional:
+
+- `1 mês negativo`: alerta com punição leve;
+- `2 meses consecutivos negativos`: agravamento moderado;
+- `3 ou mais meses consecutivos negativos`: agravamento forte.
+
+Essa recalibragem existe para:
+
+- respeitar apetite de risco `moderado`;
+- evitar colapso artificial do score por um único mês ruim;
+- manter resposta severa quando o desequilíbrio vira padrão.
 
 ### O que não deve ser penalização crítica automática
 

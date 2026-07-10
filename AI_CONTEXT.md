@@ -16,6 +16,8 @@ O modelo oficial de risco financeiro do sistema é o `MF Score`, que organiza os
 
 O `MF Score` agora usa escala final de `0 a 1000`, enquanto os pilares permanecem em `0 a 100`. A versão vigente separa formalmente nota dos pilares, penalizações críticas, persistência temporal do risco e histórico mensal persistido.
 
+Na calibragem mais recente do `mf-score-v2.1-1000`, o pilar `Planejamento e Disciplina` passou a depender explicitamente da configuração mínima do `Perfil Financeiro`, o `Comprometimento da Renda` foi reafirmado como indicador conceitualmente ligado a `Fluxo de Caixa` e os horizontes futuros `30/90/180/365` permaneceram ativos com peso progressivamente menor nos prazos mais longos.
+
 O `MF Score` agora também possui uma etapa oficial de calibração contínua, com cenários de validação, explicação de variação, tendência e documentação dedicada em `docs/MF_SCORE.md`, `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE_CALIBRATION_CONTEXT.md`.
 
 Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_VALIDATION.md`, usada para confirmar se alterações futuras continuam coerentes com os cenários canônicos do modelo.
@@ -536,7 +538,7 @@ ObservaÃ§Ã£o importante:
 
 ### Data da Ãºltima atualizaÃ§Ã£o
 
-- 09/07/2026
+- 10/07/2026
 
 ### MÃ³dulos concluÃ­dos
 

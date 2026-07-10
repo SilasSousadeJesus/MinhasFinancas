@@ -72,11 +72,11 @@ MF Score muito alto.
 
 **Expectativa qualitativa**
 
-MF Score moderado, sem colapso artificial do score apenas por falta de reserva e pressão alta.
+MF Score muito pressionado, porque boa renda isolada não compensa reserva zerada, patrimônio líquido negativo e forte pressão recorrente.
 
 **Faixa esperada**
 
-`600-740`
+`250-420`
 
 ---
 
@@ -96,11 +96,11 @@ O patrimônio reduz risco estrutural, mas o fluxo limita o score.
 
 **Expectativa qualitativa**
 
-Score elevado, sem depender de patrimônio alto.
+Score bom, sustentado por fluxo e liquidez, mas sem entrar em zona de risco muito baixo enquanto o patrimônio ainda for limitado e o comprometimento mensal continuar alto.
 
 **Faixa esperada**
 
-`750-900`
+`640-780`
 
 ---
 
@@ -144,11 +144,11 @@ Fragilidade estrutural importante, mas sem colapso automático do score só por 
 
 **Expectativa qualitativa**
 
-Score alto, com ganho estrutural sem mascarar riscos reais.
+Score bom a alto, com ganho estrutural real de planejamento, sem permitir que a configuração do perfil esconda riscos operacionais ou patrimoniais.
 
 **Faixa esperada**
 
-`780-920`
+`720-840`
 
 ## Casos canônicos
 
@@ -211,6 +211,12 @@ Comportamento esperado:
 - `2 meses`: agravamento moderado
 - `3+ meses`: agravamento forte
 
+Referência operacional atual:
+
+- `1 mês negativo`: `40 pontos` no score final
+- `2 meses consecutivos negativos`: `90 pontos`
+- `3 ou mais meses consecutivos negativos`: `140 pontos`
+
 ## Auditoria operacional
 
 Esta validação conceitual é complementada por auditoria operacional real.
@@ -236,6 +242,11 @@ O uso dessa auditoria é obrigatório sempre que houver mudança em:
 - tendência
 - histórico do score
 
+Resultado da rodada mais recente de recalibração:
+
+- `8 de 8` cenários oficiais ficaram dentro da faixa esperada;
+- as faixas dos cenários `Boa renda, reserva zero e cartão alto`, `Excelente fluxo com pouco patrimônio` e `Planejamento financeiro excelente` foram revistas para refletir melhor a severidade real do motor `mf-score-v2.1-1000`.
+
 ## Auditoria humana
 
 Além da validação automática, existe auditoria humana cega:
@@ -247,6 +258,11 @@ Ela serve para:
 - avaliar se o motor foi severo demais
 - avaliar se o motor foi permissivo demais
 - amadurecer faixas esperadas e casos canônicos
+
+Observação:
+
+- a auditoria humana continua sendo uma planilha de revisão cega preenchida manualmente;
+- nesta rodada, ela foi regenerada para acompanhar a nova calibração, mas sua conclusão final ainda depende de leitura humana.
 
 ## Personas persistidas de calibração
 

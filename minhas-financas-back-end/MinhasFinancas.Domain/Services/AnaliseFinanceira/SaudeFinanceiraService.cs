@@ -16,9 +16,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             { CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal, 0.5m },
             { CodigoIndicadorFinanceiro.ComprometimentoRenda, 1.5m },
             { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo, 1.5m },
-            { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias, 1.0m },
-            { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias, 0.75m },
-            { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias, 0.5m },
+            { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias, 0.75m },
+            { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias, 0.5m },
+            { CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias, 0.25m },
             { CodigoIndicadorFinanceiro.Endividamento, 1.5m },
             { CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual, 1.25m },
             { CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo, 0.75m },
@@ -65,7 +65,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CalcularPilarLiquidezEReserva(indicadores),
                 CalcularPilarEndividamentoEObrigacoes(indicadores),
                 CalcularPilarPatrimonio(indicadores),
-                CalcularPilarPlanejamentoEDisciplina(indicadores)
+                CalcularPilarPlanejamentoEDisciplina(indicadores, contextoComplementar)
             };
 
             var somaPesos = pilares.Sum(item => item.Peso);
@@ -191,18 +191,26 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             };
         }
 
-        private static PilarMfScoreFinanceiro CalcularPilarPlanejamentoEDisciplina(IReadOnlyCollection<IndicadorFinanceiro> indicadores)
+        private static PilarMfScoreFinanceiro CalcularPilarPlanejamentoEDisciplina(
+            IReadOnlyCollection<IndicadorFinanceiro> indicadores,
+            ContextoComplementarMfScoreFinanceiro? contextoComplementar)
         {
-            var relevantes = SelecionarIndicadores(indicadores,
-                CodigoIndicadorFinanceiro.ReservaEmergenciaIdeal,
-                CodigoIndicadorFinanceiro.ComprometimentoRenda,
-                CodigoIndicadorFinanceiro.Endividamento,
+            var relevantesDeExecucao = SelecionarIndicadores(indicadores,
+                CodigoIndicadorFinanceiro.PercentualEconomia,
+                CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo);
 
-            var notaBase = CalcularNotaMedia(relevantes);
-            var configurados = relevantes.Count(item => item.ValorIdeal > 0);
-            var bonusConfiguracao = configurados >= 4 ? 10 : configurados >= 3 ? 5 : 0;
-            var notaFinal = Math.Clamp(notaBase + bonusConfiguracao, 0, EscalaPilares);
+            var notaExecucao = CalcularNotaMedia(relevantesDeExecucao);
+            var notaConfiguracao = contextoComplementar?.NotaConfiguracaoPlanejamento ?? 10;
+            var quantidadeParametrosConfigurados = contextoComplementar?.QuantidadeParametrosPlanejamentoConfigurados ?? 0;
+            var totalParametrosEsperados = contextoComplementar?.TotalParametrosPlanejamentoEsperados ?? 5;
+
+            var notaCalculada = (notaConfiguracao * 0.55m) + (notaExecucao * 0.45m);
+            var tetoPorConfiguracao = ObterTetoPlanejamentoPorConfiguracao(quantidadeParametrosConfigurados);
+            var notaFinal = Math.Clamp(
+                (int)Math.Round(Math.Min(notaCalculada, tetoPorConfiguracao)),
+                0,
+                EscalaPilares);
 
             return new PilarMfScoreFinanceiro
             {
@@ -210,8 +218,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 Nome = "Planejamento e Disciplina",
                 Peso = 10m,
                 Nota = notaFinal,
-                Descricao = "Maturidade financeira, padrão de configuração e capacidade de manter a direção escolhida.",
-                Indicadores = relevantes.Select(item => item.Nome).ToList()
+                Descricao = $"Maturidade de planejamento baseada na configuração dos {totalParametrosEsperados} parâmetros essenciais do perfil financeiro e em sinais de aderência operacional ao plano. Parâmetros configurados: {quantidadeParametrosConfigurados}/{totalParametrosEsperados}.",
+                Indicadores = relevantesDeExecucao
+                    .Select(item => item.Nome)
+                    .Append("Configuração básica do perfil financeiro")
+                    .ToList()
             };
         }
 
@@ -292,7 +303,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     economiaMensal?.Codigo ?? CodigoIndicadorFinanceiro.EconomiaMensal,
                     economiaMensal?.Nome ?? "Fluxo mensal",
                     "O mês de referência fechou com fluxo de caixa negativo.",
-                    8m,
+                    4m,
                     "Fluxo de Caixa");
             }
 
@@ -302,7 +313,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     economiaMensal?.Codigo ?? CodigoIndicadorFinanceiro.EconomiaMensal,
                     "Persistência de fluxo negativo",
                     "O usuário acumula três ou mais meses consecutivos no vermelho.",
-                    12m,
+                    10m,
                     "Fluxo de Caixa");
             }
             else if ((contextoComplementar?.MesesConsecutivosFluxoNegativo ?? 0) >= 2)
@@ -311,7 +322,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     economiaMensal?.Codigo ?? CodigoIndicadorFinanceiro.EconomiaMensal,
                     "Persistência de fluxo negativo",
                     "O usuário acumula dois meses consecutivos no vermelho.",
-                    6m,
+                    5m,
                     "Fluxo de Caixa");
             }
 
@@ -448,6 +459,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             }
 
             return "crítico";
+        }
+
+        private static int ObterTetoPlanejamentoPorConfiguracao(int quantidadeParametrosConfigurados)
+        {
+            return quantidadeParametrosConfigurados switch
+            {
+                >= 5 => 100,
+                4 => 75,
+                3 => 60,
+                2 => 45,
+                1 => 35,
+                _ => 30
+            };
         }
 
         private static decimal ObterPontuacao(StatusIndicadorFinanceiro status)

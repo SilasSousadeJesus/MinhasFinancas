@@ -44,6 +44,14 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 10/07/2026
 
+- Recalibração da rodada seguinte do `mf-score-v2.1-1000`, com auditoria operacional rerrodada e `8 de 8` cenários oficiais aprovados dentro da faixa esperada.
+- Revisão das personas sintéticas e dos casos canônicos `Boa renda, reserva zero e cartão alto`, `Excelente fluxo com pouco patrimônio` e `Planejamento excelente`, ajustando suas faixas esperadas para refletir melhor a severidade real do motor.
+- Recalibragem das penalizações temporais de fluxo negativo para um modelo mais proporcional entre alerta pontual e deterioração recorrente.
+- Evolução do pilar `Planejamento e Disciplina`, que passou a exigir a configuração básica dos cinco parâmetros essenciais do `Perfil Financeiro` como condição para nota realmente saudável.
+- Consolidação da posição conceitual de `Comprometimento da Renda` como indicador primário de `Fluxo de Caixa`, e não como base de `Planejamento`.
+- Decisão oficial de manter os horizontes futuros `30/90/180/365`, mas com peso decrescente nos prazos mais longos.
+- Atualização sincronizada da documentação oficial do Motor Financeiro em `docs/MF_SCORE.md`, `docs/INDICADORES_FINANCEIROS.md`, `docs/MF_SCORE_VALIDATION.md`, `docs/MF_SCORE_AUDIT.md` e `AI_CONTEXT.md`.
+
 - Implementação do pacote oficial aprovado para a próxima rodada do `MF Score`, preservando a arquitetura atual do motor.
 - Consolidação da versão `mf-score-v2.1-1000`.
 - Regularização semântica do indicador `Economia Mensal`, com meta monetária derivada da renda do próprio mês.

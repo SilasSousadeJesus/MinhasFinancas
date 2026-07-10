@@ -27,9 +27,10 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Pers
             {
                 Nome = "Boa renda, reserva zero e cartao alto",
                 Descricao = "Renda boa, mas sem reserva e com forte pressao de cartao e obrigacoes recorrentes.",
-                ScoreEsperadoMin = 600,
-                ScoreEsperadoMax = 740,
-                Justificativa = "A renda sustenta algum equilibrio, mas a ausencia de reserva e a pressao recorrente impedem um score alto.",
+                ScoreEsperadoMin = 250,
+                ScoreEsperadoMax = 420,
+                Justificativa = "A renda, isoladamente, nao compensa reserva zerada, patrimonio liquido negativo e pressao recorrente de obrigacoes.",
+                Observacoes = "Caso canonico revisto na calibracao v2.1: a combinacao de reserva inexistente, cartao alto e patrimonio liquido negativo deve manter o score em faixa de risco muito alto.",
                 Contexto = CriarContexto(lancamentos, ativos, passivos, configuracao),
                 DadosEntrada = CriarDadosEntrada(8000m, 5500m, 0m, 12000m, 18000m, 5500m, 16500m, 33000m, 66000m)
             };

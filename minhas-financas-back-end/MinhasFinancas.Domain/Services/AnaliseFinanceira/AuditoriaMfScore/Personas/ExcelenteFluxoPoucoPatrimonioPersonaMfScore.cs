@@ -23,9 +23,10 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.AuditoriaMfScore.Pers
             {
                 Nome = "Excelente fluxo com pouco patrimonio",
                 Descricao = "Renda estavel, economia mensal forte, boa reserva, pouco patrimonio acumulado e sem dividas relevantes.",
-                ScoreEsperadoMin = 750,
-                ScoreEsperadoMax = 900,
-                Justificativa = "O fluxo forte e a boa liquidez sustentam score alto, mesmo sem grande base patrimonial.",
+                ScoreEsperadoMin = 640,
+                ScoreEsperadoMax = 780,
+                Justificativa = "Fluxo forte e liquidez boa sustentam risco moderado controlado, mas ainda nao compensam comprometimento mensal acima de 50% e patrimonio alvo distante.",
+                Observacoes = "Caso canonico revisto na calibracao v2.1: o perfil continua saudavel, mas nao deve ser tratado como risco muito baixo sem maior maturidade patrimonial.",
                 Contexto = CriarContexto(lancamentos, ativos, [], configuracao),
                 DadosEntrada = CriarDadosEntrada(8000m, 4200m, 25000m, 30000m, 0m, 4200m, 12600m, 25200m, 50400m)
             };

@@ -50,9 +50,9 @@ Todos os indicadores usam a mesma escala de status:
 - `ReservaEmergenciaIdeal` = `0.5`
 - `ComprometimentoRenda` = `1.5`
 - `ComprometimentoFinanceiroFuturo` = `1.5`
-- `ComprometimentoFinanceiroFuturo90Dias` = `1.0`
-- `ComprometimentoFinanceiroFuturo180Dias` = `0.75`
-- `ComprometimentoFinanceiroFuturo365Dias` = `0.5`
+- `ComprometimentoFinanceiroFuturo90Dias` = `0.75`
+- `ComprometimentoFinanceiroFuturo180Dias` = `0.5`
+- `ComprometimentoFinanceiroFuturo365Dias` = `0.25`
 - `EndividamentoPatrimonial` = `1.5`
 - `PatrimonioLiquidoAtual` = `1.25`
 - `PercentualPatrimonioAlvo` = `0.75`
@@ -121,6 +121,7 @@ Todos os indicadores usam a mesma escala de status:
 - **Fonte:** lançamentos do mês de referência.
 - **Formato:** percentual.
 - **Leitura:** afeta principalmente o pilar de fluxo de caixa, sem gerar penalização crítica automática só por estar alto.
+- **Posição conceitual oficial:** permanece como indicador primário de `Fluxo de Caixa`, e não como medida principal de `Planejamento e Disciplina`.
 - **Faixas oficiais atuais:**
   - `Excelente`: `<= 20%`
   - `Bom`: `> 20% e <= 35%`
@@ -150,6 +151,7 @@ Todos os indicadores usam a mesma escala de status:
 - **Fonte:** lançamentos pendentes no horizonte de 90 dias.
 - **Formato:** percentual.
 - **Leitura:** complementa a visão de curto prazo, mas não deve gerar penalização crítica automática isoladamente.
+- **Peso oficial atual:** menor que o horizonte de 30 dias, porque o curto prazo continua sendo a referência principal de pressão operacional.
 
 ### Pressão financeira acumulada - 180 dias
 
@@ -159,6 +161,7 @@ Todos os indicadores usam a mesma escala de status:
 - **Fonte:** lançamentos pendentes no horizonte de 180 dias.
 - **Formato:** percentual.
 - **Leitura:** ajuda a identificar deterioração estrutural em formação.
+- **Peso oficial atual:** reduzido para evitar que horizontes médios dominem a leitura do risco imediato.
 
 ### Pressão financeira acumulada - 12 meses
 
@@ -168,6 +171,7 @@ Todos os indicadores usam a mesma escala de status:
 - **Fonte:** lançamentos pendentes no horizonte de 365 dias.
 - **Formato:** percentual.
 - **Leitura:** mostra sustentabilidade do longo prazo.
+- **Peso oficial atual:** o menor entre os horizontes, funcionando como apoio estrutural e não como principal driver do score.
 
 ### Endividamento patrimonial
 
@@ -253,6 +257,58 @@ Os seguintes fatores devem permanecer prioritariamente na camada dos pilares:
 - comprometimento alto
 - pressão futura
 - pressão financeira acumulada
+
+### Penalizações temporais oficiais de fluxo negativo
+
+As penalizações temporais atuais do `MF Score` foram recalibradas para manter proporcionalidade com apetite de risco `moderado`:
+
+- `1 mês negativo`: `40 pontos` no score final
+- `2 meses consecutivos negativos`: `90 pontos` no score final
+- `3 ou mais meses consecutivos negativos`: `140 pontos` no score final
+
+Objetivo:
+
+- diferenciar alerta pontual de deterioração recorrente;
+- evitar que um único mês ruim produza colapso artificial do score;
+- manter punição forte quando o desequilíbrio vira padrão.
+
+## Pilar Planejamento e Disciplina
+
+Na versão atual, o pilar `Planejamento e Disciplina` deixou de depender apenas de proxies genéricos e passou a considerar explicitamente a configuração mínima do `Perfil Financeiro`.
+
+### Parâmetros básicos obrigatórios
+
+O pilar só pode ser considerado realmente saudável quando os cinco parâmetros abaixo estiverem configurados:
+
+- `PercentualEconomiaMensalDesejado`
+- `PercentualReservaEmergenciaDesejado`
+- `MesesReservaEmergenciaDesejados`
+- `PercentualMaximoComprometimentoRenda`
+- `PercentualMaximoEndividamento`
+
+### Regra operacional atual
+
+O cálculo combina:
+
+- nota de configuração básica do perfil financeiro;
+- sinais de execução observados em:
+  - `PercentualEconomia`
+  - `ReservaEmergenciaAtual`
+  - `PercentualPatrimonioAlvo`
+
+### Teto por quantidade de parâmetros configurados
+
+- `5 de 5`: teto `100`
+- `4 de 5`: teto `75`
+- `3 de 5`: teto `60`
+- `2 de 5`: teto `45`
+- `1 de 5`: teto `35`
+- `0 de 5`: teto `30`
+
+Consequência prática:
+
+- o usuário pode até ter boa execução financeira parcial;
+- mas não alcança nota alta em planejamento sem configurar o conjunto mínimo de referências do próprio plano.
 
 ## Relação com as telas
 

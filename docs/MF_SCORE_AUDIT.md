@@ -27,6 +27,9 @@ Na revisão mais recente, o motor recebeu três avanços estruturais importantes
 - regularização semântica da meta de `Economia Mensal`
 - maior granularidade de status em indicadores centrais
 - amadurecimento da inadimplência de modelo binário para matriz gradual
+- recalibragem proporcional das penalizações temporais de fluxo negativo
+- reforço explícito do pilar `Planejamento` com configuração mínima do perfil financeiro
+- redução deliberada da influência dos horizontes 90/180/365 sobre o risco corrente
 
 ## Arquitetura atual do score
 
@@ -145,7 +148,7 @@ O projeto agora possui job recorrente mensal para registrar o histórico do `MF 
 | Liquidez | Excelente | Reserva atual e meta ideal formam leitura robusta de proteção imediata. |
 | Endividamento | Boa | Cobre endividamento patrimonial e pressão futura, mas ainda pode amadurecer leitura comportamental de dívida. |
 | Patrimônio | Boa | Cobre patrimônio líquido atual e patrimônio-alvo, mas ainda pode evoluir em qualidade patrimonial e liquidez dos ativos. |
-| Planejamento | Parcial | Ainda depende majoritariamente de proxies de organização financeira. |
+| Planejamento | Boa | Agora exige configuração mínima explícita do perfil financeiro, mas ainda não mede toda a disciplina comportamental do usuário. |
 
 ## Cobertura do domínio
 
@@ -155,27 +158,42 @@ O projeto agora possui job recorrente mensal para registrar o histórico do `MF 
 | Liquidez | Completo | Reserva atual e meta ideal estão bem representadas. |
 | Endividamento | Parcial | Há boa leitura patrimonial e futura, mas a semântica de dívida ainda pode amadurecer. |
 | Patrimônio | Parcial | Boa fotografia atual, mas pouca profundidade qualitativa no cálculo. |
-| Planejamento | Parcial | Ainda depende de sinais indiretos. |
+| Planejamento | Boa | Já combina configuração explícita do perfil financeiro com sinais de execução, mas ainda não cobre todo o comportamento real. |
 | Persistência temporal | Inicial | Já existe penalização por recorrência negativa e histórico persistido. |
 | Tendência histórica | Inicial | Já pode usar histórico real, mas ainda pode amadurecer. |
 
 ## Limitações conhecidas
 
-- o pilar `Planejamento` ainda usa proxies de organização financeira
+- o pilar `Planejamento` ainda não mede todo o comportamento financeiro real do usuário
 - o plano estratégico vigente ainda não entra de forma madura no cálculo do score
 - compromissos financeiros ativos ainda não pesam diretamente no pilar de planejamento
 - a leitura de inadimplência já evoluiu para matriz gradual, mas ainda pode amadurecer em reincidência, cura e histórico de atraso
 - a qualidade patrimonial ainda não é diferenciada com profundidade
 - a tendência histórica ainda está em fase inicial de amadurecimento
+- os horizontes 90/180/365 já estão mais leves, mas ainda exigem validação contínua para confirmar se a influência residual ficou adequada
 
 ## Achados formais
 
 ### MF-001 - Pilar Planejamento utiliza proxies
 
 - **ID:** `MF-001`
-- **Impacto:** usuários organizados podem receber nota inferior ao ideal em um modelo mais maduro
+- **Impacto:** o pilar evoluiu, mas ainda não captura integralmente a disciplina e a execução comportamental do usuário
 - **Prioridade:** Alta
 - **Status:** Aberto
+
+### MF-002 - Faixas antigas de personas estavam otimistas demais
+
+- **ID:** `MF-002`
+- **Impacto:** três casos oficiais poderiam aparentar falha do motor quando o problema real era desalinhamento da faixa esperada
+- **Prioridade:** Alta
+- **Status:** Mitigado
+
+Evidência da mitigação:
+
+- a auditoria operacional mais recente registrou `8 de 8` cenários dentro da faixa esperada após revisão das personas:
+  - `Boa renda, reserva zero e cartão alto`
+  - `Excelente fluxo com pouco patrimônio`
+  - `Planejamento excelente`
 
 ## Dívida técnica do Motor Financeiro
 
@@ -185,6 +203,7 @@ O projeto agora possui job recorrente mensal para registrar o histórico do `MF 
 - revisar impacto da nova matriz gradual de inadimplência sobre personas e casos canônicos
 - evoluir leitura histórica de tendência e persistência
 - enriquecer o pilar `Patrimônio` com qualidade e liquidez patrimonial
+- avaliar, em rodada futura, se o plano estratégico financeiro e os compromissos assumidos devem entrar diretamente no pilar `Planejamento`
 
 ## Relação com validação e auditoria
 
@@ -208,5 +227,12 @@ O `MF Score` hoje está:
 - auditado automaticamente
 - auditado humanamente
 - persistido por competência mensal
+
+## Decisões oficiais da rodada atual
+
+- `Comprometimento da Renda` permanece conceitualmente em `Fluxo de Caixa`, e não em `Planejamento`
+- os horizontes `30/90/180/365` continuam válidos, mas com peso decrescente à medida que o prazo aumenta
+- o pilar `Planejamento e Disciplina` só pode atingir zona saudável com os cinco parâmetros básicos do `Perfil Financeiro` configurados
+- a penalização temporal de fluxo negativo foi suavizada no primeiro mês e mantida forte quando a deterioração vira recorrência
 
 O próximo passo não é reinventar o score. É continuar calibrando-o com rigor, usando histórico real, personas e auditoria contínua.
