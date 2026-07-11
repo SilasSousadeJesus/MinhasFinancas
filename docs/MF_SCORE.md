@@ -299,6 +299,36 @@ Toda evolução do `MF Score` deve ser confrontada com:
 - `docs/MF_SCORE_VALIDATION.md`
 - `docs/MF_SCORE_AUDIT.md`
 
+## Base Oficial de Simulação do MF Score
+
+O projeto agora possui uma `Base Oficial de Simulação do MF Score`.
+
+### Objetivo
+
+- gerar usuários sintéticos completos e coerentes para desenvolvimento, auditoria e calibração
+- complementar a leitura com usuários reais usando uma base reproduzível
+- validar indicadores, pilares, penalizações, classificação, risco e textos do motor sem alterar fórmulas
+
+### Operação oficial
+
+- geração interna: `POST /api/MfScoreLaboratorio/GerarBaseSimulacao`
+- limpeza seletiva: `DELETE /api/MfScoreLaboratorio/LimparBaseSimulacao`
+- a limpeza remove apenas usuários sintéticos
+- os usuários gerados recebem marcação explícita de origem, cenário, versão da base e data de geração
+
+### Estrutura esperada
+
+- aproximadamente 12 cenários sintéticos
+- aproximadamente 12 meses de histórico coerente por usuário
+- uso do domínio existente para criar usuário, perfil financeiro, contas, cartões, lançamentos, patrimônio, metas, compromissos e plano estratégico
+
+### Regra de governança
+
+Toda mudança relevante no `MF Score` deve ser validada:
+
+- com usuários reais
+- com a Base Oficial de Simulação do MF Score
+
 Além disso:
 
 - a auditoria operacional continua obrigatória em mudanças relevantes

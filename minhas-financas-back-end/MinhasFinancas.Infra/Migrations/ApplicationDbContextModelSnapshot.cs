@@ -1356,8 +1356,20 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("CodigoCenarioSimulacao")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("DataGeracaoBaseSimulacao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DescricaoCenarioSimulacao")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("EhUsuarioSintetico")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
@@ -1380,6 +1392,12 @@ namespace MinhasFinancas.Infra.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ObjetivoCenarioSimulacao")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("OrigemUsuario")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
 
@@ -1396,6 +1414,9 @@ namespace MinhasFinancas.Infra.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("VersaoBaseSimulacao")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

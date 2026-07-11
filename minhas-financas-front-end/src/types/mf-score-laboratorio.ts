@@ -3,6 +3,26 @@ export interface UsuarioMfScoreLaboratorio {
   nome: string;
   email: string;
   dataCadastro?: string | null;
+  ehUsuarioSintetico: boolean;
+  origemUsuario: string;
+  codigoCenario: string;
+  versaoBase: string;
+  dataGeracaoBase?: string | null;
+  descricaoCenario: string;
+  objetivoCenario: string;
+}
+
+export interface ResultadoGeracaoBaseSimulacaoMfScore {
+  versaoBase: string;
+  quantidadeCenarios: number;
+  quantidadeUsuariosGerados: number;
+  dataGeracao: string;
+  usuariosGerados: UsuarioMfScoreLaboratorio[];
+}
+
+export interface ResultadoLimpezaBaseSimulacaoMfScore {
+  quantidadeUsuariosRemovidos: number;
+  codigosCenariosRemovidos: string[];
 }
 
 export interface TendenciaMfScoreLaboratorio {

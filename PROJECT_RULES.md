@@ -183,6 +183,8 @@ Não registrar roadmap, histórico de funcionalidades ou changelog neste documen
 - Toda alteração na escala, fórmula, penalização ou histórico do `MF Score` também deve atualizar `docs/MF_SCORE_AUDIT.md`.
 - Alterações no Motor Financeiro devem considerar impacto sobre personas de calibração e auditoria antes de serem consideradas concluídas.
 - Sempre que qualquer desenvolvedor ou IA identificar limitação, comportamento inesperado, ausência conceitual, oportunidade de melhoria ou dívida técnica relacionada ao Motor Financeiro, essa informação deve ser registrada em `docs/MF_SCORE_AUDIT.md`, mesmo quando nenhuma implementação for realizada na mesma entrega.
+- Toda alteração relevante no Motor Financeiro deve ser validada com usuários reais e com a `Base Oficial de Simulação do MF Score`.
+- A `Base Oficial de Simulação do MF Score` é patrimônio permanente do projeto e deve evoluir junto com o motor.
 - Antes de transformar uma persona em caso canônico oficial, ela deve passar pela planilha de Auditoria Humana do `MF Score`.
 - A faixa esperada oficial de uma persona deve nascer da avaliação humana documentada, e não apenas de uma decisão automática.
 - Personas de Calibração não representam usuários reais.

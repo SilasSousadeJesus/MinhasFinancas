@@ -4,5 +4,7 @@ namespace MinhasFinancas.Application.Interfaces
     {
         Task<RetornoGenerico> BuscarUsuariosAsync();
         Task<RetornoGenerico> BuscarScoreUsuarioAsync(string usuarioId);
+        Task<RetornoGenerico> GerarBaseSimulacaoAsync();
+        Task<RetornoGenerico> LimparBaseSimulacaoAsync();
     }
 }

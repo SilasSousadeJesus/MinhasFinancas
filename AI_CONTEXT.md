@@ -32,6 +32,8 @@ O fluxo de calibração do `MF Score` continua possuindo um CRUD persistido de `
 
 A antiga tela de personas foi refatorada para o `Laboratório do MF Score`, disponível em `/mf-score-laboratorio`. Essa tela passou a ser somente leitura e serve para inspecionar usuários reais, consumindo o motor oficial sem criar snapshots, sem editar personas e sem alterar dados financeiros.
 
+O `Laboratório do MF Score` agora também suporta a `Base Oficial de Simulação do MF Score`, com geração via `POST /api/MfScoreLaboratorio/GerarBaseSimulacao` e limpeza seletiva via `DELETE /api/MfScoreLaboratorio/LimparBaseSimulacao`. Os usuários sintéticos são persistidos com identificação explícita de origem, cenário, versão e data de geração para permitir filtros, auditoria e recriação da base.
+
 `docs/MF_SCORE_AUDIT.md` deixou de ser apenas um resumo e passou a ser o documento oficial de governança técnica do Motor Financeiro, registrando cobertura, limitações conhecidas, achados de auditoria e dívida técnica.
 
 `docs/MF_SCORE_CONSOLIDACAO_OFICIAL.md` registra a decisão oficial mais recente sobre a direção do `MF Score`, separando framework conceitual, propostas matemáticas e escopo aprovado para a próxima implementação.

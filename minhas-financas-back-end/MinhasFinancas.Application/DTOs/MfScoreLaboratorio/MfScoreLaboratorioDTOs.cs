@@ -6,6 +6,28 @@ namespace MinhasFinancas.Application.DTOs.MfScoreLaboratorio
         public string Nome { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public DateTime? DataCadastro { get; set; }
+        public bool EhUsuarioSintetico { get; set; }
+        public string OrigemUsuario { get; set; } = string.Empty;
+        public string CodigoCenario { get; set; } = string.Empty;
+        public string VersaoBase { get; set; } = string.Empty;
+        public DateTime? DataGeracaoBase { get; set; }
+        public string DescricaoCenario { get; set; } = string.Empty;
+        public string ObjetivoCenario { get; set; } = string.Empty;
+    }
+
+    public class ResultadoGeracaoBaseSimulacaoMfScoreDTO
+    {
+        public string VersaoBase { get; set; } = string.Empty;
+        public int QuantidadeCenarios { get; set; }
+        public int QuantidadeUsuariosGerados { get; set; }
+        public DateTime DataGeracao { get; set; }
+        public List<UsuarioMfScoreLaboratorioDTO> UsuariosGerados { get; set; } = [];
+    }
+
+    public class ResultadoLimpezaBaseSimulacaoMfScoreDTO
+    {
+        public int QuantidadeUsuariosRemovidos { get; set; }
+        public List<string> CodigosCenariosRemovidos { get; set; } = [];
     }
 
     public class TendenciaMfScoreLaboratorioDTO

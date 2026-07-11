@@ -29,5 +29,19 @@ namespace minhas_financas_back_end.Controllers
             var retorno = await _appService.BuscarScoreUsuarioAsync(usuarioId);
             return StatusCode((int)retorno.HttpStatusCode, retorno);
         }
+
+        [HttpPost("GerarBaseSimulacao")]
+        public async Task<IActionResult> GerarBaseSimulacao()
+        {
+            var retorno = await _appService.GerarBaseSimulacaoAsync();
+            return StatusCode((int)retorno.HttpStatusCode, retorno);
+        }
+
+        [HttpDelete("LimparBaseSimulacao")]
+        public async Task<IActionResult> LimparBaseSimulacao()
+        {
+            var retorno = await _appService.LimparBaseSimulacaoAsync();
+            return StatusCode((int)retorno.HttpStatusCode, retorno);
+        }
     }
 }

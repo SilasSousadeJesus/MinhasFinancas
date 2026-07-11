@@ -1,5 +1,5 @@
-using MinhasFinancas.Application.DTOs.MfScoreLaboratorio;
 using MinhasFinancas.Application.DTOs.MfScore;
+using MinhasFinancas.Application.DTOs.MfScoreLaboratorio;
 using MinhasFinancas.Application.Interfaces;
 using MinhasFinancas.CrossCutting.Util.Enum;
 using MinhasFinancas.Domain.Entities;
@@ -13,13 +13,16 @@ namespace MinhasFinancas.Application.Services
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IMfScoreCalculoAppService _mfScoreCalculoAppService;
+        private readonly IGeradorBaseSimulacaoMfScoreService _geradorBaseSimulacaoMfScoreService;
 
         public MfScoreLaboratorioAppService(
             IUsuarioRepository usuarioRepository,
-            IMfScoreCalculoAppService mfScoreCalculoAppService)
+            IMfScoreCalculoAppService mfScoreCalculoAppService,
+            IGeradorBaseSimulacaoMfScoreService geradorBaseSimulacaoMfScoreService)
         {
             _usuarioRepository = usuarioRepository;
             _mfScoreCalculoAppService = mfScoreCalculoAppService;
+            _geradorBaseSimulacaoMfScoreService = geradorBaseSimulacaoMfScoreService;
         }
 
         public async Task<RetornoGenerico> BuscarUsuariosAsync()
@@ -78,6 +81,48 @@ namespace MinhasFinancas.Application.Services
             }
         }
 
+        public async Task<RetornoGenerico> GerarBaseSimulacaoAsync()
+        {
+            try
+            {
+                var dados = await _geradorBaseSimulacaoMfScoreService.GerarAsync();
+
+                return new RetornoGenerico(
+                    true,
+                    $"{dados.QuantidadeUsuariosGerados} usuário(s) sintético(s) gerado(s) para {dados.QuantidadeCenarios} cenário(s).",
+                    "Base Oficial de Simulação do MF Score gerada com sucesso.",
+                    HttpStatusCode.Created,
+                    dados);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return new RetornoGenerico(false, ex.Message, ex.Message, HttpStatusCode.Conflict, null);
+            }
+            catch (Exception ex)
+            {
+                return CriarErro(ex, "Não foi possível gerar a Base Oficial de Simulação do MF Score.");
+            }
+        }
+
+        public async Task<RetornoGenerico> LimparBaseSimulacaoAsync()
+        {
+            try
+            {
+                var dados = await _geradorBaseSimulacaoMfScoreService.LimparAsync();
+
+                return new RetornoGenerico(
+                    true,
+                    $"{dados.QuantidadeUsuariosRemovidos} usuário(s) sintético(s) removido(s).",
+                    "Base Oficial de Simulação do MF Score removida com sucesso.",
+                    HttpStatusCode.OK,
+                    dados);
+            }
+            catch (Exception ex)
+            {
+                return CriarErro(ex, "Não foi possível limpar a Base Oficial de Simulação do MF Score.");
+            }
+        }
+
         private static UsuarioMfScoreLaboratorioDTO MapearUsuario(Usuario usuario)
         {
             return new UsuarioMfScoreLaboratorioDTO
@@ -85,7 +130,14 @@ namespace MinhasFinancas.Application.Services
                 UsuarioId = usuario.Id,
                 Nome = string.IsNullOrWhiteSpace(usuario.Nome) ? "Usuário sem nome" : usuario.Nome,
                 Email = usuario.Email ?? string.Empty,
-                DataCadastro = null
+                DataCadastro = null,
+                EhUsuarioSintetico = usuario.EhUsuarioSintetico,
+                OrigemUsuario = usuario.OrigemUsuario ?? string.Empty,
+                CodigoCenario = usuario.CodigoCenarioSimulacao ?? string.Empty,
+                VersaoBase = usuario.VersaoBaseSimulacao ?? string.Empty,
+                DataGeracaoBase = usuario.DataGeracaoBaseSimulacao,
+                DescricaoCenario = usuario.DescricaoCenarioSimulacao ?? string.Empty,
+                ObjetivoCenario = usuario.ObjetivoCenarioSimulacao ?? string.Empty
             };
         }
 
