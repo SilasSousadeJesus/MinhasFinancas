@@ -4,6 +4,13 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 10/07/2026
 
+- Criação da Base Oficial de Simulação do MF Score, com aproximadamente 12 cenários sintéticos persistidos e histórico financeiro coerente para desenvolvimento, auditoria e calibração.
+- Criação dos endpoints `POST /api/MfScoreLaboratorio/GerarBaseSimulacao` e `DELETE /api/MfScoreLaboratorio/LimparBaseSimulacao`.
+- Ampliação da entidade `Usuario` com marcação explícita de usuário sintético, origem, código de cenário, versão da base, data de geração, descrição e objetivo do cenário.
+- Expansão do Laboratório do MF Score para listar usuários reais e sintéticos, filtrar por origem e exibir metadados dos cenários oficiais.
+- Criação da migration `20260711001125_base_simulacao_mf_score`.
+- Sincronização da documentação do MF Score para registrar a Base Oficial de Simulação como patrimônio permanente do projeto.
+
 - Calibragem do `MF Score` para reduzir falso positivo de risco em usuarios iniciantes com fluxo de caixa muito forte.
 - Evolucao oficial do motor para `mf-score-v2.3-1000`.
 - Criacao do indicador auxiliar `Capacidade de Formacao de Reserva`, com exposicao no painel analitico e no Laboratorio do MF Score.

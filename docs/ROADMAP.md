@@ -331,6 +331,7 @@ A IA apenas comunica o conhecimento produzido por esse motor.
 - criação de cenários oficiais de teste para calibração contínua
 - criação da `Suite Oficial de Validação do MF Score` como base permanente para evolução do Motor Financeiro
 - criação do CRUD interno de `Personas de Calibração do MF Score` para ampliar cenários sintéticos sem depender apenas de código fixo
+- criação da `Base Oficial de Simulação do MF Score`, com geração e limpeza controladas pelo Laboratório do MF Score
 - revisão oficial do `MF Score` para escala final de `0 a 1000`, mantendo pilares em `0 a 100`
 - separação formal entre nota de pilar, penalização crítica, persistência temporal e histórico mensal
 - criação do histórico mensal `HistoricoMfScore` e do job Hangfire recorrente para registrar competências anteriores

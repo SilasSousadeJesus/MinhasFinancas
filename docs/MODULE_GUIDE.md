@@ -773,8 +773,11 @@ Fornecer uma ferramenta técnica de calibração do Motor Financeiro sem criar t
 ### O que já está funcional
 - rota dedicada `/mf-score-laboratorio`
 - compatibilidade mantida para `/mf-score-personas`, agora apontando para o laboratório
-- listagem de usuários reais
+- listagem de usuários reais e sintéticos
 - análise completa do `MF Score` usando o motor oficial
+- filtros por todos, usuários reais e usuários sintéticos
+- geração e limpeza da Base Oficial de Simulação do MF Score
+- exibição de origem, código do cenário, descrição resumida e objetivo do cenário sintético
 - exibição de pilares, indicadores, indicadores críticos, penalizações, regras críticas, dados de entrada e limitações
 - interface estritamente somente leitura
 

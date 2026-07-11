@@ -224,6 +224,7 @@ O projeto agora possui uma tela interna chamada `Laboratório do MF Score`.
 ### Objetivo
 
 - inspecionar usuários reais do sistema
+- inspecionar usuários sintéticos da Base Oficial de Simulação
 - entender como o motor oficial construiu o score daquele usuário
 - facilitar auditoria visual sem criar dados artificiais
 
@@ -243,6 +244,10 @@ O laboratório exibe:
 - regras críticas aplicadas
 - dados resumidos de entrada
 - observações de limitação e cobertura
+- origem do usuário avaliado
+- código do cenário sintético, quando aplicável
+- descrição resumida do cenário
+- objetivo do cenário
 
 ### Regras
 
@@ -251,6 +256,29 @@ O laboratório exibe:
 - não altera fórmulas do `MF Score`
 - não grava snapshots específicos do laboratório
 - reutiliza o mesmo motor oficial já consumido por Saúde Financeira e Assistente Financeiro
+
+## Base Oficial de Simulação do MF Score
+
+O projeto passa a possuir também uma `Base Oficial de Simulação do MF Score`.
+
+### Objetivo
+
+- criar uma massa reproduzível de usuários sintéticos completos
+- sustentar desenvolvimento, auditoria e calibração do motor com cenários coerentes
+- complementar auditoria operacional, auditoria humana e observação de usuários reais
+
+### Operação oficial
+
+- `POST /api/MfScoreLaboratorio/GerarBaseSimulacao`
+- `DELETE /api/MfScoreLaboratorio/LimparBaseSimulacao`
+
+### Regras
+
+- a base deve gerar apenas usuários sintéticos
+- usuários sintéticos precisam ser marcados com origem, cenário, versão e data de geração
+- a limpeza remove apenas usuários sintéticos
+- a base não altera fórmulas, pilares, pesos, classificações nem penalizações
+- a base deve evoluir junto com o Motor Financeiro quando novos riscos relevantes surgirem
 
 ## Situação atual
 

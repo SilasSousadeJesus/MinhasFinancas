@@ -508,6 +508,29 @@ O laboratório:
 - não duplica fórmulas
 - não substitui a auditoria operacional nem a auditoria humana
 
+## Base Oficial de Simulação do MF Score
+
+Conjunto oficial de usuários sintéticos persistidos, gerados internamente pelo sistema para desenvolvimento, auditoria e calibração do Motor Financeiro.
+
+Ela existe para:
+
+- reproduzir cenários coerentes de risco
+- validar o comportamento do MF Score em massa controlada
+- complementar a leitura com usuários reais e personas de calibração
+
+## Usuário sintético do MF Score
+
+Usuário artificial criado exclusivamente para a Base Oficial de Simulação do MF Score.
+
+Ele deve possuir identificação explícita de:
+
+- origem
+- código do cenário
+- versão da base
+- data de geração
+- descrição do cenário
+- objetivo do cenário
+
 ## Persona de calibração do MF Score
 
 Cenário financeiro sintético usado para calibrar, validar e auditar o comportamento do Motor Financeiro.

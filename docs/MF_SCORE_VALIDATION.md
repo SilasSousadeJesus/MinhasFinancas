@@ -20,6 +20,7 @@ Modelos de risco não evoluem por opinião. Eles evoluem com:
 - validação contínua
 - auditoria operacional
 - auditoria humana
+- base oficial de simulação
 - rastreabilidade das mudanças
 
 ## Escalas oficiais
@@ -241,6 +242,25 @@ O uso dessa auditoria é obrigatório sempre que houver mudança em:
 - classificações
 - tendência
 - histórico do score
+
+## Base Oficial de Simulação do MF Score
+
+Além das personas em memória e das personas persistidas, o projeto agora possui uma `Base Oficial de Simulação do MF Score`.
+
+### Papel na validação
+
+- testar o motor em usuários sintéticos completos e persistidos
+- permitir inspeção pelo Laboratório do MF Score com cenários reproduzíveis
+- apoiar calibração com histórico financeiro coerente de aproximadamente 12 meses
+- complementar a validação com usuários reais
+
+### Regra permanente
+
+Toda alteração relevante no Motor Financeiro deve ser validada em, no mínimo:
+
+- usuários reais
+- cenários oficiais desta suíte
+- Base Oficial de Simulação do MF Score
 
 Resultado da rodada mais recente de recalibração:
 
