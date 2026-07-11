@@ -49,9 +49,24 @@ namespace MinhasFinancas.Application.Services
 
             foreach (var cenario in cenarios)
             {
-                var usuario = await CriarUsuarioSinteticoAsync(cenario, agora);
-                await PopularCenarioAsync(usuario, cenario, agora);
-                usuariosGerados.Add(MapearUsuarioSintetico(usuario));
+                Usuario? usuario = null;
+
+                try
+                {
+                    usuario = await CriarUsuarioSinteticoAsync(cenario, agora);
+                    _context.ChangeTracker.Clear();
+                    await PopularCenarioAsync(usuario, cenario, agora);
+                    usuariosGerados.Add(MapearUsuarioSintetico(usuario));
+                }
+                catch
+                {
+                    if (usuario != null)
+                    {
+                        await RemoverUsuarioSinteticoParcialAsync(usuario.Id);
+                    }
+
+                    throw;
+                }
             }
 
             return new ResultadoGeracaoBaseSimulacaoMfScoreDTO
@@ -204,10 +219,24 @@ namespace MinhasFinancas.Application.Services
             await _context.SaveChangesAsync();
         }
 
+        private async Task RemoverUsuarioSinteticoParcialAsync(string usuarioId)
+        {
+            _context.ChangeTracker.Clear();
+
+            var usuarioParcial = await _context.Users.FirstOrDefaultAsync(x => x.Id == usuarioId);
+            if (usuarioParcial == null)
+            {
+                return;
+            }
+
+            await _usuarioRepository.DeletarUsuarioESeusDados(usuarioParcial);
+            _context.ChangeTracker.Clear();
+        }
+
         private async Task ConfigurarPatrimonioBaseAsync(string usuarioId, CenarioBaseSimulacao cenario, DateTime agora)
         {
             var bensBase = await _context.BemPatrimonial
-                .Include(x => x.DataPermanencia)
+                .AsNoTracking()
                 .Where(x => x.UsuarioId == usuarioId)
                 .ToListAsync();
 
@@ -216,7 +245,7 @@ namespace MinhasFinancas.Application.Services
 
             if (dinheiroEmConta != null)
             {
-                dinheiroEmConta.DataPermanencia.Add(new PermanenciaBemMaterial
+                _context.PermanenciaBemMaterial.Add(new PermanenciaBemMaterial
                 {
                     Id = Guid.NewGuid(),
                     BemPatrimonialId = dinheiroEmConta.Id,
@@ -227,7 +256,7 @@ namespace MinhasFinancas.Application.Services
 
             if (investimento != null)
             {
-                investimento.DataPermanencia.Add(new PermanenciaBemMaterial
+                _context.PermanenciaBemMaterial.Add(new PermanenciaBemMaterial
                 {
                     Id = Guid.NewGuid(),
                     BemPatrimonialId = investimento.Id,
@@ -375,6 +404,7 @@ namespace MinhasFinancas.Application.Services
             }
 
             var perfil = await _context.PerfilFinanceiro
+                .AsNoTracking()
                 .Include(x => x.Configuracoes)
                 .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId);
 
@@ -388,7 +418,11 @@ namespace MinhasFinancas.Application.Services
                 return;
             }
 
-            configuracaoAtual.DataFimVigencia = agora.AddDays(-1);
+            await _context.ConfiguracaoPerfilFinanceiro
+                .Where(x => x.Id == configuracaoAtual.Id)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(x => x.DataFimVigencia, agora.AddDays(-1)));
+
             _context.ConfiguracaoPerfilFinanceiro.Add(new ConfiguracaoPerfilFinanceiro
             {
                 Id = Guid.NewGuid(),

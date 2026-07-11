@@ -6,7 +6,7 @@ namespace minhas_financas_back_end.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class MfScoreLaboratorioController : ControllerBase
     {
         private readonly IMfScoreLaboratorioAppService _appService;
