@@ -1,5 +1,47 @@
 # MF Score Benchmark
 
+## Consolidação comparativa da `mf-score-v2.5-1000`
+
+Esta seção resume apenas a leitura comparativa da `v2.5` contra a referência humana já registrada neste benchmark.
+
+As notas humanas, faixas aceitáveis e invalidações de cenários permanecem inalteradas.
+
+### Resumo dos 9 cenários válidos
+
+| Cenário | Score v2.4 | Score v2.5 | Nota humana | Faixa | Status v2.5 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `MF-CENARIO-01` | 720 | 820 | 780 | 760-820 | Dentro da faixa |
+| `MF-CENARIO-03` | 570 | 690 | 800 | 780-850 | Fora da faixa |
+| `MF-CENARIO-04` | 740 | 870 | 930 | 900-960 | Fora da faixa |
+| `MF-CENARIO-05` | 0 | 170 | 180 | 150-250 | Dentro da faixa |
+| `MF-CENARIO-06` | 350 | 440 | 620 | 580-680 | Fora da faixa |
+| `MF-CENARIO-08` | 0 | 0 | 40 | 0-80 | Dentro da faixa |
+| `MF-CENARIO-10` | 90 | 130 | 220 | 180-280 | Fora da faixa |
+| `MF-CENARIO-11` | 420 | 650 | 720 | 680-780 | Fora da faixa |
+| `MF-CENARIO-12` | 290 | 270 | 500 | 450-560 | Fora da faixa |
+
+### Métricas oficiais da `v2.5`
+
+- cenários válidos dentro da faixa:
+  - `v2.4`: `1/9`
+  - `v2.5`: `3/9`
+- diferença absoluta média:
+  - `v2.4`: `178,89`
+  - `v2.5`: `92,22`
+- redução percentual do erro médio: `48,45%`
+- maior melhoria: `MF-CENARIO-11`
+- regressão observada: `MF-CENARIO-12`
+
+### Cenários inválidos mantidos fora da métrica oficial
+
+| Cenário | Score v2.5 | Situação |
+| --- | ---: | --- |
+| `MF-CENARIO-02` | 380 | Continua inválido para calibração definitiva |
+| `MF-CENARIO-07` | 170 | Continua inválido para calibração definitiva |
+| `MF-CENARIO-09` | 670 | Continua inválido para calibração definitiva |
+
+O detalhamento completo dessa auditoria comparativa fica centralizado em `docs/MF_SCORE_AUDIT.md`.
+
 ## Objetivo
 
 Este documento existe para validar o comportamento do Motor Financeiro diante dos cenários oficiais previamente auditados.

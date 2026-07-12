@@ -4,6 +4,11 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 12/07/2026
 
+- Consolidação documental da auditoria comparativa da `mf-score-v2.5-1000`, sem alteração de código, fórmulas, pesos, indicadores, pilares ou penalizações.
+- Registro oficial da leitura residual da `v2.5` com métricas calculadas apenas sobre os 9 cenários válidos do benchmark.
+- Confirmação documental de melhora de `1/9` para `3/9` cenários válidos dentro da faixa e redução da diferença média absoluta de `178,89` para `92,22` pontos.
+- Registro formal de `MF-CENARIO-12` como regressão residual da sprint e de `Liquidez e Reserva` como principal prioridade remanescente antes de qualquer futura `v2.6`.
+
 - Conclusão da sprint `mf-score-v2.5-1000`, mantendo a arquitetura da `v2.4` congelada e atuando apenas em calibração numérica.
 - Recalibração do pilar `Liquidez e Reserva` para reconhecer melhor reserva parcialmente formada e capacidade real de construção.
 - Recalibração do pilar `Fluxo de Caixa`, reduzindo severidade excessiva em perfis organizados com pouca folga operacional.

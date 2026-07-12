@@ -1,5 +1,7 @@
 # MF Score Validation
 
+> Referência atual de regressão: a auditoria comparativa da `mf-score-v2.5-1000` está documentada em `docs/MF_SCORE_AUDIT.md`. A validação oficial da rodada usa apenas os 9 cenários válidos do benchmark, registra melhora de `1/9` para `3/9` dentro da faixa e mantém `MF-CENARIO-12` como regressão residual a ser observada antes de qualquer `v2.6`.
+
 Este documento registra como validamos se o `MF Score` continua coerente ao longo do tempo.
 
 Enquanto `docs/MF_SCORE.md` explica o funcionamento oficial do motor, este arquivo explica como protegemos o modelo contra regressões conceituais e numéricas.

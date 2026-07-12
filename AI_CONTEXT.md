@@ -30,6 +30,8 @@ A auditoria oficial da versão `mf-score-v2.4-1000` concluiu que a arquitetura d
 
 A sprint oficial `mf-score-v2.5` foi concluída como rodada exclusiva de calibração fina numérica, atuando em `Liquidez e Reserva`, depois `Fluxo de Caixa`, depois `Endividamento e Obrigações` e, por fim, recalibração das penalizações. O pacote melhorou a convergência do benchmark sem criar novos indicadores, pilares ou penalizações.
 
+A auditoria comparativa posterior da `mf-score-v2.5-1000` ficou consolidada em `docs/MF_SCORE_AUDIT.md`. Considerando apenas os 9 cenários válidos do benchmark, a rodada saiu de `1/9` para `3/9` cenários dentro da faixa, reduziu o erro médio absoluto de `178,89` para `92,22` pontos e confirmou `Liquidez e Reserva` como principal divergência residual, com `MF-CENARIO-12` como única regressão líquida documentada.
+ 
 Além da suíte conceitual, o projeto agora possui uma auditoria operacional interna do `MF Score`, exposta apenas em desenvolvimento por `POST /api/MfScoreAuditoria/GerarPlanilha`, que monta personas sintéticas em memória, executa o motor oficial (`ContextoAnaliseFinanceira -> IndicadoresFinanceirosService -> SaudeFinanceiraService`) e devolve uma planilha `.xlsx` de conferência.
 
 O projeto passa a ter também uma segunda auditoria interna, `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`, voltada para avaliação humana cega das personas. Ela não aprova nem reprova automaticamente o motor; serve para documentar a nota que um consultor daria e transformar essa leitura em futuros padrões oficiais.

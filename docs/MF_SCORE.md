@@ -1,5 +1,7 @@
 # MF Score
 
+> Atualização de auditoria: a comparação oficial da `mf-score-v2.5-1000` está consolidada em `docs/MF_SCORE_AUDIT.md`. Considerando apenas os 9 cenários válidos do benchmark, a sprint saiu de `1/9` para `3/9` cenários dentro da faixa, reduziu o erro médio absoluto de `178,89` para `92,22` pontos e confirmou `Liquidez e Reserva` como principal divergência residual, com `MF-CENARIO-12` como única regressão líquida documentada.
+
 O `MF Score` é o modelo oficial de avaliação da saúde financeira do sistema.
 
 Ele responde à pergunta:

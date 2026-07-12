@@ -352,6 +352,8 @@ A IA apenas comunica o conhecimento produzido por esse motor.
 - recalibração numérica executada em quatro blocos: `Liquidez e Reserva`, `Fluxo de Caixa`, `Endividamento e Obrigações` e penalizações
 - melhoria de `1/12` para `4/12` cenários dentro da faixa aceitável do benchmark
 - redução da diferença média absoluta de `205` para `102,5` pontos
+- auditoria comparativa posterior consolidada separando os 9 cenários válidos dos 3 inválidos
+- resultado oficial dessa auditoria válida: `1/9` para `3/9` cenários dentro da faixa, com `Liquidez e Reserva` como principal divergência residual e `MF-CENARIO-12` como única regressão líquida documentada
 
 **Próxima rodada oficial dentro da Fase 4.2.7:**
 
