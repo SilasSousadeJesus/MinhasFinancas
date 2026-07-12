@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/auth-provider";
 import {
   buscarScoreUsuarioMfScoreLaboratorio,
@@ -398,33 +399,38 @@ export function MfScoreLaboratorioManager() {
                   <EstadoVazio texto='Selecione um usuário e clique em "Analisar MF Score" para abrir o laboratório.' />
                 ) : (
                   <div className="space-y-6">
-                    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-4">
-                      <div className="space-y-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h2 className="text-xl font-semibold">{detalhe.usuario.nome}</h2>
-                          <Badge variant={detalhe.usuario.ehUsuarioSintetico ? "secondary" : "outline"}>
-                            {detalhe.usuario.ehUsuarioSintetico ? "Sintético" : "Real"}
-                          </Badge>
+                    <div className="rounded-xl border bg-background px-5 py-5">
+                      <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                        <div className="space-y-3">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h2 className="text-xl font-semibold leading-tight">{detalhe.usuario.nome}</h2>
+                            <Badge variant={detalhe.usuario.ehUsuarioSintetico ? "secondary" : "outline"}>
+                              {detalhe.usuario.ehUsuarioSintetico ? "Sintético" : "Real"}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{detalhe.usuario.email}</p>
+
+                          {detalhe.usuario.ehUsuarioSintetico ? (
+                            <div className="rounded-lg border border-dashed bg-muted/30 px-4 py-3">
+                              <p className="text-sm font-medium">{detalhe.usuario.codigoCenario}</p>
+                              <p className="mt-1 text-sm text-muted-foreground">{detalhe.usuario.objetivoCenario}</p>
+                            </div>
+                          ) : null}
                         </div>
-                        <p className="text-sm text-muted-foreground">{detalhe.usuario.email}</p>
-                        {detalhe.usuario.ehUsuarioSintetico ? (
-                          <p className="text-sm text-muted-foreground">
-                            {detalhe.usuario.codigoCenario} • {detalhe.usuario.objetivoCenario}
-                          </p>
-                        ) : null}
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline">Modelo {detalhe.versaoModelo}</Badge>
-                        <Badge variant="outline">Risco {detalhe.risco}</Badge>
-                        <Badge variant={obterVariantClassificacao(detalhe.classificacao)}>{detalhe.classificacao}</Badge>
+
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant="outline">Modelo: {detalhe.versaoModelo}</Badge>
+                          <Badge variant="outline">{detalhe.risco}</Badge>
+                          <Badge variant={obterVariantClassificacao(detalhe.classificacao)}>{detalhe.classificacao}</Badge>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                    <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-5">
                       <ResumoNumero titulo="MF Score base" valor={String(detalhe.mfScoreBase)} />
                       <ResumoNumero titulo="MF Score final" valor={String(detalhe.mfScoreFinal)} />
-                      <ResumoNumero titulo="Classificação" valor={detalhe.classificacao} />
-                      <ResumoNumero titulo="Risco" valor={detalhe.risco} />
+                      <ResumoNumero titulo="Classificação" valor={detalhe.classificacao} variante="texto" />
+                      <ResumoNumero titulo="Risco" valor={detalhe.risco} variante="texto" />
                       <ResumoNumero titulo="Penalidade total" valor={numero.format(detalhe.penalidadeTotal)} />
                     </div>
 
@@ -446,7 +452,30 @@ export function MfScoreLaboratorioManager() {
                           />
                         ) : (
                           <>
-                            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                            <div className="rounded-lg border bg-muted/20 px-4 py-4">
+                              <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
+                                <div className="space-y-1">
+                                  <p className="text-sm font-medium">
+                                    {detalhe.analiseCalibracao.dentroDaFaixaEsperada
+                                      ? "O cenário está dentro da faixa humana esperada."
+                                      : "O cenário ficou fora da faixa humana esperada."}
+                                  </p>
+                                  <p className="text-sm text-muted-foreground">
+                                    O laboratório apenas compara a leitura atual do motor com a referência oficial do benchmark.
+                                  </p>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  <Badge variant={obterVariantStatusBenchmark(detalhe.analiseCalibracao.benchmark.status)}>
+                                    {detalhe.analiseCalibracao.benchmark.status}
+                                  </Badge>
+                                  <Badge variant={detalhe.analiseCalibracao.dentroDaFaixaEsperada ? "default" : "outline"}>
+                                    {detalhe.analiseCalibracao.situacaoFaixa}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-5">
                               <ResumoNumero
                                 titulo="Nota esperada"
                                 valor={String(detalhe.analiseCalibracao.benchmark.notaHumanaReferencia)}
@@ -466,16 +495,8 @@ export function MfScoreLaboratorioManager() {
                               <ResumoNumero
                                 titulo="Status do benchmark"
                                 valor={detalhe.analiseCalibracao.benchmark.status}
+                                variante="texto"
                               />
-                            </div>
-
-                            <div className="flex flex-wrap gap-2">
-                              <Badge variant={obterVariantStatusBenchmark(detalhe.analiseCalibracao.benchmark.status)}>
-                                {detalhe.analiseCalibracao.benchmark.status}
-                              </Badge>
-                              <Badge variant={detalhe.analiseCalibracao.dentroDaFaixaEsperada ? "default" : "outline"}>
-                                {detalhe.analiseCalibracao.situacaoFaixa}
-                              </Badge>
                             </div>
 
                             <div className="grid gap-6 xl:grid-cols-2">
@@ -491,10 +512,12 @@ export function MfScoreLaboratorioManager() {
                                     <EstadoVazioInterno texto="Nenhuma análise por pilar foi gerada." />
                                   ) : (
                                     detalhe.analiseCalibracao.analisesPilares.map((pilar) => (
-                                      <div key={pilar.codigoPilar} className="rounded-lg border px-4 py-3">
-                                        <div className="flex items-center justify-between gap-3">
+                                      <div key={pilar.codigoPilar} className="rounded-lg border bg-background px-4 py-3">
+                                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                           <p className="font-medium">{pilar.nomePilar}</p>
-                                          <Badge variant="outline">Nota {pilar.notaPilar}</Badge>
+                                          <Badge variant="outline" className="w-fit">
+                                            Nota {pilar.notaPilar}
+                                          </Badge>
                                         </div>
                                         <p className="mt-2 text-sm text-muted-foreground">{pilar.diagnostico}</p>
                                       </div>
@@ -511,11 +534,11 @@ export function MfScoreLaboratorioManager() {
                                   </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-3 text-sm">
-                                  <p className="text-muted-foreground">
+                                  <p className="leading-6 text-muted-foreground">
                                     <span className="font-medium text-foreground">Justificativa humana:</span>{" "}
                                     {detalhe.analiseCalibracao.benchmark.justificativaHumana}
                                   </p>
-                                  <p className="text-muted-foreground">
+                                  <p className="leading-6 text-muted-foreground">
                                     <span className="font-medium text-foreground">Decisão da auditoria:</span>{" "}
                                     {detalhe.analiseCalibracao.benchmark.decisaoAuditoria}
                                   </p>
@@ -524,9 +547,12 @@ export function MfScoreLaboratorioManager() {
                                     {detalhe.analiseCalibracao.benchmark.indicadoresResponsaveis.length === 0 ? (
                                       <EstadoVazioInterno texto="Nenhum indicador responsável foi registrado no benchmark." />
                                     ) : (
-                                      <ul className="space-y-1 text-muted-foreground">
+                                      <ul className="space-y-2 text-muted-foreground">
                                         {detalhe.analiseCalibracao.benchmark.indicadoresResponsaveis.map((item) => (
-                                          <li key={item}>• {item}</li>
+                                          <li key={item} className="flex gap-2">
+                                            <span className="mt-[2px] text-foreground">•</span>
+                                            <span>{item}</span>
+                                          </li>
                                         ))}
                                       </ul>
                                     )}
@@ -549,8 +575,9 @@ export function MfScoreLaboratorioManager() {
                                   ) : (
                                     <ol className="space-y-2 text-sm">
                                       {detalhe.analiseCalibracao.indicadoresQuePuxaramParaBaixo.map((item, index) => (
-                                        <li key={item}>
-                                          {index + 1}. {item}
+                                        <li key={item} className="flex gap-3 rounded-lg border px-3 py-2">
+                                          <span className="font-semibold text-foreground">{index + 1}.</span>
+                                          <span className="text-muted-foreground">{item}</span>
                                         </li>
                                       ))}
                                     </ol>
@@ -571,8 +598,9 @@ export function MfScoreLaboratorioManager() {
                                   ) : (
                                     <ol className="space-y-2 text-sm">
                                       {detalhe.analiseCalibracao.principaisPontosPositivos.map((item, index) => (
-                                        <li key={item}>
-                                          {index + 1}. {item}
+                                        <li key={item} className="flex gap-3 rounded-lg border px-3 py-2">
+                                          <span className="font-semibold text-foreground">{index + 1}.</span>
+                                          <span className="text-muted-foreground">{item}</span>
                                         </li>
                                       ))}
                                     </ol>
@@ -585,12 +613,12 @@ export function MfScoreLaboratorioManager() {
                               <CardHeader className="pb-3">
                                 <CardTitle className="text-base">Diagnóstico final</CardTitle>
                                 <CardDescription>
-                                  Parecer automático do laboratório para orientar a próxima rodada de calibração da `v2.5`.
+                                  Parecer automático do laboratório para orientar a próxima rodada de calibração da v2.5.
                                 </CardDescription>
                               </CardHeader>
                               <CardContent className="space-y-3 text-sm">
-                                <p className="text-muted-foreground">{detalhe.analiseCalibracao.diagnosticoFinal}</p>
-                                <p className="text-muted-foreground">
+                                <p className="leading-6 text-muted-foreground">{detalhe.analiseCalibracao.diagnosticoFinal}</p>
+                                <p className="leading-6 text-muted-foreground">
                                   <span className="font-medium text-foreground">Recomendação para a próxima calibração:</span>{" "}
                                   {detalhe.analiseCalibracao.recomendacaoProximaCalibracao}
                                 </p>
@@ -632,7 +660,10 @@ export function MfScoreLaboratorioManager() {
                           ) : (
                             <ul className="space-y-2 text-sm">
                               {detalhe.resumoExecutivoDosPilares.map((item) => (
-                                <li key={item}>• {item}</li>
+                                <li key={item} className="flex gap-2">
+                                  <span className="mt-[2px] text-foreground">•</span>
+                                  <span className="text-muted-foreground">{item}</span>
+                                </li>
                               ))}
                             </ul>
                           )}
@@ -879,11 +910,26 @@ function BlocoTabela({
   );
 }
 
-function ResumoNumero({ titulo, valor }: { titulo: string; valor: string }) {
+function ResumoNumero({
+  titulo,
+  valor,
+  variante = "numero",
+}: {
+  titulo: string;
+  valor: string;
+  variante?: "numero" | "texto";
+}) {
   return (
-    <div className="flex min-h-36 flex-col justify-between rounded-lg border px-4 py-4">
+    <div className="flex min-h-32 flex-col justify-between rounded-xl border bg-background px-4 py-4">
       <p className="text-sm leading-6 text-muted-foreground">{titulo}</p>
-      <p className="mt-3 break-words text-2xl font-semibold leading-tight tracking-tight md:text-3xl">{valor}</p>
+      <p
+        className={cn(
+          "mt-3 break-words font-semibold leading-tight tracking-tight text-foreground",
+          variante === "texto" ? "text-xl md:text-2xl" : "text-2xl md:text-3xl"
+        )}
+      >
+        {valor}
+      </p>
     </div>
   );
 }
