@@ -52,6 +52,8 @@ Esses fatores só devem virar penalização crítica quando houver:
 
 Os cenários do laboratório continuam sendo a referência oficial de validação do Motor Financeiro.
 
+A primeira rodada humana oficial já está consolidada em `docs/MF_SCORE_BENCHMARK.md`. Esse benchmark passa a registrar, além do score produzido, a nota humana de referência, a faixa aceitável, a diferença observada e o status de cada um dos 12 cenários.
+
 Nesta rodada, eles devem ser usados para verificar se a versão `mf-score-v2.4-1000` corrigiu os principais problemas conceituais identificados na auditoria:
 
 - mistura entre dívida de consumo e financiamento patrimonial;
@@ -61,6 +63,8 @@ Nesta rodada, eles devem ser usados para verificar se a versão `mf-score-v2.4-1
 - soma indevida de penalizações temporais de fluxo negativo;
 - subprojeção de receitas recorrentes em `180` e `365` dias;
 - faixas qualitativas brandas demais em pressões acima de `100%`.
+
+Nesta rodada, os cenários `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09` foram formalmente classificados como inválidos para calibração definitiva até que suas massas sintéticas sejam reconstruídas.
 
 ## Casos que a validação precisa proteger
 

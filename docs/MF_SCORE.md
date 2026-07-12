@@ -18,6 +18,8 @@ Na versão atual do motor, `mf-score-v2.4-1000`, o objetivo principal passou a s
 
 A auditoria oficial posterior ao benchmark concluiu que a arquitetura da `v2.4` deve ser preservada. A partir deste ponto, novas evoluções do MF Score devem priorizar calibração fina numérica, e não novos redesenhos estruturais, salvo se uma auditoria futura demonstrar falha conceitual relevante.
 
+A primeira rodada humana oficial do benchmark está consolidada em `docs/MF_SCORE_BENCHMARK.md`. Nela, apenas `MF-CENARIO-08` ficou aprovado sem ressalvas, enquanto `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09` foram formalmente marcados como cenários inválidos e dependentes de reconstrução da massa sintética antes de servirem como referência definitiva.
+
 ## Filosofia oficial
 
 - O `MF Score` mede saúde financeira com apetite de risco `moderado`.

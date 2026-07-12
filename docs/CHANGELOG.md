@@ -2,6 +2,14 @@
 
 Registrar aqui apenas mudancas relevantes do sistema.
 
+## 12/07/2026
+
+- Consolidação da Primeira Rodada de Referência Humana do Benchmark do MF Score em `docs/MF_SCORE_BENCHMARK.md`.
+- Registro oficial, por cenário, de nota humana de referência, faixa aceitável, diferença entre score atual e expectativa humana, status, justificativa e decisão de auditoria.
+- Formalização dos achados consolidados da auditoria humana da `v2.4`, incluindo aprovação arquitetural do motor, severidade excessiva em perfis saudáveis ou recuperáveis e perda de granularidade na base da escala.
+- Classificação de `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09` como cenários inválidos para calibração definitiva até reconstrução de suas massas sintéticas.
+- Sincronização curta de `AI_CONTEXT.md`, `docs/MF_SCORE.md`, `docs/MF_SCORE_AUDIT.md` e `docs/MF_SCORE_VALIDATION.md` para apontar o benchmark como fonte oficial da primeira rodada humana.
+
 ## 10/07/2026
 
 - Consolidação oficial da auditoria humana da versão `mf-score-v2.4-1000`, aprovando a arquitetura atual do Motor Financeiro.

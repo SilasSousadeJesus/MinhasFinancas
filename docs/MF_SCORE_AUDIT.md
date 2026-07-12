@@ -40,6 +40,7 @@ Após a primeira rodada completa de auditoria humana pós benchmark, a conclusã
 - a arquitetura da versão `mf-score-v2.4-1000` está aprovada;
 - a próxima etapa do projeto deve focar calibração fina de notas e curvas;
 - mudanças estruturais só devem voltar a ser discutidas se uma auditoria futura demonstrar falha conceitual relevante.
+- o detalhamento oficial por cenário agora está consolidado em `docs/MF_SCORE_BENCHMARK.md`, incluindo notas humanas, faixas aceitáveis, diferenças e a invalidação formal de `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09`.
 
 ## Arquitetura atual do score
 

@@ -24,7 +24,7 @@ O `MF Score` agora também possui uma etapa oficial de calibração contínua, c
 
 Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_VALIDATION.md`, usada para confirmar se alterações futuras continuam coerentes com os cenários canônicos do modelo.
 
-O projeto passa a manter também `docs/MF_SCORE_BENCHMARK.md`, que registra a expectativa humana oficial para os 12 cenários da Base Oficial de Simulação e se torna a principal referência de regressão comportamental do motor.
+O projeto passa a manter também `docs/MF_SCORE_BENCHMARK.md`, que registra a expectativa humana oficial para os 12 cenários da Base Oficial de Simulação e se torna a principal referência de regressão comportamental do motor. A primeira rodada humana oficial do benchmark já foi consolidada e confirmou a arquitetura da `v2.4`, marcando `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09` como cenários ainda inválidos para calibração definitiva.
 
 A auditoria oficial da versão `mf-score-v2.4-1000` concluiu que a arquitetura do motor está madura e aprovada. A próxima etapa oficial do MF Score deixa de ser revisão estrutural e passa a ser calibração fina numérica guiada obrigatoriamente pelo benchmark dos 12 cenários.
 
