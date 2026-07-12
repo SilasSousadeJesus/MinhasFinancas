@@ -1,27 +1,28 @@
 # MF Score Validation
 
-Este documento complementa `docs/MF_SCORE.md`.
+Este documento registra como validamos se o `MF Score` continua coerente ao longo do tempo.
 
-Enquanto o `MF_SCORE.md` explica como o modelo funciona, este documento registra como validamos se ele continua coerente ao longo do tempo.
+Enquanto `docs/MF_SCORE.md` explica o funcionamento oficial do motor, este arquivo explica como protegemos o modelo contra regressões conceituais e numéricas.
 
 ## Objetivo
 
-Criar uma base permanente de validação para o `MF Score`.
+Garantir que mudanças no Motor Financeiro:
 
-O objetivo é proteger o Motor Financeiro contra mudanças que pareçam corretas isoladamente, mas produzam resultados incoerentes no conjunto.
+- melhorem a leitura do risco real;
+- não criem distorções entre cenários;
+- não violem a regra de não dupla penalização;
+- permaneçam coerentes com o laboratório oficial.
 
-## Filosofia
+## Filosofia de validação
 
-O `MF Score` é um modelo de risco financeiro pessoal.
+O `MF Score` é um modelo de saúde financeira com apetite de risco `moderado`.
 
-Modelos de risco não evoluem por opinião. Eles evoluem com:
+Portanto, a validação não deve procurar:
 
-- cenários oficiais
-- validação contínua
-- auditoria operacional
-- auditoria humana
-- base oficial de simulação
-- rastreabilidade das mudanças
+- maximizar severidade a qualquer custo;
+- suavizar artificialmente casos ruins;
+- premiar configuração em vez de execução;
+- tratar financiamentos patrimoniais como se fossem iguais a dívidas de consumo.
 
 ## Escalas oficiais
 
@@ -29,288 +30,127 @@ Modelos de risco não evoluem por opinião. Eles evoluem com:
 - `MF Score base`: `0 a 1000`
 - `pilares`: `0 a 100`
 
-## O que esta suíte protege
-
-Esta suíte existe para responder:
-
-- o score continua reagindo de forma esperada?
-- o modelo ainda diferencia risco alto, médio e baixo com clareza?
-- a mudança melhorou a leitura do risco ou apenas alterou números?
-- a regra de não dupla penalização continua sendo respeitada?
-
-## Princípio central de validação
+## Princípio central
 
 Um mesmo fato econômico não deve ser punido duas vezes.
 
-Portanto:
+Logo:
 
-- `reserva zero` deve reduzir prioritariamente `Liquidez`
-- `comprometimento alto` deve reduzir prioritariamente `Fluxo de Caixa`
-- `pressão futura` deve reduzir prioritariamente `Fluxo de Caixa` e `Endividamento`
+- reserva baixa reduz `Liquidez e Reserva`
+- comprometimento alto reduz `Fluxo de Caixa`
+- pressão futura reduz `Endividamento e Obrigações`
+- persistência de fluxo negativo usa apenas o nível progressivo mais grave
 
 Esses fatores só devem virar penalização crítica quando houver:
 
-- fluxo negativo
-- inadimplência
-- persistência temporal negativa
-- risco efetivamente materializado
+- inadimplência;
+- patrimônio líquido negativo;
+- persistência temporal relevante;
+- risco materializado.
 
-## Cenários oficiais
+## Referência oficial de cenários
 
-### Cenário 01 - Vida Financeira Excelente
+Os cenários do laboratório continuam sendo a referência oficial de validação do Motor Financeiro.
 
-**Expectativa qualitativa**
+Nesta rodada, eles devem ser usados para verificar se a versão `mf-score-v2.4-1000` corrigiu os principais problemas conceituais identificados na auditoria:
 
-MF Score muito alto.
+- mistura entre dívida de consumo e financiamento patrimonial;
+- peso excessivo do patrimônio-alvo na leitura patrimonial;
+- redundância interna do pilar `Fluxo de Caixa`;
+- peso exagerado da simples configuração no pilar `Planejamento e Disciplina`;
+- soma indevida de penalizações temporais de fluxo negativo;
+- subprojeção de receitas recorrentes em `180` e `365` dias;
+- faixas qualitativas brandas demais em pressões acima de `100%`.
 
-**Faixa esperada**
+## Casos que a validação precisa proteger
 
-`900-1000`
+- estudante com estrutura ainda inicial
+- família financiada
+- alta renda organizada
+- patrimônio elevado com fluxo ruim
+- autônomos com oscilação real
+- inadimplência materializada
+- forte renda sem reserva
+- boa execução com pouco patrimônio
 
----
+## Regras esperadas por tema
 
-### Cenário 02 - Boa renda, mas liquidez inexistente e cartão elevado
+### Endividamento e Obrigações
 
-**Expectativa qualitativa**
+- dívida de consumo deve pesar mais que financiamento patrimonial de mesmo valor relativo;
+- obrigações futuras recorrentes devem reduzir a nota, mas não equivaler automaticamente a inadimplência;
+- inadimplência continua sendo o sinal mais grave do pilar.
 
-MF Score muito pressionado, porque boa renda isolada não compensa reserva zerada, patrimônio líquido negativo e forte pressão recorrente.
+### Patrimônio
 
-**Faixa esperada**
+- patrimônio líquido positivo relevante deve sustentar uma boa leitura patrimonial;
+- patrimônio-alvo deve funcionar como evolução, não como base principal da nota;
+- patrimônio negativo continua sendo sinal grave.
 
-`250-420`
+### Fluxo de Caixa
 
----
+- o pilar deve responder se o mês fecha bem ou mal;
+- `Economia Mensal`, `Percentual de Economia` e `Comprometimento da Renda` não devem competir entre si de modo redundante;
+- pressão futura não deve dominar o fluxo mensal.
 
-### Cenário 03 - Patrimônio elevado com fluxo de caixa ruim
+### Planejamento e Disciplina
 
-**Expectativa qualitativa**
-
-O patrimônio reduz risco estrutural, mas o fluxo limita o score.
-
-**Faixa esperada**
-
-`550-750`
-
----
-
-### Cenário 04 - Excelente fluxo com pouco patrimônio
-
-**Expectativa qualitativa**
-
-Score bom, sustentado por fluxo e liquidez, mas sem entrar em zona de risco muito baixo enquanto o patrimônio ainda for limitado e o comprometimento mensal continuar alto.
-
-**Faixa esperada**
-
-`640-780`
-
----
-
-### Cenário 05 - Inadimplência
-
-**Expectativa qualitativa**
-
-Penalização forte por risco materializado.
-
-**Faixa esperada**
-
-`0-490`
-
----
-
-### Cenário 06 - Comprometimento extremo
-
-**Expectativa qualitativa**
-
-Score baixo ou crítico, principalmente se houver pouca folga operacional.
-
-**Faixa esperada**
-
-`0-590`
-
----
-
-### Cenário 07 - Reserva inexistente sem dívidas
-
-**Expectativa qualitativa**
-
-Fragilidade estrutural importante, mas sem colapso automático do score só por reserva zero.
-
-**Faixa esperada**
-
-`500-790`
-
----
-
-### Cenário 08 - Planejamento financeiro excelente
-
-**Expectativa qualitativa**
-
-Score bom a alto, com ganho estrutural real de planejamento, sem permitir que a configuração do perfil esconda riscos operacionais ou patrimoniais.
-
-**Faixa esperada**
-
-`720-840`
-
-## Casos canônicos
-
-Casos canônicos são cenários que nunca devem produzir resultado incoerente.
-
-Exemplos:
-
-- reserva zero e comprometimento alto não podem gerar score excelente
-- inadimplência nunca pode ser classificada como situação saudável
-- fluxo mensal negativo recorrente deve agravar o score
-- patrimônio alto não pode mascarar ruptura operacional persistente
-- boa renda sem reserva não deve parecer ausência total de risco, mas também não deve despencar artificialmente como se já houvesse inadimplência
-
-## Matriz de sensibilidade
-
-### Comprometimento
-
-Faixas observadas:
-
-- `30%`
-- `40%`
-- `50%`
-- `60%`
-- `70%`
-- `80%`
-- `90%`
-
-Comportamento esperado:
-
-- queda progressiva do pilar de fluxo
-- sem penalização crítica automática enquanto não houver materialização de risco
-
-### Liquidez
-
-Faixas observadas:
-
-- `12 meses`
-- `6 meses`
-- `3 meses`
-- `1 mês`
-- `0 meses`
-
-Comportamento esperado:
-
-- melhora progressiva da proteção
-- queda estrutural do pilar de liquidez
-- ausência total de reserva não deve, sozinha, simular inadimplência
+- configuração mínima do perfil continua importante;
+- execução real deve pesar mais do que simples preenchimento de parâmetros;
+- plano estratégico e compromissos só contam quando existirem;
+- a ausência desses elementos não deve punir automaticamente.
 
 ### Persistência temporal
 
-Faixas observadas:
+- a penalização do mês negativo não deve ser somada com a penalização de recorrência;
+- deve prevalecer somente o nível mais grave entre:
+  - `1 mês`
+  - `2 meses`
+  - `3+ meses`
+  - `6+ meses`
+  - `12+ meses`
 
-- `1 mês negativo`
-- `2 meses negativos consecutivos`
-- `3 ou mais meses negativos consecutivos`
+### Projeção futura
 
-Comportamento esperado:
-
-- `1 mês`: alerta ou penalização leve
-- `2 meses`: agravamento moderado
-- `3+ meses`: agravamento forte
-
-Referência operacional atual:
-
-- `1 mês negativo`: `40 pontos` no score final
-- `2 meses consecutivos negativos`: `90 pontos`
-- `3 ou mais meses consecutivos negativos`: `140 pontos`
+- receitas recorrentes precisam aparecer corretamente em `180` e `365` dias;
+- pressões futuras acima de `100%` não podem permanecer apenas como `Atenção`.
 
 ## Auditoria operacional
 
-Esta validação conceitual é complementada por auditoria operacional real.
+A validação conceitual precisa ser acompanhada de auditoria operacional.
 
-Endpoint interno de desenvolvimento:
+Endpoint interno:
 
 - `POST /api/MfScoreAuditoria/GerarPlanilha`
 
-Essa auditoria:
-
-- monta personas sintéticas
-- executa o motor oficial
-- compara score obtido com faixa esperada
-- gera planilha `.xlsx`
-
-O uso dessa auditoria é obrigatório sempre que houver mudança em:
+Uso obrigatório quando houver mudança em:
 
 - indicadores
-- pesos
 - pilares
+- pesos
 - penalizações críticas
-- classificações
+- classificação
 - tendência
-- histórico do score
+- projeção futura
 
-## Base Oficial de Simulação do MF Score
+## Base oficial de simulação
 
-Além das personas em memória e das personas persistidas, o projeto agora possui uma `Base Oficial de Simulação do MF Score`.
+Além das personas em memória, o projeto possui uma base oficial de simulação persistida para inspeção pelo laboratório.
 
-### Papel na validação
+Essa base deve ser usada para:
 
-- testar o motor em usuários sintéticos completos e persistidos
-- permitir inspeção pelo Laboratório do MF Score com cenários reproduzíveis
-- apoiar calibração com histórico financeiro coerente de aproximadamente 12 meses
-- complementar a validação com usuários reais
+- comparar comportamento entre cenários;
+- inspecionar a leitura do motor em usuários sintéticos completos;
+- validar se a correção conceitual permaneceu coerente em casos mais realistas.
 
-### Regra permanente
+## Resultado esperado desta rodada
 
-Toda alteração relevante no Motor Financeiro deve ser validada em, no mínimo:
+Após a refatoração conceitual da versão `mf-score-v2.4-1000`, a próxima execução da auditoria deve confirmar:
 
-- usuários reais
-- cenários oficiais desta suíte
-- Base Oficial de Simulação do MF Score
+- melhor separação entre dívida de consumo e financiamento patrimonial;
+- leitura patrimonial menos dependente da meta;
+- fluxo mensal mais coerente com a operação do mês;
+- planejamento menos dependente de configuração pura;
+- melhor coerência dos horizontes futuros após correção da projeção de receitas;
+- classificação mais severa quando a pressão acumulada ultrapassa `100%`.
 
-Resultado da rodada mais recente de recalibração:
-
-- `8 de 8` cenários oficiais ficaram dentro da faixa esperada;
-- as faixas dos cenários `Boa renda, reserva zero e cartão alto`, `Excelente fluxo com pouco patrimônio` e `Planejamento financeiro excelente` foram revistas para refletir melhor a severidade real do motor `mf-score-v2.1-1000`.
-- na rodada `mf-score-v2.2-1000`, a auditoria operacional permaneceu em `8 de 8` cenários aprovados após a entrada de reincidência/cura da inadimplência e da incorporação opcional de plano estratégico e compromissos no pilar `Planejamento`.
-
-## Auditoria humana
-
-Além da validação automática, existe auditoria humana cega:
-
-- `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`
-
-Ela serve para:
-
-- avaliar se o motor foi severo demais
-- avaliar se o motor foi permissivo demais
-- amadurecer faixas esperadas e casos canônicos
-
-Observação:
-
-- a auditoria humana continua sendo uma planilha de revisão cega preenchida manualmente;
-- nesta rodada, ela foi regenerada para acompanhar a nova calibração, agora exibindo também a presença ou ausência de plano estratégico e compromissos;
-- a conclusão final continua dependendo de leitura humana.
-
-## Personas persistidas de calibração
-
-O projeto também possui um CRUD persistido de `Personas de Calibração do MF Score`.
-
-Essa ferramenta serve para:
-
-- ampliar cenários sintéticos sem editar código
-- registrar score humano sugerido
-- registrar faixa esperada
-- rodar o motor oficial
-- promover personas maduras a casos canônicos
-
-## Critérios de evolução
-
-Nenhuma alteração no Motor Financeiro deve ser considerada concluída sem:
-
-1. revisar esta suíte
-2. rodar a auditoria operacional
-3. avaliar impacto nas personas persistidas
-4. registrar mudanças no changelog
-5. sincronizar `docs/MF_SCORE.md`, `docs/INDICADORES_FINANCEIROS.md` e `docs/MF_SCORE_AUDIT.md`
-
-## Atualizacao oficial v2.3
-
-Esta suite passa a proteger explicitamente duas regras adicionais:
-
-- `patrimonio zero sem passivos` representa fragilidade inicial, e nao insolvencia
-- `fluxo muito forte` deve atenuar a leitura de liquidez quando a reserva ideal pode ser formada rapidamente

@@ -1,215 +1,271 @@
 # MF Score
 
-O `MF Score`, ou `Minhas Finanças Score`, é o modelo oficial de avaliação de risco financeiro pessoal do sistema.
+O `MF Score` é o modelo oficial de avaliação da saúde financeira do sistema.
 
 Ele responde à pergunta:
 
-> Qual é o risco financeiro pessoal do usuário se ele continuar seguindo a trajetória atual?
+> Qual é o nível de risco financeiro pessoal do usuário se a trajetória atual continuar?
 
-O `MF Score` não mede apenas riqueza, nem apenas disciplina. Ele mede risco, proteção, pressão estrutural, maturidade e persistência de comportamento ao longo do tempo.
+O modelo não mede apenas riqueza, disciplina subjetiva ou comportamento de crédito tradicional. Ele mede a combinação entre:
 
-Na versão atual do motor (`mf-score-v2.2-1000`), o modelo também passa a:
+- capacidade operacional do mês;
+- proteção financeira;
+- pressão de dívidas e obrigações;
+- situação patrimonial real;
+- qualidade do planejamento e da execução.
 
-- usar meta monetária coerente para `Economia Mensal`;
-- adotar faixas explícitas de status nos indicadores centrais;
-- tratar inadimplência de forma gradual, e não mais binária;
-- reconhecer reincidência e cura recente da inadimplência como sinais distintos de risco;
-- recalibrar penalizações temporais de fluxo negativo para refletir severidade progressiva;
-- tratar o pilar `Planejamento` com base mínima explícita no `Perfil Financeiro`;
-- incorporar `Plano Estratégico Financeiro` e `Compromissos Financeiros` no pilar `Planejamento` apenas quando esses dados existirem;
-- manter os horizontes `30/90/180/365`, mas com influência decrescente conforme o prazo aumenta.
+Na versão atual do motor, `mf-score-v2.4-1000`, o objetivo principal passou a ser corrigir distorções conceituais identificadas na auditoria completa do laboratório, preservando a arquitetura oficial do Motor Financeiro.
 
 ## Filosofia oficial
 
-- O `MF Score` deve funcionar como score de risco financeiro pessoal.
-- Indicadores ruins reduzem a nota dos pilares.
-- Penalizações críticas existem apenas para eventos graves, risco materializado ou persistência temporal.
+- O `MF Score` mede saúde financeira com apetite de risco `moderado`.
+- O modelo deve ser explicável, auditável e rastreável.
+- Indicadores ruins reduzem pilares antes de qualquer penalização crítica.
+- Penalizações críticas existem apenas para risco materializado, grave ou persistente.
 - Um mesmo fato econômico não deve ser punido duas vezes.
-- A IA apenas comunica e interpreta o que o sistema já calculou.
-- O modelo precisa ser transparente, rastreável, auditável e evolutivo.
+- O motor deve corrigir distorções sem reinventar sua arquitetura central.
 
 ## Escalas oficiais
 
 ### Pilares
 
-- Cada pilar permanece em escala `0 a 100`.
+- cada pilar usa escala `0 a 100`
 
 ### MF Score final
 
-- O `MF Score Base` e o `MF Score Final` usam escala `0 a 1000`.
-
-Exemplo:
-
-- score base `66/100` no cálculo interno dos pilares
-- score final exibido ao usuário: `660/1000`
+- score base e score final usam escala `0 a 1000`
 
 ## Estrutura do modelo
 
-O `MF Score` é construído em cinco pilares:
+O `MF Score` continua organizado em cinco pilares:
 
 1. Fluxo de Caixa
-2. Liquidez
-3. Endividamento
+2. Liquidez e Reserva
+3. Endividamento e Obrigações
 4. Patrimônio
-5. Planejamento
-
-### Regra vigente do pilar Planejamento
-
-O pilar `Planejamento` continua com peso de `10%`, mas agora usa uma régua mínima explícita:
-
-- o usuário precisa configurar os cinco parâmetros básicos do `Perfil Financeiro` para alcançar nota realmente alta;
-- sem essa base, o pilar permanece limitado mesmo quando existem sinais operacionais positivos.
-
-Parâmetros básicos exigidos:
-
-- percentual de economia mensal desejado
-- percentual de reserva de emergência desejado
-- meses de reserva desejados
-- comprometimento máximo da renda
-- endividamento máximo
+5. Planejamento e Disciplina
 
 ## Pesos oficiais
 
 - Fluxo de Caixa: `30%`
-- Liquidez: `25%`
-- Endividamento: `20%`
+- Liquidez e Reserva: `25%`
+- Endividamento e Obrigações: `20%`
 - Patrimônio: `15%`
-- Planejamento: `10%`
+- Planejamento e Disciplina: `10%`
+
+## O que mudou na versão `mf-score-v2.4-1000`
+
+Esta rodada não alterou a arquitetura geral do motor. Ela corrigiu conceitos.
+
+### 1. Fluxo de Caixa passou a medir capacidade operacional do mês
+
+O pilar `Fluxo de Caixa` deixou de misturar em excesso eficiência, pressão futura e planejamento implícito.
+
+Agora ele se concentra principalmente em:
+
+- `Economia Mensal`
+- `Percentual de Economia`
+- `Comprometimento da Renda`
+
+Objetivo:
+
+- responder se o mês fecha positivo, negativo ou com folga real;
+- reduzir redundância entre economia absoluta, economia percentual e comprometimento;
+- evitar que a pressão futura de médio e longo prazo domine a leitura operacional do mês.
+
+### 2. Endividamento e Obrigações passou a separar naturezas diferentes de dívida
+
+O pilar `Endividamento e Obrigações` agora distingue explicitamente:
+
+- dívidas de consumo;
+- financiamentos patrimoniais;
+- obrigações futuras recorrentes;
+- inadimplência.
+
+Decisão conceitual importante:
+
+- financiamento patrimonial não recebe o mesmo tratamento de dívida de consumo;
+- passivos patrimoniais continuam reduzindo a nota, mas com severidade menor do que dívidas de consumo de mesmo valor relativo;
+- obrigações futuras continuam relevantes, mas entram como pressão estrutural e não como sinônimo automático de ruptura.
+
+### 3. Patrimônio passou a priorizar a situação patrimonial real
+
+O pilar `Patrimônio` agora usa como leitura principal:
+
+- ativos;
+- passivos;
+- patrimônio líquido real;
+- proporção do patrimônio líquido sobre a base de ativos.
+
+O `Patrimônio-alvo` continua existindo, mas passou a ter papel secundário:
+
+- ele mede evolução em relação à meta;
+- ele não deve derrubar excessivamente a nota de quem já possui patrimônio líquido positivo e relevante;
+- ele funciona como régua de progresso, e não como fotografia principal da situação patrimonial.
+
+### 4. Planejamento passou a valorizar mais execução do que mera configuração
+
+O pilar `Planejamento e Disciplina` continua usando a base mínima do `Perfil Financeiro`, mas perdeu dependência excessiva de configuração pura.
+
+Agora a nota privilegia mais:
+
+- execução observável;
+- consistência financeira;
+- cumprimento operacional;
+- aderência real ao comportamento esperado.
+
+Sinais usados nessa camada:
+
+- `Percentual de Economia`
+- `Capacidade de Formação de Reserva`
+- fluxo negativo atual
+- meses consecutivos negativos
+- inadimplência
+- cura recente da inadimplência
+- plano estratégico vigente, quando existir
+- compromissos financeiros, quando existirem
+
+Regra permanente:
+
+- plano estratégico e compromissos são sinais opcionais;
+- se eles não existirem, não devem punir o usuário.
+
+### 5. Penalizações temporais de fluxo negativo deixaram de se somar entre si
+
+Antes, havia risco de somar penalização de:
+
+- mês negativo atual;
+- persistência de fluxo negativo.
+
+Na versão atual, isso foi substituído por uma lógica progressiva única.
+
+O motor aplica apenas o nível mais grave correspondente:
+
+- `1 mês`
+- `2 meses`
+- `3+ meses`
+- `6+ meses`
+- `12+ meses`
+
+Objetivo:
+
+- eliminar dupla penalização temporal;
+- preservar proporcionalidade;
+- distinguir alerta pontual de deterioração persistente.
+
+### 6. Projeção de receitas futuras foi corrigida
+
+A projeção de receitas futuras passou a considerar corretamente receitas recorrentes nos horizontes de:
+
+- `180 dias`
+- `365 dias`
+
+Isso corrige uma distorção importante observada em praticamente todos os cenários auditados, onde a pressão futura ficava artificialmente inflada porque a receita recorrente não era projetada com consistência suficiente.
+
+### 7. Faixas qualitativas foram endurecidas onde havia subestimação de risco
+
+Os indicadores de pressão acumulada foram recalibrados para evitar classificações brandas demais.
+
+Regra conceitual oficial:
+
+- percentuais acima de `100%` nunca devem ser classificados apenas como `Atenção`
+
+Isso vale especialmente para:
+
+- pressão financeira acumulada de `180 dias`
+- pressão financeira acumulada de `365 dias`
+
+### 8. Indicadores passaram a ter apresentação mais humana
+
+Valores técnicos que atrapalhavam leitura executiva, como `999 meses`, deixaram de aparecer como valor cru na interface.
+
+Exemplo oficial:
+
+- em vez de `999 meses`
+- a apresentação passa a indicar:
+  - `Não projetável no ritmo atual`
+  - ou observações equivalentes, como impossibilidade de formar a reserva com o fluxo atual
 
 ## Horizontes futuros
 
-O motor continua trabalhando com quatro horizontes futuros:
+O motor continua trabalhando com quatro horizontes:
 
 - `30 dias`
 - `90 dias`
 - `180 dias`
 - `365 dias`
 
-Decisão oficial desta rodada:
+Decisão oficial desta etapa:
 
 - manter os quatro horizontes;
-- não colapsar tudo em um único índice ainda;
-- priorizar o curto prazo como pressão operacional principal;
-- reduzir progressivamente o peso dos horizontes mais longos para evitar superinfluência estrutural no score corrente.
+- preservar o curto prazo como principal leitura operacional;
+- usar os horizontes mais longos como sinais estruturais com peso decrescente;
+- evitar colapsar tudo em um único índice antes da próxima rodada de validação.
 
 ## Como o score é calculado
 
 O cálculo oficial possui quatro camadas:
 
-1. nota dos pilares
-2. score base
-3. penalizações críticas
-4. persistência temporal do risco
+1. indicadores
+2. pilares
+3. score base
+4. penalizações críticas e persistência temporal
 
-### 1. Nota dos pilares
+### 1. Indicadores
 
-Cada pilar recebe nota de `0 a 100`, a partir dos indicadores associados.
+Cada indicador mede um aspecto específico da situação financeira.
 
-### 2. Score base
+### 2. Pilares
 
-O `MF Score Base` é a média ponderada dos cinco pilares e depois é convertido para a escala `0 a 1000`.
+Os pilares consolidam esses indicadores por contexto financeiro.
 
-Fluxo simplificado:
+### 3. Score base
 
-1. cada pilar recebe sua nota de `0 a 100`
-2. cada pilar é multiplicado pelo seu peso
-3. o sistema calcula a média ponderada
-4. o resultado normalizado é convertido para `0 a 1000`
+O `MF Score Base` é a média ponderada dos cinco pilares, convertida para `0 a 1000`.
 
-### 3. Penalizações críticas
+### 4. Penalizações críticas e persistência temporal
 
-Depois do score base, o sistema aplica apenas penalizações que representam risco grave, risco já materializado ou persistência temporal de deterioração.
+Depois do score base, o motor aplica apenas penalizações que representam:
 
-### 4. Persistência temporal do risco
+- risco materializado;
+- gravidade estrutural;
+- persistência temporal relevante.
 
-O modelo já considera recorrência histórica como agravante de risco.
-
-Na versão atual:
-
-- `1 mês` negativo gera alerta e eventual penalização leve
-- `2 meses consecutivos` negativos elevam a penalização
-- `3 ou mais meses consecutivos` negativos elevam a penalização de forma forte
-
-Penalizações oficiais atuais no score final:
-
-- `1 mês negativo`: `40 pontos`
-- `2 meses consecutivos negativos`: `90 pontos`
-- `3 ou mais meses consecutivos negativos`: `140 pontos`
-
-## Regra oficial contra dupla penalização
+## Regra oficial de não dupla penalização
 
 Um mesmo fato econômico não deve ser punido duas vezes.
 
-Exemplos oficiais:
+Exemplos:
 
-- `reserva zero` deve reduzir o pilar `Liquidez`, mas não gerar penalização crítica automática só por existir
-- `comprometimento alto da renda` deve reduzir o pilar `Fluxo de Caixa`, mas não gerar penalização crítica automática se o usuário ainda mantém fluxo positivo e não está inadimplente
-- `pressão financeira futura` deve reduzir `Fluxo de Caixa` e `Endividamento`, mas não gerar penalização crítica automática sem evidência de incapacidade de pagamento, inadimplência ou persistência negativa
-
-### Posição conceitual oficial do comprometimento da renda
-
-O indicador `Comprometimento da Renda` permanece oficialmente posicionado como leitura principal de `Fluxo de Caixa`.
-
-Isso significa:
-
-- ele mede pressão operacional da renda no mês corrente;
-- ele não representa, por si só, qualidade de planejamento;
-- ele pode influenciar a percepção global de risco, mas não deve ser usado como base principal do pilar `Planejamento`.
+- reserva baixa reduz `Liquidez e Reserva`, mas não vira penalização crítica automática;
+- comprometimento alto reduz `Fluxo de Caixa`, mas não vira crítica automática sem ruptura;
+- pressão futura reduz `Endividamento e Obrigações`, mas não simula inadimplência sozinha;
+- fluxo negativo persistente gera uma penalização temporal progressiva única, e não soma cega de níveis.
 
 ## Penalizações críticas oficiais
 
-As penalizações críticas da versão atual devem se concentrar em eventos como:
+As penalizações críticas da versão atual se concentram em:
 
-1. inadimplência
-2. fluxo de caixa mensal negativo
-3. recorrência de meses consecutivos no vermelho
+1. inadimplência atual
+2. reincidência ou cura recente da inadimplência
+3. persistência de fluxo negativo
 4. patrimônio líquido negativo
-5. ausência de dados essenciais que comprometa a confiabilidade mínima da análise
+5. dados essenciais insuficientes
 
-### Regra oficial atual de inadimplência
+### Inadimplência
 
-A inadimplência agora é graduada por severidade.
-
-Fatores considerados:
+A inadimplência continua gradual e considera:
 
 - dias máximos de atraso;
-- percentual do valor em atraso sobre a renda mensal atual.
+- materialidade do valor vencido sobre a renda.
 
-Níveis atuais:
+Se tempo e materialidade caírem em faixas diferentes, prevalece o nível mais grave.
 
-- `Nível 1`: `30 pontos` de penalidade final
-- `Nível 2`: `90 pontos`
-- `Nível 3`: `170 pontos`
-- `Nível 4`: `250 pontos`
+### Fluxo negativo persistente
 
-O nível aplicado é sempre o mais grave entre:
+O modelo deixou de somar penalizações temporais de forma redundante.
 
-- faixa de tempo;
-- faixa de materialidade do valor vencido.
-
-### Regra oficial atual de fluxo negativo recorrente
-
-O fluxo negativo passou a ser penalizado de forma mais proporcional:
-
-- `1 mês negativo`: alerta com punição leve;
-- `2 meses consecutivos negativos`: agravamento moderado;
-- `3 ou mais meses consecutivos negativos`: agravamento forte.
-
-Essa recalibragem existe para:
-
-- respeitar apetite de risco `moderado`;
-- evitar colapso artificial do score por um único mês ruim;
-- manter resposta severa quando o desequilíbrio vira padrão.
-
-### O que não deve ser penalização crítica automática
-
-Os itens abaixo devem afetar prioritariamente os pilares e não a camada de penalização crítica automática:
-
-- reserva de emergência baixa ou inexistente
-- comprometimento alto da renda
-- pressão futura de 30 dias
-- pressão financeira acumulada
-- endividamento patrimonial alto, quando ainda não houver evidência de ruptura operacional
+Agora, utiliza apenas o nível progressivo mais severo aplicável ao histórico recente.
 
 ## Classificação oficial do MF Score
 
@@ -220,198 +276,38 @@ Os itens abaixo devem afetar prioritariamente os pilares e não a camada de pena
 - `400-599` - Crítico - Risco Alto
 - `0-399` - Muito Crítico - Risco Muito Alto
 
-## Tendência
+## Tendência e histórico
 
-A tendência mostra se a trajetória está:
+O projeto continua com:
 
-- melhorando
-- estável
-- piorando
+- histórico mensal persistido em `HistoricoMfScore`
+- leitura de tendência
+- laboratório
+- personas
+- base oficial de simulação
 
-Na versão atual, ela já pode usar histórico mensal real quando disponível. Quando o histórico ainda é insuficiente, o sistema usa fallback determinístico baseado no equilíbrio dos indicadores.
+Esses elementos não foram removidos nesta rodada. Eles continuam sendo parte da governança oficial do Motor Financeiro.
 
-## Histórico mensal do MF Score
+## Papel do laboratório na versão atual
 
-O projeto agora possui persistência mensal oficial do score por meio da entidade `HistoricoMfScore`.
+Os cenários oficiais do laboratório continuam sendo a referência principal para auditoria e calibração do modelo.
 
-Objetivo:
+Nesta rodada, a auditoria completa dos cenários foi usada como base conceitual para corrigir:
 
-- preservar a evolução mensal do score
-- permitir leitura histórica real
-- dar base para tendência, auditoria e futuras análises comparativas
+- semântica de endividamento;
+- leitura patrimonial;
+- foco operacional do fluxo;
+- peso excessivo de configuração em planejamento;
+- projeção de receitas futuras;
+- gradação das penalizações temporais;
+- faixas qualitativas subdimensionadas.
 
-Campos principais:
+## Próxima etapa oficial
 
-- `UsuarioId`
-- `CompetenciaAno`
-- `CompetenciaMes`
-- `MfScoreBase`
-- `MfScoreFinal`
-- `Classificacao`
-- `Risco`
-- `PenalidadeTotal`
-- `DataCalculo`
-- `VersaoModelo`
-- `JsonPilares`
-- `JsonIndicadoresCriticos`
-- `JsonResumo`
-- `CriadoEm`
+Depois desta refatoração conceitual, a próxima rodada deve se concentrar em:
 
-Regra:
+1. rerrodar a auditoria operacional completa do laboratório já com a versão `mf-score-v2.4-1000`
+2. consolidar a auditoria humana dos cenários oficiais
+3. recalibrar numericamante os pesos e faixas que ainda precisarem de ajuste fino
+4. decidir se os horizontes `30/90/180/365` permanecem exatamente como estão ou se precisam de nova redução de influência
 
-- o histórico preserva o resultado da competência
-- não deve sobrescrever competências antigas sem regra explícita
-
-## Hangfire
-
-O projeto agora possui um job recorrente mensal para persistir o histórico do `MF Score`.
-
-Configuração atual:
-
-- execução: `dia 01 de cada mês`
-- cron: `0 2 1 * *`
-- comportamento adotado: calcula a `competência anterior`
-
-Exemplo:
-
-- no dia `01/08/2026`, o job calcula e persiste a competência de `07/2026`
-
-Objetivo:
-
-- buscar usuários ativos
-- calcular o score oficial
-- salvar no histórico
-- registrar logs
-- tratar falhas por usuário sem interromper toda a execução
-
-## Relação com outras camadas
-
-- `AnaliseFinanceira` calcula pilares, score base, penalizações e tendência
-- `Saúde Financeira` exibe o `MF Score`, classificação, risco e leitura detalhada
-- `Assistente Financeiro` usa o score como base executiva
-- `ResumoFinanceiroIA` leva o score consolidado para IA e interfaces estratégicas
-- `Personas de Calibração` e auditorias usam o mesmo motor oficial
-
-## Personas, validação e auditoria
-
-Toda evolução do `MF Score` deve ser confrontada com:
-
-- `docs/MF_SCORE_VALIDATION.md`
-- `docs/MF_SCORE_AUDIT.md`
-
-## Base Oficial de Simulação do MF Score
-
-O projeto agora possui uma `Base Oficial de Simulação do MF Score`.
-
-### Objetivo
-
-- gerar usuários sintéticos completos e coerentes para desenvolvimento, auditoria e calibração
-- complementar a leitura com usuários reais usando uma base reproduzível
-- validar indicadores, pilares, penalizações, classificação, risco e textos do motor sem alterar fórmulas
-
-### Operação oficial
-
-- geração interna: `POST /api/MfScoreLaboratorio/GerarBaseSimulacao`
-- limpeza seletiva: `DELETE /api/MfScoreLaboratorio/LimparBaseSimulacao`
-- a limpeza remove apenas usuários sintéticos
-- os usuários gerados recebem marcação explícita de origem, cenário, versão da base e data de geração
-
-### Estrutura esperada
-
-- aproximadamente 12 cenários sintéticos
-- aproximadamente 12 meses de histórico coerente por usuário
-- uso do domínio existente para criar usuário, perfil financeiro, contas, cartões, lançamentos, patrimônio, metas, compromissos e plano estratégico
-
-### Regra de governança
-
-Toda mudança relevante no `MF Score` deve ser validada:
-
-- com usuários reais
-- com a Base Oficial de Simulação do MF Score
-
-Além disso:
-
-- a auditoria operacional continua obrigatória em mudanças relevantes
-- a auditoria humana continua sendo a base para amadurecer faixas oficiais e casos canônicos
-- personas persistidas continuam sendo cenários sintéticos, nunca usuários reais
-
-## MF Score Potencial
-
-O conceito de `MF Score Potencial` permanece como evolução futura.
-
-Ele representa para onde o usuário poderia evoluir se corrigisse os principais pontos de pressão financeira sem alterar negativamente sua base atual.
-
-## Atualização oficial da versão v2.2
-
-### Planejamento com sinais opcionais
-
-O pilar `Planejamento` continua exigindo os cinco parâmetros básicos do `Perfil Financeiro` como base obrigatória de maturidade.
-
-Além disso, a partir da versão `mf-score-v2.2-1000`, ele também pode considerar:
-
-- `Plano Estratégico Financeiro` vigente
-- objetivos estratégicos ativos, prioritários e concluídos
-- `Compromissos Financeiros` em andamento
-- `Compromissos Financeiros` concluídos e cancelados
-
-Regra obrigatória desta versão:
-
-- se o usuário não possuir plano estratégico vigente e não possuir compromissos financeiros, esses componentes são ignorados no cálculo;
-- a ausência desses elementos não gera penalização automática;
-- eles só passam a influenciar o score quando realmente existirem.
-
-### Reincidência e cura da inadimplência
-
-Além do nível atual do atraso, o motor agora observa o histórico recente de ocorrências para distinguir:
-
-- `reincidência`: atraso atual somado a ocorrências recentes em meses diferentes
-- `cura recente`: atraso já regularizado, mas ainda recente o suficiente para sinalizar fragilidade
-
-Comportamento oficial desta rodada:
-
-- a inadimplência atual continua usando a matriz por dias de atraso e materialidade sobre a renda;
-- ocorrências recentes distribuídas em múltiplos meses agravam a penalidade da inadimplência atual;
-- quando não existe atraso pendente, mas houve regularização recente, o sistema aplica apenas uma penalidade residual leve.
-
-## Regra de manutenção
-
-Sempre que houver alteração em:
-
-- escala
-- fórmula
-- pesos
-- pilares
-- penalizações
-- classificações
-- histórico
-- tendência
-
-devem ser atualizados, na mesma entrega:
-
-- `docs/MF_SCORE.md`
-- `docs/INDICADORES_FINANCEIROS.md`
-- `docs/MF_SCORE_AUDIT.md`
-- `docs/CHANGELOG.md`
-
-## Perfil Financeiro Inicial
-
-O `MF Score` passa a assumir oficialmente que todo usuÃ¡rio possui uma configuraÃ§Ã£o vigente do `Perfil Financeiro`.
-
-Quando o usuÃ¡rio ainda nÃ£o personalizou seus parÃ¢metros, o motor utiliza automaticamente o `Perfil Financeiro Inicial` criado pelo sistema.
-
-Essa mudanÃ§a nÃ£o altera:
-
-- fÃ³rmulas
-- pesos
-- pilares
-- penalizaÃ§Ãµes
-
-Ela apenas elimina a dependÃªncia de ausÃªncia de configuraÃ§Ã£o para que o Motor Financeiro funcione desde o primeiro uso.
-
-## Atualizacao oficial da versao v2.3
-
-- `Patrimonio zerado sem passivos` passa a ser tratado como `ponto de partida patrimonial neutro`, e nao como insolvencia automatica.
-- Foi criado o indicador auxiliar `Capacidade de Formacao de Reserva`.
-- Esse indicador estima em quantos meses a sobra mensal atual consegue completar a reserva ideal restante.
-- O pilar `Liquidez e Reserva` continua priorizando a reserva atual, mas agora atenua falso positivo de risco quando a reserva esta zerada e a formacao projetada e rapida.
-- O Laboratorio do MF Score passa a expor explicitamente esse indicador e a observacao de neutralidade patrimonial.

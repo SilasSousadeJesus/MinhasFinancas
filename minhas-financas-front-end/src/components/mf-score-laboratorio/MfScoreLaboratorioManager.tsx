@@ -746,6 +746,10 @@ function formatarValorIndicador(indicador: IndicadorMfScoreLaboratorio, valor: n
     case "Percentual":
       return `${numero.format(valor)}%`;
     case "Meses":
+      if (valor >= 999) {
+        return "Não projetável no ritmo atual";
+      }
+
       return `${numero.format(valor)} meses`;
     default:
       return moeda.format(valor);

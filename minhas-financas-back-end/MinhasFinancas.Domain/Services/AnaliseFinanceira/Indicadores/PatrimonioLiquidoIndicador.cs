@@ -10,6 +10,15 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
         public IndicadorFinanceiro Calcular(ContextoAnaliseFinanceira contexto, DadosReferenciaAnaliseFinanceira dadosReferencia)
         {
             var patrimonioAlvo = dadosReferencia.PatrimonioAlvo;
+            var status = dadosReferencia.PontoPartidaPatrimonialNeutro
+                ? StatusIndicadorFinanceiro.Atencao
+                : dadosReferencia.PatrimonioLiquidoAtual < 0m
+                    ? StatusIndicadorFinanceiro.Critico
+                    : ResolutorStatusIndicadorFinanceiro.ResolverFaixaCrescente(
+                        dadosReferencia.PercentualPatrimonioLiquidoSobreAtivos,
+                        70m,
+                        40m,
+                        10m);
 
             return new IndicadorFinanceiro
             {
@@ -17,18 +26,12 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 Nome = "Patrimônio líquido atual",
                 ValorAtual = dadosReferencia.PatrimonioLiquidoAtual,
                 ValorIdeal = patrimonioAlvo,
-                Percentual = dadosReferencia.PercentualPatrimonioAlvoAtual,
-                Status = dadosReferencia.PontoPartidaPatrimonialNeutro
-                    ? StatusIndicadorFinanceiro.Atencao
-                    : patrimonioAlvo > 0
-                        ? ResolutorStatusIndicadorFinanceiro.ResolverMetaMinima(dadosReferencia.PatrimonioLiquidoAtual, patrimonioAlvo)
-                        : (dadosReferencia.PatrimonioLiquidoAtual >= 0 ? StatusIndicadorFinanceiro.Bom : StatusIndicadorFinanceiro.Critico),
-                Descricao = "Diferença entre o total de ativos e o total de passivos atualmente registrados.",
+                Percentual = dadosReferencia.PercentualPatrimonioLiquidoSobreAtivos,
+                Status = status,
+                Descricao = "Representa a situação patrimonial real do usuário no momento, considerando ativos, passivos e o patrimônio líquido efetivamente disponível.",
                 Observacao = dadosReferencia.PontoPartidaPatrimonialNeutro
                     ? "Ativos e passivos ainda estão zerados. O sistema trata esse cenário como ponto de partida patrimonial neutro, e não como insolvência."
-                    : patrimonioAlvo > 0
-                        ? "Comparado ao patrimônio líquido alvo definido no perfil financeiro."
-                        : "Sem patrimônio líquido alvo configurado no perfil financeiro.",
+                    : $"Ativos: {dadosReferencia.TotalAtivos:N2}. Passivos: {dadosReferencia.TotalPassivos:N2}. O patrimônio líquido atual representa {dadosReferencia.PercentualPatrimonioLiquidoSobreAtivos:N2}% da base patrimonial.",
                 Formato = FormatoValorIndicadorFinanceiro.Moeda
             };
         }

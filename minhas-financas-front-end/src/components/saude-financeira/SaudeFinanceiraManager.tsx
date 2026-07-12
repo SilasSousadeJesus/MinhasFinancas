@@ -39,6 +39,10 @@ function formatarValorIndicador(valor: number, formato: number) {
   }
 
   if (formato === FORMATO_MESES) {
+    if (valor >= 999) {
+      return "Não projetável no ritmo atual";
+    }
+
     return `${valor.toFixed(1)} mes(es)`;
   }
 

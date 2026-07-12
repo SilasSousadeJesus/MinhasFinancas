@@ -14,19 +14,21 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
             return new IndicadorFinanceiro
             {
                 Codigo = Codigo,
-                Nome = "Endividamento patrimonial",
+                Nome = "Exposição a dívidas e passivos",
                 ValorAtual = dadosReferencia.EndividamentoAtual,
                 ValorIdeal = percentualMaximo,
-                Percentual = percentualMaximo > 0 ? (dadosReferencia.EndividamentoAtual / percentualMaximo) * 100m : 0m,
+                Percentual = percentualMaximo > 0m
+                    ? (dadosReferencia.EndividamentoAtual / percentualMaximo) * 100m
+                    : 0m,
                 Status = ResolutorStatusIndicadorFinanceiro.ResolverFaixaDecrescente(
                     dadosReferencia.EndividamentoAtual,
                     15m,
                     30m,
                     50m),
-                Descricao = "Relação entre passivos patrimoniais e a base patrimonial ativa disponível.",
-                Observacao = percentualMaximo > 0
-                    ? $"Limite configurado no perfil financeiro: {percentualMaximo:N2}% dos ativos."
-                    : "Sem limite máximo de endividamento patrimonial configurado no perfil financeiro.",
+                Descricao = "Mede a pressão estrutural dos passivos sobre a base patrimonial, distinguindo dívida de consumo, financiamento patrimonial e obrigações estruturais.",
+                Observacao = percentualMaximo > 0m
+                    ? $"Composição atual: consumo {dadosReferencia.TotalPassivosConsumo:N2}, financiamento patrimonial {dadosReferencia.TotalPassivosPatrimoniais:N2} e obrigações estruturais {dadosReferencia.TotalPassivosObrigacoesEstruturais:N2}. Limite configurado no perfil financeiro: {percentualMaximo:N2}% dos ativos."
+                    : $"Composição atual: consumo {dadosReferencia.TotalPassivosConsumo:N2}, financiamento patrimonial {dadosReferencia.TotalPassivosPatrimoniais:N2} e obrigações estruturais {dadosReferencia.TotalPassivosObrigacoesEstruturais:N2}.",
                 Formato = FormatoValorIndicadorFinanceiro.Percentual
             };
         }

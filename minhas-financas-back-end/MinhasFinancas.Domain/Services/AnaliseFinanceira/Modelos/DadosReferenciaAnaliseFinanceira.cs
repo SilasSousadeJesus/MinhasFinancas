@@ -29,7 +29,13 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Modelos
         public decimal ReceitaPrevista90Dias { get; set; }
         public decimal ReceitaPrevista180Dias { get; set; }
         public decimal ReceitaPrevista365Dias { get; set; }
+        public decimal TotalPassivosConsumo { get; set; }
+        public decimal TotalPassivosPatrimoniais { get; set; }
+        public decimal TotalPassivosObrigacoesEstruturais { get; set; }
         public decimal EndividamentoAtual { get; set; }
+        public decimal EndividamentoConsumoAtual { get; set; }
+        public decimal EndividamentoPatrimonialAtual { get; set; }
+        public decimal PercentualPatrimonioLiquidoSobreAtivos { get; set; }
         public decimal PatrimonioAlvo { get; set; }
         public decimal PercentualPatrimonioAlvoAtual { get; set; }
         public bool PontoPartidaPatrimonialNeutro { get; set; }

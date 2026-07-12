@@ -270,7 +270,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva
                     => "a velocidade atual de formação da reserva indica boa capacidade de recompor proteção mesmo em fase inicial de patrimônio.",
                 CodigoIndicadorFinanceiro.Endividamento
-                    => "o endividamento patrimonial permanece controlado e preserva margem para decisões futuras.",
+                    => "a exposição atual a dívidas e passivos permanece controlada e preserva margem para decisões futuras.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "o orçamento ainda mantém boa capacidade para absorver compromissos sem pressionar excessivamente a renda.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
@@ -303,7 +303,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo
                     => "o patrimônio permanece distante do objetivo definido e ainda exige constância nos aportes.",
                 CodigoIndicadorFinanceiro.Endividamento
-                    => "o endividamento patrimonial ainda reduz a margem para crescimento e limita decisões futuras.",
+                    => "a exposição atual a dívidas e passivos ainda reduz a margem para crescimento e limita decisões futuras.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "uma parcela elevada da renda continua comprometida, o que reduz a flexibilidade do mês.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo
@@ -333,7 +333,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva
                     => "Acelerar a formação da reserva de emergência.",
                 CodigoIndicadorFinanceiro.Endividamento
-                    => "Reduzir o endividamento patrimonial.",
+                    => "Reduzir a exposição a dívidas e passivos.",
                 CodigoIndicadorFinanceiro.ComprometimentoRenda
                     => "Reduzir o comprometimento da renda.",
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo

@@ -8,7 +8,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
         private const decimal MesesExcelente = 3m;
         private const decimal MesesBom = 6m;
         private const decimal MesesAtencao = 12m;
-        private const decimal ValorSemCapacidade = 999m;
+        private const decimal ValorNaoProjetavel = 999m;
 
         public CodigoIndicadorFinanceiro Codigo => CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva;
 
@@ -16,13 +16,13 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
         {
             var mesesParaFormarReserva = dadosReferencia.PossuiCapacidadeFormacaoReserva
                 ? dadosReferencia.MesesParaFormarReservaIdeal
-                : ValorSemCapacidade;
-            var percentual = dadosReferencia.PossuiCapacidadeFormacaoReserva && mesesParaFormarReserva > 0
+                : ValorNaoProjetavel;
+            var percentual = dadosReferencia.PossuiCapacidadeFormacaoReserva && mesesParaFormarReserva > 0m
                 ? Math.Min((MesesExcelente / mesesParaFormarReserva) * 100m, 100m)
-                : (dadosReferencia.ReservaIdealRestante <= 0 ? 100m : 0m);
-            var status = dadosReferencia.ReservaIdealRestante <= 0
+                : (dadosReferencia.ReservaIdealRestante <= 0m ? 100m : 0m);
+            var status = dadosReferencia.ReservaIdealRestante <= 0m
                 ? StatusIndicadorFinanceiro.Excelente
-                : dadosReferencia.EconomiaMensalAtual <= 0
+                : dadosReferencia.EconomiaMensalAtual <= 0m
                     ? StatusIndicadorFinanceiro.Critico
                     : ResolutorStatusIndicadorFinanceiro.ResolverFaixaDecrescente(
                         mesesParaFormarReserva,
@@ -38,11 +38,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 ValorIdeal = MesesExcelente,
                 Percentual = percentual,
                 Status = status,
-                Descricao = "Estima em quantos meses a economia mensal atual conseguiria completar a reserva de emergência ideal restante.",
-                Observacao = dadosReferencia.ReservaIdealRestante <= 0
+                Descricao = "Estima em quantos meses a sobra mensal atual conseguiria completar a reserva de emergência ideal restante.",
+                Observacao = dadosReferencia.ReservaIdealRestante <= 0m
                     ? "A reserva ideal já está completa. Não existe saldo restante para formar."
-                    : dadosReferencia.EconomiaMensalAtual <= 0
-                        ? $"Sem sobra mensal positiva, a reserva ideal restante de {dadosReferencia.ReservaIdealRestante:N2} não consegue ser formada no ritmo atual."
+                    : dadosReferencia.EconomiaMensalAtual <= 0m
+                        ? $"Com o fluxo atual não é possível formar a reserva de emergência. Ainda faltam {dadosReferencia.ReservaIdealRestante:N2} para atingir a proteção desejada."
                         : $"Faltam {dadosReferencia.ReservaIdealRestante:N2} para atingir a reserva ideal. No ritmo atual, isso levaria cerca de {mesesParaFormarReserva:N2} mês(es).",
                 Formato = FormatoValorIndicadorFinanceiro.Meses
             };

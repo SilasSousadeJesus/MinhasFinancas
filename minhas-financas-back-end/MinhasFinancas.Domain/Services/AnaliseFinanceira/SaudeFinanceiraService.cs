@@ -70,7 +70,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             };
 
             var somaPesos = pilares.Sum(item => item.Peso);
-            var pontuacaoBaseNormalizada = somaPesos > 0
+            var pontuacaoBaseNormalizada = somaPesos > 0m
                 ? (int)Math.Round(pilares.Sum(item => item.Nota * item.Peso) / somaPesos)
                 : 0;
 
@@ -121,19 +121,42 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
         private static PilarMfScoreFinanceiro CalcularPilarFluxoDeCaixa(IReadOnlyCollection<IndicadorFinanceiro> indicadores)
         {
+            var economiaMensal = Buscar(indicadores, CodigoIndicadorFinanceiro.EconomiaMensal);
+            var percentualEconomia = Buscar(indicadores, CodigoIndicadorFinanceiro.PercentualEconomia);
+            var comprometimentoRenda = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoRenda);
             var relevantes = SelecionarIndicadores(indicadores,
                 CodigoIndicadorFinanceiro.EconomiaMensal,
                 CodigoIndicadorFinanceiro.PercentualEconomia,
-                CodigoIndicadorFinanceiro.ComprometimentoRenda,
-                CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo);
+                CodigoIndicadorFinanceiro.ComprometimentoRenda);
+
+            var nota = CalcularNotaMediaPonderada([
+                (economiaMensal, 0.45m),
+                (percentualEconomia, 0.20m),
+                (comprometimentoRenda, 0.35m)
+            ]);
+
+            if (economiaMensal?.Status == StatusIndicadorFinanceiro.Critico)
+            {
+                nota = Math.Min(nota, 35);
+            }
+            else if (economiaMensal?.Status == StatusIndicadorFinanceiro.Atencao &&
+                     comprometimentoRenda?.Status == StatusIndicadorFinanceiro.Critico)
+            {
+                nota = Math.Min(nota, 55);
+            }
+            else if (economiaMensal?.Status == StatusIndicadorFinanceiro.Excelente &&
+                     comprometimentoRenda?.Status is StatusIndicadorFinanceiro.Excelente or StatusIndicadorFinanceiro.Bom)
+            {
+                nota = Math.Max(nota, 85);
+            }
 
             return new PilarMfScoreFinanceiro
             {
                 Codigo = CodigoPilarMfScoreFinanceiro.FluxoDeCaixa,
                 Nome = "Fluxo de Caixa",
                 Peso = 30m,
-                Nota = CalcularNotaMedia(relevantes),
-                Descricao = "Capacidade operacional da vida financeira no curto prazo.",
+                Nota = nota,
+                Descricao = "Mede principalmente a capacidade operacional do mês: se a renda fecha o ciclo com folga, aperto ou déficit, sem duplicar em excesso a leitura dos mesmos sinais.",
                 Indicadores = relevantes.Select(item => item.Nome).ToList()
             };
         }
@@ -154,13 +177,18 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 Nome = "Liquidez e Reserva",
                 Peso = 25m,
                 Nota = notaLiquidez,
-                Descricao = "Capacidade de suportar imprevistos e manter proteção financeira. A reserva atual continua sendo a base principal da nota, mas a velocidade estimada para formar a reserva ideal atenua falsos positivos de risco em perfis iniciantes com fluxo forte.",
+                Descricao = "Capacidade de suportar imprevistos e manter proteção financeira. A reserva atual continua sendo a base principal, enquanto a velocidade de formação evita falsos positivos em perfis iniciantes com boa folga mensal.",
                 Indicadores = relevantes.Select(item => item.Nome).ToList()
             };
         }
 
         private static PilarMfScoreFinanceiro CalcularPilarEndividamentoEObrigacoes(IReadOnlyCollection<IndicadorFinanceiro> indicadores)
         {
+            var endividamento = Buscar(indicadores, CodigoIndicadorFinanceiro.Endividamento);
+            var futuro30 = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo);
+            var futuro90 = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo90Dias);
+            var futuro180 = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias);
+            var futuro365 = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias);
             var relevantes = SelecionarIndicadores(indicadores,
                 CodigoIndicadorFinanceiro.Endividamento,
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo,
@@ -168,13 +196,27 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias,
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias);
 
+            var nota = CalcularNotaMediaPonderada([
+                (endividamento, 0.40m),
+                (futuro30, 0.30m),
+                (futuro90, 0.15m),
+                (futuro180, 0.10m),
+                (futuro365, 0.05m)
+            ]);
+
+            if (endividamento?.Status == StatusIndicadorFinanceiro.Critico &&
+                futuro30?.Status == StatusIndicadorFinanceiro.Critico)
+            {
+                nota = Math.Min(nota, 40);
+            }
+
             return new PilarMfScoreFinanceiro
             {
                 Codigo = CodigoPilarMfScoreFinanceiro.EndividamentoEObrigacoes,
                 Nome = "Endividamento e Obrigações",
                 Peso = 20m,
-                Nota = CalcularNotaMedia(relevantes),
-                Descricao = "Pressão financeira estrutural e peso dos compromissos futuros.",
+                Nota = nota,
+                Descricao = "Separa dívida de consumo, financiamento patrimonial, obrigações futuras recorrentes e inadimplência. Financiamento patrimonial continua relevante, mas recebe tratamento diferente do endividamento de consumo.",
                 Indicadores = relevantes.Select(item => item.Nome).ToList()
             };
         }
@@ -187,11 +229,21 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 indicadores,
                 CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual,
                 CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo);
-            var notaPatrimonio = CalcularNotaMedia(relevantes);
+
+            var notaPatrimonio = CalcularNotaMediaPonderada([
+                (patrimonioLiquido, 0.85m),
+                (percentualPatrimonioAlvo, 0.15m)
+            ]);
 
             if (patrimonioLiquido?.ValorAtual == 0m && percentualPatrimonioAlvo?.ValorAtual == 0m)
             {
                 notaPatrimonio = Math.Max(notaPatrimonio, 60);
+            }
+
+            if ((patrimonioLiquido?.ValorAtual ?? 0m) > 0m &&
+                patrimonioLiquido?.Status is StatusIndicadorFinanceiro.Bom or StatusIndicadorFinanceiro.Excelente)
+            {
+                notaPatrimonio = Math.Max(notaPatrimonio, 70);
             }
 
             return new PilarMfScoreFinanceiro
@@ -200,7 +252,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 Nome = "Patrimônio",
                 Peso = 15m,
                 Nota = notaPatrimonio,
-                Descricao = "Evolução patrimonial e avanço em relação ao objetivo de longo prazo. Patrimônio zerado sem passivos é tratado como ponto de partida neutro, não como insolvência automática.",
+                Descricao = "Prioriza a situação patrimonial real do usuário. A meta de patrimônio entra como sinal de evolução, mas não deve rebaixar excessivamente quem já possui patrimônio líquido positivo relevante.",
                 Indicadores = relevantes.Select(item => item.Nome).ToList()
             };
         }
@@ -209,52 +261,64 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             IReadOnlyCollection<IndicadorFinanceiro> indicadores,
             ContextoComplementarMfScoreFinanceiro? contextoComplementar)
         {
-            var relevantesDeExecucao = SelecionarIndicadores(indicadores,
-                CodigoIndicadorFinanceiro.PercentualEconomia,
-                CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva,
-                CodigoIndicadorFinanceiro.PercentualPatrimonioAlvo);
-
-            var notaExecucao = CalcularNotaMedia(relevantesDeExecucao);
             var notaConfiguracao = contextoComplementar?.NotaConfiguracaoPlanejamento ?? 10;
             var quantidadeParametrosConfigurados = contextoComplementar?.QuantidadeParametrosPlanejamentoConfigurados ?? 0;
             var totalParametrosEsperados = contextoComplementar?.TotalParametrosPlanejamentoEsperados ?? 5;
-            var notasOpcionais = new List<int>();
+            var percentualEconomia = Buscar(indicadores, CodigoIndicadorFinanceiro.PercentualEconomia);
+            var capacidadeFormacaoReserva = Buscar(indicadores, CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva);
+
+            var notaConsistencia = CalcularNotaMediaPonderada([
+                (percentualEconomia, 0.55m),
+                (capacidadeFormacaoReserva, 0.45m)
+            ]);
+
+            var notaHigieneFinanceira = 100m;
+            if (contextoComplementar?.PossuiFluxoMensalNegativoAtual == true)
+            {
+                notaHigieneFinanceira -= 20m;
+            }
+
+            if ((contextoComplementar?.MesesConsecutivosFluxoNegativo ?? 0) >= 2)
+            {
+                notaHigieneFinanceira -= 15m;
+            }
+
+            if (contextoComplementar?.PossuiInadimplencia == true)
+            {
+                notaHigieneFinanceira -= 35m;
+            }
+            else if (contextoComplementar?.PossuiCuraRecenteInadimplencia == true)
+            {
+                notaHigieneFinanceira -= 10m;
+            }
+
+            notaHigieneFinanceira = Math.Clamp(notaHigieneFinanceira, 0m, 100m);
+
+            var sinaisExecucao = new List<decimal>
+            {
+                (notaConsistencia * 0.60m) + (notaHigieneFinanceira * 0.40m)
+            };
+            var componentesOpcionais = new List<string>();
 
             if ((contextoComplementar?.PossuiPlanoEstrategicoVigente ?? false) && contextoComplementar?.NotaPlanoEstrategico is int notaPlano)
             {
-                notasOpcionais.Add(notaPlano);
+                sinaisExecucao.Add(notaPlano);
+                componentesOpcionais.Add($"plano vigente com {contextoComplementar.QuantidadeObjetivosPlanoAtivos} objetivo(s) ativo(s)");
             }
 
             if ((contextoComplementar?.PossuiCompromissosFinanceiros ?? false) && contextoComplementar?.NotaCompromissosFinanceiros is int notaCompromissos)
             {
-                notasOpcionais.Add(notaCompromissos);
+                sinaisExecucao.Add(notaCompromissos);
+                componentesOpcionais.Add($"compromissos financeiros ({contextoComplementar.QuantidadeCompromissosConcluidos} concluído(s), {contextoComplementar.QuantidadeCompromissosEmAndamento} em andamento)");
             }
 
-            var notaBase = (notaConfiguracao * 0.55m) + (notaExecucao * 0.45m);
-            var mediaNotasOpcionais = notasOpcionais.Count > 0
-                ? notasOpcionais.Average(item => (decimal)item)
-                : 0m;
-            var notaCalculada = notasOpcionais.Count > 0
-                ? (notaBase * 0.85m) + (mediaNotasOpcionais * 0.15m)
-                : notaBase;
-
+            var mediaExecucao = sinaisExecucao.Average();
+            var notaCalculada = (notaConfiguracao * 0.20m) + (mediaExecucao * 0.80m);
             var tetoPorConfiguracao = ObterTetoPlanejamentoPorConfiguracao(quantidadeParametrosConfigurados);
             var notaFinal = Math.Clamp(
                 (int)Math.Round(Math.Min(notaCalculada, tetoPorConfiguracao)),
                 0,
                 EscalaPilares);
-
-            var componentesOpcionais = new List<string>();
-
-            if (contextoComplementar?.PossuiPlanoEstrategicoVigente == true)
-            {
-                componentesOpcionais.Add($"plano vigente com {contextoComplementar.QuantidadeObjetivosPlanoAtivos} objetivo(s) ativo(s)");
-            }
-
-            if (contextoComplementar?.PossuiCompromissosFinanceiros == true)
-            {
-                componentesOpcionais.Add($"compromissos financeiros ({contextoComplementar.QuantidadeCompromissosConcluidos} concluído(s), {contextoComplementar.QuantidadeCompromissosEmAndamento} em andamento)");
-            }
 
             var descricaoComponentesOpcionais = componentesOpcionais.Count > 0
                 ? $" Componentes adicionais considerados: {string.Join("; ", componentesOpcionais)}."
@@ -266,13 +330,15 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 Nome = "Planejamento e Disciplina",
                 Peso = 10m,
                 Nota = notaFinal,
-                Descricao = $"Maturidade de planejamento baseada na configuração dos {totalParametrosEsperados} parâmetros essenciais do perfil financeiro e em sinais de aderência operacional ao plano. Parâmetros configurados: {quantidadeParametrosConfigurados}/{totalParametrosEsperados}.{descricaoComponentesOpcionais}",
-                Indicadores = relevantesDeExecucao
-                    .Select(item => item.Nome)
-                    .Append("Configuração básica do perfil financeiro")
-                    .Append("Plano estratégico financeiro")
-                    .Append("Compromissos financeiros")
-                    .ToList()
+                Descricao = $"Combina base mínima de configuração com execução real: consistência da economia, formação de reserva, higiene financeira, aderência ao plano e cumprimento de compromissos. Parâmetros configurados: {quantidadeParametrosConfigurados}/{totalParametrosEsperados}.{descricaoComponentesOpcionais}",
+                Indicadores = new List<string>
+                {
+                    percentualEconomia?.Nome ?? "Percentual de economia",
+                    capacidadeFormacaoReserva?.Nome ?? "Capacidade de formação de reserva",
+                    "Configuração básica do perfil financeiro",
+                    "Plano estratégico financeiro",
+                    "Compromissos financeiros"
+                }
             };
         }
 
@@ -295,7 +361,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             }
 
             var somaPesos = indicadores.Sum(item => PesosIndicadores.TryGetValue(item.Codigo, out var peso) ? peso : 1m);
-            if (somaPesos <= 0)
+            if (somaPesos <= 0m)
             {
                 return 0;
             }
@@ -306,6 +372,22 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 return ObterPontuacao(item.Status) * peso;
             });
 
+            return (int)Math.Round(somaPonderada / somaPesos);
+        }
+
+        private static int CalcularNotaMediaPonderada(IEnumerable<(IndicadorFinanceiro? Indicador, decimal Peso)> itens)
+        {
+            var itensValidos = itens
+                .Where(item => item.Indicador is not null && item.Peso > 0m)
+                .ToList();
+
+            if (itensValidos.Count == 0)
+            {
+                return 0;
+            }
+
+            var somaPesos = itensValidos.Sum(item => item.Peso);
+            var somaPonderada = itensValidos.Sum(item => ObterPontuacao(item.Indicador!.Status) * item.Peso);
             return (int)Math.Round(somaPonderada / somaPesos);
         }
 
@@ -373,32 +455,16 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             }
 
             var economiaMensal = Buscar(indicadores, CodigoIndicadorFinanceiro.EconomiaMensal);
-            if (contextoComplementar?.PossuiFluxoMensalNegativoAtual == true)
-            {
-                Adicionar(
-                    economiaMensal?.Codigo ?? CodigoIndicadorFinanceiro.EconomiaMensal,
-                    economiaMensal?.Nome ?? "Fluxo mensal",
-                    "O mês de referência fechou com fluxo de caixa negativo.",
-                    4m,
-                    "Fluxo de Caixa");
-            }
+            var mesesNegativos = contextoComplementar?.MesesConsecutivosFluxoNegativo ?? 0;
+            var penalizacaoFluxoNegativo = ObterPenalizacaoFluxoNegativo(mesesNegativos);
 
-            if ((contextoComplementar?.MesesConsecutivosFluxoNegativo ?? 0) >= 3)
+            if (penalizacaoFluxoNegativo is not null)
             {
                 Adicionar(
                     economiaMensal?.Codigo ?? CodigoIndicadorFinanceiro.EconomiaMensal,
                     "Persistência de fluxo negativo",
-                    "O usuário acumula três ou mais meses consecutivos no vermelho.",
-                    10m,
-                    "Fluxo de Caixa");
-            }
-            else if ((contextoComplementar?.MesesConsecutivosFluxoNegativo ?? 0) >= 2)
-            {
-                Adicionar(
-                    economiaMensal?.Codigo ?? CodigoIndicadorFinanceiro.EconomiaMensal,
-                    "Persistência de fluxo negativo",
-                    "O usuário acumula dois meses consecutivos no vermelho.",
-                    5m,
+                    penalizacaoFluxoNegativo.Value.Motivo,
+                    penalizacaoFluxoNegativo.Value.Penalidade,
                     "Fluxo de Caixa");
             }
 
@@ -462,6 +528,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             }
 
             return criticos;
+        }
+
+        private static (string Motivo, decimal Penalidade)? ObterPenalizacaoFluxoNegativo(int mesesConsecutivos)
+        {
+            return mesesConsecutivos switch
+            {
+                >= 12 => ("O usuário acumula doze ou mais meses consecutivos no vermelho.", 18m),
+                >= 6 => ("O usuário acumula seis ou mais meses consecutivos no vermelho.", 14m),
+                >= 3 => ("O usuário acumula três ou mais meses consecutivos no vermelho.", 10m),
+                >= 2 => ("O usuário acumula dois meses consecutivos no vermelho.", 6m),
+                >= 1 => ("O mês de referência fechou com fluxo de caixa negativo.", 3m),
+                _ => null
+            };
         }
 
         private static IndicadorFinanceiro? Buscar(
@@ -560,11 +639,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             return quantidadeParametrosConfigurados switch
             {
                 >= 5 => 100,
-                4 => 75,
-                3 => 60,
-                2 => 45,
-                1 => 35,
-                _ => 30
+                4 => 93,
+                3 => 85,
+                2 => 75,
+                1 => 65,
+                _ => 55
             };
         }
 

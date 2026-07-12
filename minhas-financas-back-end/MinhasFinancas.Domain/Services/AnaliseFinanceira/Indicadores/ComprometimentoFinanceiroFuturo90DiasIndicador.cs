@@ -17,17 +17,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 Nome = "Pressão financeira acumulada - 90 dias",
                 ValorAtual = dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual,
                 ValorIdeal = percentualMaximo,
-                Percentual = percentualMaximo > 0
+                Percentual = percentualMaximo > 0m
                     ? (dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual / percentualMaximo) * 100m
                     : 0m,
                 ValorObrigacoesPrevistas = dadosReferencia.ObrigacoesFinanceirasFuturas90Dias,
                 ValorReceitaPrevista = dadosReferencia.ReceitaPrevista90Dias,
                 PercentualComprometimento = dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual,
-                Status = ResolutorStatusIndicadorFinanceiro.ResolverMetaMaxima(
+                Status = ResolutorStatusIndicadorFinanceiro.ResolverFaixaDecrescente(
                     dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual,
-                    percentualMaximo),
+                    35m,
+                    55m,
+                    80m),
                 Descricao = "Percentual da renda prevista para os próximos 90 dias que já está comprometido por despesas e obrigações futuras.",
-                Observacao = percentualMaximo > 0
+                Observacao = percentualMaximo > 0m
                     ? $"Considera {dadosReferencia.ObrigacoesFinanceirasFuturas90Dias:N2} em obrigações futuras sobre {dadosReferencia.ReceitaPrevista90Dias:N2} de receita prevista para os próximos 90 dias."
                     : "Sem limite máximo configurado no perfil financeiro para medir a pressão financeira acumulada de 90 dias.",
                 Formato = FormatoValorIndicadorFinanceiro.Percentual

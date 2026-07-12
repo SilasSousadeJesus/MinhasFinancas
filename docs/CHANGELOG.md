@@ -4,6 +4,17 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 10/07/2026
 
+- Refatoração conceitual do `MF Score` para a versão `mf-score-v2.4-1000`, preservando a arquitetura oficial do Motor Financeiro.
+- Reposicionamento do pilar `Fluxo de Caixa` para medir principalmente a capacidade operacional do mês, com menor redundância entre `Economia Mensal`, `Percentual de Economia` e `Comprometimento da Renda`.
+- Reestruturação do pilar `Endividamento e Obrigações`, separando dívida de consumo, financiamento patrimonial, obrigações recorrentes futuras e inadimplência.
+- Reposicionamento do pilar `Patrimônio` para priorizar ativos, passivos e patrimônio líquido real, deixando `Patrimônio-alvo` como leitura secundária de evolução.
+- Evolução do pilar `Planejamento e Disciplina`, reduzindo peso de configuração pura e aumentando a influência de execução real, consistência e sinais comportamentais observáveis.
+- Substituição da antiga soma de penalizações temporais de fluxo negativo por um modelo progressivo de nível único, aplicando apenas a persistência mais grave encontrada.
+- Correção da projeção de receitas recorrentes nos horizontes de `180` e `365` dias, reduzindo distorções na pressão futura acumulada.
+- Recalibragem qualitativa das pressões financeiras acumuladas, impedindo que percentuais acima de `100%` permaneçam apenas como `Atenção`.
+- Melhoria da apresentação analítica das interfaces, substituindo leituras técnicas como `999 meses` por mensagens compreensíveis ao usuário.
+- Atualização da documentação oficial do Motor Financeiro para registrar os motivos arquiteturais da rodada `v2.4`.
+
 - Criação da Base Oficial de Simulação do MF Score, com aproximadamente 12 cenários sintéticos persistidos e histórico financeiro coerente para desenvolvimento, auditoria e calibração.
 - Criação dos endpoints `POST /api/MfScoreLaboratorio/GerarBaseSimulacao` e `DELETE /api/MfScoreLaboratorio/LimparBaseSimulacao`.
 - Ampliação da entidade `Usuario` com marcação explícita de usuário sintético, origem, código de cenário, versão da base, data de geração, descrição e objetivo do cenário.

@@ -557,6 +557,30 @@ Em resumo:
 
 ---
 
+## 10. Status após implementação da versão `mf-score-v2.4-1000`
+
+O pacote conceitual aprovado neste documento foi implementado de forma incremental, preservando a arquitetura oficial do Motor Financeiro.
+
+### Implementado nesta rodada
+
+- correção do papel operacional do pilar `Fluxo de Caixa`
+- separação conceitual entre dívida de consumo, financiamento patrimonial, obrigações recorrentes e inadimplência
+- priorização da situação patrimonial real no pilar `Patrimônio`
+- redução do peso de configuração pura e aumento de execução real no pilar `Planejamento e Disciplina`
+- substituição da soma de penalizações temporais por um único nível progressivo de persistência de fluxo negativo
+- correção da projeção de receitas recorrentes em `180` e `365` dias
+- endurecimento qualitativo das leituras de pressão acumulada acima de `100%`
+- melhoria da apresentação humana de indicadores analíticos
+
+### O que continua para a próxima rodada
+
+- rerrodar a auditoria operacional completa do laboratório já com `mf-score-v2.4-1000`
+- consolidar a auditoria humana dos cenários oficiais
+- recalibrar numericamente notas, faixas e pesos finos com base nessa nova evidência
+- decidir se os horizontes `30/90/180/365` permanecem exatamente como estão ou se ainda precisam de nova redução de influência
+
+---
+
 ## Complemento oficial - calibragem de falso positivo em perfis iniciantes
 
 Fica oficialmente consolidado que:

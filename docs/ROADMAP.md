@@ -335,6 +335,22 @@ A IA apenas comunica o conhecimento produzido por esse motor.
 - revisão oficial do `MF Score` para escala final de `0 a 1000`, mantendo pilares em `0 a 100`
 - separação formal entre nota de pilar, penalização crítica, persistência temporal e histórico mensal
 - criação do histórico mensal `HistoricoMfScore` e do job Hangfire recorrente para registrar competências anteriores
+- refatoração conceitual da versão `mf-score-v2.4-1000`, preservando a arquitetura do Motor Financeiro e corrigindo distorções identificadas na auditoria do laboratório
+- separação explícita entre dívida de consumo, financiamento patrimonial, obrigações recorrentes e inadimplência no pilar `Endividamento e Obrigações`
+- reposicionamento do pilar `Patrimônio` para priorizar ativos, passivos e patrimônio líquido real, deixando `Patrimônio-alvo` como leitura secundária de evolução
+- reposicionamento do pilar `Fluxo de Caixa` para medir principalmente a capacidade operacional do mês
+- redução do peso de configuração pura e aumento de sinais de execução real em `Planejamento e Disciplina`
+- substituição da soma de penalizações temporais por níveis progressivos únicos de persistência de fluxo negativo
+- correção da projeção de receitas recorrentes nos horizontes de `180` e `365` dias
+- endurecimento qualitativo de indicadores de pressão acumulada acima de `100%`
+- melhoria da apresentação dos indicadores para linguagem mais compreensível ao usuário
+
+**Próxima rodada oficial dentro da Fase 4.2.7:**
+
+- rerrodar a auditoria operacional completa do laboratório na versão `mf-score-v2.4-1000`
+- consolidar a auditoria humana dos cenários oficiais
+- recalibrar numericamente notas, faixas e pesos finos com base nessa nova evidência
+- reavaliar a influência residual dos horizontes `30/90/180/365`
 
 #### Fase 4.2.8 — Simulador Inteligente
 

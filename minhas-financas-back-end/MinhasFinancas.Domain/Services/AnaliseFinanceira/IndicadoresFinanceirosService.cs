@@ -77,7 +77,19 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
 
             var totalAtivos = contexto.Ativos.Sum(ObterValorAtualAtivo);
             var totalPassivos = contexto.Passivos.Sum(ObterValorAtualPassivo);
+            var totalPassivosConsumo = contexto.Passivos
+                .Where(EhPassivoDeConsumo)
+                .Sum(ObterValorAtualPassivo);
+            var totalPassivosPatrimoniais = contexto.Passivos
+                .Where(EhPassivoPatrimonial)
+                .Sum(ObterValorAtualPassivo);
+            var totalPassivosObrigacoesEstruturais = contexto.Passivos
+                .Where(EhObrigacaoEstrutural)
+                .Sum(ObterValorAtualPassivo);
             var patrimonioLiquidoAtual = totalAtivos - totalPassivos;
+            var percentualPatrimonioLiquidoSobreAtivos = totalAtivos > 0m
+                ? (patrimonioLiquidoAtual / totalAtivos) * 100m
+                : (patrimonioLiquidoAtual > 0m ? 100m : 0m);
 
             var reservaEmergenciaAtual = contexto.Ativos
                 .Where(ativo =>
@@ -121,9 +133,18 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             var comprometimentoFinanceiroFuturo180DiasAtual = CalcularPercentualPressaoFinanceiraAcumulada(obrigacoesFinanceirasFuturas180Dias, receitaPrevista180Dias);
             var comprometimentoFinanceiroFuturo365DiasAtual = CalcularPercentualPressaoFinanceiraAcumulada(obrigacoesFinanceirasFuturas365Dias, receitaPrevista365Dias);
 
-            var endividamentoAtual = totalAtivos > 0
-                ? (totalPassivos / totalAtivos) * 100m
-                : (totalPassivos > 0 ? 100m : 0m);
+            var exposicaoConsumoPonderada = totalPassivosConsumo
+                + (totalPassivosObrigacoesEstruturais * 0.60m)
+                + (totalPassivosPatrimoniais * 0.35m);
+            var endividamentoAtual = totalAtivos > 0m
+                ? (exposicaoConsumoPonderada / totalAtivos) * 100m
+                : (exposicaoConsumoPonderada > 0m ? 100m : 0m);
+            var endividamentoConsumoAtual = totalAtivos > 0m
+                ? (totalPassivosConsumo / totalAtivos) * 100m
+                : (totalPassivosConsumo > 0m ? 100m : 0m);
+            var endividamentoPatrimonialAtual = totalAtivos > 0m
+                ? (totalPassivosPatrimoniais / totalAtivos) * 100m
+                : (totalPassivosPatrimoniais > 0m ? 100m : 0m);
 
             var patrimonioAlvo = configuracao?.PatrimonioLiquidoAlvo ?? 0m;
             var percentualPatrimonioAlvoAtual = patrimonioAlvo > 0
@@ -162,7 +183,13 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 ReceitaPrevista90Dias = receitaPrevista90Dias,
                 ReceitaPrevista180Dias = receitaPrevista180Dias,
                 ReceitaPrevista365Dias = receitaPrevista365Dias,
+                TotalPassivosConsumo = totalPassivosConsumo,
+                TotalPassivosPatrimoniais = totalPassivosPatrimoniais,
+                TotalPassivosObrigacoesEstruturais = totalPassivosObrigacoesEstruturais,
                 EndividamentoAtual = endividamentoAtual,
+                EndividamentoConsumoAtual = endividamentoConsumoAtual,
+                EndividamentoPatrimonialAtual = endividamentoPatrimonialAtual,
+                PercentualPatrimonioLiquidoSobreAtivos = percentualPatrimonioLiquidoSobreAtivos,
                 PatrimonioAlvo = patrimonioAlvo,
                 PercentualPatrimonioAlvoAtual = percentualPatrimonioAlvoAtual,
                 PontoPartidaPatrimonialNeutro = pontoPartidaPatrimonialNeutro
@@ -202,13 +229,113 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             DateTime dataReferencia,
             int dias)
         {
-            return lancamentos
+            var receitaExplicita = lancamentos
                 .Where(lancamento =>
                     lancamento.Tipo == EnumTipoLancamento.Receita &&
-                    lancamento.StatusLancamento == EnumStatusLancamento.Pendente &&
+                    lancamento.StatusLancamento != EnumStatusLancamento.Cancelado &&
                     lancamento.DataVencimento.Date >= dataReferencia &&
                     lancamento.DataVencimento.Date <= dataReferencia.AddDays(dias))
                 .Sum(lancamento => lancamento.Valor);
+
+            var receitaRecorrenteProjetada = CalcularReceitaRecorrenteProjetada(
+                lancamentos,
+                dataReferencia,
+                dias);
+
+            return receitaExplicita + receitaRecorrenteProjetada;
+        }
+
+        private static decimal CalcularReceitaRecorrenteProjetada(
+            IEnumerable<Lancamento> lancamentos,
+            DateTime dataReferencia,
+            int dias)
+        {
+            var inicioMesSeguinte = new DateTime(dataReferencia.Year, dataReferencia.Month, 1).AddMonths(1);
+            var fimPeriodo = dataReferencia.AddDays(dias);
+
+            if (fimPeriodo < inicioMesSeguinte)
+            {
+                return 0m;
+            }
+
+            var baseRecorrenteMensal = lancamentos
+                .Where(lancamento =>
+                    lancamento.Tipo == EnumTipoLancamento.Receita &&
+                    lancamento.StatusLancamento != EnumStatusLancamento.Cancelado &&
+                    lancamento.FrequenciaLancamento is EnumTipoFrequenciaLancamento.Fixo or EnumTipoFrequenciaLancamento.DiaUtil &&
+                    lancamento.DataVencimento.Date <= dataReferencia)
+                .GroupBy(lancamento => new
+                {
+                    lancamento.Descricao,
+                    lancamento.Valor,
+                    lancamento.FrequenciaLancamento,
+                    Dia = lancamento.FrequenciaLancamento == EnumTipoFrequenciaLancamento.DiaUtil
+                        ? lancamento.NumeroDiaUtil ?? lancamento.DataVencimento.Day
+                        : lancamento.DataVencimento.Day
+                })
+                .Select(grupo => grupo
+                    .OrderByDescending(lancamento => lancamento.DataVencimento)
+                    .First())
+                .ToList();
+
+            if (baseRecorrenteMensal.Count == 0)
+            {
+                return 0m;
+            }
+
+            var mesesProjetados = EnumerarMesesEntre(inicioMesSeguinte, fimPeriodo)
+                .ToList();
+
+            var totalProjetado = 0m;
+
+            foreach (var mes in mesesProjetados)
+            {
+                foreach (var receitaBase in baseRecorrenteMensal)
+                {
+                    var jaExisteReceitaExplicitaNoMes = lancamentos.Any(lancamento =>
+                        lancamento.Tipo == EnumTipoLancamento.Receita &&
+                        lancamento.StatusLancamento != EnumStatusLancamento.Cancelado &&
+                        lancamento.FrequenciaLancamento == receitaBase.FrequenciaLancamento &&
+                        lancamento.Descricao == receitaBase.Descricao &&
+                        lancamento.Valor == receitaBase.Valor &&
+                        lancamento.DataVencimento.Year == mes.Year &&
+                        lancamento.DataVencimento.Month == mes.Month);
+
+                    if (!jaExisteReceitaExplicitaNoMes)
+                    {
+                        totalProjetado += receitaBase.Valor;
+                    }
+                }
+            }
+
+            return totalProjetado;
+        }
+
+        private static IEnumerable<DateTime> EnumerarMesesEntre(DateTime inicio, DateTime fim)
+        {
+            var competencia = new DateTime(inicio.Year, inicio.Month, 1);
+            var competenciaFim = new DateTime(fim.Year, fim.Month, 1);
+
+            while (competencia <= competenciaFim)
+            {
+                yield return competencia;
+                competencia = competencia.AddMonths(1);
+            }
+        }
+
+        private static bool EhPassivoPatrimonial(Passivo passivo)
+        {
+            return passivo.Tipo == EnumPassivo.Financiamento;
+        }
+
+        private static bool EhPassivoDeConsumo(Passivo passivo)
+        {
+            return passivo.Tipo is EnumPassivo.Emprestimo or EnumPassivo.Divida or EnumPassivo.Parcelamento;
+        }
+
+        private static bool EhObrigacaoEstrutural(Passivo passivo)
+        {
+            return passivo.Tipo is EnumPassivo.ObrigacaoFinanceira or EnumPassivo.Outro;
         }
 
         private static decimal ObterValorAtualAtivo(BemPatrimonial ativo)

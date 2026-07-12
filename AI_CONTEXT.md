@@ -16,7 +16,7 @@ O modelo oficial de risco financeiro do sistema é o `MF Score`, que organiza os
 
 O `MF Score` agora usa escala final de `0 a 1000`, enquanto os pilares permanecem em `0 a 100`. A versão vigente separa formalmente nota dos pilares, penalizações críticas, persistência temporal do risco e histórico mensal persistido.
 
-Na calibragem mais recente do `mf-score-v2.2-1000`, o pilar `Planejamento e Disciplina` passou a depender explicitamente da configuração mínima do `Perfil Financeiro`, o `Comprometimento da Renda` foi reafirmado como indicador conceitualmente ligado a `Fluxo de Caixa`, os horizontes futuros `30/90/180/365` permaneceram ativos com peso progressivamente menor nos prazos mais longos e o motor passou a incorporar `Plano Estratégico Financeiro` e `Compromissos Financeiros` como sinais opcionais de planejamento quando eles existirem.
+Na evolução conceitual mais recente do `mf-score-v2.4-1000`, o motor passou a tratar `Fluxo de Caixa` principalmente como capacidade operacional do mês, separou `Endividamento e Obrigações` entre dívida de consumo, financiamento patrimonial, obrigações recorrentes e inadimplência, reposicionou o pilar `Patrimônio` para priorizar a situação patrimonial real e reduziu o peso de configuração pura dentro de `Planejamento e Disciplina`, privilegiando mais sinais de execução real.
 
 O Motor Financeiro agora assume oficialmente que sempre existe uma configuração vigente do Perfil Financeiro, usando automaticamente o Perfil Financeiro Inicial do sistema enquanto o usuário ainda não personaliza sua própria régua.
 
@@ -40,7 +40,7 @@ O `Laboratório do MF Score` agora também suporta a `Base Oficial de Simulaçã
 
 O Motor Financeiro adota oficialmente a regra de não dupla penalização: reserva baixa, comprometimento elevado e pressão futura devem reduzir prioritariamente os pilares correspondentes, deixando penalizações críticas para risco grave, materializado ou persistente.
 
-Na calibragem mais recente do `mf-score-v2.3-1000`, o motor passou a tratar `patrimonio zerado sem passivos` como `ponto de partida patrimonial neutro`, adicionou o indicador auxiliar `Capacidade de Formacao de Reserva` e recalibrou o pilar `Liquidez e Reserva` para considerar a velocidade estimada de formacao da reserva ideal quando existe sobra mensal forte.
+Na calibragem anterior do `mf-score-v2.3-1000`, o motor passou a tratar `patrimonio zerado sem passivos` como `ponto de partida patrimonial neutro`, adicionou o indicador auxiliar `Capacidade de Formacao de Reserva` e recalibrou o pilar `Liquidez e Reserva` para considerar a velocidade estimada de formacao da reserva ideal quando existe sobra mensal forte.
 
 ## Arquitetura da soluÃ§Ã£o
 
@@ -272,16 +272,25 @@ ObservaÃ§Ã£o importante:
 - localizada em `MinhasFinancas.Domain/Services/AnaliseFinanceira`
 - `IndicadoresFinanceirosService` orquestra os cÃ¡lculos e devolve um painel reutilizÃ¡vel
 - cada indicador possui responsabilidade Ãºnica e implementaÃ§Ã£o isolada
-- V1 implementada:
+- a versão vigente do `MF Score` é `mf-score-v2.4-1000`
+- a camada já foi refatorada conceitualmente para:
+  - tratar `Fluxo de Caixa` como leitura operacional do mês
+  - separar `Endividamento e Obrigações` entre dívida de consumo, financiamento patrimonial, obrigações recorrentes e inadimplência
+  - priorizar a situação patrimonial real no pilar `Patrimônio`
+  - reduzir o peso de configuração pura e aumentar sinais de execução real em `Planejamento e Disciplina`
+  - aplicar apenas o nível mais grave da persistência de fluxo negativo, sem somar penalizações temporais redundantes
+  - projetar corretamente receitas recorrentes nos horizontes de `180` e `365` dias
+- indicadores implementados:
   - economia mensal
   - percentual de economia
   - reserva de emergÃªncia atual
   - reserva de emergÃªncia ideal
   - comprometimento da renda
   - comprometimento financeiro futuro em múltiplos horizontes
-  - endividamento patrimonial
+  - exposição a dívidas e passivos
   - patrimÃ´nio lÃ­quido atual
   - percentual do patrimÃ´nio alvo
+  - capacidade de formação de reserva
 - a camada consome apenas dados jÃ¡ existentes:
   - lanÃ§amentos
   - bens patrimoniais
@@ -291,6 +300,7 @@ ObservaÃ§Ã£o importante:
 - `InsightsFinanceirosService` transforma indicadores e saÃºde financeira em alertas, oportunidades, destaques positivos e orientaÃ§Ãµes acionÃ¡veis
 - `ResumoFinanceiroIAService` consolida saÃºde financeira, indicadores e insights em um payload Ãºnico pronto para consumo por interfaces e futuras integraÃ§Ãµes com IA
 - os indicadores temporais são serializados com os campos `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`, mantendo a leitura explícita na UI e no contexto enviado à IA
+- as interfaces analíticas substituem leituras técnicas como `999 meses` por mensagens compreensíveis, como impossibilidade de formar a reserva no ritmo atual
 - o `SaudeFinanceiraService` converte o resultado final do `MF Score` para escala `0 a 1000`, preservando os pilares em `0 a 100`
 - a versão atual das penalizações críticas concentra-se em inadimplência, cura recente/reincidência de inadimplência, fluxo mensal negativo, recorrência de meses negativos, patrimônio líquido negativo e ausência de dados essenciais
 - as fórmulas oficiais, pesos e regras de interpretação dos indicadores ficam documentadas em `docs/INDICADORES_FINANCEIROS.md`

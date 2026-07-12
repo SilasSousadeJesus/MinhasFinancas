@@ -1,46 +1,50 @@
-﻿# Indicadores Financeiros Oficiais
+# Indicadores Financeiros Oficiais
 
-Este documento registra as fÃ³rmulas, intenÃ§Ãµes e pesos oficiais da camada `AnaliseFinanceira`.
+Este documento registra a referência oficial da camada `AnaliseFinanceira`.
 
-Ele Ã© a referÃªncia principal sempre que um indicador mudar.
+Ele explica:
 
-## PrincÃ­pios oficiais
+- o que cada indicador mede;
+- como cada leitura se conecta aos pilares;
+- quais mudanças conceituais já foram consolidadas;
+- quais regras devem permanecer estáveis para futuras calibrações.
 
-- Os indicadores sÃ£o derivados apenas de dados jÃ¡ persistidos no sistema.
-- A camada analÃ­tica nÃ£o consulta interface.
-- Indicadores ruins reduzem a nota dos pilares.
-- PenalizaÃ§Ãµes crÃ­ticas nÃ£o substituem os indicadores; elas sÃ³ existem para risco grave, materializado ou persistente.
-- O modelo oficial de risco financeiro Ã© o `MF Score`.
-- O `MF Score` final usa escala `0 a 1000`.
-- Os pilares continuam em escala `0 a 100`.
-- Um mesmo fato econÃ´mico nÃ£o deve ser penalizado duplamente.
+## Princípios oficiais
 
-## Escala de status dos indicadores
+- Os indicadores derivam apenas de dados já persistidos.
+- Indicador ruim reduz pilar antes de virar penalização crítica.
+- A camada analítica não depende da interface.
+- O `MF Score` continua sendo o modelo oficial de saúde financeira com apetite de risco `moderado`.
+- O score final usa escala `0 a 1000`.
+- Os pilares permanecem em `0 a 100`.
+- Um mesmo fato econômico não deve sofrer dupla penalização.
+
+## Escala de status
 
 Todos os indicadores usam a mesma escala de status:
 
-- `Excelente` = 100
-- `Bom` = 80
-- `AtenÃ§Ã£o` = 55
-- `CrÃ­tica` = 25
+- `Excelente` = `100`
+- `Bom` = `80`
+- `Atenção` = `55`
+- `Crítico` = `25`
 
-## RelaÃ§Ã£o entre indicadores, pilares e MF Score
+## Relação entre indicadores, pilares e score
 
 ### Indicadores
 
-- geram leitura individual
-- alimentam os pilares
+- produzem leituras específicas
+- alimentam pilares
 
 ### Pilares
 
-- consolidam indicadores por contexto financeiro
+- consolidam risco por contexto financeiro
 - usam escala `0 a 100`
 
 ### MF Score
 
-- parte da mÃ©dia ponderada dos cinco pilares
-- converte o resultado para escala `0 a 1000`
-- sÃ³ depois aplica penalizaÃ§Ãµes crÃ­ticas oficiais
+- nasce da média ponderada dos cinco pilares
+- é convertido para `0 a 1000`
+- só depois recebe penalizações críticas e persistência temporal
 
 ## Pesos oficiais por indicador
 
@@ -49,347 +53,243 @@ Todos os indicadores usam a mesma escala de status:
 - `ReservaEmergenciaAtual` = `1.5`
 - `ReservaEmergenciaIdeal` = `0.5`
 - `ComprometimentoRenda` = `1.5`
-- `ComprometimentoFinanceiroFuturo` = `1.5`
+- `ComprometimentoFinanceiroFuturo30Dias` = `1.5`
 - `ComprometimentoFinanceiroFuturo90Dias` = `0.75`
 - `ComprometimentoFinanceiroFuturo180Dias` = `0.5`
 - `ComprometimentoFinanceiroFuturo365Dias` = `0.25`
-- `EndividamentoPatrimonial` = `1.5`
+- `Endividamento` = `1.5`
 - `PatrimonioLiquidoAtual` = `1.25`
 - `PercentualPatrimonioAlvo` = `0.75`
-
-## CritÃ©rio de pontuaÃ§Ã£o dos indicadores
-
-1. cada indicador contribui com sua nota de status convertida para valor numÃ©rico
-2. cada indicador Ã© multiplicado pelo peso oficial
-3. o total ponderado Ã© dividido pela soma dos pesos
-4. o resultado compÃµe a leitura dos pilares
-5. o conjunto dos pilares gera o `MF Score Base`
-6. o `MF Score Base` Ã© convertido para `0 a 1000`
-7. somente depois entram as penalizaÃ§Ãµes crÃ­ticas oficiais
+- `CapacidadeFormacaoReserva` = indicador auxiliar do pilar `Liquidez e Reserva`
 
 ## Indicadores oficiais
 
-### Economia mensal
+### Economia Mensal
 
-- **Finalidade:** mostrar a sobra mensal entre receitas e despesas do mÃªs de referÃªncia.
-- **FÃ³rmula:** `receitaMensalAtual - despesaMensalAtual`
-- **Meta monetÃ¡ria oficial:** `receitaMensalAtual * (percentualEconomiaMensalDesejado / 100)`
-- **Fonte:** lanÃ§amentos do mÃªs de referÃªncia.
-- **Formato:** moeda.
-- **Leitura:** quanto maior a sobra, melhor a capacidade de planejamento e proteÃ§Ã£o operacional.
-- **ObservaÃ§Ã£o importante:** o indicador nÃ£o compara mais moeda com meta percentual; a meta Ã© convertida para valor monetÃ¡rio do prÃ³prio mÃªs.
+- **Finalidade:** medir a sobra operacional do mês.
+- **Fórmula:** `receitaMensalAtual - despesaMensalAtual`
+- **Meta monetária oficial:** `receitaMensalAtual * (percentualEconomiaMensalDesejado / 100)`
+- **Formato:** moeda
+- **Pilar principal:** `Fluxo de Caixa`
+- **Leitura oficial:** mostra se o mês fecha com folga, no limite ou no vermelho.
 
-### Percentual de economia
+### Percentual de Economia
 
-- **Finalidade:** mostrar qual parte da renda virou economia real.
-- **FÃ³rmula:** `(economiaMensalAtual / receitaMensalAtual) * 100`
-- **Fonte:** lanÃ§amentos do mÃªs de referÃªncia.
-- **Formato:** percentual.
-- **Leitura:** mede eficiÃªncia da renda, nÃ£o apenas seu tamanho absoluto.
-- **Faixas oficiais atuais:**
+- **Finalidade:** medir qual parte da renda virou economia real.
+- **Fórmula:** `(economiaMensalAtual / receitaMensalAtual) * 100`
+- **Formato:** percentual
+- **Pilar principal:** `Fluxo de Caixa`
+- **Faixas oficiais:**
   - `Excelente`: `>= 20%`
   - `Bom`: `>= 10% e < 20%`
-  - `AtenÃ§Ã£o`: `>= 0% e < 10%`
-  - `CrÃ­tica`: `< 0%`
+  - `Atenção`: `>= 0% e < 10%`
+  - `Crítico`: `< 0%`
 
-### Reserva de emergÃªncia atual
+### Comprometimento da Renda
 
-- **Finalidade:** mostrar a proteÃ§Ã£o financeira disponÃ­vel para imprevistos.
-- **FÃ³rmula:** soma dos ativos lÃ­quidos classificados como dinheiro em conta ou investimento.
-- **Fonte:** bens patrimoniais do usuÃ¡rio.
-- **Formato:** moeda.
-- **Leitura:** reduz o pilar de liquidez quando Ã© baixa, mas nÃ£o deve gerar penalizaÃ§Ã£o crÃ­tica automÃ¡tica apenas por estar zerada.
-- **Faixas oficiais atuais** com base em `CoberturaReservaEmMeses`:
-  - `Excelente`: `>= 6 meses`
-  - `Bom`: `>= 4 e < 6 meses`
-  - `AtenÃ§Ã£o`: `>= 2 e < 4 meses`
-  - `CrÃ­tica`: `< 2 meses`
-
-### Reserva de emergÃªncia ideal
-
-- **Finalidade:** mostrar a meta ideal configurada pelo prÃ³prio usuÃ¡rio.
-- **FÃ³rmula:** `despesaMensalAtual * mesesDesejados * percentualDesejado`
-- **Fonte:** lanÃ§amentos e configuraÃ§Ã£o vigente do perfil financeiro.
-- **Formato:** moeda.
-- **Leitura:** funciona como rÃ©gua pessoal e como lembrete quando a meta nÃ£o estÃ¡ configurada.
-
-### Comprometimento da renda
-
-- **Finalidade:** medir quanto da renda mensal jÃ¡ estÃ¡ comprometido com despesas do mÃªs.
-- **FÃ³rmula:** `(despesaMensalAtual / receitaMensalAtual) * 100`
-- **Fallback quando a renda Ã© zero e existem despesas:** `100%`
-- **Fonte:** lanÃ§amentos do mÃªs de referÃªncia.
-- **Formato:** percentual.
-- **Leitura:** afeta principalmente o pilar de fluxo de caixa, sem gerar penalizaÃ§Ã£o crÃ­tica automÃ¡tica sÃ³ por estar alto.
-- **PosiÃ§Ã£o conceitual oficial:** permanece como indicador primÃ¡rio de `Fluxo de Caixa`, e nÃ£o como medida principal de `Planejamento e Disciplina`.
-- **Faixas oficiais atuais:**
+- **Finalidade:** medir quanta renda do mês já está comprometida por despesas correntes.
+- **Fórmula:** `(despesaMensalAtual / receitaMensalAtual) * 100`
+- **Fallback:** se a renda for zero e houver despesas, considera `100%`
+- **Formato:** percentual
+- **Pilar principal:** `Fluxo de Caixa`
+- **Posição conceitual oficial:** continua sendo leitura operacional do mês, não eixo principal de planejamento e nem sinônimo de dívida.
+- **Faixas oficiais:**
   - `Excelente`: `<= 20%`
   - `Bom`: `> 20% e <= 35%`
-  - `AtenÃ§Ã£o`: `> 35% e <= 50%`
-  - `CrÃ­tica`: `> 50%`
+  - `Atenção`: `> 35% e <= 50%`
+  - `Crítico`: `> 50%`
 
-### Comprometimento financeiro futuro
+### Reserva de Emergência Atual
 
-- **Finalidade:** medir quanto da renda prevista para os prÃ³ximos 30 dias jÃ¡ estÃ¡ comprometido com obrigaÃ§Ãµes.
-- **FÃ³rmula:** `(obrigacoesFinanceirasFuturas30Dias / receitaPrevista30Dias) * 100`
-- **Fallback quando a renda Ã© zero e existem obrigaÃ§Ãµes futuras:** `100%`
-- **Fonte:** lanÃ§amentos pendentes no horizonte de 30 dias.
-- **Formato:** percentual.
-- **Leitura:** mostra a folga do curto prazo.
-- **Campos de transparÃªncia:** `ValorObrigacoesPrevistas`, `ValorReceitaPrevista` e `PercentualComprometimento`.
-- **Faixas oficiais atuais:**
+- **Finalidade:** medir a proteção imediata contra imprevistos.
+- **Fórmula:** soma dos ativos líquidos classificados como dinheiro em conta ou investimento.
+- **Formato:** moeda
+- **Pilar principal:** `Liquidez e Reserva`
+- **Faixas oficiais por cobertura em meses:**
+  - `Excelente`: `>= 6 meses`
+  - `Bom`: `>= 4 e < 6 meses`
+  - `Atenção`: `>= 2 e < 4 meses`
+  - `Crítico`: `< 2 meses`
+
+### Reserva de Emergência Ideal
+
+- **Finalidade:** representar a meta pessoal de proteção configurada no perfil financeiro.
+- **Fórmula:** `despesaMensalAtual * mesesDesejados * percentualDesejado`
+- **Formato:** moeda
+- **Pilar principal:** `Liquidez e Reserva`
+
+### Capacidade de Formação de Reserva
+
+- **Finalidade:** estimar em quanto tempo a reserva ideal poderia ser formada no ritmo atual.
+- **Base de cálculo:** sobra mensal disponível em relação à reserva ideal faltante.
+- **Pilar principal:** `Liquidez e Reserva`
+- **Regra de apresentação:** quando o fluxo atual não permite projeção realista, a interface não deve exibir valores técnicos como `999 meses`; deve comunicar que a formação não é projetável no ritmo atual.
+
+### Comprometimento Financeiro Futuro - 30 dias
+
+- **Finalidade:** medir a pressão operacional do próximo ciclo.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas30Dias / receitaPrevista30Dias) * 100`
+- **Formato:** percentual
+- **Pilar principal:** `Endividamento e Obrigações`
+- **Campos auxiliares:** `ValorObrigacoesPrevistas`, `ValorReceitaPrevista`, `PercentualComprometimento`
+- **Faixas oficiais:**
   - `Excelente`: `<= 25%`
   - `Bom`: `> 25% e <= 40%`
-  - `AtenÃ§Ã£o`: `> 40% e <= 55%`
-  - `CrÃ­tica`: `> 55%`
+  - `Atenção`: `> 40% e <= 55%`
+  - `Crítico`: `> 55%`
 
-### PressÃ£o financeira acumulada - 90 dias
+### Pressão Financeira Acumulada - 90 dias
 
-- **Finalidade:** medir pressÃ£o financeira do trimestre.
-- **FÃ³rmula:** `(obrigacoesFinanceirasFuturas90Dias / receitaPrevista90Dias) * 100`
-- **Fallback quando a renda Ã© zero e existem obrigaÃ§Ãµes futuras:** `100%`
-- **Fonte:** lanÃ§amentos pendentes no horizonte de 90 dias.
-- **Formato:** percentual.
-- **Leitura:** complementa a visÃ£o de curto prazo, mas nÃ£o deve gerar penalizaÃ§Ã£o crÃ­tica automÃ¡tica isoladamente.
-- **Peso oficial atual:** menor que o horizonte de 30 dias, porque o curto prazo continua sendo a referÃªncia principal de pressÃ£o operacional.
+- **Finalidade:** medir pressão trimestral acumulada.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas90Dias / receitaPrevista90Dias) * 100`
+- **Formato:** percentual
+- **Pilar principal:** `Endividamento e Obrigações`
+- **Leitura oficial:** complementa o curto prazo, sem substituí-lo.
 
-### PressÃ£o financeira acumulada - 180 dias
+### Pressão Financeira Acumulada - 180 dias
 
-- **Finalidade:** medir pressÃ£o financeira acumulada do mÃ©dio prazo.
-- **FÃ³rmula:** `(obrigacoesFinanceirasFuturas180Dias / receitaPrevista180Dias) * 100`
-- **Fallback quando a renda Ã© zero e existem obrigaÃ§Ãµes futuras:** `100%`
-- **Fonte:** lanÃ§amentos pendentes no horizonte de 180 dias.
-- **Formato:** percentual.
-- **Leitura:** ajuda a identificar deterioraÃ§Ã£o estrutural em formaÃ§Ã£o.
-- **Peso oficial atual:** reduzido para evitar que horizontes mÃ©dios dominem a leitura do risco imediato.
+- **Finalidade:** medir pressão estrutural do médio prazo.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas180Dias / receitaPrevista180Dias) * 100`
+- **Formato:** percentual
+- **Pilar principal:** `Endividamento e Obrigações`
+- **Regra qualitativa oficial:** percentuais acima de `100%` não podem ficar apenas em `Atenção`.
+- **Faixas oficiais:**
+  - `Excelente`: `<= 45%`
+  - `Bom`: `> 45% e <= 65%`
+  - `Atenção`: `> 65% e <= 100%`
+  - `Crítico`: `> 100%`
 
-### PressÃ£o financeira acumulada - 12 meses
+### Pressão Financeira Acumulada - 365 dias
 
-- **Finalidade:** medir a pressÃ£o financeira acumulada do horizonte anual.
-- **FÃ³rmula:** `(obrigacoesFinanceirasFuturas365Dias / receitaPrevista365Dias) * 100`
-- **Fallback quando a renda Ã© zero e existem obrigaÃ§Ãµes futuras:** `100%`
-- **Fonte:** lanÃ§amentos pendentes no horizonte de 365 dias.
-- **Formato:** percentual.
-- **Leitura:** mostra sustentabilidade do longo prazo.
-- **Peso oficial atual:** o menor entre os horizontes, funcionando como apoio estrutural e nÃ£o como principal driver do score.
+- **Finalidade:** medir sustentabilidade do horizonte anual.
+- **Fórmula:** `(obrigacoesFinanceirasFuturas365Dias / receitaPrevista365Dias) * 100`
+- **Formato:** percentual
+- **Pilar principal:** `Endividamento e Obrigações`
+- **Regra qualitativa oficial:** percentuais acima de `100%` não podem ficar apenas em `Atenção`.
+- **Faixas oficiais:**
+  - `Excelente`: `<= 50%`
+  - `Bom`: `> 50% e <= 75%`
+  - `Atenção`: `> 75% e <= 100%`
+  - `Crítico`: `> 100%`
 
-### Endividamento patrimonial
+### Exposição a Dívidas e Passivos
 
-- **Finalidade:** medir o peso dos passivos sobre a base patrimonial ativa.
-- **FÃ³rmula:** `(totalPassivos / totalAtivos) * 100`
-- **Fallback quando nÃ£o hÃ¡ ativos e existem passivos:** `100%`
-- **Fonte:** bens patrimoniais e passivos patrimoniais.
-- **Formato:** percentual.
-- **Leitura:** afeta o pilar de endividamento; nÃ£o deve ser automaticamente uma penalizaÃ§Ã£o crÃ­tica sem evidÃªncia de risco materializado.
-- **Faixas oficiais atuais:**
+- **Finalidade:** medir o peso combinado de passivos e dívidas sobre a estrutura patrimonial.
+- **Base conceitual oficial:** o indicador separa:
+  - dívidas de consumo
+  - financiamentos patrimoniais
+  - obrigações estruturais
+- **Regra importante:** financiamento patrimonial não deve ter a mesma severidade de dívida de consumo.
+- **Leitura atual:** a composição usa pesos diferentes por natureza de passivo, preservando explicabilidade e apetite de risco moderado.
+- **Pilar principal:** `Endividamento e Obrigações`
+- **Faixas oficiais:**
   - `Excelente`: `<= 15%`
   - `Bom`: `> 15% e <= 30%`
-  - `AtenÃ§Ã£o`: `> 30% e <= 50%`
-  - `CrÃ­tica`: `> 50%`
+  - `Atenção`: `> 30% e <= 50%`
+  - `Crítico`: `> 50%`
 
-### PatrimÃ´nio lÃ­quido atual
+### Patrimônio Líquido Atual
 
-- **Finalidade:** mostrar a diferenÃ§a entre ativos e passivos.
-- **FÃ³rmula:** `totalAtivos - totalPassivos`
-- **Fonte:** bens patrimoniais e passivos patrimoniais.
-- **Formato:** moeda.
-- **Leitura:** patrimÃ´nio lÃ­quido negativo pode justificar penalizaÃ§Ã£o crÃ­tica.
+- **Finalidade:** medir a situação patrimonial real do usuário.
+- **Fórmula:** `totalAtivos - totalPassivos`
+- **Leitura principal complementar:** proporção do patrimônio líquido sobre a base de ativos.
+- **Pilar principal:** `Patrimônio`
+- **Regra conceitual oficial:** este é o centro do pilar patrimonial.
 
-### Percentual do patrimÃ´nio alvo
+### Percentual do Patrimônio-Alvo
 
-- **Finalidade:** mostrar o avanÃ§o atual em relaÃ§Ã£o ao patrimÃ´nio alvo configurado.
-- **FÃ³rmula:** `(patrimonioLiquidoAtual / patrimonioAlvo) * 100`
-- **Fonte:** patrimÃ´nio lÃ­quido atual e configuraÃ§Ã£o vigente do perfil financeiro.
-- **Formato:** percentual.
-- **Leitura:** quando nÃ£o hÃ¡ patrimÃ´nio alvo configurado, o indicador continua visÃ­vel como rÃ©gua de planejamento.
+- **Finalidade:** medir avanço rumo ao objetivo patrimonial configurado.
+- **Fórmula:** `(patrimonioLiquidoAtual / patrimonioAlvo) * 100`
+- **Pilar principal:** `Patrimônio`
+- **Regra conceitual oficial:** serve como sinal de evolução, não como base principal da fotografia patrimonial.
 
-## Regras de interpretaÃ§Ã£o
+## Regras estruturais dos pilares
 
-- Indicadores com status `AtenÃ§Ã£o` ou `CrÃ­tica` alimentam pontos de atenÃ§Ã£o e insights.
-- Indicadores com status `Excelente` ou `Bom` podem gerar destaques positivos.
-- Indicadores de configuraÃ§Ã£o ausente funcionam como maturidade analÃ­tica, nÃ£o como crise financeira absoluta.
-- O curto prazo deve ser distinguido da pressÃ£o financeira acumulada em horizontes maiores.
-- O `MF Score` nÃ£o deve aplicar dupla penalizaÃ§Ã£o sobre o mesmo fato econÃ´mico.
+### Fluxo de Caixa
 
-## PenalizaÃ§Ãµes crÃ­ticas e indicadores
+O pilar deve responder principalmente:
 
-As penalizaÃ§Ãµes crÃ­ticas nÃ£o substituem a leitura dos indicadores.
+- o mês fecha positivo?
+- fecha negativo?
+- fecha com folga real?
 
-Na versÃ£o atual, elas devem focar em:
+Por isso, sua leitura privilegia:
 
-- inadimplÃªncia
-- fluxo mensal negativo
-- meses consecutivos no vermelho
-- patrimÃ´nio lÃ­quido negativo
-- ausÃªncia de dados essenciais
+- `Economia Mensal`
+- `Percentual de Economia`
+- `Comprometimento da Renda`
 
-### Matriz oficial de inadimplÃªncia
+### Endividamento e Obrigações
 
-A inadimplÃªncia deixou de ser binÃ¡ria e passa a usar nÃ­veis graduais com base em:
+O pilar deve separar:
 
-- `DiasAtraso`
-- `PercentualValorEmAtrasoSobreRenda`
+- dívida de consumo;
+- financiamento patrimonial;
+- pressão futura recorrente;
+- inadimplência.
 
-Regras atuais:
+### Patrimônio
 
-- `NÃ­vel 1 - Atraso tÃ©cnico`
-  - atÃ© `7 dias` de atraso
-  - e valor em atraso `< 10%` da renda
-  - penalidade: `30 pontos` no score final
-- `NÃ­vel 2 - Estresse moderado`
-  - `8 a 30 dias`
-  - ou valor em atraso entre `10% e 25%` da renda
-  - penalidade: `90 pontos` no score final
-- `NÃ­vel 3 - InadimplÃªncia relevante`
-  - `31 a 60 dias`
-  - ou valor em atraso entre `25% e 50%` da renda
-  - penalidade: `170 pontos` no score final
-- `NÃ­vel 4 - InadimplÃªncia grave`
-  - acima de `60 dias`
-  - ou valor em atraso `> 50%` da renda
-  - penalidade: `250 pontos` no score final
+O pilar deve ser guiado principalmente por:
 
-Quando tempo e materialidade caem em nÃ­veis diferentes, prevalece o nÃ­vel mais grave.
+- ativos;
+- passivos;
+- patrimônio líquido.
 
-Os seguintes fatores devem permanecer prioritariamente na camada dos pilares:
+O patrimônio-alvo é complementar.
 
-- reserva baixa
-- comprometimento alto
-- pressÃ£o futura
-- pressÃ£o financeira acumulada
+### Planejamento e Disciplina
 
-### PenalizaÃ§Ãµes temporais oficiais de fluxo negativo
+O pilar deve combinar:
 
-As penalizaÃ§Ãµes temporais atuais do `MF Score` foram recalibradas para manter proporcionalidade com apetite de risco `moderado`:
+- base mínima configurada no perfil financeiro;
+- sinais reais de execução e consistência;
+- plano estratégico e compromissos apenas quando existirem.
 
-- `1 mÃªs negativo`: `40 pontos` no score final
-- `2 meses consecutivos negativos`: `90 pontos` no score final
-- `3 ou mais meses consecutivos negativos`: `140 pontos` no score final
+## Penalizações críticas e indicadores
 
-Objetivo:
+As penalizações críticas não substituem os indicadores.
 
-- diferenciar alerta pontual de deterioraÃ§Ã£o recorrente;
-- evitar que um Ãºnico mÃªs ruim produza colapso artificial do score;
-- manter puniÃ§Ã£o forte quando o desequilÃ­brio vira padrÃ£o.
+Na versão atual, elas devem focar em:
 
-### Cura e reincidÃªncia da inadimplÃªncia
+- inadimplência
+- reincidência ou cura recente
+- persistência de fluxo negativo
+- patrimônio líquido negativo
+- ausência de dados essenciais
 
-AlÃ©m da matriz principal de inadimplÃªncia, o motor passou a distinguir:
+### Regra temporal oficial
 
-- `reincidÃªncia`: atraso atual com ocorrÃªncias recentes em meses diferentes;
-- `cura recente`: atraso jÃ¡ regularizado, mas ainda recente.
+A persistência de fluxo negativo agora substitui a penalização simples, em vez de somar com ela.
 
-Regras atuais:
+O motor aplica apenas o nível mais grave encontrado:
 
-- reincidÃªncia agrava a penalizaÃ§Ã£o da inadimplÃªncia atual;
-- cura recente sem atraso pendente gera apenas penalidade residual leve;
-- o objetivo Ã© nÃ£o tratar um usuÃ¡rio recÃ©m-regularizado como inadimplente ativo, mas tambÃ©m nÃ£o apagar o risco imediatamente.
+- `1 mês`
+- `2 meses`
+- `3+ meses`
+- `6+ meses`
+- `12+ meses`
 
-## Pilar Planejamento e Disciplina
+### Regra de inadimplência
 
-Na versÃ£o atual, o pilar `Planejamento e Disciplina` deixou de depender apenas de proxies genÃ©ricos e passou a considerar explicitamente a configuraÃ§Ã£o mÃ­nima do `Perfil Financeiro`.
+A inadimplência continua gradual e considera:
 
-### ParÃ¢metros bÃ¡sicos obrigatÃ³rios
+- dias de atraso;
+- materialidade do valor vencido sobre a renda.
 
-O pilar sÃ³ pode ser considerado realmente saudÃ¡vel quando os cinco parÃ¢metros abaixo estiverem configurados:
+## Regra sobre projeção de receitas futuras
 
-- `PercentualEconomiaMensalDesejado`
-- `PercentualReservaEmergenciaDesejado`
-- `MesesReservaEmergenciaDesejados`
-- `PercentualMaximoComprometimentoRenda`
-- `PercentualMaximoEndividamento`
+As receitas recorrentes precisam ser projetadas corretamente nos horizontes futuros, especialmente em:
 
-### Regra operacional atual
+- `180 dias`
+- `365 dias`
 
-O cÃ¡lculo combina:
+Essa projeção não deve subestimar a receita futura nem inflar artificialmente a pressão acumulada.
 
-- nota de configuraÃ§Ã£o bÃ¡sica do perfil financeiro;
-- sinais de execuÃ§Ã£o observados em:
-  - `PercentualEconomia`
-  - `ReservaEmergenciaAtual`
-  - `PercentualPatrimonioAlvo`
+## Relação com as telas
 
-Quando existirem, o pilar tambÃ©m passa a considerar sinais opcionais de execuÃ§Ã£o estratÃ©gica:
+- **Saúde Financeira:** exibe os indicadores completos
+- **Dashboard:** consome apenas síntese
+- **Assistente Financeiro:** usa leitura executiva derivada do mesmo núcleo
+- **Laboratório do MF Score:** inspeciona o motor oficial sem recalcular regras por fora
 
-- `Plano EstratÃ©gico Financeiro` vigente
-- objetivos estratÃ©gicos ativos, prioritÃ¡rios e concluÃ­dos
-- `Compromissos Financeiros` em andamento
-- `Compromissos Financeiros` concluÃ­dos e cancelados
-
-Regra obrigatÃ³ria:
-
-- se o usuÃ¡rio nÃ£o possuir plano estratÃ©gico vigente nem compromissos financeiros, esses elementos sÃ£o ignorados;
-- a ausÃªncia deles nÃ£o reduz a nota do pilar;
-- eles sÃ³ influenciam o cÃ¡lculo quando realmente existirem.
-
-### Teto por quantidade de parÃ¢metros configurados
-
-- `5 de 5`: teto `100`
-- `4 de 5`: teto `75`
-- `3 de 5`: teto `60`
-- `2 de 5`: teto `45`
-- `1 de 5`: teto `35`
-- `0 de 5`: teto `30`
-
-ConsequÃªncia prÃ¡tica:
-
-- o usuÃ¡rio pode atÃ© ter boa execuÃ§Ã£o financeira parcial;
-- mas nÃ£o alcanÃ§a nota alta em planejamento sem configurar o conjunto mÃ­nimo de referÃªncias do prÃ³prio plano.
-
-## RelaÃ§Ã£o com as telas
-
-- **Dashboard:** consome apenas resumo consolidado
-- **SaÃºde Financeira:** exibe indicadores e `MF Score`
-- **Assistente Financeiro:** consome resumo consolidado e leitura executiva
-- **Personas de calibraÃ§Ã£o:** rodam o mesmo motor oficial
-- **Auditoria do MF Score:** valida o comportamento do motor contra cenÃ¡rios esperados
-
-## CalibraÃ§Ã£o do MF Score
-
-MudanÃ§as nesses indicadores nÃ£o devem ser feitas apenas por ajuste numÃ©rico.
-
-Cada revisÃ£o deve responder se a alteraÃ§Ã£o:
-
-- melhora a capacidade do `MF Score` representar o risco financeiro real
-- evita dupla penalizaÃ§Ã£o
-- mantÃ©m coerÃªncia com as personas e com a auditoria oficial
-- continua respeitando a separaÃ§Ã£o entre indicador ruim e penalizaÃ§Ã£o crÃ­tica
-
-Toda alteraÃ§Ã£o relevante tambÃ©m deve ser confrontada com:
-
-- `docs/MF_SCORE.md`
-- `docs/MF_SCORE_VALIDATION.md`
-- `docs/MF_SCORE_AUDIT.md`
-
-## Regra de manutenÃ§Ã£o
-
-Sempre que uma fÃ³rmula, peso, classificaÃ§Ã£o, regra de pilar, penalizaÃ§Ã£o crÃ­tica ou texto oficial mudar, este documento deve ser atualizado na mesma entrega.
-
-
-## Perfil Financeiro Inicial
-
-Os indicadores oficiais agora assumem que sempre existe uma configuração vigente do Perfil Financeiro.
-
-Quando o usuário ainda não personalizou sua régua, a camada analítica passa a consumir automaticamente o Perfil Financeiro Inicial.
-
-Isso reduz mensagens de ausência de meta ou limite quando o sistema já possui uma régua padrão válida.
-
-
-## Atualizacao oficial v2.3
-
-### Capacidade de Formacao de Reserva
-
-- **Finalidade:** medir em quantos meses a sobra mensal atual conseguiria completar a reserva de emergencia ideal restante.
-- **Formula:** `ReservaIdealRestante / EconomiaMensalAtual`, quando `EconomiaMensalAtual > 0`.
-- **Reserva restante:** `max(0, ReservaEmergenciaIdeal - ReservaEmergenciaAtual)`.
-- **Formato:** meses.
-- **Faixas oficiais atuais:**
-  - `Excelente`: `<= 3 meses`
-  - `Bom`: `> 3 e <= 6 meses`
-  - `Atencao`: `> 6 e <= 12 meses`
-  - `Critica`: `> 12 meses` ou `economia mensal <= 0`
-- **Leitura:** nao substitui a reserva atual. Funciona como atenuador da liquidez para evitar falso positivo de risco em usuarios iniciantes com fluxo muito forte.
-
-### Regra adicional de patrimonio neutro
-
-- Quando `total de ativos = 0`, `total de passivos = 0` e `patrimonio liquido = 0`, o sistema trata o caso como `ponto de partida patrimonial neutro`, e nao como insolvencia.
