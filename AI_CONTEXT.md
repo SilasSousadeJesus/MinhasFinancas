@@ -26,6 +26,8 @@ Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_V
 
 O projeto passa a manter também `docs/MF_SCORE_BENCHMARK.md`, que registra a expectativa humana oficial para os 12 cenários da Base Oficial de Simulação e se torna a principal referência de regressão comportamental do motor. A primeira rodada humana oficial do benchmark já foi consolidada e confirmou a arquitetura da `v2.4`, marcando `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09` como cenários ainda inválidos para calibração definitiva.
 
+Na reconstrução mais recente da Base Oficial de Simulação, as massas sintéticas de `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09` foram refeitas sem alterar o motor `mf-score-v2.5-1000`. Após regenerar e rerrodar o laboratório, os três cenários passaram a cair dentro das faixas humanas esperadas do benchmark (`640`, `380` e `750`, respectivamente), o que destravou a confiabilidade operacional desses perfis para as próximas auditorias.
+
 A auditoria oficial da versão `mf-score-v2.4-1000` concluiu que a arquitetura do motor está madura e aprovada. A etapa seguinte foi a sprint `mf-score-v2.5-1000`, dedicada exclusivamente à calibração numérica guiada obrigatoriamente pelo benchmark dos 12 cenários.
 
 A sprint oficial `mf-score-v2.5` foi concluída como rodada exclusiva de calibração fina numérica, atuando em `Liquidez e Reserva`, depois `Fluxo de Caixa`, depois `Endividamento e Obrigações` e, por fim, recalibração das penalizações. O pacote melhorou a convergência do benchmark sem criar novos indicadores, pilares ou penalizações.

@@ -4,6 +4,11 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 12/07/2026
 
+- Reconstrução completa das massas sintéticas de `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09`, mantendo o motor `mf-score-v2.5-1000` congelado.
+- Ajuste exclusivo de dados sintéticos de receitas, despesas, saldos, reserva, passivos leves, parcelamentos, compromissos e histórico mensal desses três cenários, sem alterar fórmulas, pesos, indicadores, pilares ou penalizações.
+- Nova rodada oficial da Base de Simulação após a reconstrução, trazendo os três cenários antes inválidos para dentro das respectivas faixas humanas do benchmark: `MF-CENARIO-02` (`640`), `MF-CENARIO-07` (`380`) e `MF-CENARIO-09` (`750`).
+- Confirmação documental de que a sprint atuou apenas sobre a coerência da massa sintética do benchmark, preservando integralmente a arquitetura do `MF Score`.
+
 - Consolidação documental da auditoria comparativa da `mf-score-v2.5-1000`, sem alteração de código, fórmulas, pesos, indicadores, pilares ou penalizações.
 - Registro oficial da leitura residual da `v2.5` com métricas calculadas apenas sobre os 9 cenários válidos do benchmark.
 - Confirmação documental de melhora de `1/9` para `3/9` cenários válidos dentro da faixa e redução da diferença média absoluta de `178,89` para `92,22` pontos.

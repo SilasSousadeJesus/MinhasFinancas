@@ -767,14 +767,12 @@ namespace MinhasFinancas.Application.Services
                         new ObjetivoPlanoSimulado("Montar reserva inicial", "Construir a primeira reserva para imprevistos.", EnumPrioridadeObjetivoPlanoEstrategico.Alta, EnumStatusObjetivoPlanoEstrategico.EmAndamento, 3000m, hoje.AddMonths(10))
                     ]
                 },
-                new CenarioBaseSimulacao("MF-CENARIO-02", "Primeiro Emprego", "Primeiro emprego formal, salário fixo e início de organização financeira.", "Validar transição entre vida financeira inicial e começo de estabilidade operacional.", 2800m, 200m, 650m, 120m, 90m, 150m, 120m, 380m, 90m, 280m, 55m, 45m, 110m, 0m, 1800m, 200m, 300m, true, false, true, "Banco Base", "1111")
+                new CenarioBaseSimulacao("MF-CENARIO-02", "Primeiro Emprego", "Primeiro emprego formal, salário fixo e início de organização financeira.", "Validar transição entre vida financeira inicial e começo de estabilidade operacional.", 3100m, 220m, 980m, 105m, 90m, 150m, 100m, 215m, 70m, 145m, 55m, 95m, 105m, 700m, 0m, 300m, 0m, true, true, false, "Banco Base", "1111")
                 {
                     SubcategoriaReceitaPrincipal = "CLT",
                     SubcategoriaReceitaSecundaria = "Bico",
                     SubcategoriaEducacao = "Cursos",
                     SubcategoriaLazer = "Passeios",
-                    DespesasNoCartao = true,
-                    ParcelaMensalCartao = 220m,
                     PersonalizarPerfilFinanceiro = true,
                     PercentualEconomiaDesejado = 15m,
                     PercentualReservaDesejado = 100m,
@@ -785,11 +783,15 @@ namespace MinhasFinancas.Application.Services
                     PatrimonioAlvo = 25000m,
                     Metas =
                     [
-                        new MetaSimulada("Reserva inicial", 6000m, 1200m, 12)
+                        new MetaSimulada("Reserva inicial", 6000m, 700m, 12)
+                    ],
+                    Parcelamentos =
+                    [
+                        new ParcelamentoSimulado("Notebook profissional", 7, 90m, hoje.AddMonths(-2), 12, CategoriaParcelamento.OutrasDespesas, [])
                     ],
                     Compromissos =
                     [
-                        new CompromissoSimulado("Evitar atraso no cartão e guardar parte do décimo terceiro.", "Compromisso de disciplina no início da vida financeira.", EnumStatusCompromissoFinanceiro.EmAndamento)
+                        new CompromissoSimulado("Guardar parte do décimo terceiro e manter a fatura do cartão sempre em dia.", "Compromisso de disciplina no início da vida financeira.", EnumStatusCompromissoFinanceiro.EmAndamento)
                     ]
                 },
                 new CenarioBaseSimulacao("MF-CENARIO-03", "CLT Organizado", "Profissional CLT organizado, com fluxo estável, reserva crescente e gastos sob controle.", "Validar perfil saudável de média renda com disciplina consistente.", 5200m, 0m, 1350m, 180m, 120m, 220m, 120m, 520m, 130m, 320m, 65m, 60m, 140m, 0m, 9500m, 4500m, 0m, true, true, true, "Banco Prime", "2222")
@@ -898,28 +900,42 @@ namespace MinhasFinancas.Application.Services
                         new CompromissoSimulado("Não contratar novas parcelas enquanto o financiamento atual não recuar.", null, EnumStatusCompromissoFinanceiro.EmAndamento)
                     ]
                 },
-                new CenarioBaseSimulacao("MF-CENARIO-07", "Atraso Leve", "Usuário com orçamento apertado e um atraso leve recente, mas ainda recuperável.", "Validar inadimplência leve sem colapso completo do score.", 4300m, 0m, 1550m, 150m, 110m, 180m, 80m, 360m, 90m, 160m, 60m, 55m, 110m, 480m, 1100m, 0m, 2000m, true, false, true, "Banco Base", "6666")
+                new CenarioBaseSimulacao("MF-CENARIO-07", "Atraso Leve", "Usuário com orçamento apertado e um atraso leve recente, mas ainda recuperável.", "Validar inadimplência leve sem colapso completo do score.", 4350m, 80m, 1540m, 150m, 110m, 190m, 95m, 260m, 70m, 130m, 55m, 125m, 290m, 1600m, 0m, 450m, 900m, true, false, false, "Banco Base", "6666")
                 {
                     SubcategoriaReceitaPrincipal = "CLT",
                     SubcategoriaLazer = "Passeios",
-                    DespesasNoCartao = true,
-                    ParcelaMensalCartao = 950m,
                     Passivos =
                     [
-                        new PassivoSimulado("Parcelamento emergencial", "Parcelamento ativo por gasto inesperado.", EnumPassivo.Parcelamento, 2000m, hoje.AddMonths(-4), hoje.AddMonths(8))
+                        new PassivoSimulado("Parcelamento emergencial", "Parcelamento ativo por gasto inesperado, mas já em redução.", EnumPassivo.Parcelamento, 900m, hoje.AddMonths(-4), hoje.AddMonths(5))
                     ],
                     CustomizarLancamentos = (lancamentos, referencias, conta, cartao, dataAtual) =>
                     {
-                        var alvo = lancamentos
-                            .Where(x => x.Tipo == EnumTipoLancamento.Despesa && x.Descricao.StartsWith("Fatura do cartão"))
+                        var alvoEnergia = lancamentos
+                            .Where(x => x.Tipo == EnumTipoLancamento.Despesa && x.Descricao.StartsWith("Energia"))
                             .OrderByDescending(x => x.DataVencimento)
-                            .FirstOrDefault(x => x.DataVencimento < dataAtual && x.DataVencimento >= dataAtual.AddDays(-7));
+                            .FirstOrDefault(x => x.DataVencimento < dataAtual);
 
-                        if (alvo != null)
+                        if (alvoEnergia != null)
                         {
-                            alvo.StatusLancamento = EnumStatusLancamento.Pendente;
-                            alvo.DataEfetivacao = null;
-                            alvo.Valor = 320m;
+                            alvoEnergia.StatusLancamento = EnumStatusLancamento.Pendente;
+                            alvoEnergia.DataEfetivacao = null;
+                            alvoEnergia.DataVencimento = dataAtual.AddDays(-6);
+                            alvoEnergia.DataLancamento = alvoEnergia.DataVencimento;
+                            alvoEnergia.Valor = 180m;
+                        }
+
+                        var alvoOutras = lancamentos
+                            .Where(x => x.Tipo == EnumTipoLancamento.Despesa && x.Descricao.StartsWith("Outras despesas"))
+                            .OrderByDescending(x => x.DataVencimento)
+                            .FirstOrDefault(x => x.DataVencimento < dataAtual);
+
+                        if (alvoOutras != null)
+                        {
+                            alvoOutras.StatusLancamento = EnumStatusLancamento.Pendente;
+                            alvoOutras.DataEfetivacao = null;
+                            alvoOutras.DataVencimento = dataAtual.AddDays(-3);
+                            alvoOutras.DataLancamento = alvoOutras.DataVencimento;
+                            alvoOutras.Valor = 90m;
                         }
                     }
                 },
@@ -963,13 +979,12 @@ namespace MinhasFinancas.Application.Services
                         }
                     }
                 },
-                new CenarioBaseSimulacao("MF-CENARIO-09", "Autonomo Reserva", "Autônomo com receitas variáveis, boa reserva e disciplina de proteção.", "Validar perfil volátil com proteção financeira madura.", 4800m, 2200m, 1350m, 160m, 120m, 260m, 140m, 440m, 110m, 260m, 70m, 80m, 140m, 0m, 7000m, 18000m, 0m, true, true, true, "Banco Negócios", "8888")
+                new CenarioBaseSimulacao("MF-CENARIO-09", "Autonomo Reserva", "Autônomo com receitas variáveis, boa reserva e disciplina de proteção.", "Validar perfil volátil com proteção financeira madura.", 3400m, 2550m, 1180m, 145m, 105m, 215m, 115m, 300m, 55m, 170m, 50m, 115m, 0m, 6500m, 0m, 0m, 0m, true, true, false, "Banco Negócios", "8888")
                 {
                     UsaProLabore = true,
                     SubcategoriaReceitaPrincipal = "Mensal",
                     SubcategoriaReceitaSecundaria = "Consultoria",
                     SubcategoriaLazer = "Passeios",
-                    DespesasNoCartao = true,
                     PersonalizarPerfilFinanceiro = true,
                     PercentualEconomiaDesejado = 25m,
                     PercentualReservaDesejado = 100m,
@@ -978,10 +993,61 @@ namespace MinhasFinancas.Application.Services
                     PercentualMaximoEndividamento = 20m,
                     PercentualMinimoInvestimento = 15m,
                     PatrimonioAlvo = 180000m,
+                    AtivosAdicionais =
+                    [
+                        new AtivoSimulado("Reserva de liquidez diária", "Aplicação conservadora usada como colchão para meses fracos.", EnumBemPatrimonial.Investimento, 7500m, hoje.AddMonths(-14)),
+                        new AtivoSimulado("Equipamentos de trabalho", "Computador e câmera usados para gerar renda como autônomo.", EnumBemPatrimonial.Equipamento, 9000m, hoje.AddYears(-1))
+                    ],
                     ObjetivosPlano =
                     [
                         new ObjetivoPlanoSimulado("Manter reserva robusta", "Preservar caixa para absorver meses ruins do trabalho autônomo.", EnumPrioridadeObjetivoPlanoEstrategico.Alta, EnumStatusObjetivoPlanoEstrategico.EmAndamento, 30000m, hoje.AddMonths(6))
-                    ]
+                    ],
+                    Compromissos =
+                    [
+                        new CompromissoSimulado("Separar automaticamente parte das entradas fortes para reforçar a reserva dos meses fracos.", null, EnumStatusCompromissoFinanceiro.EmAndamento)
+                    ],
+                    CustomizarLancamentos = (lancamentos, referencias, conta, cartao, dataAtual) =>
+                    {
+                        var inicioAtual = new DateTime(dataAtual.Year, dataAtual.Month, 1);
+                        var multiplicadoresReceita = new Dictionary<int, decimal>
+                        {
+                            [-11] = 0.82m,
+                            [-10] = 1.18m,
+                            [-9] = 0.74m,
+                            [-8] = 1.24m,
+                            [-7] = 0.88m,
+                            [-6] = 1.12m,
+                            [-5] = 0.79m,
+                            [-4] = 1.28m,
+                            [-3] = 0.86m,
+                            [-2] = 1.21m,
+                            [-1] = 1.00m,
+                            [0] = 1.04m,
+                            [1] = 1.00m,
+                            [2] = 1.08m,
+                            [3] = 0.98m
+                        };
+
+                        foreach (var lancamento in lancamentos.Where(x => x.Tipo == EnumTipoLancamento.Receita))
+                        {
+                            var competencia = new DateTime(lancamento.DataVencimento.Year, lancamento.DataVencimento.Month, 1);
+                            var offset = ((competencia.Year - inicioAtual.Year) * 12) + (competencia.Month - inicioAtual.Month);
+                            if (multiplicadoresReceita.TryGetValue(offset, out var multiplicador))
+                            {
+                                lancamento.Valor = decimal.Round(lancamento.Valor * multiplicador, 2);
+                            }
+                        }
+
+                        foreach (var lancamento in lancamentos.Where(x => x.Tipo == EnumTipoLancamento.Despesa && x.Descricao.StartsWith("Saúde")))
+                        {
+                            var competencia = new DateTime(lancamento.DataVencimento.Year, lancamento.DataVencimento.Month, 1);
+                            var offset = ((competencia.Year - inicioAtual.Year) * 12) + (competencia.Month - inicioAtual.Month);
+                            if (offset is -9 or -4 or -1)
+                            {
+                                lancamento.Valor = decimal.Round(lancamento.Valor * 1.35m, 2);
+                            }
+                        }
+                    }
                 },
                 new CenarioBaseSimulacao("MF-CENARIO-10", "Autonomo Sem Res", "Autônomo sem reserva, com renda volátil e forte vulnerabilidade no curto prazo.", "Validar risco elevado em perfil volátil sem colchão financeiro.", 4600m, 1400m, 1650m, 150m, 110m, 240m, 130m, 420m, 100m, 260m, 75m, 70m, 130m, 300m, 800m, 0m, 3500m, true, false, false, "Banco Negócios", "9999")
                 {
