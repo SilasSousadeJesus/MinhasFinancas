@@ -24,6 +24,10 @@ O `MF Score` agora também possui uma etapa oficial de calibração contínua, c
 
 Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_VALIDATION.md`, usada para confirmar se alterações futuras continuam coerentes com os cenários canônicos do modelo.
 
+O projeto passa a manter também `docs/MF_SCORE_BENCHMARK.md`, que registra a expectativa humana oficial para os 12 cenários da Base Oficial de Simulação e se torna a principal referência de regressão comportamental do motor.
+
+A auditoria oficial da versão `mf-score-v2.4-1000` concluiu que a arquitetura do motor está madura e aprovada. A próxima etapa oficial do MF Score deixa de ser revisão estrutural e passa a ser calibração fina numérica guiada obrigatoriamente pelo benchmark dos 12 cenários.
+
 Além da suíte conceitual, o projeto agora possui uma auditoria operacional interna do `MF Score`, exposta apenas em desenvolvimento por `POST /api/MfScoreAuditoria/GerarPlanilha`, que monta personas sintéticas em memória, executa o motor oficial (`ContextoAnaliseFinanceira -> IndicadoresFinanceirosService -> SaudeFinanceiraService`) e devolve uma planilha `.xlsx` de conferência.
 
 O projeto passa a ter também uma segunda auditoria interna, `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`, voltada para avaliação humana cega das personas. Ela não aprova nem reprova automaticamente o motor; serve para documentar a nota que um consultor daria e transformar essa leitura em futuros padrões oficiais.

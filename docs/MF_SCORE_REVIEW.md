@@ -49,8 +49,7 @@ O projeto não aceitou automaticamente:
 ## O que ainda não foi promovido para regra definitiva
 
 - calibração numérica final das notas por cenário;
-- consolidação quantitativa da versão `mf-score-v2.4-1000` em auditoria operacional rerrodada;
-- consolidação da auditoria humana dos cenários oficiais;
+- consolidação quantitativa refinada da versão `mf-score-v2.4-1000` no benchmark oficial;
 - decisão final sobre eventual nova redução de peso dos horizontes `90/180/365`;
 - amadurecimento de cura e reincidência da inadimplência em horizonte histórico mais rico.
 
@@ -70,9 +69,9 @@ O framework conceitual foi útil e amplamente aproveitado, mas sua adoção pelo
 
 A rodada `mf-score-v2.4-1000` implementou a correção conceitual do motor sem alterar sua arquitetura central.
 
+A auditoria oficial pós benchmark confirmou que essa arquitetura deve ser preservada.
+
 A próxima conversa oficial deixa de ser “o que corrigir conceitualmente” e passa a ser:
 
-- como validar a nova versão no laboratório;
 - como recalibrar notas e faixas com base nos 12 cenários oficiais;
 - quais ajustes finos ainda são necessários sem perder explicabilidade.
-

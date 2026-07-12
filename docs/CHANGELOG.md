@@ -4,6 +4,10 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 10/07/2026
 
+- Consolidação oficial da auditoria humana da versão `mf-score-v2.4-1000`, aprovando a arquitetura atual do Motor Financeiro.
+- Promoção do `docs/MF_SCORE_BENCHMARK.md` a benchmark oficial obrigatório para validação de regressão e calibração do MF Score.
+- Registro formal de que a próxima etapa do MF Score deixa de ser revisão estrutural e passa a ser calibração fina numérica baseada nos 12 cenários oficiais.
+
 - Refatoração conceitual do `MF Score` para a versão `mf-score-v2.4-1000`, preservando a arquitetura oficial do Motor Financeiro.
 - Reposicionamento do pilar `Fluxo de Caixa` para medir principalmente a capacidade operacional do mês, com menor redundância entre `Economia Mensal`, `Percentual de Economia` e `Comprometimento da Renda`.
 - Reestruturação do pilar `Endividamento e Obrigações`, separando dívida de consumo, financiamento patrimonial, obrigações recorrentes futuras e inadimplência.

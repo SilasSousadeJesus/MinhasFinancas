@@ -35,6 +35,12 @@ As principais correções incorporadas foram:
 - endurecimento qualitativo dos indicadores de pressão acumulada acima de `100%`;
 - melhoria da linguagem de apresentação dos indicadores.
 
+Após a primeira rodada completa de auditoria humana pós benchmark, a conclusão oficial passou a ser:
+
+- a arquitetura da versão `mf-score-v2.4-1000` está aprovada;
+- a próxima etapa do projeto deve focar calibração fina de notas e curvas;
+- mudanças estruturais só devem voltar a ser discutidas se uma auditoria futura demonstrar falha conceitual relevante.
+
 ## Arquitetura atual do score
 
 O cálculo oficial continua em quatro camadas:
@@ -149,7 +155,13 @@ Ele deve ser usado para:
   - alta renda organizada
   - patrimônio elevado com fluxo ruim
   - autônomos
-  - inadimplência materializada
+- inadimplência materializada
+
+## Benchmark oficial
+
+O projeto passa a manter também `docs/MF_SCORE_BENCHMARK.md` como referência permanente de comportamento esperado.
+
+Esse benchmark não substitui a auditoria técnica. Ele registra a expectativa humana oficial sobre os 12 cenários da Base Oficial de Simulação e deve ser atualizado em toda rodada relevante do motor.
 
 ## Situação atual
 
@@ -166,8 +178,7 @@ O `MF Score` hoje está:
 
 Depois desta refatoração conceitual, a próxima rodada deve:
 
-1. rerrodar a auditoria operacional completa do laboratório;
-2. revisar as 12 leituras humanas oficiais;
-3. recalibrar notas e faixas onde ainda houver distorção quantitativa;
-4. decidir se os horizontes `30/90/180/365` permanecem como estão ou precisam de novo ajuste de influência.
-
+1. recalibrar notas, faixas, pesos finos e curvas com base no benchmark oficial;
+2. revisar a dominância relativa de `Liquidez e Reserva`;
+3. revisar a influência residual dos horizontes `30/90/180/365`;
+4. preservar a arquitetura da `v2.4`, salvo evidência futura de falha conceitual relevante.

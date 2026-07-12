@@ -574,10 +574,19 @@ O pacote conceitual aprovado neste documento foi implementado de forma increment
 
 ### O que continua para a próxima rodada
 
-- rerrodar a auditoria operacional completa do laboratório já com `mf-score-v2.4-1000`
-- consolidar a auditoria humana dos cenários oficiais
-- recalibrar numericamente notas, faixas e pesos finos com base nessa nova evidência
+- recalibrar numericamente notas, faixas e pesos finos com base no benchmark oficial dos 12 cenários
 - decidir se os horizontes `30/90/180/365` permanecem exatamente como estão ou se ainda precisam de nova redução de influência
+
+### Consolidação oficial pós auditoria humana
+
+A auditoria oficial da versão `mf-score-v2.4-1000` aprovou a arquitetura do motor.
+
+Fica consolidado que:
+
+- a `v2.4` encerra a fase de revisão arquitetural do MF Score;
+- novas alterações devem priorizar calibração numérica;
+- mudanças estruturais só devem voltar à pauta mediante nova evidência de falha conceitual relevante;
+- o benchmark oficial dos 12 cenários passa a ser o principal instrumento de regressão comportamental do motor.
 
 ---
 

@@ -344,12 +344,12 @@ A IA apenas comunica o conhecimento produzido por esse motor.
 - correção da projeção de receitas recorrentes nos horizontes de `180` e `365` dias
 - endurecimento qualitativo de indicadores de pressão acumulada acima de `100%`
 - melhoria da apresentação dos indicadores para linguagem mais compreensível ao usuário
+- conclusão da primeira auditoria humana completa da `mf-score-v2.4-1000`, aprovando a arquitetura do motor
+- promoção do `docs/MF_SCORE_BENCHMARK.md` à condição de benchmark oficial obrigatório para qualquer evolução futura do MF Score
 
 **Próxima rodada oficial dentro da Fase 4.2.7:**
 
-- rerrodar a auditoria operacional completa do laboratório na versão `mf-score-v2.4-1000`
-- consolidar a auditoria humana dos cenários oficiais
-- recalibrar numericamente notas, faixas e pesos finos com base nessa nova evidência
+- recalibrar numericamente notas, faixas e pesos finos com base no benchmark oficial dos 12 cenários
 - reavaliar a influência residual dos horizontes `30/90/180/365`
 
 #### Fase 4.2.8 — Simulador Inteligente

@@ -16,6 +16,8 @@ O modelo não mede apenas riqueza, disciplina subjetiva ou comportamento de cré
 
 Na versão atual do motor, `mf-score-v2.4-1000`, o objetivo principal passou a ser corrigir distorções conceituais identificadas na auditoria completa do laboratório, preservando a arquitetura oficial do Motor Financeiro.
 
+A auditoria oficial posterior ao benchmark concluiu que a arquitetura da `v2.4` deve ser preservada. A partir deste ponto, novas evoluções do MF Score devem priorizar calibração fina numérica, e não novos redesenhos estruturais, salvo se uma auditoria futura demonstrar falha conceitual relevante.
+
 ## Filosofia oficial
 
 - O `MF Score` mede saúde financeira com apetite de risco `moderado`.
@@ -285,6 +287,9 @@ O projeto continua com:
 - laboratório
 - personas
 - base oficial de simulação
+- benchmark oficial de calibração em `docs/MF_SCORE_BENCHMARK.md`
+
+O benchmark oficial dos 12 cenários passa a ser obrigatório para validar qualquer alteração futura de indicadores, pilares, pesos, penalizações, regras críticas, textos ou classificações do Motor Financeiro.
 
 Esses elementos não foram removidos nesta rodada. Eles continuam sendo parte da governança oficial do Motor Financeiro.
 
@@ -310,4 +315,3 @@ Depois desta refatoração conceitual, a próxima rodada deve se concentrar em:
 2. consolidar a auditoria humana dos cenários oficiais
 3. recalibrar numericamante os pesos e faixas que ainda precisarem de ajuste fino
 4. decidir se os horizontes `30/90/180/365` permanecem exatamente como estão ou se precisam de nova redução de influência
-

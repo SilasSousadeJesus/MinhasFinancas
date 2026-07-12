@@ -154,3 +154,12 @@ Após a refatoração conceitual da versão `mf-score-v2.4-1000`, a próxima exe
 - melhor coerência dos horizontes futuros após correção da projeção de receitas;
 - classificação mais severa quando a pressão acumulada ultrapassa `100%`.
 
+## Consolidação oficial pós auditoria humana da `v2.4`
+
+A primeira rodada completa de auditoria humana confirmou que a versão `mf-score-v2.4-1000` corrigiu praticamente todas as distorções conceituais relevantes da `v2.3`.
+
+Com isso:
+
+- a arquitetura da `v2.4` passa a ser considerada estável;
+- o benchmark oficial dos 12 cenários passa a ser obrigatório em qualquer evolução futura;
+- a próxima etapa de validação deixa de buscar redesenho estrutural e passa a focar calibração fina numérica.
