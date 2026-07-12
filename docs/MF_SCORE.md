@@ -317,3 +317,101 @@ Depois desta refatoração conceitual, a próxima rodada deve se concentrar em:
 2. consolidar a auditoria humana dos cenários oficiais
 3. recalibrar numericamante os pesos e faixas que ainda precisarem de ajuste fino
 4. decidir se os horizontes `30/90/180/365` permanecem exatamente como estão ou se precisam de nova redução de influência
+
+## Diretriz oficial da sprint `mf-score-v2.5`
+
+A `v2.4` passa a ser tratada como **congelada conceitualmente**.
+
+A sprint `mf-score-v2.5` não deverá:
+
+- criar novos indicadores;
+- criar novos pilares;
+- alterar a arquitetura do Motor Financeiro;
+- criar novas penalizações;
+- reformular DTOs, telas ou documentação estrutural como parte do pacote de calibração.
+
+O objetivo da `v2.5` será exclusivamente:
+
+- recalibrar a sensibilidade numérica do motor;
+- aproximar os 12 cenários oficiais das notas humanas do benchmark;
+- reduzir compressões artificiais da escala `0 a 1000`;
+- preservar a filosofia de risco moderado do produto.
+
+### Ordem oficial de calibração orientada por evidência
+
+A ordem da sprint não deve seguir a ordem teórica dos pilares, mas sim a evidência já encontrada no benchmark:
+
+1. `Liquidez e Reserva`
+2. `Fluxo de Caixa`
+3. `Endividamento e Obrigações`
+4. compressão das penalizações
+
+### Focos obrigatórios da `v2.5`
+
+#### 1. Liquidez e Reserva
+
+Revisar principalmente:
+
+- `Reserva de Emergência Atual`
+- `Capacidade de Formação de Reserva`
+- curva de evolução até a reserva ideal
+
+Objetivo:
+
+- premiar corretamente quem já está construindo reserva;
+- diferenciar ausência total de reserva de reserva parcialmente formada;
+- reduzir severidade excessiva em perfis iniciantes, organizados e recuperáveis.
+
+#### 2. Fluxo de Caixa
+
+Revisar principalmente:
+
+- `Comprometimento da Renda`
+- `Comprometimento Financeiro Futuro`
+- `Pressões Acumuladas`
+
+Objetivo:
+
+- diferenciar aperto financeiro de colapso;
+- permitir que usuários organizados com pouca folga ainda alcancem notas boas;
+- evitar que a maior parte dos cenários saudáveis fique comprimida entre notas medianas do pilar.
+
+#### 3. Endividamento e Obrigações
+
+Revisar principalmente:
+
+- curva da exposição patrimonial;
+- curva do financiamento patrimonial;
+- curva das obrigações futuras.
+
+Objetivo:
+
+- evitar aproximar dívida organizada de situações equivalentes à inadimplência;
+- preservar a separação conceitual já aprovada na `v2.4`, ajustando apenas a severidade numérica.
+
+#### 4. Escala e penalizações
+
+Revisar:
+
+- uso prático da escala `0 a 1000`;
+- peso das penalizações críticas já existentes, sem criar novas.
+
+Atenção prioritária para:
+
+- persistência de fluxo negativo;
+- patrimônio líquido negativo.
+
+Objetivo:
+
+- levar cenários excelentes para a zona de `900-950` quando fizer sentido humano;
+- evitar que cenários ruins, mas ainda recuperáveis, caiam cedo demais para perto de zero;
+- reservar notas extremas para situações realmente extremas.
+
+### Critério oficial de sucesso
+
+Ao final da sprint `v2.5`, o projeto deverá:
+
+1. rerrodar os 12 cenários oficiais;
+2. comparar automaticamente os resultados com `docs/MF_SCORE_BENCHMARK.md`;
+3. medir quantos cenários passaram a ficar dentro da faixa aceitável;
+4. registrar formalmente quais pilares continuam divergentes antes de qualquer rodada posterior.

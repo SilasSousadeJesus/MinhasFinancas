@@ -352,6 +352,28 @@ A IA apenas comunica o conhecimento produzido por esse motor.
 - recalibrar numericamente notas, faixas e pesos finos com base no benchmark oficial dos 12 cenários
 - reavaliar a influência residual dos horizontes `30/90/180/365`
 
+**Diretriz oficial da sprint `mf-score-v2.5`:**
+
+- a `v2.4` está congelada conceitualmente
+- a `v2.5` terá foco exclusivo em calibração fina numérica
+- não criar novos indicadores
+- não criar novos pilares
+- não alterar arquitetura
+- não criar novas penalizações
+
+**Ordem oficial de atuação na `v2.5`:**
+
+1. `Liquidez e Reserva`
+2. `Fluxo de Caixa`
+3. `Endividamento e Obrigações`
+4. compressão das penalizações
+
+**Objetivo da sprint `mf-score-v2.5`:**
+
+- aproximar os 12 cenários oficiais das notas humanas do benchmark
+- descomprimir melhor a escala `0 a 1000`
+- preservar a arquitetura aprovada da `v2.4`
+
 #### Fase 4.2.8 — Simulador Inteligente
 
 **Status:** futura

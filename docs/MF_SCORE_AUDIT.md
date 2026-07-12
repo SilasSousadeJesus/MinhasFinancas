@@ -183,3 +183,55 @@ Depois desta refatoração conceitual, a próxima rodada deve:
 2. revisar a dominância relativa de `Liquidez e Reserva`;
 3. revisar a influência residual dos horizontes `30/90/180/365`;
 4. preservar a arquitetura da `v2.4`, salvo evidência futura de falha conceitual relevante.
+
+## Direção oficial da auditoria para a `v2.5`
+
+A auditoria consolidada da `v2.4` passa a reconhecer o seguinte padrão:
+
+- `Fluxo de Caixa` continua excessivamente severo em cenários saudáveis ou recuperáveis;
+- `Liquidez e Reserva` é hoje a maior fonte de divergência entre motor e benchmark humano;
+- os extremos da escala ainda estão comprimidos;
+- a arquitetura do motor continua correta, mas a sensibilidade numérica ainda não está madura.
+
+### Leitura oficial da divergência atual
+
+1. `Liquidez e Reserva` tende a exigir uma reserva muito próxima da ideal para conceder notas realmente boas.
+2. `Fluxo de Caixa` ainda derruba demais cenários com organização razoável, pouca folga e ausência de ruptura.
+3. `Endividamento e Obrigações` ainda precisa distinguir melhor dívida organizada de risco equivalente à inadimplência.
+4. as penalizações críticas existentes ainda achatam demais a base da escala em alguns cenários ruins, porém não terminais.
+
+### Diretriz de execução da próxima sprint
+
+A próxima sprint do MF Score deverá ser tratada como **calibração fina numérica**.
+
+Ela não deverá:
+
+- criar novos indicadores;
+- criar novos pilares;
+- alterar a arquitetura do motor;
+- criar novas penalizações.
+
+Ela deverá atuar apenas em:
+
+- curvas;
+- pesos finos;
+- faixas qualitativas;
+- severidade relativa das penalizações já existentes.
+
+### Ordem prioritária de atuação
+
+Com base na evidência dos cenários auditados, a ordem oficial de impacto passa a ser:
+
+1. `Liquidez e Reserva`
+2. `Fluxo de Caixa`
+3. `Endividamento e Obrigações`
+4. compressão das penalizações
+
+### Critério de fechamento da `v2.5`
+
+A `v2.5` só deverá ser considerada concluída quando:
+
+1. os 12 cenários oficiais forem rerrodados;
+2. o benchmark for comparado automaticamente;
+3. for medido quantos cenários entraram na faixa aceitável;
+4. a documentação registrar claramente quais divergências restantes ainda exigem nova calibração.

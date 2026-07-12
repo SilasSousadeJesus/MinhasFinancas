@@ -28,6 +28,8 @@ O projeto passa a manter também `docs/MF_SCORE_BENCHMARK.md`, que registra a ex
 
 A auditoria oficial da versão `mf-score-v2.4-1000` concluiu que a arquitetura do motor está madura e aprovada. A próxima etapa oficial do MF Score deixa de ser revisão estrutural e passa a ser calibração fina numérica guiada obrigatoriamente pelo benchmark dos 12 cenários.
 
+A sprint oficial `mf-score-v2.5` foi registrada como rodada exclusiva de calibração fina numérica, com prioridade de atuação em `Liquidez e Reserva`, depois `Fluxo de Caixa`, depois `Endividamento e Obrigações` e, por fim, compressão das penalizações, sem criação de novos indicadores, pilares ou penalizações.
+
 Além da suíte conceitual, o projeto agora possui uma auditoria operacional interna do `MF Score`, exposta apenas em desenvolvimento por `POST /api/MfScoreAuditoria/GerarPlanilha`, que monta personas sintéticas em memória, executa o motor oficial (`ContextoAnaliseFinanceira -> IndicadoresFinanceirosService -> SaudeFinanceiraService`) e devolve uma planilha `.xlsx` de conferência.
 
 O projeto passa a ter também uma segunda auditoria interna, `POST /api/MfScoreAuditoria/GerarPlanilhaAuditoriaHumana`, voltada para avaliação humana cega das personas. Ela não aprova nem reprova automaticamente o motor; serve para documentar a nota que um consultor daria e transformar essa leitura em futuros padrões oficiais.
