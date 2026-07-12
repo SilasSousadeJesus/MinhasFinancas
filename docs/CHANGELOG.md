@@ -4,6 +4,11 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 12/07/2026
 
+- Evolução do `Laboratório do MF Score` para funcionar como ferramenta oficial de calibração da sprint da `v2.4`, sem alterar pesos, fórmulas, indicadores, penalizações ou regras do motor.
+- Criação da nova seção `Análise de Calibração` dentro da própria tela `/mf-score-laboratorio`.
+- Integração automática do laboratório com `docs/MF_SCORE_BENCHMARK.md`, usando o código do cenário sintético aberto para carregar nota humana, faixa aceitável, diferença registrada, status e contexto oficial da auditoria.
+- Inclusão de leitura qualitativa por pilar, lista ordenada de indicadores que puxaram a nota para baixo, principais pontos positivos, diagnóstico final e recomendação textual para a próxima rodada de calibração.
+
 - Consolidação da Primeira Rodada de Referência Humana do Benchmark do MF Score em `docs/MF_SCORE_BENCHMARK.md`.
 - Registro oficial, por cenário, de nota humana de referência, faixa aceitável, diferença entre score atual e expectativa humana, status, justificativa e decisão de auditoria.
 - Formalização dos achados consolidados da auditoria humana da `v2.4`, incluindo aprovação arquitetural do motor, severidade excessiva em perfis saudáveis ou recuperáveis e perda de granularidade na base da escala.

@@ -34,6 +34,7 @@ using MinhasFinancas.Infra.IA.Provedores;
 using MinhasFinancas.Infra.Reports.Excel;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
+using minhas_financas_back_end.Services;
 
 namespace minhas_financas_back_end
 {
@@ -154,6 +155,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<IMfScoreAuditoriaAppService, MfScoreAuditoriaAppService>();
             builder.Services.AddScoped<IMfScorePersonaAppService, MfScorePersonaAppService>();
             builder.Services.AddScoped<IMfScoreLaboratorioAppService, MfScoreLaboratorioAppService>();
+            builder.Services.AddScoped<IBenchmarkMfScoreService, BenchmarkMfScoreService>();
             builder.Services.AddScoped<IMfScorePersonaRepository, MfScorePersonaRepository>();
             builder.Services.AddScoped<IDashboardAppService, DashboardAppService>();
             builder.Services.AddScoped<IRelatoriosAppService, RelatoriosAppService>();

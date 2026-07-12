@@ -110,6 +110,41 @@ export interface DadosEntradaMfScoreLaboratorio {
   notaCompromissosFinanceiros?: number | null;
 }
 
+export interface BenchmarkCenarioMfScoreLaboratorio {
+  codigoCenario: string;
+  nomeCenario: string;
+  notaHumanaReferencia: number;
+  faixaAceitavelMinima: number;
+  faixaAceitavelMaxima: number;
+  faixaAceitavelTexto: string;
+  diferencaRegistrada: number;
+  status: string;
+  justificativaHumana: string;
+  indicadoresResponsaveis: string[];
+  decisaoAuditoria: string;
+}
+
+export interface AnalisePilarCalibracaoMfScoreLaboratorio {
+  codigoPilar: string;
+  nomePilar: string;
+  notaPilar: number;
+  diagnostico: string;
+}
+
+export interface AnaliseCalibracaoMfScoreLaboratorio {
+  disponivel: boolean;
+  mensagem: string;
+  benchmark?: BenchmarkCenarioMfScoreLaboratorio | null;
+  diferencaAtual?: number | null;
+  dentroDaFaixaEsperada: boolean;
+  situacaoFaixa: string;
+  analisesPilares: AnalisePilarCalibracaoMfScoreLaboratorio[];
+  indicadoresQuePuxaramParaBaixo: string[];
+  principaisPontosPositivos: string[];
+  diagnosticoFinal: string;
+  recomendacaoProximaCalibracao: string;
+}
+
 export interface MfScoreLaboratorioDetalhe {
   usuario: UsuarioMfScoreLaboratorio;
   versaoModelo: string;
@@ -128,4 +163,5 @@ export interface MfScoreLaboratorioDetalhe {
   regrasCriticasAplicadas: string[];
   dadosEntrada: DadosEntradaMfScoreLaboratorio;
   observacoesLimitacoes: string[];
+  analiseCalibracao: AnaliseCalibracaoMfScoreLaboratorio;
 }

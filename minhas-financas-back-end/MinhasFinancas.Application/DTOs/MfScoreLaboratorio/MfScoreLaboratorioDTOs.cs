@@ -140,5 +140,44 @@ namespace MinhasFinancas.Application.DTOs.MfScoreLaboratorio
         public List<string> RegrasCriticasAplicadas { get; set; } = [];
         public DadosEntradaMfScoreLaboratorioDTO DadosEntrada { get; set; } = new();
         public List<string> ObservacoesLimitacoes { get; set; } = [];
+        public AnaliseCalibracaoMfScoreLaboratorioDTO AnaliseCalibracao { get; set; } = new();
+    }
+
+    public class BenchmarkCenarioMfScoreLaboratorioDTO
+    {
+        public string CodigoCenario { get; set; } = string.Empty;
+        public string NomeCenario { get; set; } = string.Empty;
+        public int NotaHumanaReferencia { get; set; }
+        public int FaixaAceitavelMinima { get; set; }
+        public int FaixaAceitavelMaxima { get; set; }
+        public string FaixaAceitavelTexto { get; set; } = string.Empty;
+        public int DiferencaRegistrada { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string JustificativaHumana { get; set; } = string.Empty;
+        public List<string> IndicadoresResponsaveis { get; set; } = [];
+        public string DecisaoAuditoria { get; set; } = string.Empty;
+    }
+
+    public class AnalisePilarCalibracaoMfScoreLaboratorioDTO
+    {
+        public string CodigoPilar { get; set; } = string.Empty;
+        public string NomePilar { get; set; } = string.Empty;
+        public int NotaPilar { get; set; }
+        public string Diagnostico { get; set; } = string.Empty;
+    }
+
+    public class AnaliseCalibracaoMfScoreLaboratorioDTO
+    {
+        public bool Disponivel { get; set; }
+        public string Mensagem { get; set; } = string.Empty;
+        public BenchmarkCenarioMfScoreLaboratorioDTO? Benchmark { get; set; }
+        public int? DiferencaAtual { get; set; }
+        public bool DentroDaFaixaEsperada { get; set; }
+        public string SituacaoFaixa { get; set; } = string.Empty;
+        public List<AnalisePilarCalibracaoMfScoreLaboratorioDTO> AnalisesPilares { get; set; } = [];
+        public List<string> IndicadoresQuePuxaramParaBaixo { get; set; } = [];
+        public List<string> PrincipaisPontosPositivos { get; set; } = [];
+        public string DiagnosticoFinal { get; set; } = string.Empty;
+        public string RecomendacaoProximaCalibracao { get; set; } = string.Empty;
     }
 }

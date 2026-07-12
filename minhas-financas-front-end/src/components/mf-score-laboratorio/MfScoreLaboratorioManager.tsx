@@ -420,13 +420,186 @@ export function MfScoreLaboratorioManager() {
                       </div>
                     </div>
 
-                    <div className="grid gap-4 md:grid-cols-5">
+                    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
                       <ResumoNumero titulo="MF Score base" valor={String(detalhe.mfScoreBase)} />
                       <ResumoNumero titulo="MF Score final" valor={String(detalhe.mfScoreFinal)} />
                       <ResumoNumero titulo="Classificação" valor={detalhe.classificacao} />
                       <ResumoNumero titulo="Risco" valor={detalhe.risco} />
                       <ResumoNumero titulo="Penalidade total" valor={numero.format(detalhe.penalidadeTotal)} />
                     </div>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Análise de calibração</CardTitle>
+                        <CardDescription>
+                          Camada interpretativa do laboratório usada para comparar o score calculado com a referência humana do
+                          benchmark oficial, sem alterar nenhuma regra do motor.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        {!detalhe.analiseCalibracao?.disponivel || !detalhe.analiseCalibracao.benchmark ? (
+                          <EstadoVazioInterno
+                            texto={
+                              detalhe.analiseCalibracao?.mensagem ||
+                              "A análise de calibração não está disponível para este usuário."
+                            }
+                          />
+                        ) : (
+                          <>
+                            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                              <ResumoNumero
+                                titulo="Nota esperada"
+                                valor={String(detalhe.analiseCalibracao.benchmark.notaHumanaReferencia)}
+                              />
+                              <ResumoNumero
+                                titulo="Faixa aceitável"
+                                valor={detalhe.analiseCalibracao.benchmark.faixaAceitavelTexto}
+                              />
+                              <ResumoNumero
+                                titulo="Diferença atual"
+                                valor={formatarDiferenca(detalhe.analiseCalibracao.diferencaAtual ?? 0)}
+                              />
+                              <ResumoNumero
+                                titulo="Diferença registrada"
+                                valor={formatarDiferenca(detalhe.analiseCalibracao.benchmark.diferencaRegistrada)}
+                              />
+                              <ResumoNumero
+                                titulo="Status do benchmark"
+                                valor={detalhe.analiseCalibracao.benchmark.status}
+                              />
+                            </div>
+
+                            <div className="flex flex-wrap gap-2">
+                              <Badge variant={obterVariantStatusBenchmark(detalhe.analiseCalibracao.benchmark.status)}>
+                                {detalhe.analiseCalibracao.benchmark.status}
+                              </Badge>
+                              <Badge variant={detalhe.analiseCalibracao.dentroDaFaixaEsperada ? "default" : "outline"}>
+                                {detalhe.analiseCalibracao.situacaoFaixa}
+                              </Badge>
+                            </div>
+
+                            <div className="grid gap-6 xl:grid-cols-2">
+                              <Card className="border-dashed">
+                                <CardHeader className="pb-3">
+                                  <CardTitle className="text-base">Análise por pilar</CardTitle>
+                                  <CardDescription>
+                                    Leitura qualitativa dos pilares que mais ajudam a explicar a diferença para a nota esperada.
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
+                                  {detalhe.analiseCalibracao.analisesPilares.length === 0 ? (
+                                    <EstadoVazioInterno texto="Nenhuma análise por pilar foi gerada." />
+                                  ) : (
+                                    detalhe.analiseCalibracao.analisesPilares.map((pilar) => (
+                                      <div key={pilar.codigoPilar} className="rounded-lg border px-4 py-3">
+                                        <div className="flex items-center justify-between gap-3">
+                                          <p className="font-medium">{pilar.nomePilar}</p>
+                                          <Badge variant="outline">Nota {pilar.notaPilar}</Badge>
+                                        </div>
+                                        <p className="mt-2 text-sm text-muted-foreground">{pilar.diagnostico}</p>
+                                      </div>
+                                    ))
+                                  )}
+                                </CardContent>
+                              </Card>
+
+                              <Card className="border-dashed">
+                                <CardHeader className="pb-3">
+                                  <CardTitle className="text-base">Referência humana do benchmark</CardTitle>
+                                  <CardDescription>
+                                    Contexto oficial adotado pelo projeto para auditar este cenário sintético.
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-3 text-sm">
+                                  <p className="text-muted-foreground">
+                                    <span className="font-medium text-foreground">Justificativa humana:</span>{" "}
+                                    {detalhe.analiseCalibracao.benchmark.justificativaHumana}
+                                  </p>
+                                  <p className="text-muted-foreground">
+                                    <span className="font-medium text-foreground">Decisão da auditoria:</span>{" "}
+                                    {detalhe.analiseCalibracao.benchmark.decisaoAuditoria}
+                                  </p>
+                                  <div className="space-y-2">
+                                    <p className="font-medium">Indicadores responsáveis no benchmark</p>
+                                    {detalhe.analiseCalibracao.benchmark.indicadoresResponsaveis.length === 0 ? (
+                                      <EstadoVazioInterno texto="Nenhum indicador responsável foi registrado no benchmark." />
+                                    ) : (
+                                      <ul className="space-y-1 text-muted-foreground">
+                                        {detalhe.analiseCalibracao.benchmark.indicadoresResponsaveis.map((item) => (
+                                          <li key={item}>• {item}</li>
+                                        ))}
+                                      </ul>
+                                    )}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </div>
+
+                            <div className="grid gap-6 xl:grid-cols-2">
+                              <Card>
+                                <CardHeader>
+                                  <CardTitle className="text-base">Indicadores que mais puxaram para baixo</CardTitle>
+                                  <CardDescription>
+                                    Lista ordenada dos sinais que mais pressionaram a nota do cenário na leitura atual.
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                  {detalhe.analiseCalibracao.indicadoresQuePuxaramParaBaixo.length === 0 ? (
+                                    <EstadoVazioInterno texto="Nenhum indicador negativo relevante foi identificado para este cenário." />
+                                  ) : (
+                                    <ol className="space-y-2 text-sm">
+                                      {detalhe.analiseCalibracao.indicadoresQuePuxaramParaBaixo.map((item, index) => (
+                                        <li key={item}>
+                                          {index + 1}. {item}
+                                        </li>
+                                      ))}
+                                    </ol>
+                                  )}
+                                </CardContent>
+                              </Card>
+
+                              <Card>
+                                <CardHeader>
+                                  <CardTitle className="text-base">Principais pontos positivos</CardTitle>
+                                  <CardDescription>
+                                    Sinais que sustentaram a nota do cenário e ajudam a separar fragilidade de colapso.
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                  {detalhe.analiseCalibracao.principaisPontosPositivos.length === 0 ? (
+                                    <EstadoVazioInterno texto="Nenhum ponto positivo relevante foi identificado para este cenário." />
+                                  ) : (
+                                    <ol className="space-y-2 text-sm">
+                                      {detalhe.analiseCalibracao.principaisPontosPositivos.map((item, index) => (
+                                        <li key={item}>
+                                          {index + 1}. {item}
+                                        </li>
+                                      ))}
+                                    </ol>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            </div>
+
+                            <Card className="border-dashed">
+                              <CardHeader className="pb-3">
+                                <CardTitle className="text-base">Diagnóstico final</CardTitle>
+                                <CardDescription>
+                                  Parecer automático do laboratório para orientar a próxima rodada de calibração da `v2.5`.
+                                </CardDescription>
+                              </CardHeader>
+                              <CardContent className="space-y-3 text-sm">
+                                <p className="text-muted-foreground">{detalhe.analiseCalibracao.diagnosticoFinal}</p>
+                                <p className="text-muted-foreground">
+                                  <span className="font-medium text-foreground">Recomendação para a próxima calibração:</span>{" "}
+                                  {detalhe.analiseCalibracao.recomendacaoProximaCalibracao}
+                                </p>
+                              </CardContent>
+                            </Card>
+                          </>
+                        )}
+                      </CardContent>
+                    </Card>
 
                     <div className="grid gap-4 xl:grid-cols-[1.1fr_1fr]">
                       <Card className="border-dashed">
@@ -708,9 +881,9 @@ function BlocoTabela({
 
 function ResumoNumero({ titulo, valor }: { titulo: string; valor: string }) {
   return (
-    <div className="rounded-lg border px-4 py-4">
-      <p className="text-sm text-muted-foreground">{titulo}</p>
-      <p className="mt-2 text-2xl font-semibold tracking-tight">{valor}</p>
+    <div className="flex min-h-36 flex-col justify-between rounded-lg border px-4 py-4">
+      <p className="text-sm leading-6 text-muted-foreground">{titulo}</p>
+      <p className="mt-3 break-words text-2xl font-semibold leading-tight tracking-tight md:text-3xl">{valor}</p>
     </div>
   );
 }
@@ -788,6 +961,18 @@ function formatarDirecao(direcao: string) {
   }
 }
 
+function formatarDiferenca(valor: number) {
+  if (valor > 0) {
+    return `+${numero.format(valor)} pontos`;
+  }
+
+  if (valor < 0) {
+    return `${numero.format(valor)} pontos`;
+  }
+
+  return "0 pontos";
+}
+
 function obterVariantStatusIndicador(status: string): "default" | "secondary" | "destructive" | "outline" {
   switch (status) {
     case "Excelente":
@@ -799,6 +984,22 @@ function obterVariantStatusIndicador(status: string): "default" | "secondary" | 
     default:
       return "outline";
   }
+}
+
+function obterVariantStatusBenchmark(status: string): "default" | "secondary" | "destructive" | "outline" {
+  if (status === "Aprovado") {
+    return "default";
+  }
+
+  if (status === "Aprovado com ressalvas") {
+    return "secondary";
+  }
+
+  if (status === "CenÃ¡rio invÃ¡lido") {
+    return "destructive";
+  }
+
+  return "outline";
 }
 
 function obterVariantClassificacao(classificacao: string): "default" | "secondary" | "destructive" | "outline" {
