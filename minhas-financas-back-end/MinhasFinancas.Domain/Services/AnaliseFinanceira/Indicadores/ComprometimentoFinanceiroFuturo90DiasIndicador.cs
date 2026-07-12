@@ -25,9 +25,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 PercentualComprometimento = dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual,
                 Status = ResolutorStatusIndicadorFinanceiro.ResolverFaixaDecrescente(
                     dadosReferencia.ComprometimentoFinanceiroFuturo90DiasAtual,
-                    35m,
-                    55m,
-                    80m),
+                    70m,
+                    95m,
+                    110m),
                 Descricao = "Percentual da renda prevista para os próximos 90 dias que já está comprometido por despesas e obrigações futuras.",
                 Observacao = percentualMaximo > 0m
                     ? $"Considera {dadosReferencia.ObrigacoesFinanceirasFuturas90Dias:N2} em obrigações futuras sobre {dadosReferencia.ReceitaPrevista90Dias:N2} de receita prevista para os próximos 90 dias."

@@ -4,6 +4,14 @@ Registrar aqui apenas mudancas relevantes do sistema.
 
 ## 12/07/2026
 
+- Conclusão da sprint `mf-score-v2.5-1000`, mantendo a arquitetura da `v2.4` congelada e atuando apenas em calibração numérica.
+- Recalibração do pilar `Liquidez e Reserva` para reconhecer melhor reserva parcialmente formada e capacidade real de construção.
+- Recalibração do pilar `Fluxo de Caixa`, reduzindo severidade excessiva em perfis organizados com pouca folga operacional.
+- Recalibração do pilar `Endividamento e Obrigações`, distinguindo melhor dívida organizada, exposição patrimonial e pressão futura controlável.
+- Redução da severidade das penalizações já existentes (`persistência de fluxo negativo`, `patrimônio líquido negativo`, `inadimplência` e `cura recente`), sem criar novas penalizações.
+- Rerrodada oficial dos 12 cenários do benchmark ao final de cada bloco, com evolução de `1/12` para `4/12` cenários dentro da faixa aceitável e queda da diferença média absoluta de `205` para `102,5` pontos.
+- Atualização da versão oficial do modelo para `mf-score-v2.5-1000`.
+
 - Formalização da diretriz oficial da sprint `mf-score-v2.5`, deixando a `v2.4` congelada conceitualmente e restringindo a próxima rodada a calibração fina numérica.
 - Registro documental da ordem oficial de atuação na `v2.5`: `Liquidez e Reserva`, `Fluxo de Caixa`, `Endividamento e Obrigações` e compressão das penalizações.
 - Sincronização de `docs/MF_SCORE.md`, `docs/MF_SCORE_AUDIT.md`, `docs/ROADMAP.md` e `AI_CONTEXT.md` para refletir que a próxima sprint do MF Score não deve criar novos indicadores, pilares, arquitetura ou penalizações.

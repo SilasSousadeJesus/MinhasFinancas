@@ -54,6 +54,13 @@ Os cenários do laboratório continuam sendo a referência oficial de validaçã
 
 A primeira rodada humana oficial já está consolidada em `docs/MF_SCORE_BENCHMARK.md`. Esse benchmark passa a registrar, além do score produzido, a nota humana de referência, a faixa aceitável, a diferença observada e o status de cada um dos 12 cenários.
 
+Após a implementação da `mf-score-v2.5-1000`, a validação oficial também passa a registrar a evolução por bloco da sprint numérica:
+
+- `bloco 1`: `1/12` dentro da faixa;
+- `bloco 2`: `2/12` dentro da faixa;
+- `bloco 3`: `2/12` dentro da faixa;
+- `bloco 4`: `4/12` dentro da faixa.
+
 Nesta rodada, eles devem ser usados para verificar se a versão `mf-score-v2.4-1000` corrigiu os principais problemas conceituais identificados na auditoria:
 
 - mistura entre dívida de consumo e financiamento patrimonial;
@@ -167,3 +174,9 @@ Com isso:
 - a arquitetura da `v2.4` passa a ser considerada estável;
 - o benchmark oficial dos 12 cenários passa a ser obrigatório em qualquer evolução futura;
 - a próxima etapa de validação deixa de buscar redesenho estrutural e passa a focar calibração fina numérica.
+
+Com a conclusão da `v2.5`, a validação passa a exigir também:
+
+- comparação antes/depois por bloco de calibração;
+- medição explícita da diferença média absoluta em relação ao benchmark;
+- registro formal das regressões e das melhoras antes de iniciar qualquer `v2.6`.

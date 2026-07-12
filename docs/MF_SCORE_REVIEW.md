@@ -48,10 +48,20 @@ O projeto não aceitou automaticamente:
 
 ## O que ainda não foi promovido para regra definitiva
 
-- calibração numérica final das notas por cenário;
-- consolidação quantitativa refinada da versão `mf-score-v2.4-1000` no benchmark oficial;
+- consolidação quantitativa refinada da versão `mf-score-v2.5-1000` no benchmark oficial;
 - decisão final sobre eventual nova redução de peso dos horizontes `90/180/365`;
 - amadurecimento de cura e reincidência da inadimplência em horizonte histórico mais rico.
+
+## Situação após a `mf-score-v2.5-1000`
+
+A `v2.5` concluiu a primeira sprint oficial de calibração numérica sem reabrir discussão arquitetural.
+
+Resultado resumido:
+
+- a diferença média absoluta contra o benchmark caiu de `205` para `102,5` pontos;
+- o total de cenários dentro da faixa aceitável subiu de `1/12` para `4/12`;
+- a principal melhora ocorreu na leitura de perfis saudáveis, organizados e em construção de reserva;
+- a principal lacuna remanescente continua na base da escala e nos cenários com fluxo persistentemente negativo.
 
 ## Posição oficial sobre complexidade adicional
 

@@ -347,10 +347,17 @@ A IA apenas comunica o conhecimento produzido por esse motor.
 - conclusão da primeira auditoria humana completa da `mf-score-v2.4-1000`, aprovando a arquitetura do motor
 - promoção do `docs/MF_SCORE_BENCHMARK.md` à condição de benchmark oficial obrigatório para qualquer evolução futura do MF Score
 
+**Sprint `mf-score-v2.5` concluída:**
+
+- recalibração numérica executada em quatro blocos: `Liquidez e Reserva`, `Fluxo de Caixa`, `Endividamento e Obrigações` e penalizações
+- melhoria de `1/12` para `4/12` cenários dentro da faixa aceitável do benchmark
+- redução da diferença média absoluta de `205` para `102,5` pontos
+
 **Próxima rodada oficial dentro da Fase 4.2.7:**
 
-- recalibrar numericamente notas, faixas e pesos finos com base no benchmark oficial dos 12 cenários
-- reavaliar a influência residual dos horizontes `30/90/180/365`
+- amadurecer a base inferior da escala, principalmente em cenários com fluxo persistentemente negativo
+- recalibrar diferenças remanescentes de `Liquidez e Reserva` em perfis ainda recuperáveis
+- revisar cura e reincidência de inadimplência sem reabrir discussão estrutural do motor
 
 **Diretriz oficial da sprint `mf-score-v2.5`:**
 

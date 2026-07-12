@@ -21,8 +21,8 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 Status = ResolutorStatusIndicadorFinanceiro.ResolverFaixaCrescente(
                     dadosReferencia.CoberturaReservaEmMeses,
                     6m,
-                    4m,
-                    2m),
+                    3m,
+                    1m),
                 Descricao = "Valor atual reservado em ativos líquidos, considerando dinheiro em conta e investimentos.",
                 Observacao = dadosReferencia.ReservaEmergenciaAtual <= 0 && dadosReferencia.PossuiCapacidadeFormacaoReserva
                     ? $"Cobertura atual estimada: {dadosReferencia.CoberturaReservaEmMeses:N2} mês(es) de despesas. Apesar da reserva zerada, a formação projetada pode acontecer em cerca de {dadosReferencia.MesesParaFormarReservaIdeal:N2} mês(es) com a sobra mensal atual."

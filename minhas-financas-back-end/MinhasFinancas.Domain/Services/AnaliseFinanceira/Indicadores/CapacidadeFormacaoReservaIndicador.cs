@@ -5,9 +5,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
 {
     public class CapacidadeFormacaoReservaIndicador : ICalculadorIndicadorFinanceiro
     {
-        private const decimal MesesExcelente = 3m;
-        private const decimal MesesBom = 6m;
-        private const decimal MesesAtencao = 12m;
+        private const decimal MesesExcelente = 4m;
+        private const decimal MesesBom = 8m;
+        private const decimal MesesAtencao = 18m;
         private const decimal ValorNaoProjetavel = 999m;
 
         public CodigoIndicadorFinanceiro Codigo => CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva;

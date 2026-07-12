@@ -14,7 +14,7 @@ O modelo não mede apenas riqueza, disciplina subjetiva ou comportamento de cré
 - situação patrimonial real;
 - qualidade do planejamento e da execução.
 
-Na versão atual do motor, `mf-score-v2.4-1000`, o objetivo principal passou a ser corrigir distorções conceituais identificadas na auditoria completa do laboratório, preservando a arquitetura oficial do Motor Financeiro.
+Na versão atual do motor, `mf-score-v2.5-1000`, o objetivo principal passou a ser preservar a arquitetura oficial do Motor Financeiro e recalibrar numericamente sua sensibilidade com base no benchmark oficial.
 
 A auditoria oficial posterior ao benchmark concluiu que a arquitetura da `v2.4` deve ser preservada. A partir deste ponto, novas evoluções do MF Score devem priorizar calibração fina numérica, e não novos redesenhos estruturais, salvo se uma auditoria futura demonstrar falha conceitual relevante.
 
@@ -415,3 +415,30 @@ Ao final da sprint `v2.5`, o projeto deverá:
 2. comparar automaticamente os resultados com `docs/MF_SCORE_BENCHMARK.md`;
 3. medir quantos cenários passaram a ficar dentro da faixa aceitável;
 4. registrar formalmente quais pilares continuam divergentes antes de qualquer rodada posterior.
+
+## Fechamento da sprint `mf-score-v2.5-1000`
+
+A `v2.5` foi concluída sem criação de novos indicadores, novos pilares ou novas penalizações.
+
+Os quatro blocos executados foram:
+
+1. `Liquidez e Reserva`
+2. `Fluxo de Caixa`
+3. `Endividamento e Obrigações`
+4. penalizações e descompressão da base numérica
+
+Resultado oficial da auditoria da sprint:
+
+- `bloco 1`: `1/12` cenários dentro da faixa, diferença média absoluta de `205` pontos;
+- `bloco 2`: `2/12` cenários dentro da faixa, diferença média absoluta de `177,5` pontos;
+- `bloco 3`: `2/12` cenários dentro da faixa, diferença média absoluta de `159,17` pontos;
+- `bloco 4`: `4/12` cenários dentro da faixa, diferença média absoluta de `102,5` pontos.
+
+Mudanças numéricas consolidadas na `v2.5`:
+
+- `Liquidez e Reserva` passou a reconhecer melhor reserva parcialmente formada e capacidade real de construção;
+- `Fluxo de Caixa` ficou menos severo em perfis organizados com pouca folga, sem aliviar cenários com ruptura;
+- `Endividamento e Obrigações` passou a diferenciar melhor dívida organizada, exposição patrimonial e pressão futura controlável;
+- as penalizações existentes deixaram de colapsar tão cedo cenários ruins, mas ainda recuperáveis.
+
+A próxima rodada oficial deve continuar sendo de calibração fina, com foco nas divergências remanescentes da base da escala e dos cenários de fluxo persistentemente negativo.

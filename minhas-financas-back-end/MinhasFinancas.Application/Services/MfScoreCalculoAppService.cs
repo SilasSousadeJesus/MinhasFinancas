@@ -10,7 +10,7 @@ namespace MinhasFinancas.Application.Services
 {
     public class MfScoreCalculoAppService : IMfScoreCalculoAppService
     {
-        public const string VersaoModeloAtual = "mf-score-v2.4-1000";
+        public const string VersaoModeloAtual = "mf-score-v2.5-1000";
 
         private readonly IAnaliseFinanceiraAppService _analiseFinanceiraAppService;
         private readonly ISaudeFinanceiraService _saudeFinanceiraService;

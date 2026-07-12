@@ -588,6 +588,30 @@ Fica consolidado que:
 - mudanças estruturais só devem voltar à pauta mediante nova evidência de falha conceitual relevante;
 - o benchmark oficial dos 12 cenários passa a ser o principal instrumento de regressão comportamental do motor.
 
+## 11. Status após implementação da versão `mf-score-v2.5-1000`
+
+A `v2.5` executou a primeira rodada oficial de calibração numérica prevista por esta consolidação.
+
+Ela não alterou:
+
+- a arquitetura do motor;
+- os cinco pilares;
+- o benchmark humano como régua oficial;
+- a filosofia de risco moderado.
+
+Ela alterou apenas a sensibilidade numérica de:
+
+- `Liquidez e Reserva`;
+- `Fluxo de Caixa`;
+- `Endividamento e Obrigações`;
+- penalizações já existentes.
+
+Resultado consolidado da sprint:
+
+- melhora de `1/12` para `4/12` cenários dentro da faixa aceitável;
+- redução da diferença média absoluta de `205` para `102,5` pontos;
+- confirmação prática de que a próxima rodada ainda deve permanecer incremental, auditável e sem reescrita estrutural.
+
 ---
 
 ## Complemento oficial - calibragem de falso positivo em perfis iniciantes

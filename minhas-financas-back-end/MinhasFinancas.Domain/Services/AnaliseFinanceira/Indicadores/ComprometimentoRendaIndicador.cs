@@ -20,9 +20,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira.Indicadores
                 Percentual = percentualMaximo > 0 ? (dadosReferencia.ComprometimentoRendaAtual / percentualMaximo) * 100m : 0m,
                 Status = ResolutorStatusIndicadorFinanceiro.ResolverFaixaDecrescente(
                     dadosReferencia.ComprometimentoRendaAtual,
-                    20m,
-                    35m,
-                    50m),
+                    55m,
+                    75m,
+                    95m),
                 Descricao = "Mostra quanto da renda mensal já está comprometido com despesas no mês atual.",
                 Observacao = percentualMaximo > 0
                     ? $"Limite configurado no perfil financeiro: {percentualMaximo:N2}% da renda."

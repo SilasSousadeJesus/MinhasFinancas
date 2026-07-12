@@ -13,7 +13,7 @@ Ele responde:
 
 O `MF Score` continua sendo o modelo oficial de saúde financeira do sistema.
 
-Na versão atual, `mf-score-v2.4-1000`, o motor preserva:
+Na versão atual, `mf-score-v2.5-1000`, o motor preserva:
 
 - cinco pilares;
 - escala final de `0 a 1000`;
@@ -174,6 +174,22 @@ O `MF Score` hoje está:
 - historizado;
 - governado por documentação própria;
 - pronto para a próxima rodada operacional de calibração da versão `mf-score-v2.4-1000`.
+
+## Resultado oficial da sprint `mf-score-v2.5`
+
+A sprint `v2.5` confirmou a leitura da auditoria da `v2.4`: a arquitetura estava correta, mas a sensibilidade numérica ainda precisava amadurecer.
+
+Resultado consolidado:
+
+- saída de `1/12` para `4/12` cenários dentro da faixa aceitável;
+- redução da diferença média absoluta de `205` para `102,5` pontos;
+- melhora relevante em `MF-CENARIO-01`, `MF-CENARIO-05`, `MF-CENARIO-09` e nos cenários intermediários de renda organizada.
+
+As divergências remanescentes ficaram concentradas em:
+
+- cenários com fluxo persistentemente negativo por longos períodos;
+- base inferior da escala ainda comprimida em alguns casos recuperáveis;
+- necessidade de ajuste fino adicional em `Liquidez e Reserva` e na tradução final dos cenários de meia nota.
 
 ## Próxima rodada oficial
 

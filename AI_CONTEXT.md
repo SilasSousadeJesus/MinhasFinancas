@@ -26,9 +26,9 @@ Existe também uma suíte oficial de validação documentada em `docs/MF_SCORE_V
 
 O projeto passa a manter também `docs/MF_SCORE_BENCHMARK.md`, que registra a expectativa humana oficial para os 12 cenários da Base Oficial de Simulação e se torna a principal referência de regressão comportamental do motor. A primeira rodada humana oficial do benchmark já foi consolidada e confirmou a arquitetura da `v2.4`, marcando `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09` como cenários ainda inválidos para calibração definitiva.
 
-A auditoria oficial da versão `mf-score-v2.4-1000` concluiu que a arquitetura do motor está madura e aprovada. A próxima etapa oficial do MF Score deixa de ser revisão estrutural e passa a ser calibração fina numérica guiada obrigatoriamente pelo benchmark dos 12 cenários.
+A auditoria oficial da versão `mf-score-v2.4-1000` concluiu que a arquitetura do motor está madura e aprovada. A etapa seguinte foi a sprint `mf-score-v2.5-1000`, dedicada exclusivamente à calibração numérica guiada obrigatoriamente pelo benchmark dos 12 cenários.
 
-A sprint oficial `mf-score-v2.5` foi registrada como rodada exclusiva de calibração fina numérica, com prioridade de atuação em `Liquidez e Reserva`, depois `Fluxo de Caixa`, depois `Endividamento e Obrigações` e, por fim, compressão das penalizações, sem criação de novos indicadores, pilares ou penalizações.
+A sprint oficial `mf-score-v2.5` foi concluída como rodada exclusiva de calibração fina numérica, atuando em `Liquidez e Reserva`, depois `Fluxo de Caixa`, depois `Endividamento e Obrigações` e, por fim, recalibração das penalizações. O pacote melhorou a convergência do benchmark sem criar novos indicadores, pilares ou penalizações.
 
 Além da suíte conceitual, o projeto agora possui uma auditoria operacional interna do `MF Score`, exposta apenas em desenvolvimento por `POST /api/MfScoreAuditoria/GerarPlanilha`, que monta personas sintéticas em memória, executa o motor oficial (`ContextoAnaliseFinanceira -> IndicadoresFinanceirosService -> SaudeFinanceiraService`) e devolve uma planilha `.xlsx` de conferência.
 
@@ -40,7 +40,7 @@ A antiga tela de personas foi refatorada para o `Laboratório do MF Score`, disp
 
 O `Laboratório do MF Score` agora também suporta a `Base Oficial de Simulação do MF Score`, com geração via `POST /api/MfScoreLaboratorio/GerarBaseSimulacao` e limpeza seletiva via `DELETE /api/MfScoreLaboratorio/LimparBaseSimulacao`. Os usuários sintéticos são persistidos com identificação explícita de origem, cenário, versão e data de geração para permitir filtros, auditoria e recriação da base.
 
-O `Laboratório do MF Score` agora também expõe uma seção de `Análise de Calibração`, construída sem alterar o algoritmo do motor. Essa seção cruza automaticamente o cenário sintético aberto com `docs/MF_SCORE_BENCHMARK.md` e explica nota esperada, faixa aceitável, diferença, leitura por pilar, principais indicadores negativos e positivos e um diagnóstico qualitativo para orientar a próxima calibração da `v2.5`.
+O `Laboratório do MF Score` agora também expõe uma seção de `Análise de Calibração`, construída sem alterar o algoritmo do motor. Essa seção cruza automaticamente o cenário sintético aberto com `docs/MF_SCORE_BENCHMARK.md` e explica nota esperada, faixa aceitável, diferença, leitura por pilar, principais indicadores negativos e positivos e um diagnóstico qualitativo para orientar a próxima calibração.
 
 `docs/MF_SCORE_AUDIT.md` deixou de ser apenas um resumo e passou a ser o documento oficial de governança técnica do Motor Financeiro, registrando cobertura, limitações conhecidas, achados de auditoria e dívida técnica.
 
@@ -280,7 +280,7 @@ ObservaÃ§Ã£o importante:
 - localizada em `MinhasFinancas.Domain/Services/AnaliseFinanceira`
 - `IndicadoresFinanceirosService` orquestra os cÃ¡lculos e devolve um painel reutilizÃ¡vel
 - cada indicador possui responsabilidade Ãºnica e implementaÃ§Ã£o isolada
-- a versão vigente do `MF Score` é `mf-score-v2.4-1000`
+- a versão vigente do `MF Score` é `mf-score-v2.5-1000`
 - a camada já foi refatorada conceitualmente para:
   - tratar `Fluxo de Caixa` como leitura operacional do mês
   - separar `Endividamento e Obrigações` entre dívida de consumo, financiamento patrimonial, obrigações recorrentes e inadimplência

@@ -94,10 +94,10 @@ Todos os indicadores usam a mesma escala de status:
 - **Pilar principal:** `Fluxo de Caixa`
 - **Posição conceitual oficial:** continua sendo leitura operacional do mês, não eixo principal de planejamento e nem sinônimo de dívida.
 - **Faixas oficiais:**
-  - `Excelente`: `<= 20%`
-  - `Bom`: `> 20% e <= 35%`
-  - `Atenção`: `> 35% e <= 50%`
-  - `Crítico`: `> 50%`
+  - `Excelente`: `<= 55%`
+  - `Bom`: `> 55% e <= 75%`
+  - `Atenção`: `> 75% e <= 95%`
+  - `Crítico`: `> 95%`
 
 ### Reserva de Emergência Atual
 
@@ -133,10 +133,10 @@ Todos os indicadores usam a mesma escala de status:
 - **Pilar principal:** `Endividamento e Obrigações`
 - **Campos auxiliares:** `ValorObrigacoesPrevistas`, `ValorReceitaPrevista`, `PercentualComprometimento`
 - **Faixas oficiais:**
-  - `Excelente`: `<= 25%`
-  - `Bom`: `> 25% e <= 40%`
-  - `Atenção`: `> 40% e <= 55%`
-  - `Crítico`: `> 55%`
+  - `Excelente`: `<= 60%`
+  - `Bom`: `> 60% e <= 85%`
+  - `Atenção`: `> 85% e <= 105%`
+  - `Crítico`: `> 105%`
 
 ### Pressão Financeira Acumulada - 90 dias
 
@@ -145,6 +145,11 @@ Todos os indicadores usam a mesma escala de status:
 - **Formato:** percentual
 - **Pilar principal:** `Endividamento e Obrigações`
 - **Leitura oficial:** complementa o curto prazo, sem substituí-lo.
+- **Faixas oficiais:**
+  - `Excelente`: `<= 70%`
+  - `Bom`: `> 70% e <= 95%`
+  - `Atenção`: `> 95% e <= 110%`
+  - `Crítico`: `> 110%`
 
 ### Pressão Financeira Acumulada - 180 dias
 
@@ -154,10 +159,10 @@ Todos os indicadores usam a mesma escala de status:
 - **Pilar principal:** `Endividamento e Obrigações`
 - **Regra qualitativa oficial:** percentuais acima de `100%` não podem ficar apenas em `Atenção`.
 - **Faixas oficiais:**
-  - `Excelente`: `<= 45%`
-  - `Bom`: `> 45% e <= 65%`
-  - `Atenção`: `> 65% e <= 100%`
-  - `Crítico`: `> 100%`
+  - `Excelente`: `<= 80%`
+  - `Bom`: `> 80% e <= 105%`
+  - `Atenção`: `> 105% e <= 120%`
+  - `Crítico`: `> 120%`
 
 ### Pressão Financeira Acumulada - 365 dias
 
@@ -167,10 +172,10 @@ Todos os indicadores usam a mesma escala de status:
 - **Pilar principal:** `Endividamento e Obrigações`
 - **Regra qualitativa oficial:** percentuais acima de `100%` não podem ficar apenas em `Atenção`.
 - **Faixas oficiais:**
-  - `Excelente`: `<= 50%`
-  - `Bom`: `> 50% e <= 75%`
-  - `Atenção`: `> 75% e <= 100%`
-  - `Crítico`: `> 100%`
+  - `Excelente`: `<= 85%`
+  - `Bom`: `> 85% e <= 110%`
+  - `Atenção`: `> 110% e <= 130%`
+  - `Crítico`: `> 130%`
 
 ### Exposição a Dívidas e Passivos
 
@@ -187,6 +192,14 @@ Todos os indicadores usam a mesma escala de status:
   - `Bom`: `> 15% e <= 30%`
   - `Atenção`: `> 30% e <= 50%`
   - `Crítico`: `> 50%`
+
+## Nota oficial da `v2.5`
+
+A versão `mf-score-v2.5-1000` não criou novos indicadores. Ela recalibrou a sensibilidade numérica dos indicadores já existentes para:
+
+- reduzir falso negativo em perfis organizados com pouca folga operacional;
+- separar melhor dívida organizada de ruptura financeira;
+- evitar colapso prematuro da base da escala em cenários ainda recuperáveis.
 
 ### Patrimônio Líquido Atual
 
@@ -292,4 +305,3 @@ Essa projeção não deve subestimar a receita futura nem inflar artificialmente
 - **Dashboard:** consome apenas síntese
 - **Assistente Financeiro:** usa leitura executiva derivada do mesmo núcleo
 - **Laboratório do MF Score:** inspeciona o motor oficial sem recalcular regras por fora
-

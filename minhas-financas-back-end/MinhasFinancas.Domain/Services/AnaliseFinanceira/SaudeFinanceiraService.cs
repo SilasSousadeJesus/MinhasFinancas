@@ -62,9 +62,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
         {
             var pilares = new List<PilarMfScoreFinanceiro>
             {
-                CalcularPilarFluxoDeCaixa(indicadores),
-                CalcularPilarLiquidezEReserva(indicadores),
-                CalcularPilarEndividamentoEObrigacoes(indicadores),
+                CalcularPilarFluxoDeCaixa(indicadores, contextoComplementar),
+                CalcularPilarLiquidezEReserva(indicadores, contextoComplementar),
+                CalcularPilarEndividamentoEObrigacoes(indicadores, contextoComplementar),
                 CalcularPilarPatrimonio(indicadores),
                 CalcularPilarPlanejamentoEDisciplina(indicadores, contextoComplementar)
             };
@@ -119,7 +119,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             };
         }
 
-        private static PilarMfScoreFinanceiro CalcularPilarFluxoDeCaixa(IReadOnlyCollection<IndicadorFinanceiro> indicadores)
+        private static PilarMfScoreFinanceiro CalcularPilarFluxoDeCaixa(
+            IReadOnlyCollection<IndicadorFinanceiro> indicadores,
+            ContextoComplementarMfScoreFinanceiro? contextoComplementar)
         {
             var economiaMensal = Buscar(indicadores, CodigoIndicadorFinanceiro.EconomiaMensal);
             var percentualEconomia = Buscar(indicadores, CodigoIndicadorFinanceiro.PercentualEconomia);
@@ -129,26 +131,16 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.PercentualEconomia,
                 CodigoIndicadorFinanceiro.ComprometimentoRenda);
 
-            var nota = CalcularNotaMediaPonderada([
-                (economiaMensal, 0.45m),
-                (percentualEconomia, 0.20m),
-                (comprometimentoRenda, 0.35m)
-            ]);
-
-            if (economiaMensal?.Status == StatusIndicadorFinanceiro.Critico)
-            {
-                nota = Math.Min(nota, 35);
-            }
-            else if (economiaMensal?.Status == StatusIndicadorFinanceiro.Atencao &&
-                     comprometimentoRenda?.Status == StatusIndicadorFinanceiro.Critico)
-            {
-                nota = Math.Min(nota, 55);
-            }
-            else if (economiaMensal?.Status == StatusIndicadorFinanceiro.Excelente &&
-                     comprometimentoRenda?.Status is StatusIndicadorFinanceiro.Excelente or StatusIndicadorFinanceiro.Bom)
-            {
-                nota = Math.Max(nota, 85);
-            }
+            var relacaoEconomiaMeta = economiaMensal is not null && economiaMensal.ValorIdeal > 0m
+                ? economiaMensal.ValorAtual / economiaMensal.ValorIdeal
+                : 0m;
+            var nota = CalibradorNumericoMfScore.CalcularNotaFluxoDeCaixa(
+                percentualEconomia?.ValorAtual ?? 0m,
+                relacaoEconomiaMeta,
+                comprometimentoRenda?.ValorAtual ?? 0m,
+                contextoComplementar?.PossuiFluxoMensalNegativoAtual == true,
+                contextoComplementar?.MesesConsecutivosFluxoNegativo ?? 0,
+                contextoComplementar?.PossuiInadimplencia == true);
 
             return new PilarMfScoreFinanceiro
             {
@@ -161,7 +153,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             };
         }
 
-        private static PilarMfScoreFinanceiro CalcularPilarLiquidezEReserva(IReadOnlyCollection<IndicadorFinanceiro> indicadores)
+        private static PilarMfScoreFinanceiro CalcularPilarLiquidezEReserva(
+            IReadOnlyCollection<IndicadorFinanceiro> indicadores,
+            ContextoComplementarMfScoreFinanceiro? contextoComplementar)
         {
             var relevantes = SelecionarIndicadores(indicadores,
                 CodigoIndicadorFinanceiro.ReservaEmergenciaAtual,
@@ -169,7 +163,13 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva);
             var reservaAtual = Buscar(indicadores, CodigoIndicadorFinanceiro.ReservaEmergenciaAtual);
             var capacidadeFormacaoReserva = Buscar(indicadores, CodigoIndicadorFinanceiro.CapacidadeFormacaoReserva);
-            var notaLiquidez = CalcularNotaMediaLiquidez(reservaAtual, capacidadeFormacaoReserva);
+            var notaLiquidez = CalibradorNumericoMfScore.CalcularNotaLiquidez(
+                reservaAtual?.Percentual ?? 0m,
+                capacidadeFormacaoReserva?.ValorAtual ?? 999m,
+                capacidadeFormacaoReserva is not null && capacidadeFormacaoReserva.ValorAtual < 999m,
+                contextoComplementar?.PossuiFluxoMensalNegativoAtual == true,
+                contextoComplementar?.MesesConsecutivosFluxoNegativo ?? 0,
+                contextoComplementar?.PossuiInadimplencia == true);
 
             return new PilarMfScoreFinanceiro
             {
@@ -182,7 +182,9 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             };
         }
 
-        private static PilarMfScoreFinanceiro CalcularPilarEndividamentoEObrigacoes(IReadOnlyCollection<IndicadorFinanceiro> indicadores)
+        private static PilarMfScoreFinanceiro CalcularPilarEndividamentoEObrigacoes(
+            IReadOnlyCollection<IndicadorFinanceiro> indicadores,
+            ContextoComplementarMfScoreFinanceiro? contextoComplementar)
         {
             var endividamento = Buscar(indicadores, CodigoIndicadorFinanceiro.Endividamento);
             var futuro30 = Buscar(indicadores, CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo);
@@ -196,19 +198,15 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo180Dias,
                 CodigoIndicadorFinanceiro.ComprometimentoFinanceiroFuturo365Dias);
 
-            var nota = CalcularNotaMediaPonderada([
-                (endividamento, 0.40m),
-                (futuro30, 0.30m),
-                (futuro90, 0.15m),
-                (futuro180, 0.10m),
-                (futuro365, 0.05m)
-            ]);
-
-            if (endividamento?.Status == StatusIndicadorFinanceiro.Critico &&
-                futuro30?.Status == StatusIndicadorFinanceiro.Critico)
-            {
-                nota = Math.Min(nota, 40);
-            }
+            var nota = CalibradorNumericoMfScore.CalcularNotaEndividamento(
+                endividamento?.ValorAtual ?? 0m,
+                futuro30?.ValorAtual ?? 0m,
+                futuro90?.ValorAtual ?? 0m,
+                futuro180?.ValorAtual ?? 0m,
+                futuro365?.ValorAtual ?? 0m,
+                contextoComplementar?.PossuiInadimplencia == true,
+                contextoComplementar?.PossuiFluxoMensalNegativoAtual == true,
+                Buscar(indicadores, CodigoIndicadorFinanceiro.PatrimonioLiquidoAtual)?.ValorAtual ?? 0m);
 
             return new PilarMfScoreFinanceiro
             {
@@ -391,32 +389,6 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             return (int)Math.Round(somaPonderada / somaPesos);
         }
 
-        private static int CalcularNotaMediaLiquidez(
-            IndicadorFinanceiro? reservaAtual,
-            IndicadorFinanceiro? capacidadeFormacaoReserva)
-        {
-            if (reservaAtual is null && capacidadeFormacaoReserva is null)
-            {
-                return 0;
-            }
-
-            var pontuacaoReserva = reservaAtual is null ? 0m : ObterPontuacao(reservaAtual.Status);
-            var pontuacaoCapacidade = capacidadeFormacaoReserva is null ? 0m : ObterPontuacao(capacidadeFormacaoReserva.Status);
-            var notaBase = (pontuacaoReserva * 0.7m) + (pontuacaoCapacidade * 0.3m);
-
-            if (pontuacaoReserva <= 25m && capacidadeFormacaoReserva is not null)
-            {
-                notaBase = capacidadeFormacaoReserva.Status switch
-                {
-                    StatusIndicadorFinanceiro.Excelente => Math.Max(notaBase, 60m),
-                    StatusIndicadorFinanceiro.Bom => Math.Max(notaBase, 55m),
-                    _ => notaBase
-                };
-            }
-
-            return (int)Math.Round(Math.Clamp(notaBase, 0m, EscalaPilares));
-        }
-
         private static List<IndicadorCriticoMfScoreFinanceiro> MontarIndicadoresCriticos(
             IReadOnlyCollection<IndicadorFinanceiro> indicadores,
             ContextoComplementarMfScoreFinanceiro? contextoComplementar,
@@ -450,7 +422,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                     patrimonioLiquido.Codigo,
                     patrimonioLiquido.Nome,
                     "Patrimônio líquido negativo.",
-                    10m,
+                    6m,
                     "Patrimônio");
             }
 
@@ -474,16 +446,16 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
                 var nivelInadimplencia = contextoComplementar.NivelInadimplencia;
                 var penalidadeBase = nivelInadimplencia switch
                 {
-                    1 => 3m,
-                    2 => 9m,
-                    3 => 17m,
-                    4 => 25m,
-                    _ => 9m
+                    1 => 2m,
+                    2 => 6m,
+                    3 => 12m,
+                    4 => 18m,
+                    _ => 6m
                 };
                 var agravamentoReincidencia = contextoComplementar.QuantidadeMesesComOcorrenciaAtrasoRecente switch
                 {
-                    >= 3 => 4m,
-                    >= 2 => 2m,
+                    >= 3 => 2m,
+                    >= 2 => 1m,
                     _ => 0m
                 };
                 var penalidade = penalidadeBase + agravamentoReincidencia;
@@ -506,7 +478,7 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
             }
             else if (contextoComplementar?.PossuiCuraRecenteInadimplencia == true)
             {
-                var penalidadeCura = contextoComplementar.QuantidadeMesesComOcorrenciaAtrasoRecente >= 2 ? 2m : 1m;
+                var penalidadeCura = contextoComplementar.QuantidadeMesesComOcorrenciaAtrasoRecente >= 2 ? 1m : 0.5m;
 
                 Adicionar(
                     endividamento?.Codigo ?? CodigoIndicadorFinanceiro.Endividamento,
@@ -534,11 +506,11 @@ namespace MinhasFinancas.Domain.Services.AnaliseFinanceira
         {
             return mesesConsecutivos switch
             {
-                >= 12 => ("O usuário acumula doze ou mais meses consecutivos no vermelho.", 18m),
-                >= 6 => ("O usuário acumula seis ou mais meses consecutivos no vermelho.", 14m),
-                >= 3 => ("O usuário acumula três ou mais meses consecutivos no vermelho.", 10m),
-                >= 2 => ("O usuário acumula dois meses consecutivos no vermelho.", 6m),
-                >= 1 => ("O mês de referência fechou com fluxo de caixa negativo.", 3m),
+                >= 12 => ("O usuário acumula doze ou mais meses consecutivos no vermelho.", 9m),
+                >= 6 => ("O usuário acumula seis ou mais meses consecutivos no vermelho.", 7m),
+                >= 3 => ("O usuário acumula três ou mais meses consecutivos no vermelho.", 5m),
+                >= 2 => ("O usuário acumula dois meses consecutivos no vermelho.", 3m),
+                >= 1 => ("O mês de referência fechou com fluxo de caixa negativo.", 1m),
                 _ => null
             };
         }
