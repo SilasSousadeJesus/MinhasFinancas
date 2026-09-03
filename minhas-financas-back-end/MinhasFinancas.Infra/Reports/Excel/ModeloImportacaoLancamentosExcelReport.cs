@@ -25,7 +25,6 @@ namespace MinhasFinancas.Infra.Reports.Excel
             var listas = workbook.Worksheet("Listas");
 
             listas.Clear(XLClearOptions.Contents);
-            lancamentos.DataValidations.DeleteAll();
 
             AdicionarLista(listas, 1, "Tipo", ["Despesa", "Receita", "InvestimentoDeposito", "InvestimentoSaque", "Transferencia", "Saque", "Deposito"]);
             AdicionarLista(listas, 2, "Frequencia", ["Pontual", "Fixo", "Parcelado", "DiaUtil"]);
@@ -57,7 +56,21 @@ namespace MinhasFinancas.Infra.Reports.Excel
 
         private static void AplicarValidacao(IXLWorksheet worksheet, int coluna, string intervalo)
         {
-            worksheet.Range(PrimeiraLinhaDados, coluna, UltimaLinhaDados, coluna).CreateDataValidation().List(intervalo, true);
+            var intervaloDados = worksheet.Range(PrimeiraLinhaDados, coluna, UltimaLinhaDados, coluna);
+            var validacoesExistentes = worksheet.DataValidations
+                .GetAllInRange(intervaloDados.RangeAddress)
+                .ToList();
+
+            if (validacoesExistentes.Count == 0)
+            {
+                intervaloDados.CreateDataValidation().List(intervalo, true);
+                return;
+            }
+
+            foreach (var validacao in validacoesExistentes)
+            {
+                validacao.List(intervalo, true);
+            }
         }
 
     }
