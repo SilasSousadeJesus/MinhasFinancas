@@ -56,6 +56,15 @@ export interface ResultadoPaginado<T> {
 
 export type RespostaLancamentos = ResultadoPaginado<LancamentoResumo> | LancamentoResumo[];
 
+export interface ResultadoImportacaoLancamentos {
+  totalLinhas: number;
+  totalImportados: number;
+  erros: Array<{
+    linha: number;
+    mensagem: string;
+  }>;
+}
+
 export interface EditarLancamentoPayload {
   id: string;
   valor: number;

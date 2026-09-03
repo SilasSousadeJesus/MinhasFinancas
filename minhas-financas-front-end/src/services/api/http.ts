@@ -14,10 +14,12 @@ export async function apiRequest<T>(
   const finalizarLoading = startGlobalLoading(loading);
 
   try {
+    const isFormData = init.body instanceof FormData;
+
     const response = await fetch(`${API_BASE_URL}${path}`, {
       ...init,
       headers: {
-        "Content-Type": "application/json",
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...headers,
       },

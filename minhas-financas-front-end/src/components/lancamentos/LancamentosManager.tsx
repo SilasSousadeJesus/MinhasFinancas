@@ -1,15 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Check, Pencil, Plus, Trash2 } from "lucide-react";
+import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Check, Download, Pencil, Plus, Trash2, Upload } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
 import { ApiError } from "@/types/api";
 import { FiltroLancamentosParams, LancamentoResumo } from "@/types/lancamentos";
 import {
   buscarLancamentos,
+  baixarModeloImportacaoLancamentosExcel,
   deletarLancamento,
   efetivarLancamento,
   exportarLancamentosExcel,
+  importarLancamentosExcel,
 } from "@/services/api/lancamentos";
 import { buscarCategorias } from "@/services/api/categories";
 import { buscarCartoes, buscarContas } from "@/services/api/finance";
@@ -314,12 +316,14 @@ export function LancamentosManager() {
   const { session } = useAuth();
   const ultimaRequisicaoRef = useRef(0);
   const ultimaRequisicaoDadosRef = useRef(0);
+  const arquivoImportacaoRef = useRef<HTMLInputElement>(null);
   const [lancamentos, setLancamentos] = useState<LancamentoResumo[]>([]);
   const [categorias, setCategorias] = useState<CategoriaResumo[]>([]);
   const [contas, setContas] = useState<ContaResumo[]>([]);
   const [cartoes, setCartoes] = useState<CartaoResumo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [efetivandoId, setEfetivandoId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -698,6 +702,66 @@ export function LancamentosManager() {
     }
   }
 
+  async function baixarModeloImportacao() {
+    if (!session?.usuario.id || !session.token) {
+      return;
+    }
+
+    try {
+      setErrorMessage("");
+      setSuccessMessage("");
+      const blob = await baixarModeloImportacaoLancamentosExcel(session.usuario.id, session.token);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "modelo-importacao-lancamentos.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setSuccessMessage("Modelo de importação baixado com sucesso.");
+    } catch (error) {
+      setErrorMessage(error instanceof ApiError ? error.message : "Não foi possível baixar o modelo.");
+    }
+  }
+
+  async function importarArquivo(event: ChangeEvent<HTMLInputElement>) {
+    const arquivo = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!arquivo || !session?.usuario.id || !session.token) {
+      return;
+    }
+
+    try {
+      setIsImporting(true);
+      setErrorMessage("");
+      setSuccessMessage("");
+      const response = await importarLancamentosExcel(session.usuario.id, arquivo, session.token);
+      const resultado = response.dados;
+      const erros = resultado?.erros ?? [];
+
+      setSuccessMessage(
+        `${resultado?.totalImportados ?? 0} lançamento(s) importado(s) de ${resultado?.totalLinhas ?? 0} linha(s).`
+      );
+
+      if (erros.length > 0) {
+        const detalhes = erros.slice(0, 5).map((erro) => {
+          const referencia = erro.linha > 0 ? `Linha ${erro.linha}` : "Importação";
+          return `${referencia}: ${erro.mensagem}`;
+        });
+        const restante = erros.length > detalhes.length ? ` Mais ${erros.length - detalhes.length} erro(s).` : "";
+        setErrorMessage(`${detalhes.join(" ")}${restante}`);
+      }
+
+      await carregarLancamentos();
+    } catch (error) {
+      setErrorMessage(error instanceof ApiError ? error.message : "Não foi possível importar a planilha.");
+    } finally {
+      setIsImporting(false);
+    }
+  }
+
   return (
     <div className="flex flex-row">
       <Sidebar />
@@ -1072,6 +1136,25 @@ export function LancamentosManager() {
                       {totalItens} resultado(s) encontrado(s).
                     </p>
                     <div className="flex flex-wrap items-center gap-2">
+                      <input
+                        ref={arquivoImportacaoRef}
+                        type="file"
+                        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        className="hidden"
+                        onChange={importarArquivo}
+                      />
+                      <Button variant="outline" onClick={baixarModeloImportacao} disabled={isImporting}>
+                        <Download className="mr-2 h-4 w-4" />
+                        Baixar modelo
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => arquivoImportacaoRef.current?.click()}
+                        disabled={isImporting}
+                      >
+                        <Upload className="mr-2 h-4 w-4" />
+                        {isImporting ? "Importando..." : "Importar planilha"}
+                      </Button>
                       <Button
                         variant="outline"
                         onClick={exportarExcel}

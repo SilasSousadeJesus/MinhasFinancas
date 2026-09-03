@@ -5,6 +5,7 @@ import {
   EditarParcelamentoEmLotePayload,
   FiltroLancamentosParams,
   LancamentoResumo,
+  ResultadoImportacaoLancamentos,
   RespostaLancamentos,
 } from "@/types/lancamentos";
 import { RetornoGenerico } from "@/types/api";
@@ -164,6 +165,27 @@ export function exportarLancamentosExcel(
     {
       method: "GET",
       token,
+    }
+  );
+}
+
+export function baixarModeloImportacaoLancamentosExcel(usuarioId: string, token: string) {
+  return downloadRequest(`/Lancamento/BaixarModeloImportacaoExcel/${usuarioId}`, {
+    method: "GET",
+    token,
+  });
+}
+
+export function importarLancamentosExcel(usuarioId: string, arquivo: File, token: string) {
+  const formData = new FormData();
+  formData.append("arquivo", arquivo);
+
+  return apiRequest<ResultadoImportacaoLancamentos>(
+    `/Lancamento/ImportarExcel/${usuarioId}`,
+    {
+      method: "POST",
+      token,
+      body: formData,
     }
   );
 }

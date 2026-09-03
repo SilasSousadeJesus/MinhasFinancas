@@ -9,6 +9,8 @@ using MinhasFinancas.Infra.Data.Interfaces;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Text;
+using ClosedXML.Excel;
 
 namespace MinhasFinancas.Application.Services
 {
@@ -20,16 +22,22 @@ namespace MinhasFinancas.Application.Services
         private readonly IContaAppService _contaAppService;
         private readonly IUsuarioAppService _usuarioAppService;
         private readonly IBemPatrimonialAppService  _bemPatrimonialAppService;
+        private readonly ICategoriaAppService _categoriaAppService;
+        private readonly ICartaoAppService _cartaoAppService;
         private readonly IExcelReport<LancamentosExcelReportData> _lancamentosExcelReport;
+        private readonly IExcelReport<ModeloImportacaoLancamentosExcelReportData> _modeloImportacaoLancamentosExcelReport;
         private readonly IExcelReport<FluxoCaixaSimplesExcelReportData> _fluxoCaixaSimplesExcelReport;
-        public LancamentoAppService(IMapper mapper, ILancamentoRepository lancamentoRepository, IUsuarioAppService usuarioAppService, IContaAppService contaAppService, IBemPatrimonialAppService bemPatrimonialAppService, IExcelReport<LancamentosExcelReportData> lancamentosExcelReport, IExcelReport<FluxoCaixaSimplesExcelReportData> fluxoCaixaSimplesExcelReport)
+        public LancamentoAppService(IMapper mapper, ILancamentoRepository lancamentoRepository, IUsuarioAppService usuarioAppService, IContaAppService contaAppService, IBemPatrimonialAppService bemPatrimonialAppService, ICategoriaAppService categoriaAppService, ICartaoAppService cartaoAppService, IExcelReport<LancamentosExcelReportData> lancamentosExcelReport, IExcelReport<ModeloImportacaoLancamentosExcelReportData> modeloImportacaoLancamentosExcelReport, IExcelReport<FluxoCaixaSimplesExcelReportData> fluxoCaixaSimplesExcelReport)
         {
             _mapper = mapper;
             _lancamentoRepository = lancamentoRepository;
             _usuarioAppService = usuarioAppService;
             _contaAppService = contaAppService;
             _bemPatrimonialAppService = bemPatrimonialAppService;
+            _categoriaAppService = categoriaAppService;
+            _cartaoAppService = cartaoAppService;
             _lancamentosExcelReport = lancamentosExcelReport;
+            _modeloImportacaoLancamentosExcelReport = modeloImportacaoLancamentosExcelReport;
             _fluxoCaixaSimplesExcelReport = fluxoCaixaSimplesExcelReport;
         }
 
@@ -236,6 +244,308 @@ namespace MinhasFinancas.Application.Services
                 retorno.Dados = null;
                 return retorno;
             }
+        }
+
+        public async Task<RetornoGenerico> BaixarModeloImportacaoLancamentosExcelAsync(string usuarioId)
+        {
+            var retorno = new RetornoGenerico();
+
+            try
+            {
+                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+                if (!buscaPorUsuario.Sucesso)
+                {
+                    return new RetornoGenerico(false, buscaPorUsuario.MensagemSistema, buscaPorUsuario.MensagemUsuario, HttpStatusCode.NotFound);
+                }
+
+                var categoriasResponse = await _categoriaAppService.BuscarTodosOsElementosAsync(usuarioId);
+                var contasResponse = await _contaAppService.BuscarTodosOsElementosAsync(usuarioId);
+                var cartoesResponse = await _cartaoAppService.BuscarTodosOsElementosAsync(usuarioId);
+                var categorias = categoriasResponse.Dados as List<Categoria> ?? [];
+                var contas = contasResponse.Dados as List<Conta> ?? [];
+                var cartoes = cartoesResponse.Dados as List<Cartao> ?? [];
+
+                var arquivo = _modeloImportacaoLancamentosExcelReport.Gerar(new ModeloImportacaoLancamentosExcelReportData
+                {
+                    Categorias = categorias.Select(x => x.NomeCategoria).ToList(),
+                    Subcategorias = categorias.SelectMany(x => x.SubCategorias ?? []).Select(x => x.NomeSubCategoria).ToList(),
+                    Contas = contas.Select(x => x.NomeConta).ToList(),
+                    Cartoes = cartoes.Select(x => x.NomeCartao).ToList(),
+                });
+
+                retorno.Sucesso = true;
+                retorno.HttpStatusCode = HttpStatusCode.OK;
+                retorno.MensagemSistema = "Modelo de importação gerado com sucesso.";
+                retorno.MensagemUsuario = "Modelo de importação gerado com sucesso.";
+                retorno.Dados = arquivo;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                return new RetornoGenerico(false, ex.ToString(), "Não foi possível gerar o modelo de importação.", HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<RetornoGenerico> ImportarLancamentosExcelAsync(string usuarioId, Stream arquivo)
+        {
+            try
+            {
+                var buscaPorUsuario = await _usuarioAppService.BuscarUmUsuario(usuarioId);
+                if (!buscaPorUsuario.Sucesso)
+                {
+                    return new RetornoGenerico(false, buscaPorUsuario.MensagemSistema, buscaPorUsuario.MensagemUsuario, HttpStatusCode.NotFound);
+                }
+
+                var categoriasResponse = await _categoriaAppService.BuscarTodosOsElementosAsync(usuarioId);
+                var contasResponse = await _contaAppService.BuscarTodosOsElementosAsync(usuarioId);
+                var cartoesResponse = await _cartaoAppService.BuscarTodosOsElementosAsync(usuarioId);
+                var categorias = categoriasResponse.Dados as List<Categoria> ?? [];
+                var contas = contasResponse.Dados as List<Conta> ?? [];
+                var cartoes = cartoesResponse.Dados as List<Cartao> ?? [];
+
+                using var workbook = new XLWorkbook(arquivo);
+                var planilha = workbook.Worksheets.FirstOrDefault(x => string.Equals(x.Name, "Lancamentos", StringComparison.OrdinalIgnoreCase));
+                if (planilha == null)
+                {
+                    return new RetornoGenerico(false, "A aba Lancamentos não foi encontrada.", "Use o modelo de importação disponibilizado pelo sistema.", HttpStatusCode.BadRequest);
+                }
+
+                var linhaCabecalhos = EncontrarLinhaCabecalhos(planilha);
+                if (!linhaCabecalhos.HasValue)
+                {
+                    return new RetornoGenerico(false, "Cabeçalho não encontrado.", "Use o modelo de importação disponibilizado pelo sistema.", HttpStatusCode.BadRequest);
+                }
+
+                var cabecalhos = CriarMapaCabecalhos(planilha, linhaCabecalhos.Value);
+                var obrigatorios = new[] { "Descricao", "Valor", "Tipo", "DataVencimento", "DataLancamento", "FrequenciaLancamento" };
+                var ausentes = obrigatorios.Where(x => !cabecalhos.ContainsKey(x)).ToList();
+                if (ausentes.Count > 0)
+                {
+                    return new RetornoGenerico(false, "Cabeçalhos obrigatórios ausentes.", $"A planilha não contém as colunas obrigatórias: {string.Join(", ", ausentes)}.", HttpStatusCode.BadRequest);
+                }
+
+                var resultado = new ResultadoImportacaoLancamentosDTO();
+                var lancamentosValidos = new List<(int Linha, CadastrarLancamentoDTO Lancamento)>();
+                var ultimaLinha = planilha.LastRowUsed()?.RowNumber() ?? 1;
+
+                for (var linha = linhaCabecalhos.Value + 1; linha <= ultimaLinha; linha++)
+                {
+                    if (LinhaEstaVazia(planilha, linha, cabecalhos.Values))
+                    {
+                        continue;
+                    }
+
+                    resultado.TotalLinhas++;
+                    var erros = new List<string>();
+                    var dto = CriarLancamentoDaLinha(planilha, linha, cabecalhos, usuarioId, categorias, contas, cartoes, erros);
+                    if (erros.Count > 0)
+                    {
+                        resultado.Erros.Add(new ErroImportacaoLancamentoDTO
+                        {
+                            Linha = linha,
+                            Mensagem = string.Join(" ", erros),
+                        });
+                        continue;
+                    }
+
+                    lancamentosValidos.Add((linha, dto!));
+                }
+
+                if (resultado.TotalLinhas == 0)
+                {
+                    return new RetornoGenerico(false, "A planilha não possui lançamentos.", "Preencha ao menos uma linha antes de importar.", HttpStatusCode.BadRequest);
+                }
+
+                foreach (var item in lancamentosValidos)
+                {
+                    var cadastro = await CadastrarElementoAsync(item.Lancamento);
+                    if (cadastro.Sucesso)
+                    {
+                        resultado.TotalImportados++;
+                    }
+                    else
+                    {
+                        resultado.Erros.Add(new ErroImportacaoLancamentoDTO
+                        {
+                            Linha = item.Linha,
+                            Mensagem = cadastro.MensagemUsuario,
+                        });
+                    }
+                }
+
+                var mensagem = resultado.Erros.Count == 0
+                    ? $"{resultado.TotalImportados} lançamento(s) importado(s) com sucesso."
+                    : $"{resultado.TotalImportados} lançamento(s) importado(s). {resultado.Erros.Count} linha(s) apresentaram erro.";
+
+                return new RetornoGenerico(true, mensagem, mensagem, HttpStatusCode.OK, resultado);
+            }
+            catch (Exception ex)
+            {
+                return new RetornoGenerico(false, ex.ToString(), "Não foi possível ler a planilha. Baixe um novo modelo e tente novamente.", HttpStatusCode.BadRequest);
+            }
+        }
+
+        private static int? EncontrarLinhaCabecalhos(IXLWorksheet planilha)
+        {
+            for (var linha = 1; linha <= Math.Min(planilha.LastRowUsed()?.RowNumber() ?? 1, 10); linha++)
+            {
+                var cabecalhos = CriarMapaCabecalhos(planilha, linha);
+                if (cabecalhos.ContainsKey("Descricao") && cabecalhos.ContainsKey("Valor"))
+                {
+                    return linha;
+                }
+            }
+
+            return null;
+        }
+
+        private static Dictionary<string, int> CriarMapaCabecalhos(IXLWorksheet planilha, int linha)
+        {
+            var mapa = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            foreach (var celula in planilha.Row(linha).CellsUsed())
+            {
+                var nome = NormalizarCabecalho(celula.GetString());
+                if (!string.IsNullOrWhiteSpace(nome))
+                {
+                    mapa[nome] = celula.Address.ColumnNumber;
+                }
+            }
+
+            return mapa;
+        }
+
+        private static string NormalizarCabecalho(string valor)
+        {
+            var normalizado = RemoverAcentos(valor).Trim().ToLowerInvariant();
+            var somenteLetras = new string(normalizado.Where(char.IsLetter).ToArray());
+
+            return somenteLetras switch
+            {
+                "descricao" => "Descricao",
+                "valor" => "Valor",
+                "tipo" => "Tipo",
+                "datavencimento" or "vencimento" => "DataVencimento",
+                "datalancamento" => "DataLancamento",
+                "observacao" => "Observacao",
+                "frequencialancamento" or "frequencia" => "FrequenciaLancamento",
+                "quantidadeparcelas" or "qtdparcelas" => "QuantidadeParcelas",
+                "numerodiautil" or "diautil" => "NumeroDiaUtil",
+                "categoria" => "Categoria",
+                "subcategoria" => "Subcategoria",
+                "conta" => "Conta",
+                "cartao" => "Cartao",
+                _ => valor.Trim(),
+            };
+        }
+
+        private static string RemoverAcentos(string valor)
+        {
+            var decomposicao = valor.Normalize(NormalizationForm.FormD);
+            return new string(decomposicao.Where(x => CharUnicodeInfo.GetUnicodeCategory(x) != UnicodeCategory.NonSpacingMark).ToArray())
+                .Normalize(NormalizationForm.FormC);
+        }
+
+        private static bool LinhaEstaVazia(IXLWorksheet planilha, int linha, IEnumerable<int> colunas)
+        {
+            return colunas.All(coluna => string.IsNullOrWhiteSpace(planilha.Cell(linha, coluna).GetString()));
+        }
+
+        private static CadastrarLancamentoDTO? CriarLancamentoDaLinha(
+            IXLWorksheet planilha,
+            int linha,
+            IReadOnlyDictionary<string, int> cabecalhos,
+            string usuarioId,
+            IReadOnlyCollection<Categoria> categorias,
+            IReadOnlyCollection<Conta> contas,
+            IReadOnlyCollection<Cartao> cartoes,
+            List<string> erros)
+        {
+            string Texto(string nome) => cabecalhos.TryGetValue(nome, out var coluna) ? planilha.Cell(linha, coluna).GetString().Trim() : string.Empty;
+            var descricao = Texto("Descricao");
+            var tipoTexto = Texto("Tipo");
+            var frequenciaTexto = Texto("FrequenciaLancamento");
+            var categoriaTexto = Texto("Categoria");
+            var subcategoriaTexto = Texto("Subcategoria");
+            var contaTexto = Texto("Conta");
+            var cartaoTexto = Texto("Cartao");
+
+            if (string.IsNullOrWhiteSpace(descricao)) erros.Add("Descrição é obrigatória.");
+            if (!TryObterDecimal(planilha, linha, cabecalhos, "Valor", out var valor) || valor <= 0) erros.Add("Valor deve ser maior que zero.");
+            if (!Enum.TryParse<EnumTipoLancamento>(tipoTexto, true, out var tipo)) erros.Add("Tipo é inválido.");
+            if (!Enum.TryParse<EnumTipoFrequenciaLancamento>(frequenciaTexto, true, out var frequencia)) erros.Add("FrequenciaLancamento é inválida.");
+            if (!TryObterData(planilha, linha, cabecalhos, "DataVencimento", out var dataVencimento)) erros.Add("DataVencimento é inválida.");
+            if (!TryObterData(planilha, linha, cabecalhos, "DataLancamento", out var dataLancamento)) erros.Add("DataLancamento é inválida.");
+
+            var categoria = EncontrarPorNome(categorias, categoriaTexto, x => x.NomeCategoria);
+            if (!string.IsNullOrWhiteSpace(categoriaTexto) && categoria == null) erros.Add("Categoria não encontrada.");
+            var subcategoria = categoria?.SubCategorias?.FirstOrDefault(x => NomesIguais(x.NomeSubCategoria, subcategoriaTexto));
+            if (!string.IsNullOrWhiteSpace(subcategoriaTexto) && subcategoria == null) erros.Add("Subcategoria não encontrada na categoria informada.");
+
+            var conta = EncontrarPorNome(contas, contaTexto, x => x.NomeConta);
+            if (!string.IsNullOrWhiteSpace(contaTexto) && conta == null) erros.Add("Conta não encontrada.");
+            var cartao = EncontrarPorNome(cartoes, cartaoTexto, x => x.NomeCartao);
+            if (!string.IsNullOrWhiteSpace(cartaoTexto) && cartao == null) erros.Add("Cartão não encontrado.");
+            if (conta != null && cartao != null) erros.Add("Informe apenas conta ou cartão.");
+
+            var quantidadeParcelas = TryObterInteiro(planilha, linha, cabecalhos, "QuantidadeParcelas");
+            var numeroDiaUtil = TryObterInteiro(planilha, linha, cabecalhos, "NumeroDiaUtil");
+            if (frequencia == EnumTipoFrequenciaLancamento.Parcelado && (!quantidadeParcelas.HasValue || quantidadeParcelas <= 1)) erros.Add("QuantidadeParcelas deve ser maior que 1 para lançamento parcelado.");
+            if (frequencia == EnumTipoFrequenciaLancamento.DiaUtil && (!numeroDiaUtil.HasValue || numeroDiaUtil <= 0)) erros.Add("NumeroDiaUtil deve ser maior que zero para lançamento por dia útil.");
+
+            if (erros.Count > 0) return null;
+
+            return new CadastrarLancamentoDTO
+            {
+                Descricao = descricao,
+                Valor = valor,
+                Tipo = tipo,
+                DataVencimento = dataVencimento,
+                DataLancamento = dataLancamento,
+                Observacao = Texto("Observacao"),
+                FrequenciaLancamento = frequencia,
+                QuantidadeParcelas = quantidadeParcelas,
+                NumeroDiaUtil = numeroDiaUtil,
+                CategoriaId = categoria?.Id,
+                SubCategoriaId = subcategoria?.Id,
+                ContaId = conta?.Id,
+                CartaoId = cartao?.Id,
+                Vinculo = cartao != null ? EnumVinculoLancamento.CartaoCredito : conta != null ? EnumVinculoLancamento.Conta : EnumVinculoLancamento.Avulso,
+                UsuarioId = usuarioId,
+            };
+        }
+
+        private static bool TryObterDecimal(IXLWorksheet planilha, int linha, IReadOnlyDictionary<string, int> cabecalhos, string nome, out decimal valor)
+        {
+            valor = 0;
+            if (!cabecalhos.TryGetValue(nome, out var coluna)) return false;
+            var celula = planilha.Cell(linha, coluna);
+            return celula.TryGetValue(out valor)
+                || decimal.TryParse(celula.GetString(), NumberStyles.Number | NumberStyles.AllowCurrencySymbol, new CultureInfo("pt-BR"), out valor);
+        }
+
+        private static bool TryObterData(IXLWorksheet planilha, int linha, IReadOnlyDictionary<string, int> cabecalhos, string nome, out DateTime data)
+        {
+            data = default;
+            if (!cabecalhos.TryGetValue(nome, out var coluna)) return false;
+            var celula = planilha.Cell(linha, coluna);
+            return celula.TryGetValue(out data)
+                || DateTime.TryParse(celula.GetString(), new CultureInfo("pt-BR"), DateTimeStyles.None, out data);
+        }
+
+        private static int? TryObterInteiro(IXLWorksheet planilha, int linha, IReadOnlyDictionary<string, int> cabecalhos, string nome)
+        {
+            if (!cabecalhos.TryGetValue(nome, out var coluna) || string.IsNullOrWhiteSpace(planilha.Cell(linha, coluna).GetString())) return null;
+            return planilha.Cell(linha, coluna).TryGetValue<int>(out var valor) ? valor : null;
+        }
+
+        private static T? EncontrarPorNome<T>(IEnumerable<T> itens, string nome, Func<T, string> seletor) where T : class
+        {
+            return string.IsNullOrWhiteSpace(nome) ? null : itens.FirstOrDefault(x => NomesIguais(seletor(x), nome));
+        }
+
+        private static bool NomesIguais(string primeiro, string segundo)
+        {
+            return string.Equals(primeiro.Trim(), segundo.Trim(), StringComparison.OrdinalIgnoreCase);
         }
 
         public async Task<RetornoGenerico> ExportarFluxoCaixaSimplesExcelAsync(string usuarioId, ExportarFluxoCaixaSimplesExcelDTO filtro)

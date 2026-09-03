@@ -141,6 +141,7 @@ namespace minhas_financas_back_end
             builder.Services.AddScoped<ExcelWorkbookFactory>();
             builder.Services.AddScoped<ExcelStyleHelper>();
             builder.Services.AddScoped<IExcelReport<LancamentosExcelReportData>, LancamentosExcelReport>();
+            builder.Services.AddScoped<IExcelReport<ModeloImportacaoLancamentosExcelReportData>, ModeloImportacaoLancamentosExcelReport>();
             builder.Services.AddScoped<IExcelReport<FluxoCaixaSimplesExcelReportData>, FluxoCaixaSimplesExcelReport>();
             builder.Services.AddScoped<IExcelReport<MfScoreAuditoriaExcelReportData>, MfScoreAuditoriaExcelReport>();
             builder.Services.AddScoped<IExcelReport<MfScoreAuditoriaHumanaExcelReportData>, MfScoreAuditoriaHumanaExcelReport>();

@@ -168,6 +168,51 @@ namespace MinhasFinancas.API.Controllers
         }
 
         [Authorize]
+        [HttpGet("BaixarModeloImportacaoExcel/{usuarioId}")]
+        public async Task<IActionResult> BaixarModeloImportacaoExcel([FromRoute] string usuarioId)
+        {
+            var dados = await _appService.BaixarModeloImportacaoLancamentosExcelAsync(usuarioId);
+
+            if (!dados.Sucesso)
+            {
+                return BadRequest(dados);
+            }
+
+            if (dados.Dados is not ArquivoRelatorioDTO arquivo)
+            {
+                return StatusCode(500, "Arquivo de modelo não encontrado.");
+            }
+
+            return File(arquivo.Conteudo, arquivo.ContentType, arquivo.NomeArquivo);
+        }
+
+        [Authorize]
+        [HttpPost("ImportarExcel/{usuarioId}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> ImportarExcel([FromRoute] string usuarioId, [FromForm] IFormFile arquivo)
+        {
+            if (arquivo == null || arquivo.Length == 0)
+            {
+                return BadRequest("Selecione uma planilha preenchida para importar.");
+            }
+
+            if (!string.Equals(Path.GetExtension(arquivo.FileName), ".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("A importação aceita apenas arquivos .xlsx.");
+            }
+
+            await using var stream = arquivo.OpenReadStream();
+            var dados = await _appService.ImportarLancamentosExcelAsync(usuarioId, stream);
+
+            if (!dados.Sucesso)
+            {
+                return dados.HttpStatusCode == System.Net.HttpStatusCode.NotFound ? NotFound(dados) : BadRequest(dados);
+            }
+
+            return Ok(dados);
+        }
+
+        [Authorize]
         [HttpGet("ExportarFluxoCaixaSimplesExcel/{usuarioId}")]
         public async Task<IActionResult> ExportarFluxoCaixaSimplesExcel([FromRoute] string usuarioId, [FromQuery] ExportarFluxoCaixaSimplesExcelDTO filtro)
         {

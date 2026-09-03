@@ -2,6 +2,13 @@
 
 Registrar aqui apenas mudancas relevantes do sistema.
 
+## 03/09/2026
+
+- Adicionada a importação de lançamentos por planilha Excel na tela de lançamentos.
+- Incluído o download de modelo oficial `.xlsx`, preenchido com listas de categorias, subcategorias, contas e cartões do usuário.
+- A importação valida os campos e vínculos por linha, informa erros de preenchimento e cadastra somente os lançamentos válidos.
+- Não houve alteração de banco de dados ou execução de migration.
+
 ## 12/07/2026
 
 - Reconstrução completa das massas sintéticas de `MF-CENARIO-02`, `MF-CENARIO-07` e `MF-CENARIO-09`, mantendo o motor `mf-score-v2.5-1000` congelado.

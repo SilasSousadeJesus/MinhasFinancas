@@ -14,6 +14,7 @@
     <None Include="IA\Prompts\PromptAnaliseFinanceira.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="Resources\Modelos\modelo-importacao-lancamentos-base.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
